@@ -1,0 +1,445 @@
+-- Content: all the text in the game (headlines, questions, jobs, glasses...).
+-- Add more entries anytime; the game picks from these lists.
+
+local Content = {}
+
+---------------------------------------------------------------------
+-- LOSE PATH: reading popups (skip them fast!)
+---------------------------------------------------------------------
+Content.ReadingTexts = {
+	"Welcome to the shop. Please read these instructions carefully before you continue, because they explain how everything works.",
+	"Did you know that reading is good for your brain? Studies show that people who read every day remember more and focus better.",
+	"The secret exit code is hidden at the end of this message. Keep reading to find out what it is. It is almost here...",
+	"Important update: the shop will be closed for maintenance. We apologize for any inconvenience this may cause to you.",
+	"Fun fact: honey never spoils. Archaeologists have found pots of honey in ancient tombs that are thousands of years old.",
+	"DON'T READ THIS. Seriously. If you are still reading, you are getting smarter, and that is the opposite of the goal.",
+	"Paragraph 1 of 3: You won't believe what happens in paragraph 3. Paragraph 2 is just here to build suspense for paragraph 3.",
+	"Please remember to stay hydrated. Water helps your brain work properly, which you probably don't want right now.",
+	"Notice: a new update has arrived. Changes include new things, fixed things, and things that were moved to other places.",
+	"Tip: if you read every message carefully, you will understand the game better. We recommend reading everything twice.",
+}
+
+Content.TermsOfService = [[TERMS OF SERVICE (please read all of it)
+
+1. By playing, you agree that brains are optional.
+2. You agree not to read things you are told not to read, unless you are reading this, which you are.
+3. Dr. Wrinkles is not responsible for any brain cells lost, found, borrowed or microwaved.
+4. Bananas may not be used as legal defense in court. (They will be anyway.)
+5. If you have read this far, you are officially the most patient person on this server.
+6. Section 6 intentionally left blank.
+7. See section 6.
+8. Congratulations. Keep this window open for a full minute to receive a reward that is not a brain cell.]]
+
+---------------------------------------------------------------------
+-- LOSE PATH: clickbait cards
+-- tier 1 = subtle (high brain cells) ... tier 4 = near zero
+---------------------------------------------------------------------
+Content.Headlines = {
+	-- tier 1: subtle, mixed with real-looking news
+	{ tier = 1, bait = false, text = "Scientists Report New Findings on Sleep and Memory", article = "A study found that people who slept well remembered word lists better the next day." },
+	{ tier = 1, bait = false, text = "Study Suggests Sleep May Affect Memory More Than Expected", article = "Researchers say sleep helps the brain store memories. More research is planned." },
+	{ tier = 1, bait = true, text = "Doctors Don't Want You to Know This One Sleep Trick", article = "The trick is: go to sleep. That's it. That's the article." },
+	{ tier = 1, bait = false, text = "City Council Approves New Bike Lanes Downtown", article = "The council voted to add 12 km of protected bike lanes next year." },
+	{ tier = 1, bait = true, text = "This Common Breakfast Food Could Be Ruining Your Day", article = "It's cereal. Probably. We didn't actually check." },
+	{ tier = 1, bait = false, text = "Local Library Extends Weekend Opening Hours", article = "The library will now stay open until 8 PM on Saturdays." },
+	-- tier 2: tempting
+	{ tier = 2, bait = true, text = "You Won't BELIEVE What This Kid Found in His Backyard 😱", article = "A rock. He found a rock." },
+	{ tier = 2, bait = true, text = "Free Robux Glitch (NOT CLICKBAIT) 2026", article = "There is no glitch. Never trust a free Robux headline." },
+	{ tier = 2, bait = false, text = "New Study Shows Dogs Can Understand Some Words", article = "Dogs in the study reacted to familiar words even when strangers said them." },
+	{ tier = 2, bait = true, text = "He Pressed This Button… What Happened Next Will SHOCK You", article = "Nothing happened. It was a doorbell." },
+	{ tier = 2, bait = false, text = "Weather Service Expects Rain This Weekend", article = "Bring an umbrella on Saturday afternoon." },
+	{ tier = 2, bait = true, text = "Scientists HATE Him for This One Weird Brain Trick", article = "Scientists do not hate him. They have never heard of him." },
+	-- tier 3: obvious
+	{ tier = 3, bait = true, text = "🚨🚨 SKIBIDI FOUND IN REAL LIFE 🚨🚨", article = "It was a guy in a costume." },
+	{ tier = 3, bait = true, text = "CLICK HERE 4 FREE BRAIN", article = "no brain here srry" },
+	{ tier = 3, bait = true, text = "TOP 10 REASONS 2 CLICK THIS (NUMBER 7 IS CRAZY)", article = "there r no reasons" },
+	{ tier = 3, bait = false, text = "water is wet (real)", article = "yes" },
+	-- tier 4: barely words
+	{ tier = 4, bait = true, text = "🤯 CLIK", article = "👀" },
+	{ tier = 4, bait = true, text = "👀👀👀", article = "🗿" },
+	{ tier = 4, bait = true, text = "PRES", article = "🍌" },
+}
+
+---------------------------------------------------------------------
+-- LOSE PATH: Steal A / Fix A / Make A
+---------------------------------------------------------------------
+Content.StealWords = {
+	"Toaster", "Grandma", "Spoon", "Cloud", "Banana", "Fridge", "Sock", "Volcano", "Pigeon", "Bathtub",
+	"Traffic Cone", "Couch", "Moon", "Sandwich", "Lamp", "Duck", "Brain", "Rock", "Microwave", "Hat",
+}
+
+-- Tricky options at high brain cells (the dumb one is hidden)
+Content.StealTricky = {
+	{ steal = "Steal A Brain (Remastered Deluxe Edition)", fix = "Fix A Broken Economy", make = "Make A Sustainable Farm" },
+	{ steal = "Steal A Toaster: Ultimate Collector's Pack", fix = "Fix A Leaky Pipe", make = "Make A Community Garden" },
+	{ steal = "Steal A Grandma 2: The Return", fix = "Fix A Bicycle Chain", make = "Make A Science Fair Volcano" },
+}
+
+---------------------------------------------------------------------
+-- LOSE PATH: dumb internet comments (preset words only)
+-- dumb = how dumb the word is (more dumb = more cells lost, higher viral chance)
+---------------------------------------------------------------------
+Content.CommentWords = {
+	{ text = "first!!", dumb = 3 },
+	{ text = "who's watching in 2009", dumb = 4 },
+	{ text = "is this real?", dumb = 2 },
+	{ text = "I didn't watch but", dumb = 4 },
+	{ text = "I disagree", dumb = 2 },
+	{ text = "same", dumb = 3 },
+	{ text = "lol", dumb = 1 },
+	{ text = "bruh", dumb = 2 },
+	{ text = "no cap", dumb = 2 },
+	{ text = "fake", dumb = 2 },
+	{ text = "skibidi", dumb = 4 },
+	{ text = "me", dumb = 1 },
+	{ text = "🗿", dumb = 3 },
+	{ text = "nice video", dumb = 0 },
+	{ text = "thanks for sharing", dumb = 0 },
+	{ text = "can someone explain", dumb = 1 },
+	{ text = "ratio", dumb = 3 },
+	{ text = "who asked", dumb = 3 },
+}
+
+Content.Posts = {
+	{ author = "LostDogHelp", text = "Has anyone seen my dog Biscuit? He's brown and very friendly." },
+	{ author = "ScienceDaily_NPC", text = "Our new video explains how volcanoes form. (12 minutes)" },
+	{ author = "CookingWithGran", text = "Grandma's famous pancake recipe, step by step!" },
+	{ author = "TotallyRealNews", text = "Man claims he saw a sandwich fly. Watch the full video." },
+	{ author = "MathIsFun_NPC", text = "Why does 0.999... equal 1? A simple explanation." },
+	{ author = "WeatherBot_NPC", text = "Sunny tomorrow with a light breeze." },
+}
+
+Content.ReactionYoutuber = "BigReactz (parody NPC)"
+
+---------------------------------------------------------------------
+-- GAIN PATH: library passages (read 10 seconds, then answer)
+---------------------------------------------------------------------
+Content.Library = {
+	{ text = "Octopuses have three hearts and blue blood. Two hearts pump blood to the gills, and one pumps it to the rest of the body.", q = "How many hearts does an octopus have?", options = { "One", "Two", "Three", "Eight" }, answer = 3 },
+	{ text = "Light from the Sun takes about 8 minutes and 20 seconds to reach Earth, traveling roughly 150 million kilometers.", q = "About how long does sunlight take to reach Earth?", options = { "8 seconds", "8 minutes", "8 hours", "8 days" }, answer = 2 },
+	{ text = "Bananas are botanically berries, while strawberries are not, because strawberries form from a flower with many ovaries.", q = "Which of these is botanically a berry?", options = { "Strawberry", "Banana", "Raspberry", "Cherry" }, answer = 2 },
+	{ text = "The human brain has about 86 billion neurons. Connections between them matter more for intelligence than the raw number.", q = "About how many neurons does a human brain have?", options = { "86 million", "860 million", "86 billion", "86 trillion" }, answer = 3 },
+	{ text = "Water expands when it freezes, which is why ice floats. This keeps lakes from freezing solid from the bottom up.", q = "Why does ice float?", options = { "It is hollow", "Water expands when it freezes", "It is colder", "It contains air bubbles only" }, answer = 2 },
+	{ text = "Honeybees communicate the location of flowers with a 'waggle dance'. The angle of the dance shows the direction.", q = "What do bees use to show where flowers are?", options = { "Buzzing", "The waggle dance", "Colors", "Smell only" }, answer = 2 },
+	{ text = "Einstein's brain was slightly smaller than average. Scientists think how neurons are connected matters more than size.", q = "Was Einstein's brain bigger than average?", options = { "Much bigger", "Slightly bigger", "Slightly smaller", "Twice as big" }, answer = 3 },
+	{ text = "Sound travels about 343 meters per second in air, but more than four times faster in water.", q = "Where does sound travel faster?", options = { "Air", "Water", "Space", "Same everywhere" }, answer = 2 },
+}
+
+---------------------------------------------------------------------
+-- GAIN PATH: Jack B Movies fun facts (parody channel)
+---------------------------------------------------------------------
+Content.Theater = {
+	{ text = "Fun fact: a group of flamingos is called a 'flamboyance'!", q = "What is a group of flamingos called?", options = { "A flock", "A flamboyance", "A pinkening", "A parade" }, answer = 2 },
+	{ text = "Fun fact: wombat poop is cube-shaped!", q = "What shape is wombat poop?", options = { "Round", "Cube", "Star", "Triangle" }, answer = 2 },
+	{ text = "Fun fact: the Eiffel Tower can grow about 15 cm taller in summer because metal expands in heat!", q = "Why does the Eiffel Tower grow in summer?", options = { "It's repainted", "Metal expands in heat", "Wind pushes it", "It doesn't" }, answer = 2 },
+	{ text = "Fun fact: a day on Venus is longer than a year on Venus!", q = "On Venus, which is longer?", options = { "A year", "A day", "They're equal", "Neither exists" }, answer = 2 },
+	{ text = "Fun fact: J is the only letter that doesn't appear on the periodic table!", q = "Which letter is missing from the periodic table?", options = { "Q", "J", "X", "Z" }, answer = 2 },
+	{ text = "Fun fact: sharks existed before trees!", q = "What came first?", options = { "Trees", "Sharks", "Dinosaurs", "Grass" }, answer = 2 },
+}
+
+---------------------------------------------------------------------
+-- GAIN PATH: Skill Gate questions (tier 1 easy ... tier 4 hard)
+---------------------------------------------------------------------
+Content.GateQuestions = {
+	-- tier 1: math and facts
+	{ tier = 1, q = "What is 12 × 12?", options = { "124", "144", "132", "122" }, answer = 2 },
+	{ tier = 1, q = "Which planet is closest to the Sun?", options = { "Venus", "Mars", "Mercury", "Earth" }, answer = 3 },
+	{ tier = 1, q = "What is 15% of 200?", options = { "15", "20", "30", "35" }, answer = 3 },
+	{ tier = 1, q = "How many legs does a spider have?", options = { "6", "8", "10", "12" }, answer = 2 },
+	{ tier = 1, q = "What is 7 + 8 × 2?", options = { "30", "23", "22", "17" }, answer = 2 },
+	{ tier = 1, q = "Which is a mammal?", options = { "Shark", "Dolphin", "Salmon", "Octopus" }, answer = 2 },
+	-- tier 2: coding (Luau) and logic
+	{ tier = 2, q = "Luau: what does print(2 ^ 3) print?", options = { "6", "8", "9", "5" }, answer = 2 },
+	{ tier = 2, q = "Luau: local t = {5, 10, 15}  print(#t)", options = { "3", "15", "30", "1" }, answer = 1 },
+	{ tier = 2, q = "Luau: print(\"brain\" .. 2)", options = { "brain2", "brain 2", "error", "2brain" }, answer = 1 },
+	{ tier = 2, q = "Luau: for i = 1, 3 do x = i end -- what is x after?", options = { "1", "2", "3", "4" }, answer = 3 },
+	{ tier = 2, q = "Fallacy: 'Everyone plays this game, so it must be good.' Which fallacy?", options = { "Strawman", "Bandwagon", "Slippery slope", "Circular reasoning" }, answer = 2 },
+	{ tier = 2, q = "Myth check: 'We only use 10% of our brain.' Is it true?", options = { "True", "False" }, answer = 2 },
+	-- tier 3: harder coding, math, logic
+	{ tier = 3, q = "Python: print(len(\"hello\"[1:4]))", options = { "3", "4", "5", "2" }, answer = 1 },
+	{ tier = 3, q = "JavaScript: console.log(typeof [])", options = { "array", "object", "list", "undefined" }, answer = 2 },
+	{ tier = 3, q = "Solve for x: 3x + 7 = 22", options = { "3", "5", "7", "15" }, answer = 2 },
+	{ tier = 3, q = "A coin is flipped twice. Chance of two heads?", options = { "1/2", "1/3", "1/4", "1/8" }, answer = 3 },
+	{ tier = 3, q = "Fallacy: 'If we allow homework on Fridays, soon there'll be homework every second of life.'", options = { "Slippery slope", "Ad hominem", "Bandwagon", "False dilemma" }, answer = 1 },
+	{ tier = 3, q = "Myth check: 'Goldfish have a 3-second memory.'", options = { "True", "False" }, answer = 2 },
+	-- tier 4: genius
+	{ tier = 4, q = "C: int x = 7 / 2; printf(\"%d\", x);", options = { "3.5", "3", "4", "error" }, answer = 2 },
+	{ tier = 4, q = "SQL: which clause filters rows after GROUP BY?", options = { "WHERE", "HAVING", "ORDER BY", "LIMIT" }, answer = 2 },
+	{ tier = 4, q = "Derivative of x³?", options = { "3x²", "x²", "3x", "x⁴/4" }, answer = 1 },
+	{ tier = 4, q = "Time complexity of binary search?", options = { "O(n)", "O(log n)", "O(n²)", "O(1)" }, answer = 2 },
+	{ tier = 4, q = "Fermi: about how many seconds are in a year?", options = { "≈ 3 million", "≈ 30 million", "≈ 300 million", "≈ 3 billion" }, answer = 2 },
+	{ tier = 4, q = "Myth check: 'The Great Wall of China is easily visible from space.'", options = { "True", "False" }, answer = 2 },
+}
+
+---------------------------------------------------------------------
+-- GAIN PATH: glasses (flashy names = LOW brain)
+---------------------------------------------------------------------
+Content.Glasses = {
+	{ minIQ = -999, name = "Galaxy Glasses", desc = "✨🔥 MAKES YOU 1000x SMARTER 🔥✨", boost = 1.02, color = Color3.fromRGB(170, 60, 255) },
+	{ minIQ = 85, name = "GODLY Shades", desc = "🔥 LITERALLY GODLY 🔥 (not really)", boost = 1.04, color = Color3.fromRGB(255, 215, 0) },
+	{ minIQ = 92, name = "Gamer Glasses", desc = "RGB lenses. +5 FPS in real life.", boost = 1.06, color = Color3.fromRGB(0, 255, 180) },
+	{ minIQ = 100, name = "Reading Glasses", desc = "Simple glasses for reading.", boost = 1.08, color = Color3.fromRGB(60, 40, 30) },
+	{ minIQ = 110, name = "Wire-Frame Glasses", desc = "Thin metal frames. Practical.", boost = 1.1, color = Color3.fromRGB(180, 180, 190) },
+	{ minIQ = 120, name = "Jeweler's Loupe", desc = "10x magnification for fine detail.", boost = 1.12, color = Color3.fromRGB(40, 40, 40) },
+	{ minIQ = 135, name = "Lab Spectacles", desc = "Impact-rated polycarbonate, side shields.", boost = 1.14, color = Color3.fromRGB(220, 230, 240) },
+	{ minIQ = 145, name = "−2.25 SPH Progressive Lens", desc = "Anti-Reflective Polycarbonate, 1.67 Index.", boost = 1.16, color = Color3.fromRGB(200, 210, 220) },
+}
+
+---------------------------------------------------------------------
+-- GAIN PATH: jobs (based on IQ)
+---------------------------------------------------------------------
+-- Jobs are done at real places in town ("place" = workplace key in WorldService).
+-- You can take any job your IQ reaches.
+Content.Jobs = {
+	{ id = "janitor", name = "Janitor", place = "school", placeName = "the School", minIQ = -999, coinsPerMinute = 2, task = "janitor", comebackOnly = true },
+	{ id = "sweeper", name = "Street Sweeper", place = "street", placeName = "Main Street", minIQ = -999, coinsPerMinute = 3, task = "janitor", comebackOnly = true },
+	{ id = "cashier", name = "Cashier", place = "supermarket", placeName = "the Supermarket", minIQ = 75, coinsPerMinute = 4, task = "cashier" },
+	{ id = "office", name = "Office Worker", place = "office", placeName = "the Office Tower", minIQ = 90, coinsPerMinute = 6, task = "office" },
+	{ id = "teacher", name = "Teacher", place = "school", placeName = "the School", minIQ = 105, coinsPerMinute = 9, task = "teacher" },
+	{ id = "professor", name = "Professor", place = "university", placeName = "the University", minIQ = 115, coinsPerMinute = 12, task = "teacher" },
+	{ id = "doctor", name = "Doctor", place = "hospital", placeName = "the Hospital", minIQ = 120, coinsPerMinute = 14, task = "doctor" },
+	{ id = "lawyer", name = "Lawyer", place = "courthouse", placeName = "the Courthouse", minIQ = 125, coinsPerMinute = 15, task = "lawyer" },
+	{ id = "scientist", name = "Scientist", place = "lab", placeName = "the Science Lab", minIQ = 135, coinsPerMinute = 20, task = "scientist" },
+}
+
+Content.Diagnoses = {
+	{ symptoms = "Sneezing, itchy eyes, only in spring.", options = { "Allergies", "Broken leg", "Sunburn", "Hiccups" }, answer = 1 },
+	{ symptoms = "Arm hurts after falling off a skateboard; it's swollen and bent.", options = { "A cold", "Possible fracture", "Allergies", "Too much coffee" }, answer = 2 },
+	{ symptoms = "Red, painful skin after a whole day at the beach.", options = { "Sunburn", "Flu", "Food poisoning", "Fracture" }, answer = 1 },
+	{ symptoms = "Fever, sore throat, tired, many classmates have it too.", options = { "Broken arm", "Flu or a cold", "Sunburn", "Allergic to homework" }, answer = 2 },
+}
+
+Content.LabExperiments = {
+	{ q = "You mix baking soda and vinegar. What gas makes the bubbles?", options = { "Oxygen", "Carbon dioxide", "Helium", "Hydrogen" }, answer = 2 },
+	{ q = "Which is the control in an experiment?", options = { "The group you change", "The group you don't change", "The result", "The hypothesis" }, answer = 2 },
+	{ q = "Water boils at 100°C at sea level. On a high mountain it boils at…", options = { "A higher temperature", "A lower temperature", "Exactly 100°C", "It can't boil" }, answer = 2 },
+	{ q = "What does DNA stand for?", options = { "Deoxyribonucleic acid", "Dynamic nerve atom", "Dual nucleus array", "Dense neutron acid" }, answer = 1 },
+}
+
+---------------------------------------------------------------------
+-- SECRET INVENTIONS (unlocked in the Eureka cutscene by working jobs)
+---------------------------------------------------------------------
+Content.Inventions = {
+	{ key = "duck", icon = "🦆", name = "Rubber Duck 3000", desc = "Explain your problem to it. Gives +1 Skill Gate hint (max 3).", cooldown = 120 },
+	{ key = "coffee", icon = "☕", name = "Infinite Coffee Machine", desc = "Erdős mode: instantly lowers stress a lot.", cooldown = 120 },
+	{ key = "pigeons", icon = "🐦", name = "Pigeon Launcher", desc = "Launches a flock of Tesla's pigeons. Pointless. Beautiful.", cooldown = 30 },
+	{ key = "rain", icon = "🧠", name = "Brain Rain Machine", desc = "Makes it rain brains around you.", cooldown = 180 },
+	{ key = "boots", icon = "🥾", name = "Anti-Gravity Boots", desc = "Low gravity for you for 30 seconds.", cooldown = 60 },
+	{ key = "remote", icon = "📡", name = "Teleport Remote", desc = "Teleport to any place in town, instantly.", cooldown = 20 },
+	{ key = "goggles", icon = "🥽", name = "Focus Goggles", desc = "Your next 3 library or cinema answers give 1.5× brain cells.", cooldown = 300 },
+	{ key = "rewind", icon = "⏪", name = "Pocket Time Machine", desc = "Rewinds you to where you were 5 seconds ago.", cooldown = 45 },
+	{ key = "robot", icon = "🤖", name = "Robot Helper", desc = "Does a job task for you (+coins).", cooldown = 180 },
+}
+
+---------------------------------------------------------------------
+-- LOSE PATH: short videos for the scroller (animated scenes)
+---------------------------------------------------------------------
+Content.Videos = {
+	{ key = "cat", title = "cat vs table (gone wrong) 😭", creator = "@catclips", likes = "1.2M" },
+	{ key = "noodles", title = "guy eats 40 noodles in 1 bite", creator = "@noodlelord", likes = "880K" },
+	{ key = "dance", title = "dance #4,812 (everyone is doing it)", creator = "@trendzz", likes = "3.4M" },
+	{ key = "wall", title = "man vs wall (wall wins)", creator = "@wallfan", likes = "560K" },
+	{ key = "duck", title = "duck in a hat for 10 hours", creator = "@hatduck", likes = "2.1M" },
+	{ key = "waitforit", title = "WAIT FOR IT… 😱", creator = "@waitforit", likes = "4.0M" },
+	{ key = "rocket", title = "my rocket (it did not go up)", creator = "@spacekid", likes = "720K" },
+}
+
+Content.HomeworkMistakes = {
+	{ lines = { "2 + 2 = 4", "3 × 3 = 9", "10 − 4 = 5", "8 ÷ 2 = 4" }, wrong = 3 },
+	{ lines = { "The Sun is a star", "Spiders have 8 legs", "Water boils at 50°C at sea level", "Earth orbits the Sun" }, wrong = 3 },
+	{ lines = { "5 × 6 = 30", "9 + 9 = 19", "7 − 7 = 0", "100 ÷ 10 = 10" }, wrong = 2 },
+	{ lines = { "Bats are mammals", "Penguins can fly", "Frogs are amphibians", "Whales breathe air" }, wrong = 2 },
+}
+
+Content.Testimony = {
+	{ lines = { "I was home all evening.", "I watched TV until 9.", "I was at the park at 8.", "Then I went to bed." }, wrong = 3 },
+	{ lines = { "I don't own a bike.", "I rode my bike to work.", "Work starts at 9.", "I was on time." }, wrong = 2 },
+}
+
+---------------------------------------------------------------------
+-- Cash-grab start (Gain path joke shop)
+---------------------------------------------------------------------
+Content.CashGrabButtons = {
+	{ key = "iq", label = "BUY 1,000,000 IQ!!", result = "You received: 1 dunce cap. Thank you for your purchase of nothing." },
+	{ key = "mega", label = "MEGA DEAL 🔥 99% OFF", result = "99% off of nothing is still nothing. 📉" },
+	{ key = "vip", label = "ULTRA VIP (FREE)", result = "You are now ULTRA VIP. Benefits: none. Status: ultra." },
+}
+
+---------------------------------------------------------------------
+-- UPDATE 1.3: MAJOR PROJECTS (scientists invent things for the whole world)
+-- qs = research questions based on the real science (simplified)
+---------------------------------------------------------------------
+Content.Projects = {
+	{ key = "teleport", icon = "🌀", name = "Teleportation", unlock = "Teleport pads appear around town (free taxi).",
+		qs = {
+			{ q = "Real 'quantum teleportation' sends…", options = { "Objects", "Information about a quantum state", "People", "Sound" }, answer = 2 },
+			{ q = "Two particles linked so measuring one tells you about the other are…", options = { "Magnetized", "Entangled", "Frozen", "Charged" }, answer = 2 },
+		} },
+	{ key = "space", icon = "🚀", name = "Space Travel", unlock = "A rocket lands in the plaza and the Astronaut job unlocks for EVERYONE at IQ 160.",
+		qs = {
+			{ q = "A rocket pushes gas down so it goes up. That's Newton's…", options = { "1st law", "2nd law", "3rd law", "Law of gravity" }, answer = 3 },
+			{ q = "Why do rockets drop empty fuel tanks (stages)?", options = { "To look cool", "Less weight = less fuel needed", "For fun", "To make noise" }, answer = 2 },
+		} },
+	{ key = "fusion", icon = "☀️", name = "Fusion Energy", unlock = "Unlimited power: every street light glows brighter.",
+		qs = {
+			{ q = "Fusion is how the Sun makes energy by…", options = { "Burning coal", "Joining light atoms together", "Splitting heavy atoms", "Spinning" }, answer = 2 },
+			{ q = "The Sun mostly fuses which element?", options = { "Hydrogen", "Iron", "Gold", "Oxygen" }, answer = 1 },
+		} },
+	{ key = "hunger", icon = "🌾", name = "Solve World Hunger", unlock = "Free food stands in the plaza (stress relief).",
+		qs = {
+			{ q = "Growing crops in stacked indoor layers is called…", options = { "Vertical farming", "Fishing", "Mining", "Paving" }, answer = 1 },
+			{ q = "Plants make food from sunlight by…", options = { "Respiration", "Photosynthesis", "Digestion", "Fermentation" }, answer = 2 },
+		} },
+	{ key = "water", icon = "💧", name = "Clean Water for Everyone", unlock = "The fountain sparkles with clean water.",
+		qs = {
+			{ q = "Removing salt from seawater is called…", options = { "Evaporation only", "Desalination", "Condensation", "Erosion" }, answer = 2 },
+			{ q = "About how much of Earth's water is fresh water?", options = { "3%", "30%", "50%", "97%" }, answer = 1 },
+		} },
+	{ key = "cure", icon = "🧬", name = "A Cure for Cancer", unlock = "The hospital celebrates. Everyone's stress drops.",
+		qs = {
+			{ q = "Cancer is when cells…", options = { "Stop growing", "Grow out of control", "Turn into bones", "Become viruses" }, answer = 2 },
+			{ q = "Which body system fights disease?", options = { "Digestive", "Immune", "Skeletal", "Muscular" }, answer = 2 },
+		} },
+	{ key = "translator", icon = "🗣", name = "Universal Translator", unlock = "Everyone in town understands each other (NPCs speak every language).",
+		qs = {
+			{ q = "Which language has the most native speakers?", options = { "English", "Mandarin Chinese", "Spanish", "Hindi" }, answer = 2 },
+			{ q = "Translators find patterns. 'Uno, dos, tres' is…", options = { "French", "Spanish", "German", "Italian" }, answer = 2 },
+		} },
+	{ key = "superconductor", icon = "🧲", name = "Room-Temperature Superconductor", unlock = "Maglev streets: everyone walks faster.",
+		qs = {
+			{ q = "A superconductor carries electricity with…", options = { "Zero resistance", "Lots of heat", "Only at noon", "Sound" }, answer = 1 },
+			{ q = "Maglev trains float using…", options = { "Wings", "Magnets", "Balloons", "Rockets" }, answer = 2 },
+		} },
+	{ key = "battery", icon = "🔋", name = "Forever Battery", unlock = "Gadgets recharge twice as fast.",
+		qs = {
+			{ q = "Most phone batteries today are…", options = { "Lithium-ion", "Lead-acid", "Potato", "Steam" }, answer = 1 },
+			{ q = "A battery stores energy as…", options = { "Chemical energy", "Sound", "Light only", "Heat only" }, answer = 1 },
+		} },
+	{ key = "climate", icon = "🌍", name = "Fix the Climate", unlock = "Perfect sunny weather above everyone.",
+		qs = {
+			{ q = "Which gas traps the most extra heat from burning fuel?", options = { "Oxygen", "Carbon dioxide", "Helium", "Neon" }, answer = 2 },
+			{ q = "Pulling CO₂ out of the air is called…", options = { "Carbon capture", "Cloud seeding", "Recycling", "Erosion" }, answer = 1 },
+		} },
+	{ key = "robots", icon = "🤖", name = "Robot Helpers", unlock = "Friendly robots walk around the plaza.",
+		qs = {
+			{ q = "Luau: what does `for i = 1, 3 do print(i) end` print last?", options = { "1", "2", "3", "4" }, answer = 3 },
+			{ q = "A robot 'senses' distance with…", options = { "A sensor", "A battery", "A wheel", "A sticker" }, answer = 1 },
+		} },
+	{ key = "labfood", icon = "🍔", name = "Lab-Grown Food", unlock = "Free snack stands (stress relief).",
+		qs = {
+			{ q = "Lab-grown meat is grown from…", options = { "Plastic", "Animal cells", "Sand", "Plants only" }, answer = 2 },
+			{ q = "Cells grow in a lab inside a…", options = { "Bioreactor", "Microwave", "Freezer", "Toaster" }, answer = 1 },
+		} },
+}
+
+-- The secret joke project: always fails (badge after 10 tries)
+Content.TimeMachineFails = {
+	"You traveled 5 seconds into the past. Then 5 seconds passed. You're back.",
+	"You met yourself. You argued about who's the original. Nobody won.",
+	"The time machine turned into a toaster. The toast is from 1987.",
+	"It worked! …in a parallel universe where it didn't.",
+	"You went back in time and told yourself not to build the time machine. You didn't listen.",
+	"Error 404: Time not found.",
+	"You arrived in the future. It's Tuesday.",
+	"The pigeons stole a part. Tesla would understand.",
+	"You went back to the dinosaurs. A dinosaur pressed the button. You're home.",
+	"Everything exploded, then un-exploded. Net result: nothing.",
+}
+
+Content.GrantArguments = {
+	{ text = "This will help millions of people, and here's the data.", strength = 3 },
+	{ text = "It's cool, trust me.", strength = 1 },
+	{ text = "Other labs did smaller versions, so it's possible.", strength = 2 },
+	{ text = "My cousin said it would work.", strength = 1 },
+	{ text = "We have a clear plan, budget and timeline.", strength = 3 },
+	{ text = "Pigeons approve.", strength = 1 },
+}
+
+Content.PeerReview = {
+	{ lines = { "We tested it 100 times.", "It worked every time.", "So it must work forever, no matter what." }, wrong = 3 },
+	{ lines = { "We measured the results carefully.", "One sample was enough to be sure.", "We shared our data." }, wrong = 2 },
+	{ lines = { "Our control group didn't get the change.", "Our test group did.", "The control group proves the test group wrong because it's bigger." }, wrong = 3 },
+}
+
+---------------------------------------------------------------------
+-- UPDATE 1.4: SPACE AND SECRETS
+---------------------------------------------------------------------
+-- Space projects (only Astronauts, only at the Space Lab on the Moon)
+Content.SpaceProjects = {
+	{ key = "spacefarm", icon = "🥬", name = "Space Farming", space = true, unlock = "Moon lettuce grows in the Space Lab garden.",
+		qs = {
+			{ q = "Plants grown without soil, roots in nutrient water, is called…", options = { "Hydroponics", "Photosynthesis", "Composting", "Irrigation" }, answer = 1 },
+			{ q = "Plants on the ISS can't tell up from down by gravity. What do roots and shoots follow instead?", options = { "Sound", "Light and water", "Magnets", "Nothing, they die" }, answer = 2 },
+		} },
+	{ key = "asteroid", icon = "☄️", name = "Asteroid Mining", space = true, unlock = "A shiny asteroid parks next to the Moon base.",
+		qs = {
+			{ q = "Many asteroids are rich in which metal?", options = { "Gold only", "Iron and nickel", "Aluminium foil", "Lead" }, answer = 2 },
+			{ q = "Where is the main asteroid belt?", options = { "Between Earth and the Moon", "Between Mars and Jupiter", "Past Pluto", "Inside the Sun" }, answer = 2 },
+		} },
+	{ key = "marshab", icon = "🔴", name = "Mars Habitat", space = true, unlock = "A Mars dome appears on the horizon of the Moon.",
+		qs = {
+			{ q = "Mars' air is mostly…", options = { "Oxygen", "Carbon dioxide", "Nitrogen", "Helium" }, answer = 2 },
+			{ q = "A habitat on Mars needs thick walls or soil on top mainly to block…", options = { "Wind", "Radiation", "Noise", "Rain" }, answer = 2 },
+		} },
+}
+
+-- Space Lab gates (orbital mechanics + physics)
+Content.SpaceGates = {
+	{ q = "Astronauts on the ISS float because…", options = { "There's no gravity in space", "They're falling around Earth all the time (free fall)", "Magnets", "The ISS is too high for gravity" }, answer = 2 },
+	{ q = "To catch up with something AHEAD of you in the same orbit, you first…", options = { "Speed up", "Slow down (drop to a lower, faster orbit)", "Stop", "Turn around" }, answer = 2 },
+	{ q = "Gravity on the Moon is about…", options = { "The same as Earth", "1/6 of Earth's", "Twice Earth's", "Zero" }, answer = 2 },
+	{ q = "The ISS goes around Earth about every…", options = { "90 minutes", "24 hours", "1 week", "1 year" }, answer = 1 },
+	{ q = "Why is there no sound in space?", options = { "It's too cold", "Sound needs air (or something) to travel through", "Space is too big", "Aliens absorb it" }, answer = 2 },
+	{ q = "A higher orbit is…", options = { "Faster", "Slower", "The same speed", "Impossible" }, answer = 2 },
+	{ q = "Light from the Sun reaches Earth in about…", options = { "8 seconds", "8 minutes", "8 hours", "8 days" }, answer = 2 },
+	{ q = "Escape velocity from Earth is about…", options = { "11 km per second", "11 km per hour", "1,100 km per second", "11 m per second" }, answer = 1 },
+}
+
+-- Astronaut training (real minigames, not quizzes)
+Content.AstroTraining = {
+	{ key = "dock", icon = "🛰", name = "Docking", desc = "Tap DOCK when the capsule lines up with the port. Too early or late = bonk." },
+	{ key = "oxygen", icon = "🫧", name = "Oxygen", desc = "Keep the oxygen needle in the green zone for 15 seconds. Tap to breathe in." },
+	{ key = "zerog", icon = "🧑‍🚀", name = "Zero-G", desc = "Push off in the right direction to grab each handle. Space has no brakes." },
+}
+
+-- World's Smartest cutscene (200 IQ)
+Content.SmartestHeadlines = {
+	"THE WORLD'S SMARTEST PERSON",
+	"THE WORLD'S MOST INFLUENTIAL PERSON",
+	"SCIENTISTS: \"WE HAVE QUESTIONS\"",
+	"LOCAL GENIUS CORRECTS THE ENCYCLOPEDIA, ENCYCLOPEDIA SAYS THANK YOU",
+}
+
+-- Retired genius: NPCs ask you random questions
+Content.RetiredQuestions = {
+	{ who = "🧒 Kid", q = "Why is the sky blue?", options = { "Blue light scatters more in air", "It reflects the ocean", "Paint" }, answer = 1 },
+	{ who = "👵 Grandma", q = "Is it true we only use 10% of our brain?", options = { "Yes", "No, we use all of it", "Only on Mondays" }, answer = 2 },
+	{ who = "🧑‍🍳 Chef", q = "Does salt make water boil faster?", options = { "A lot faster", "Barely, it actually raises the boiling point a tiny bit", "It freezes it" }, answer = 2 },
+	{ who = "🐦 A pigeon", q = "Coo?", options = { "Coo.", "Coo coo.", "Absolutely not." }, answer = 2 },
+	{ who = "🧑‍🎓 Student", q = "Which is bigger, 0.5 or 0.45?", options = { "0.45", "0.5", "Same" }, answer = 2 },
+	{ who = "🧔 Guy at the bus stop", q = "Do goldfish really have a 3 second memory?", options = { "Yes", "No, they remember for months", "Goldfish? Where?" }, answer = 2 },
+	{ who = "👮 Officer", q = "Can lightning strike the same place twice?", options = { "Never", "Yes, tall things get hit a lot", "Only in movies" }, answer = 2 },
+}
+
+-- The Endless Castle: our own rhyme (one line per turn)
+Content.CastleLeft = {
+	"The candles drip and shadows creep, go LEFT where the old ghosts sleep.",
+	"Count the stones and count again, the LEFT hall remembers when.",
+	"A painting winks with one wet eye: go LEFT, and don't ask why.",
+	"Hear the hum of the rusty knight? He says LEFT. (He's usually right.)",
+}
+Content.CastleRight = {
+	"The armor creaks, the floorboards bite, the way ahead is to the RIGHT.",
+	"Follow the drip of the leaky pipe, go RIGHT, believe the hype.",
+	"The carpet's red, the curtains white, the brave ones always turn RIGHT.",
+	"A chicken clucks with all its might: \"BAWK!\" (that means RIGHT).",
+}
+Content.CastleEnd = "And when you're lost and feeling small, knock on the old brick wall."
+Content.CastleWrong = {
+	"This hallway looks… familiar.",
+	"You've been here before. Haven't you?",
+	"The candles are laughing at you.",
+	"Wrong turn. The castle resets. The castle always resets.",
+}
+
+return Content

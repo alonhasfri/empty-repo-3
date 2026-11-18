@@ -1,0 +1,791 @@
+-- GainService: everything on the Gain path (library, Jack B Movies,
+-- Skill Gates, jobs, genius habits, the cash-grab joke shop).
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Shared = ReplicatedStorage.Shared
+local Config = require(Shared.Config)
+local Content = require(Shared.Content)
+local Brain = require(Shared.Brain)
+
+local Net = require(script.Parent.Net)
+local DataService = require(script.Parent.DataService)
+local BrainService = require(script.Parent.BrainService)
+local WorldService = require(script.Parent.WorldService)
+local ProjectService = require(script.Parent.ProjectService)
+
+local GainService = {}
+
+local sessions = {} -- [player] = { library, theater, gate, gateCooldown, job, nap, pigeons }
+
+local function s(player)
+	local x = sessions[player]
+	if not x then
+		x = {}
+		sessions[player] = x
+	end
+	return x
+end
+
+local function onGain(player): boolean
+	local data = DataService.get(player)
+	return data ~= nil and data.path == "Gain"
+end
+
+local function guard(player, feature: string, allowFrozen: boolean?)
+	if not onGain(player) then
+		return { ok = false, msg = "This is for the Gain path." }
+	end
+	if not BrainService.feature(feature) then
+		return { ok = false, msg = "This is turned off right now." }
+	end
+	local blocked = BrainService.blocked(player)
+	if blocked and not (allowFrozen and string.find(blocked, "stressed")) then
+		return { ok = false, msg = blocked }
+	end
+	return nil
+end
+
+local function pick(list)
+	return list[math.random(1, #list)]
+end
+
+---------------------------------------------------------------------
+-- Library and Jack B Movies
+---------------------------------------------------------------------
+Net.on("library_get", function(player)
+	local bad = guard(player, "Library")
+	if bad then
+		return bad
+	end
+	local item = pick(Content.Library)
+	s(player).library = { item = item, issued = os.clock() }
+	return { ok = true, text = item.text, q = item.q, options = item.options, wait = Config.ReadingSeconds }
+end)
+
+Net.on("library_answer", function(player, d)
+	local sess = s(player).library
+	if not sess then
+		return { ok = false }
+	end
+	if os.clock() - sess.issued < Config.ReadingSeconds - 0.5 then
+		return { ok = false, msg = "Read it first! (10 seconds)" }
+	end
+	s(player).library = nil
+	local correct = tonumber(d.choice) == sess.item.answer
+	if correct then
+		local data = DataService.get(player)
+		local points = 2
+		if data.focusCharges and data.focusCharges > 0 then
+			data.focusCharges -= 1
+			points = 3
+		end
+		BrainService.gain(player, points, "library")
+		BrainService.stress(player, 2)
+		BrainService.narrate(player, "gained")
+	else
+		BrainService.stress(player, 4)
+	end
+	return { ok = true, correct = correct, answer = sess.item.answer }
+end)
+
+Net.on("theater_get", function(player)
+	local bad = guard(player, "Theater")
+	if bad then
+		return bad
+	end
+	local item = pick(Content.Theater)
+	s(player).theater = { item = item, issued = os.clock() }
+	return { ok = true, text = item.text, q = item.q, options = item.options, wait = 6 }
+end)
+
+Net.on("theater_answer", function(player, d)
+	local sess = s(player).theater
+	if not sess then
+		return { ok = false }
+	end
+	if os.clock() - sess.issued < 5.5 then
+		return { ok = false, msg = "Watch the video first!" }
+	end
+	s(player).theater = nil
+	local correct = tonumber(d.choice) == sess.item.answer
+	if correct then
+		local data = DataService.get(player)
+		local points = 2
+		if data.focusCharges and data.focusCharges > 0 then
+			data.focusCharges -= 1
+			points = 3
+		end
+		BrainService.gain(player, points, "theater")
+		BrainService.stress(player, 2)
+	else
+		BrainService.stress(player, 3)
+	end
+	return { ok = true, correct = correct, answer = sess.item.answer }
+end)
+
+---------------------------------------------------------------------
+-- Skill Gates
+---------------------------------------------------------------------
+Net.on("gate_status", function(player)
+	local gate = BrainService.nextGate(player)
+	local cd = s(player).gateCooldown or 0
+	return {
+		ok = true,
+		gate = gate and gate.name or nil,
+		iq = gate and gate.iq or nil,
+		atGate = BrainService.atGate(player),
+		cooldown = math.max(0, math.ceil(cd - os.clock())),
+	}
+end)
+
+Net.on("gate_start", function(player)
+	local bad = guard(player, "Gates")
+	if bad then
+		return bad
+	end
+	local gate = BrainService.nextGate(player)
+	if not gate then
+		return { ok = false, msg = "No gate ahead. You've passed them all (for now)!" }
+	end
+	if not BrainService.atGate(player) then
+		return { ok = false, msg = "Reach " .. gate.iq .. " IQ first. Keep learning!" }
+	end
+	local sess = s(player)
+	if sess.gateCooldown and os.clock() < sess.gateCooldown then
+		return { ok = false, msg = "Cool down for " .. math.ceil(sess.gateCooldown - os.clock()) .. " more seconds." }
+	end
+	local pool = {}
+	for i, q in ipairs(Content.GateQuestions) do
+		if q.tier == gate.tier then
+			table.insert(pool, i)
+		end
+	end
+	for i = #pool, 2, -1 do
+		local j = math.random(1, i)
+		pool[i], pool[j] = pool[j], pool[i]
+	end
+	local chosen = {}
+	for i = 1, math.min(Config.GateQuestionCount, #pool) do
+		chosen[i] = pool[i]
+	end
+	local data = DataService.get(player)
+	local seconds = Config.GateSeconds * (data.settings.extraTime and Config.GateExtraTimeMultiplier or 1)
+	local hints = Config.GateHints + (data.perks.ExtraHints and 2 or 0) + (data.bonusHints or 0)
+	data.bonusHints = 0
+	sess.gate = { gate = gate, questions = chosen, started = os.clock(), seconds = seconds, hints = hints }
+	BrainService.stress(player, 10)
+	local out = {}
+	for i, qi in ipairs(chosen) do
+		local q = Content.GateQuestions[qi]
+		out[i] = { q = q.q, options = q.options }
+	end
+	return { ok = true, name = gate.name, questions = out, seconds = seconds, hints = hints }
+end)
+
+Net.on("gate_hint", function(player, d)
+	local sess = s(player).gate
+	if not sess or sess.hints <= 0 then
+		return { ok = false, msg = "No hints left." }
+	end
+	local qi = sess.questions[tonumber(d.index) or 0]
+	if not qi then
+		return { ok = false }
+	end
+	local q = Content.GateQuestions[qi]
+	local wrong = {}
+	for i = 1, #q.options do
+		if i ~= q.answer then
+			table.insert(wrong, i)
+		end
+	end
+	sess.hints -= 1
+	BrainService.lose(player, Config.HintCostFraction / 0.002, "hint")
+	return { ok = true, remove = wrong[math.random(1, #wrong)], hints = sess.hints }
+end)
+
+Net.on("gate_submit", function(player, d)
+	local sess = s(player)
+	local g = sess.gate
+	if not g then
+		return { ok = false }
+	end
+	sess.gate = nil
+	local data = DataService.get(player)
+	local inTime = os.clock() - g.started <= g.seconds + 3
+	local correctCount = 0
+	if typeof(d.answers) == "table" then
+		for i, qi in ipairs(g.questions) do
+			if tonumber(d.answers[i]) == Content.GateQuestions[qi].answer then
+				correctCount += 1
+			end
+		end
+	end
+	if inTime and correctCount == #g.questions then
+		data.gatesPassed[g.gate.id] = true
+		BrainService.resetGateNotice(player)
+		local badgeKey = "Gate" .. string.sub(g.gate.id, 5)
+		BrainService.awardBadge(player, badgeKey)
+		BrainService.narrate(player, "gatePass")
+		BrainService.push(player)
+		return { ok = true, passed = true, correct = correctCount }
+	end
+	data.stats.gatesFailed += 1
+	sess.gateCooldown = os.clock() + Config.GateFailCooldown
+	BrainService.stress(player, 15)
+	BrainService.narrate(player, "gateFail")
+	return { ok = true, passed = false, correct = correctCount, total = #g.questions, late = not inTime }
+end)
+
+---------------------------------------------------------------------
+-- Jobs (done at real workplaces in town)
+---------------------------------------------------------------------
+local function jobById(id)
+	for _, j in ipairs(Content.Jobs) do
+		if j.id == id then
+			return j
+		end
+	end
+	return nil
+end
+
+local function jobAvailable(data, job): boolean
+	if job.comebackOnly and not data.comeback then
+		return false
+	end
+	return Brain.iq(data.cells) >= job.minIQ
+end
+
+local function atWork(player, job): boolean
+	local pos = WorldService.Workplaces[job.place]
+	return pos ~= nil and WorldService.near(player, pos, Config.WorkRadius)
+end
+
+Net.on("jobs_list", function(player)
+	local bad = guard(player, "Jobs")
+	if bad then
+		return bad
+	end
+	local data = DataService.get(player)
+	local list = {}
+	for _, j in ipairs(Content.Jobs) do
+		if not j.comebackOnly or data.comeback then
+			table.insert(list, {
+				id = j.id,
+				name = j.name,
+				coins = j.coinsPerMinute,
+				available = jobAvailable(data, j),
+				current = data.job == j.id,
+				minIQ = j.minIQ,
+				placeName = j.placeName,
+			})
+		end
+	end
+	local current = jobById(data.job)
+	return {
+		ok = true,
+		jobs = list,
+		atWork = current ~= nil and atWork(player, current),
+		workplace = current and current.placeName or nil,
+		idea = data.ideaMeter,
+		ideaMax = Config.EurekaTasks,
+	}
+end)
+
+Net.on("job_take", function(player, d)
+	local data = DataService.get(player)
+	local job = jobById(d.id)
+	if not data or not job or not onGain(player) or not jobAvailable(data, job) then
+		return { ok = false, msg = "You can't take that job right now." }
+	end
+	data.job = job.id
+	BrainService.awardBadge(player, "FirstJob")
+	BrainService.push(player)
+	Net.send(player, "workMarker", { pos = WorldService.Workplaces[job.place], name = job.placeName })
+	return { ok = true, msg = "You're now a " .. job.name .. "! Go to " .. job.placeName .. " to work. 🚕" }
+end)
+
+-- Taxi: quick travel around town (both paths)
+Net.on("taxi", function(player, d)
+	local sess = s(player)
+	-- standing on a 🌀 teleport pad (Teleportation invention) = free, instant taxi
+	local onPad = false
+	if d.free then
+		local inv = workspace:FindFirstChild("Inventions")
+		for _, pad in ipairs(inv and inv:GetChildren() or {}) do
+			if pad.Name == "TeleportPad" and WorldService.near(player, pad.Position, 14) then
+				onPad = true
+			end
+		end
+	end
+	local tdata = DataService.get(player)
+	if onPad or (tdata and tdata.castleMap) then
+		sess.taxi = nil -- teleport pad, or the Endless Castle Map (1.4): no waiting
+	end
+	if sess.taxi and os.clock() < sess.taxi then
+		return { ok = false, msg = "The taxi is on its way… " .. math.ceil(sess.taxi - os.clock()) .. "s" }
+	end
+	local key = tostring(d.key)
+	if key == "work" then
+		local data = DataService.get(player)
+		local job = data and jobById(data.job)
+		if not job then
+			return { ok = false, msg = "You don't have a job yet." }
+		end
+		local pos = WorldService.Workplaces[job.place]
+		if player.Character and pos then
+			player.Character:PivotTo(CFrame.new(pos + Vector3.new(0, 3, -8)))
+		end
+	elseif WorldService.Spots[key] then
+		WorldService.teleport(player, key)
+	else
+		return { ok = false, msg = "Unknown place." }
+	end
+	sess.taxi = os.clock() + Config.TaxiCooldown
+	return { ok = true, msg = "🚕 Here you go!" }
+end)
+
+Net.on("places", function(player)
+	local list, extent = WorldService.placeList()
+	local me = nil
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if root then
+		me = { x = root.Position.X, z = root.Position.Z }
+	end
+	return { ok = true, places = list, extent = extent, me = me }
+end)
+
+local function shuffledOptions(correctText, wrongTexts)
+	local options = { correctText }
+	for _, w in ipairs(wrongTexts) do
+		table.insert(options, w)
+	end
+	local answer = 1
+	for i = #options, 2, -1 do
+		local j = math.random(1, i)
+		options[i], options[j] = options[j], options[i]
+		if answer == i then
+			answer = j
+		elseif answer == j then
+			answer = i
+		end
+	end
+	return options, answer
+end
+
+local function makeTask(job)
+	local t = { kind = job.task }
+	if job.task == "cashier" then
+		local price = math.random(3, 18)
+		local paid = 20
+		local change = paid - price
+		t.title = "🛒 Cashier"
+		t.prompt = "The item costs $" .. price .. ". The customer pays $" .. paid .. ". How much change?"
+		t.options, t.answer = shuffledOptions("$" .. change, { "$" .. (change + 1), "$" .. (change - 1), "$" .. (change + 2) })
+	elseif job.task == "office" then
+		local words = { "Banana", "Apple", "Cherry", "Mango", "Kiwi", "Grape", "Lemon", "Peach" }
+		local chosen = {}
+		for i = 1, 4 do
+			chosen[i] = table.remove(words, math.random(1, #words))
+		end
+		local first = 1
+		for i = 2, 4 do
+			if chosen[i] < chosen[first] then
+				first = i
+			end
+		end
+		t.title = "🏢 Sort the files"
+		t.prompt = "Which file comes FIRST alphabetically?"
+		t.options = chosen
+		t.answer = first
+	elseif job.task == "teacher" then
+		local hw = pick(Content.HomeworkMistakes)
+		t.title = "📝 Grade the homework"
+		t.prompt = "Tap the WRONG line."
+		t.options = hw.lines
+		t.answer = hw.wrong
+	elseif job.task == "lawyer" then
+		local w = pick(Content.Testimony)
+		t.title = "⚖️ Cross-examination"
+		t.prompt = "Find the contradiction in the witness's story."
+		t.options = w.lines
+		t.answer = w.wrong
+	elseif job.task == "doctor" then
+		local dx = pick(Content.Diagnoses)
+		t.title = "🩺 Diagnose the patient"
+		t.prompt = dx.symptoms
+		t.options = dx.options
+		t.answer = dx.answer
+	elseif job.task == "scientist" then
+		local ex = pick(Content.LabExperiments)
+		t.title = "🔬 Run the experiment"
+		t.prompt = ex.q
+		t.options = ex.options
+		t.answer = ex.answer
+	else -- janitor / sweeper
+		local spot = math.random(1, 4)
+		t.title = "🧹 Clean up"
+		t.prompt = "Tap the dirty spot!"
+		t.options = { "✨", "✨", "✨", "✨" }
+		t.options[spot] = "🟫 dirty"
+		t.answer = spot
+	end
+	return t
+end
+
+Net.on("job_task", function(player)
+	local bad = guard(player, "Jobs")
+	if bad then
+		return bad
+	end
+	local data = DataService.get(player)
+	local job = jobById(data.job)
+	if not job then
+		return { ok = false, msg = "Get a job at the Job Center first." }
+	end
+	if not atWork(player, job) then
+		Net.send(player, "workMarker", { pos = WorldService.Workplaces[job.place], name = job.placeName })
+		return { ok = false, msg = "You're not at work! Go to " .. job.placeName .. " (or take the 🚕 taxi).", notAtWork = true }
+	end
+	local t = makeTask(job)
+	s(player).job = t
+	return { ok = true, title = t.title, prompt = t.prompt, options = t.options, kind = t.kind }
+end)
+
+local function eureka(player, data)
+	local locked = {}
+	for _, inv in ipairs(Content.Inventions) do
+		if not data.inventions[inv.key] then
+			table.insert(locked, inv)
+		end
+	end
+	if #locked == 0 then
+		data.coins += 100
+		BrainService.toast(player, "💡 Eureka! …but you've invented everything already. +100 coins instead.", "LevelUp")
+		return
+	end
+	for i = #locked, 2, -1 do
+		local j = math.random(1, i)
+		locked[i], locked[j] = locked[j], locked[i]
+	end
+	local choices = {}
+	for i = 1, math.min(3, #locked) do
+		choices[i] = locked[i].key
+	end
+	data.eurekaChoices = choices
+	local cards = {}
+	for i, key in ipairs(choices) do
+		for _, inv in ipairs(Content.Inventions) do
+			if inv.key == key then
+				cards[i] = { key = inv.key, icon = inv.icon, name = inv.name, desc = inv.desc }
+			end
+		end
+	end
+	Net.send(player, "eureka", { choices = cards })
+end
+
+local function finishTask(player, data, job, correct)
+	if correct then
+		data.coins += job.coinsPerMinute * 2
+		data.jobTasksDone += 1
+		BrainService.gain(player, 0.5, "job")
+		BrainService.stress(player, 4)
+		data.ideaMeter += 1
+		if data.ideaMeter >= Config.EurekaTasks then
+			data.ideaMeter = 0
+			eureka(player, data)
+		end
+	else
+		BrainService.stress(player, 4)
+	end
+	BrainService.push(player)
+end
+
+Net.on("job_answer", function(player, d)
+	local t = s(player).job
+	if not t then
+		return { ok = false }
+	end
+	s(player).job = nil
+	local data = DataService.get(player)
+	local job = jobById(data.job)
+	if not job then
+		return { ok = false }
+	end
+	local correct = tonumber(d.choice) == t.answer
+	finishTask(player, data, job, correct)
+	return { ok = true, correct = correct, answer = t.answer, idea = data.ideaMeter, ideaMax = Config.EurekaTasks }
+end)
+
+-- Re-offer a Eureka choice if the player left during the cutscene
+Net.on("eureka_pending", function(player)
+	local data = DataService.get(player)
+	if data and data.eurekaChoices then
+		local cards = {}
+		for i, key in ipairs(data.eurekaChoices) do
+			for _, inv in ipairs(Content.Inventions) do
+				if inv.key == key then
+					cards[i] = { key = inv.key, icon = inv.icon, name = inv.name, desc = inv.desc }
+				end
+			end
+		end
+		return { ok = true, choices = cards }
+	end
+	return { ok = false }
+end)
+
+---------------------------------------------------------------------
+-- Secret inventions
+---------------------------------------------------------------------
+local function inventionByKey(key)
+	for _, inv in ipairs(Content.Inventions) do
+		if inv.key == key then
+			return inv
+		end
+	end
+	return nil
+end
+
+Net.on("invention_choose", function(player, d)
+	local data = DataService.get(player)
+	if not data or not data.eurekaChoices or not table.find(data.eurekaChoices, d.key) then
+		return { ok = false }
+	end
+	local inv = inventionByKey(d.key)
+	data.eurekaChoices = nil
+	data.inventions[inv.key] = true
+	BrainService.awardBadge(player, "Eureka")
+	local count = 0
+	for _ in pairs(data.inventions) do
+		count += 1
+	end
+	if count >= #Content.Inventions then
+		BrainService.awardBadge(player, "AllInventions")
+	end
+	if inv.key == "duck" then
+		player:SetAttribute("DuckPet", true)
+	end
+	BrainService.push(player)
+	return { ok = true, icon = inv.icon, name = inv.name, desc = inv.desc }
+end)
+
+Net.on("inventions_list", function(player)
+	local data = DataService.get(player)
+	if not data then
+		return { ok = false }
+	end
+	local sess = s(player)
+	sess.cooldowns = sess.cooldowns or {}
+	local list = {}
+	for _, inv in ipairs(Content.Inventions) do
+		local owned = data.inventions[inv.key] == true
+		table.insert(list, {
+			key = inv.key,
+			icon = owned and inv.icon or "❓",
+			name = owned and inv.name or "??? (secret)",
+			desc = owned and inv.desc or "Work jobs to fill your idea meter and unlock secret inventions.",
+			owned = owned,
+			cooldown = math.max(0, math.ceil((sess.cooldowns[inv.key] or 0) - os.clock())),
+		})
+	end
+	return { ok = true, inventions = list, idea = data.ideaMeter, ideaMax = Config.EurekaTasks, places = WorldService.Places }
+end)
+
+Net.on("invention_use", function(player, d)
+	local data = DataService.get(player)
+	local inv = inventionByKey(d.key)
+	if not data or not inv or not data.inventions[inv.key] then
+		return { ok = false, msg = "You don't own that invention." }
+	end
+	local sess = s(player)
+	sess.cooldowns = sess.cooldowns or {}
+	if (sess.cooldowns[inv.key] or 0) > os.clock() then
+		return { ok = false, msg = "Recharging… " .. math.ceil(sess.cooldowns[inv.key] - os.clock()) .. "s" }
+	end
+	local char = player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	local msg
+	if inv.key == "duck" then
+		data.bonusHints = math.min(3, (data.bonusHints or 0) + 1)
+		msg = "🦆 *quack* You explained your problem out loud. +1 Skill Gate hint (" .. data.bonusHints .. "/3)."
+	elseif inv.key == "coffee" then
+		if data.path ~= "Gain" then
+			return { ok = false, msg = "Coffee only helps on the Gain path." }
+		end
+		BrainService.stress(player, -40)
+		msg = "☕ Infinite coffee! Stress way down."
+	elseif inv.key == "pigeons" then
+		if root then
+			WorldService.pigeonBurst(root.Position)
+		end
+		msg = "🐦 PIGEONS LAUNCHED."
+	elseif inv.key == "rain" then
+		if root then
+			WorldService.brainRain(10, root.Position)
+		end
+		msg = "🧠 It's raining brains!"
+	elseif inv.key == "boots" then
+		Net.send(player, "lowGravity", { seconds = 30 })
+		msg = "🥾 Anti-gravity ON for 30 seconds."
+	elseif inv.key == "remote" then
+		local key = tostring(d.place)
+		if not WorldService.Spots[key] then
+			return { ok = false, msg = "Pick a place." }
+		end
+		WorldService.teleport(player, key)
+		msg = "📡 Bzzzt! Teleported."
+	elseif inv.key == "goggles" then
+		data.focusCharges = 3
+		msg = "🥽 Focus! Your next 3 library/cinema answers give 1.5× brain cells."
+	elseif inv.key == "rewind" then
+		local hist = sess.history
+		if char and hist and #hist >= 5 then
+			char:PivotTo(hist[#hist - 4])
+		end
+		msg = "⏪ Rewound 5 seconds."
+	elseif inv.key == "robot" then
+		local job = jobById(data.job)
+		if not job then
+			return { ok = false, msg = "The robot needs you to have a job first." }
+		end
+		finishTask(player, data, job, true)
+		msg = "🤖 Beep boop. Job task done. +" .. (job.coinsPerMinute * 2) .. " coins."
+	end
+	sess.cooldowns[inv.key] = os.clock() + inv.cooldown * (ProjectService.isActive("battery") and 0.5 or 1)
+	return { ok = true, msg = msg }
+end)
+
+---------------------------------------------------------------------
+-- Genius habits (lower stress)
+---------------------------------------------------------------------
+Net.on("habit_coffee", function(player, d)
+	local bad = guard(player, "Habits", true)
+	if bad then
+		return bad
+	end
+	local count = tonumber(d.count) or 0
+	if count == 60 then
+		BrainService.stress(player, -35)
+		BrainService.awardBadge(player, "Coffee60")
+		return { ok = true, msg = "Exactly 60 beans. Beethoven nods approvingly. ☕ Stress down!" }
+	end
+	return { ok = true, msg = "You counted " .. count .. ". Beethoven counted EXACTLY 60. No stress relief." }
+end)
+
+Net.on("habit_nap_start", function(player)
+	local bad = guard(player, "Habits", true)
+	if bad then
+		return bad
+	end
+	local delay = math.random(30, 80) / 10
+	s(player).nap = { issued = os.clock(), delay = delay }
+	return { ok = true, delay = delay }
+end)
+
+Net.on("habit_nap_tap", function(player)
+	local nap = s(player).nap
+	if not nap then
+		return { ok = false }
+	end
+	s(player).nap = nil
+	local elapsed = os.clock() - nap.issued
+	if elapsed < nap.delay - 0.25 then
+		return { ok = true, msg = "Too early! You didn't even fall asleep." }
+	elseif elapsed > nap.delay + 1.5 then
+		return { ok = true, msg = "You overslept! Edison is disappointed." }
+	end
+	BrainService.stress(player, -30)
+	return { ok = true, msg = "Perfect power nap! 😴 Stress down!" }
+end)
+
+Net.on("habit_pigeons", function(player)
+	local bad = guard(player, "Habits", true)
+	if bad then
+		return bad
+	end
+	local sess = s(player)
+	if sess.pigeons and os.clock() < sess.pigeons then
+		return { ok = true, msg = "The pigeons are full. Come back in " .. math.ceil(sess.pigeons - os.clock()) .. "s." }
+	end
+	sess.pigeons = os.clock() + 45
+	BrainService.stress(player, -15)
+	return { ok = true, msg = "🐦 The pigeons love you. Tesla would be proud. Stress down!" }
+end)
+
+---------------------------------------------------------------------
+-- Cash-grab joke shop and the Perfectly Average guy
+---------------------------------------------------------------------
+function GainService.cashGrab(player, btn)
+	local data = DataService.get(player)
+	if not data then
+		return
+	end
+	if btn.key == "iq" then
+		data.perks.DunceCap = true
+		BrainService.applyCharacter(player)
+	end
+	BrainService.toast(player, btn.result, "SadTrombone")
+	if Brain.artTier(data.cells) == "cashgrab" then
+		BrainService.say(player, "Imagine falling for a BUY NOW button. 💀")
+	else
+		BrainService.say(player, "You can read the disclaimer now. It says the button does nothing.")
+	end
+end
+
+function GainService.averageGuy(player)
+	BrainService.awardBadge(player, "PerfectlyAverage")
+	BrainService.toast(player, "\"I have exactly 86,000,000,000 brain cells. Not one more. Not one less.\"", "NotificationPing")
+end
+
+---------------------------------------------------------------------
+-- Loops
+---------------------------------------------------------------------
+function GainService.reset(player)
+	sessions[player] = nil
+end
+
+function GainService.start()
+	Players.PlayerRemoving:Connect(function(p)
+		sessions[p] = nil
+	end)
+	-- position history for the Pocket Time Machine
+	task.spawn(function()
+		while true do
+			task.wait(1)
+			for _, player in ipairs(Players:GetPlayers()) do
+				local char = player.Character
+				local root = char and char:FindFirstChild("HumanoidRootPart")
+				if root then
+					local sess = s(player)
+					sess.history = sess.history or {}
+					table.insert(sess.history, root.CFrame)
+					if #sess.history > 10 then
+						table.remove(sess.history, 1)
+					end
+				end
+			end
+		end
+	end)
+	-- passive job pay + slow stress recovery
+	task.spawn(function()
+		while true do
+			task.wait(60)
+			for _, player in ipairs(Players:GetPlayers()) do
+				local data = DataService.get(player)
+				if data and data.path == "Gain" then
+					local job = jobById(data.job)
+					if job then
+						data.coins += job.coinsPerMinute
+						BrainService.push(player)
+					end
+					if data.stress > 0 then
+						BrainService.stress(player, -3)
+					end
+				end
+			end
+		end
+	end)
+end
+
+return GainService
