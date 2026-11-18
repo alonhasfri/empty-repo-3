@@ -156,6 +156,7 @@ button:active{transform:scale(.94)}
 #loading .sp{font-size:70px;animation:spinB 1.2s linear infinite}@keyframes spinB{to{transform:rotate(360deg)}}
 #loading .t{font:700 22px var(--display)}#loading .f{font:500 14px var(--body);max-width:420px;opacity:.85;line-height:1.4}
 body.photo #counter,body.photo #chips,body.photo #corner,body.photo #bottom,body.photo #enterBtn,body.photo #hint,body.photo #toasts,body.photo #hintHelp,body.photo #jumpBtn{display:none!important}
+#photoMe{position:absolute;right:max(66px,calc(env(safe-area-inset-right,0px) + 66px));top:calc(10px + env(safe-area-inset-top,0px));z-index:60;height:44px;padding:0 14px;border-radius:22px;background:rgba(0,0,0,.6);font:700 14px var(--body)}
 #photoX{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(10px + env(safe-area-inset-top,0px));z-index:60;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.6);font-size:18px;display:none}body.photo #photoX{display:block}
 
 /* 1.6 + interactivity */
@@ -214,6 +215,14 @@ body.photo #emoBtn,body.photo #actBtn{display:none!important}
 .cav{font-size:56px}.call b{font:800 22px var(--body)}.call small{opacity:.7}.crow{display:flex;gap:14px;justify-content:center;margin-top:12px}.crow button{width:70px;height:70px;border-radius:50%;font:700 13px var(--body)}.cno{background:#e5484d}.cyes{background:#2fbf71;animation:pulse .8s infinite}
 .ah{font:600 26px "Cormorant Garamond",serif;max-width:520px}
 .credits{max-width:520px;animation:credUp 1s ease-out}.credits h2{font:700 30px var(--display);color:#ffd84a}.credits p{opacity:.9;line-height:1.5}@keyframes credUp{from{transform:translateY(40px);opacity:0}}
+
+/* polish pack */
+#counter.bumpU{animation:bumpU .35s}#counter.bumpD{animation:bumpD .35s}@keyframes bumpU{40%{transform:scale(1.08);box-shadow:0 0 18px #7dffb0}}@keyframes bumpD{25%{transform:translateX(-5px)}50%{transform:translateX(5px);box-shadow:0 0 18px #ff7d9a}75%{transform:translateX(-3px)}}
+.coinpop{left:22px;top:110px;color:#ffd84a}
+.tunerow{display:grid;grid-template-columns:1fr auto 64px auto;gap:6px;align-items:center;background:#2c2540;border-radius:10px;padding:8px;margin-top:6px}.tunerow small{display:block;font-size:11px;opacity:.75}.tunerow span{text-align:center;font:800 14px var(--body);font-variant-numeric:tabular-nums}
+.odds{display:grid;gap:4px}.odds div{display:flex;justify-content:space-between;background:#2c2540;border-radius:8px;padding:7px 10px}.odds b{color:#ffd84a}
+.hook{position:absolute;inset:0;z-index:85;background:rgba(10,6,25,.35)}.hookt{position:absolute;left:0;right:0;top:16%;text-align:center;font:700 clamp(22px,6vw,36px) var(--display);color:#ffd23c}.hookc{position:absolute;left:0;right:0;top:24%;text-align:center;font:700 18px var(--display)}
+.hookb{position:absolute;padding:16px 18px;border-radius:18px;border:4px solid #000;font:700 18px var(--display);animation:pop .4s both,pulse .8s .4s infinite;box-shadow:0 6px 0 #000}.hookb.bait{background:linear-gradient(#ff6fb0,#e0337e)}.hookb.orb{background:radial-gradient(#ffe0f0,#ff9ac0);font-size:46px;border-radius:50%;width:92px;height:92px;padding:0}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style>
 
@@ -274,9 +283,14 @@ const GATES=[{iq:100,tier:1,name:'The Average Gate'},{iq:115,tier:2,name:"The Co
 
 // ---------------------------------------------------------------- save
 const DEF={path:null,cells:86e9,emb:0,stress:0,coins:0,job:null,jobXP:0,ideas:0,inv:[],gates:{},badges:{},notes:0,tut:{},tutDone:{},comeback:false,dead:false,demo:1,done:{},space:false,smartest:null,x:540,y:520,elephant:false,music:true};
-let S;try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem('lbc_save')||'{}'))}catch(e){S=Object.assign({},DEF)}
-function save(){try{localStorage.setItem('lbc_save',JSON.stringify(S))}catch(e){}}
+let S;try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem('lbc_save')||'{}'))}catch(e){try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem('lbc_save_backup')||'{}'))}catch(e2){S=Object.assign({},DEF)}}
+let _bk=0;function save(){try{const j=JSON.stringify(S);JSON.parse(j);localStorage.setItem('lbc_save',j);if(Date.now()-_bk>60000&&S.path){_bk=Date.now();localStorage.setItem('lbc_save_backup',j)}}catch(e){}}
 setInterval(save,4000);
+// ---- Tip 23: every balance number in one table (Admin → 🎚 Tuning edits it)
+const TUNE_DEFAULT={gainRate:.004,loseRate:.05,eventEvery:70,adEvery:22,dayLength:720,skateSpeed:1.6,readingPopupEvery:30,orbRespawn:25,ideasForEureka:6};
+const TUNE_INFO={gainRate:'Gain per action (fraction of your cells)',loseRate:'Loss per action on the Lose path',eventEvery:'Seconds between random town events',adEvery:'Seconds between pop-up ad chances',dayLength:'Real seconds per game day',skateSpeed:'Skateboard speed multiplier',readingPopupEvery:'Seconds between Lose-path reading pop-ups',orbRespawn:'Seconds before an orb respawns',ideasForEureka:'Ideas needed for EUREKA'};
+const TUNE=Object.assign({},TUNE_DEFAULT,S.tune||{});
+
 
 // ---------------------------------------------------------------- sound (tiny synth, starts after first tap)
 let AC=null;function snd(type){if(!S.music)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);const t=AC.currentTime;const P={tick:[900,.02,.03,'square'],ping:[880,.12,.08,'sine'],up:[520,.25,.12,'triangle'],down:[300,.3,.12,'sawtooth'],boing:[200,.25,.12,'sine'],slam:[110,.4,.25,'square'],good:[660,.3,.12,'triangle'],bad:[160,.4,.15,'sawtooth']}[type]||[440,.1,.05,'sine'];o.type=P[3];o.frequency.setValueAtTime(P[0],t);if(type==='up'||type==='good')o.frequency.exponentialRampToValueAtTime(P[0]*2,t+P[1]);if(type==='down'||type==='bad'||type==='boing')o.frequency.exponentialRampToValueAtTime(P[0]*.4,t+P[1]);g.gain.setValueAtTime(P[2],t);g.gain.exponentialRampToValueAtTime(.0001,t+P[1]);o.start(t);o.stop(t+P[1])}catch(e){}}
@@ -297,7 +311,7 @@ function gain(points){if(S.dead)return 0;let amt;
   else amt=Math.max(1,S.cells*0.01)*points;
   S.cells+=amt;if(amt>=1){floatDelta(amt,true);snd('up')}after();return amt}
 function lose(points){if(S.dead)return 0;let amt;
-  if(S.path==='Lose')amt=Math.max(S.cells*0.05*points*S.demo,3*points*S.demo);else amt=S.cells*0.003*points;
+  if(S.path==='Lose')amt=Math.max(S.cells*TUNE.loseRate*points*S.demo,3*points*S.demo);else amt=S.cells*0.003*points;
   amt=Math.min(amt,S.cells);S.cells-=amt;if(amt>=1){floatDelta(amt,false);snd('down')}after();return amt}
 function stress(n){if(S.path!=='Gain')return;S.stress=Math.max(0,Math.min(100,S.stress+n));if(S.stress>=100)toast('😵 Too stressed! You\'re frozen. Do a genius habit at the ☕ Café or 🌳 Park.');update()}
 function frozen(){return S.path==='Gain'&&S.stress>=100}
@@ -806,7 +820,7 @@ function update(){
   const lk=inMoon?'moon':look(),ui=UIS[LOOKS[lk].ui];
   $('counter').style.background=ui.bg;$('counter').style.fontFamily=lk==='nonsense'?'"Comic Neue"':lk==='fancy'||lk==='future'?'"Cormorant Garamond"':'Fredoka';
   $('cIQ').textContent=iqText(S.cells,S.path);$('cRar').textContent=rarity(S.cells,S.path);
-  const chips=[];const st=stageOf(S.cells);if(st.k!=='human')chips.push(st.e+' '+st.n);if(S.path==='Gain'){chips.push('🪙 '+Math.floor(S.coins));if(S.job)chips.push('💼 '+careerTitle());const g=glasses();if(g)chips.push('👓 '+g.name);chips.push('💡 '+(S.ideas||0)+'/6 ideas')}
+  const chips=[];const st=stageOf(S.cells);if(st.k!=='human')chips.push(st.e+' '+st.n);if(S.path==='Gain'){chips.push('🪙 '+Math.floor(S.coins));if(S.job)chips.push('💼 '+careerTitle());const g=glasses();if(g)chips.push('👓 '+g.name);chips.push('💡 '+(S.ideas||0)+'/'+TUNE.ideasForEureka+' ideas')}
   chips.unshift(clockText()+(S.path==='Lose'?' • 🏫 8:00':''));if(S.demo>1)chips.push('⚡ demo speed ×'+S.demo);if(S.smartest)chips.push("👑 World's Smartest "+S.smartest);
   $('chips').innerHTML=chips.map(c=>'<span class="chip">'+esc(c)+'</span>').join('');
   $('bottom').classList.toggle('hide',!S.path||S.dead);
@@ -879,7 +893,7 @@ function brainTok(){const b=blocked();if(b)return toast('⛔ '+b);let i=Math.flo
   let sy=null;el.onpointerdown=e=>sy=e.clientY;el.onpointerup=e=>{if(sy!=null&&sy-e.clientY>50){i++;lose(1);tutEvent('scroller');show()}sy=null}}
 // random reading popups on the Lose path
 let nextRead=Date.now()+25000;
-setInterval(()=>{if(S.path!=='Lose'||S.dead||!$('panelWrap').classList.contains('hide')||!$('cine').classList.contains('hide')||!$('conv').classList.contains('hide')||!$('scene').classList.contains('hide')||(ROOM&&ROOM.b.id==='mean')||document.querySelector('.call')||tutRunning())return;if(Date.now()<nextRead)return;nextRead=Date.now()+30000+Math.random()*25000;readingPopup()},1000);
+setInterval(()=>{if(S.path!=='Lose'||S.dead||!$('panelWrap').classList.contains('hide')||!$('cine').classList.contains('hide')||!$('conv').classList.contains('hide')||!$('scene').classList.contains('hide')||(ROOM&&ROOM.b.id==='mean')||document.querySelector('.call')||tutRunning())return;if(Date.now()<nextRead)return;nextRead=Date.now()+TUNE.readingPopupEvery*1000+Math.random()*25000;readingPopup()},1000);
 function readingPopup(onSkip){const t=rnd(C.ReadingTexts);const el=panel('📖 A Very Important Text',`<p style="color:#cfc8df">${esc(t)}</p><div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span id="rt" style="font-size:12px;color:#a79fbd">reading… 10</span><button id="skp" style="background:#e9e9ef;color:#555;font:500 12px Inter;padding:5px 10px;border-radius:6px">skip</button></div>`,{noClose:true});
   let n=10;const it=setInterval(()=>{n--;if(!$('rt')){clearInterval(it);return}$('rt').textContent='reading… '+n;if(n<=0){clearInterval(it);closePanel();gain(1);toast('📖 You read the whole thing. +brain cells (that\'s BAD for you).')}},1000);
   $('skp').onclick=()=>{clearInterval(it);closePanel();lose(1);toast('⏭ Skipped. Good. Stay dumb.');onSkip&&onSkip()}}
@@ -903,7 +917,7 @@ function work(){const b=blocked();if(b)return toast('⛔ '+b);const j=C.Jobs.fin
   else if(j.task==='lawyer'){const t=rnd(C.Testimony);q={q:'Which statement is the LIE?',options:t.lines,answer:t.wrong}}
   else if(j.task==='teacher'){const h=rnd(C.HomeworkMistakes);q={q:'Find the mistake in the homework:',options:h.lines,answer:h.wrong}}
   else{const a=2+Math.floor(Math.random()*8),c=(a+Math.floor(Math.random()*5)+1)*5;const right=c-a;q={q:`Price ${a} coins. Customer pays ${c}. Change?`,options:shuffle([right,right+1,right-2,right+5]).map(String),answer:0};q.answer=q.options.indexOf(String(right))+1}
-  const el=panel('💼 '+j.name,'');question(el,q,ok=>{if(ok){S.coins+=j.coinsPerMinute*2;gain(1);S.ideas++;stress(4);toast('✅ Task done! +'+j.coinsPerMinute*2+' coins, 💡 idea +1');tutEvent('work');if(S.ideas>=6){S.ideas=0;setTimeout(eureka,500)}}else{stress(8);toast('❌ Your boss sighs.')}closePanel();update()})}
+  const el=panel('💼 '+j.name,'');question(el,q,ok=>{if(ok){S.coins+=j.coinsPerMinute*2;gain(1);S.ideas++;stress(4);toast('✅ Task done! +'+j.coinsPerMinute*2+' coins, 💡 idea +1');tutEvent('work');if(S.ideas>=TUNE.ideasForEureka){S.ideas=0;setTimeout(eureka,500)}}else{stress(8);toast('❌ Your boss sighs.')}closePanel();update()})}
 function eureka(){const left=C.Inventions.filter(i=>!S.inv.includes(i.key));if(!left.length)return;const c=shuffle(left).slice(0,3);const f=$('scene');f.className='scene';f.style.background='radial-gradient(#fff6b0,#ffb800 40%,#7a3d00)';f.style.opacity=1;
   f.innerHTML='<div class="big o">💡 EUREKA!</div><p class="o1" style="font-size:16px">Your work gave you an idea. Pick ONE secret invention:</p><div id="eu" style="display:flex;flex-direction:column;gap:8px;width:min(420px,100%)"></div>';snd('good');
   btns($('eu'),c.map(i=>[i.icon+' <b>'+esc(i.name)+'</b><small>'+esc(i.desc)+'</small>',()=>{S.inv.push(i.key);badge('eureka','Eureka!');if(S.inv.length===C.Inventions.length)badge('mad','Mad Scientist');f.classList.add('hide');toast('🔓 SECRET INVENTION UNLOCKED: '+i.icon+' '+esc(i.name));update()}]))}
@@ -1082,7 +1096,7 @@ const stageK=()=>stageOf(S.cells).k;
 
 // ---------------------------------------------------------------- shared 3D bits
 const bulbS=sprite(emojiTex('💡'),2.2,2.2,scene);bulbS.visible=false;scene.add(bulbS);let bulbUntil=0;
-function idea(n=1){if(S.path!=='Gain')return;S.ideas=(S.ideas||0)+n;bulbUntil=Date.now()+1300;snd('ping');if(S.ideas>=6){S.ideas=0;setTimeout(()=>{bulbUntil=Date.now()+2500;eureka()},700)}update()}
+function idea(n=1){if(S.path!=='Gain')return;S.ideas=(S.ideas||0)+n;bulbUntil=Date.now()+1300;snd('ping');if(S.ideas>=TUNE.ideasForEureka){S.ideas=0;setTimeout(()=>{bulbUntil=Date.now()+2500;eureka()},700)}update()}
 FRAME_HOOKS.push(()=>{bulbS.visible=Date.now()<bulbUntil;if(bulbS.visible){const k=1+Math.sin(T*12)*.08;bulbS.scale.set(2.2*k,2.2*k,1);bulbS.position.set(P.x/K,PH+8.2,P.y/K)}});
 const particles=[];function burst(x,y,z,colors,n=18,power=9,size=.25){for(let i=0;i<n;i++){const m=mesh(new THREE.BoxGeometry(size,size,size),MAT(colors[i%colors.length]),scene,x,y,z);m.castShadow=false;particles.push({m,v:new THREE.Vector3((Math.random()-.5)*power,Math.random()*power,(Math.random()-.5)*power),t:1.4})}}
 FRAME_HOOKS.push(()=>{for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.t-=DT;p.v.y-=18*DT;p.m.position.addScaledVector(p.v,DT);p.m.rotation.x+=DT*5;if(p.t<=0||p.m.position.y<-1){scene.remove(p.m);particles.splice(i,1)}}});
@@ -1092,7 +1106,7 @@ function objective(text){let o=$('objective');if(!o){o=document.createElement('d
 const GPRICE=[15,30,60,100,180,300,500,800];
 function glasses(){if(S.path!=='Gain'||!S.wearing)return null;return C.Glasses.find(x=>x.name===S.wearing)||null}
 function gain(points){if(S.dead)return 0;let amt;
-  if(S.path==='Gain'){const m=multOf(S.cells)[1];const g=glasses();amt=Math.max(1,S.cells*0.004)*m*points*S.demo*(g?g.boost:1);const cap=gainCap();if(S.cells+amt>cap){amt=Math.max(0,cap-S.cells);toast('🚧 A Skill Gate blocks your way! Go to the 🎓 University.')}}
+  if(S.path==='Gain'){const m=multOf(S.cells)[1];const g=glasses();amt=Math.max(1,S.cells*TUNE.gainRate)*m*points*S.demo*(g?g.boost:1);const cap=gainCap();if(S.cells+amt>cap){amt=Math.max(0,cap-S.cells);toast('🚧 A Skill Gate blocks your way! Go to the 🎓 University.')}}
   else amt=Math.max(1,S.cells*0.01)*points;
   S.cells+=amt;if(amt>=1){floatDelta(amt,true);snd('up')}after();return amt}
 function optician(){const q=iqOf(S.cells);const owned=arr('ownedGlasses');const el=panel('👓 Optician',`<p>You have <b>🪙 ${Math.floor(S.coins)}</b>. Better glasses = more brain cells from everything. Remember: <b>flashy = dumb</b>.</p>`);
@@ -1323,7 +1337,7 @@ LAYOUT.house3=b=>{sign('👓 OPTICIAN',0,-14.8);counter(0,-11,14,0,MAT('#dfe8ff'
 // ---------------------------------------------------------------- TOWN: morphing buildings, day & night, NPC texts
 let prevLook=null,morphT=0;FRAME_HOOKS.push(()=>{const lk=appliedLook;if(lk&&lk!=='moon'&&!ROOM&&lk!==prevLook){if(prevLook&&prevLook!=='moon')morphT=performance.now();prevLook=lk}
   if(morphT){const t=(performance.now()-morphT)/1000;BLD.forEach((o,i)=>{const lt=Math.max(0,Math.min(1,(t-i*.05)/.7));const s=lt<1?0.35+0.65*(1-Math.pow(1-lt,3))+Math.sin(lt*Math.PI)*.15:1;o.g.scale.y=s});if(t>2){morphT=0;BLD.forEach(o=>o.g.scale.y=1)}}});
-const DAY_LEN=720; // real seconds per in-game day (12 minutes)
+const DAY_LEN=TUNE.dayLength; // real seconds per in-game day (12 minutes)
 function gameHour(){return((Date.now()/1000/DAY_LEN*24)+7)%24}
 const NIGHT=new THREE.Color('#0b1030'),_sky=new THREE.Color();
 FRAME_HOOKS.push(()=>{if(ROOM||inMoon||!appliedLook||!SKY[appliedLook])return;const h=gameHour();const day=Math.max(0,Math.min(1,Math.sin((h-6)/12*Math.PI)*1.4+.2));const sk=SKY[appliedLook];
@@ -1490,7 +1504,7 @@ const EVENTS=[
  {name:'Busker',path:'Any',start(){const p=freeSpot();markAt('🎻',p.x,p.y);objective('🎻 A street musician is playing. Go listen!');evSpot(p.x,p.y,'Listen to the music','🎻 Street musician',()=>{mgRhythm('🎵 Clap along','Clap exactly on the beat! 5 good claps.',ok=>{closePanel();ok?reward('🎻 The musician bows to you. Stress gone!',10,.5,0,true):(toast('👏 You clapped off-beat. The musician winces.'),clearEvent())})})}},
 ];
 function reward(msg,coins,pts,flip,calm){toast(msg);if(coins)S.coins+=coins;if(pts>0)gain(pts);else if(pts<0)lose(-pts);if(calm)S.stress=Math.max(0,S.stress-30);confetti();textMsg(rnd(['Your friends','Your mom','Brainville News']),rnd(['saw what you did in town 👀','you\'re famous in Brainville now lol','that was so nice of you!!']));clearEvent();update();save()}
-setInterval(()=>{if(EVENT||!S.path||S.dead||ROOM||inMoon||CHASE||!$('panelWrap').classList.contains('hide')||tutRunning())return;const pool=EVENTS.filter(e=>e.path==='Any'||e.path===S.path);const e=rnd(pool);EVENT=e;e.start();snd('ping');toast('❗ Something is happening in Brainville!');EVENT.until=Date.now()+150000},70000);
+setInterval(()=>{if(EVENT||!S.path||S.dead||ROOM||inMoon||CHASE||!$('panelWrap').classList.contains('hide')||tutRunning())return;const pool=EVENTS.filter(e=>e.path==='Any'||e.path===S.path);const e=rnd(pool);EVENT=e;e.start();snd('ping');toast('❗ Something is happening in Brainville!');EVENT.until=Date.now()+150000},TUNE.eventEvery*1000);
 setInterval(()=>{if(EVENT&&Date.now()>EVENT.until){toast('⌛ The town event ended.');clearEvent()}},5000);
 // a few more random things NPCs say
 WHISPER.Lose.push('they shook a cereal box for an hour','is that the wall guy?','bro got chased by a pigeon','I saw them on the billboard 💀','they think the moon is a lamp');
@@ -1524,7 +1538,7 @@ function showAd(){if(document.querySelector('.ad'))return;const d=document.creat
   d.innerHTML=`<button class="adx">✕</button><div class="adt">${esc(rnd(ADS))}</div><button class="adgo">CLAIM NOW!!</button>`;$('app').appendChild(d);snd('ping');let tries=0;
   d.querySelector('.adx').onclick=e=>{e.stopPropagation();if(tries++<1&&look()!=='cozycash'){d.style.left=(10+Math.random()*40)+'%';d.style.top=(20+Math.random()*40)+'%';toast('😈 The X moved. Classic.');return}d.remove()};
   d.querySelector('.adgo').onclick=()=>{d.remove();if(S.path==='Lose'){lose(1.2);toast('🤑 You clicked an ad. Brain cells left your body. (Good job!)')}else{S.coins=Math.max(0,S.coins-15);stress(5);toast('💸 You clicked an ad. −15 coins. Smart people don\'t click ads.')}update()};setTimeout(()=>d.remove(),14000)}
-setInterval(()=>{if(!S.path||S.dead||!$('cine').classList.contains('hide')||!$('conv').classList.contains('hide')||!$('scene').classList.contains('hide')||tutRunning()||(ROOM&&ROOM.b.id==='mean')||document.querySelector('.call'))return;const lk=look();const ch={cozycash:.25,cashgrab:.6,nonsense:.45}[lk];if(ch&&Math.random()<ch)showAd()},22000);
+setInterval(()=>{if(!S.path||S.dead||!$('cine').classList.contains('hide')||!$('conv').classList.contains('hide')||!$('scene').classList.contains('hide')||tutRunning()||(ROOM&&ROOM.b.id==='mean')||document.querySelector('.call'))return;const lk=look();const ch={cozycash:.25,cashgrab:.6,nonsense:.45}[lk];if(ch&&Math.random()<ch)showAd()},TUNE.adEvery*1000);
 // text scrambles when you're too dumb to read
 function scrambleEl(root){const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walk.nextNode())nodes.push(walk.currentNode);
   nodes.forEach(n=>{if(n.parentElement&&n.parentElement.closest('.x,.adx'))return;n.textContent=n.textContent.replace(/[A-Za-z]{4,}/g,w=>Math.random()<.45?w[0]+shuffle(w.slice(1,-1).split('')).join('')+w[w.length-1]:w)})}
@@ -1593,7 +1607,7 @@ function placeOrb(o){const p=freeSpot();o.x=p.x;o.y=p.y;o.alive=true;o.s.visible
 for(let i=0;i<10;i++){const o={s:sprite(emojiTex('🧠'),1.6,1.6,town)};placeOrb(o);ORBS.push(o)}
 FRAME_HOOKS.push(()=>{const em=S.path==='Lose'?'🍬':'🧠';for(const o of ORBS){if(o.s.userData.e!==em){o.s.userData.e=em;o.s.material.map=emojiTex(em);o.s.material.needsUpdate=true}o.s.visible=o.alive&&!!S.path;if(!o.alive)continue;o.s.position.set(o.x/K,1.6+Math.sin(T*3+o.x)*.3,o.y/K);
   if(S.path&&!ROOM&&!inMoon&&!S.dead&&Math.hypot(o.x-P.x,o.y-P.y)<26){o.alive=false;const now=performance.now();comboN=now-comboT<5000?comboN+1:1;comboT=now;const mult=Math.min(5,comboN);burst(o.x/K,1.6,o.y/K,S.path==='Lose'?['#ff6fb0','#ffd23c']:['#ff9ac0','#ffd23c','#7dffb0'],10,5,.2);blip(600+comboN*120);
-    if(S.path==='Gain')gain(.25*mult);else lose(.25*mult);if(comboN>=2)toast('🔥 COMBO ×'+comboN+(S.path==='Lose'?' (brainrot candy!)':''));setTimeout(()=>placeOrb(o),25000)}}});
+    if(S.path==='Gain')gain(.25*mult);else lose(.25*mult);if(comboN>=2)toast('🔥 COMBO ×'+comboN+(S.path==='Lose'?' (brainrot candy!)':''));setTimeout(()=>placeOrb(o),TUNE.orbRespawn*1000)}}});
 
 // ---------------- 5) wishing fountain
 TOWN_SPOTS.push({id:'spot',n:'⛲ Wishing fountain',label:'Make a wish',px:PLAZA.x,py:PLAZA.y+60,when:()=>!!S.path,fn:()=>{const cost=S.path==='Gain'?2:0;if(S.coins<cost)return toast('🪙 You need 2 coins to make a wish.');S.coins-=cost;burst(PLAZA.x/K,3,PLAZA.y/K,['#ffd23c'],6,6,.25);blip(1400);
@@ -1603,7 +1617,7 @@ TOWN_SPOTS.push({id:'spot',n:'⛲ Wishing fountain',label:'Make a wish',px:PLAZA
 const board=new THREE.Group();mesh(boxG(1.4,.15,3.2),MAT('#2b2b33'),board,0,.35,0);for(const z of[-1,1])for(const x of[-.5,.5])mesh(new THREE.CylinderGeometry(.18,.18,.2,10),MAT('#ffd23c'),board,x,.18,z).rotation.z=Math.PI/2;scene.add(board);board.visible=false;
 const rack=new THREE.Group();rack.position.set(PLAZA.x/K-12,0,(PLAZA.y+40)/K);town.add(rack);mesh(boxG(3,1.6,.4),MAT('#ff4f9a'),rack,0,.8,0);mesh(boxG(1.2,.15,2.8),MAT('#2b2b33'),rack,0,1.6,.3).rotation.x=-.7;
 TOWN_SPOTS.push({id:'spot',n:'🛹 Skateboard rack',label:'Ride a skateboard',px:PLAZA.x-120,py:PLAZA.y+40,when:()=>!!S.path&&['human','barely'].includes(stageK()),fn:()=>{S.skate=!S.skate;toast(S.skate?'🛹 Skateboard ON! You\'re faster. Jump (⤒) to do tricks!':'🛹 Skateboard parked.');blip(700)}});
-speedMult=(o=>function(){return o()*(S.skate&&!ROOM&&!inMoon&&['human','barely'].includes(stageK())?1.6:1)})(speedMult);
+speedMult=(o=>function(){return o()*(S.skate&&!ROOM&&!inMoon&&['human','barely'].includes(stageK())?TUNE.skateSpeed:1)})(speedMult);
 let trickT=0,trickPts=0;jump=(o=>function(){const was=PH;o();if(S.skate&&!ROOM&&PH<=.05&&PV>0){trickT=performance.now();const tr=rnd(['Kickflip','Ollie','360 Spin','Heelflip','Brain Grind']);trickPts++;toast('🛹 '+tr+'! ('+trickPts+' tricks)');S.coins+=1;if(trickPts===20)badge('sk8','Skate Brain')}})(jump);
 FRAME_HOOKS.push(()=>{const on=S.skate&&!ROOM&&!inMoon&&['human','barely'].includes(stageK());board.visible=on;if(!on)return;board.position.set(P.x/K,PH,P.y/K);board.rotation.y=(P.face||0);const t=(performance.now()-trickT)/1000;if(t<.6){board.rotation.z=t/.6*Math.PI*2;ME.g.rotation.y+=t/.6*Math.PI*2}else board.rotation.z=0;ME.g.position.y+=.35;ME.lL.rotation.x=ME.lR.rotation.x=0});
 
@@ -1777,6 +1791,68 @@ settings=(o=>function(){o();const pc=$('pc');if(!pc)return;const h=HZ();const L=
 ADM_TABS.push(['avg','😐 Average']);
 admin=(o=>function(tab){o(tab);if(tab!=='avg')return;const box=$('adm');const h=HZ();box.innerHTML=`<div class="card">Stage ${h.stage} • notes ${h.notes.length}/8 • sightings ${h.sight} • ending: ${h.ending||'none'} • setting: ${h.setting}</div>`;
   btns(box,[['⏩ Next story stage',()=>{h.stage=Math.min(5,h.stage+1);if(h.stage>=2)h.notes=[0,1,2,3,4].slice(0,h.stage===2?3:h.stage===3?5:7);if(h.stage>=4)h.notes=[0,1,2,3,4,5,6];if(h.stage===5)h.escaped=true;onStage(h.stage);admin('avg')}],['📄 Give all 8 notes',()=>{h.notes=[0,1,2,3,4,5,6,7];admin('avg')}],['👀 Sighting now',()=>{nextSight=0;closePanel()}],['🌙 Make it night',()=>{const g=gameHour;gameHour=()=>23;setTimeout(()=>gameHour=g,60000);closePanel();toast('🌙 Night for 60 s')}],['📞 Average Hour now',()=>{closePanel();h.stage=4;h.notes=[0,1,2,3,4,5,6];averageHourCutscene()}],['🔄 Reset the story',()=>{S.horror=null;HZ();admin('avg')}]])})(admin);
+
+
+// ================================================================ POLISH PACK (from the "Every Trick To GOOD AI Roblox Games" tips)
+// Tip 18: real sound kit • Tip 19: triple feedback • Tip 22: something fun in the first 10 seconds
+// Tip 23: every number in one tuning table (editable in Admin → 🎚 Tuning) • Tip 25: show the odds
+
+// ---------------- Tip 18: a proper little sound kit (synthesized, no files needed)
+function tone(f,dur,type,vol,slideTo,delay){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime+(delay||0);const o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slideTo)o.frequency.exponentialRampToValueAtTime(slideTo,t+dur);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||.08,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur+.02)}catch(e){}}
+function noise(dur,vol,delay){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime+(delay||0);const n=AC.sampleRate*dur;const buf=AC.createBuffer(1,n,AC.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const s=AC.createBufferSource();s.buffer=buf;const g=AC.createGain();g.gain.value=vol||.06;const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=1200;s.connect(f);f.connect(g);g.connect(AC.destination);s.start(t)}catch(e){}}
+function snd(type){if(!S.music)return;switch(type){
+  case'tick':tone(1800,.03,'square',.025);break;
+  case'click':tone(900,.05,'triangle',.05,600);break;
+  case'ping':tone(988,.12,'sine',.07);tone(1319,.18,'sine',.06,null,.08);break;
+  case'coin':tone(1047,.08,'square',.05);tone(1568,.16,'square',.05,null,.07);break;
+  case'up':tone(523,.09,'triangle',.07);tone(659,.09,'triangle',.07,null,.07);tone(784,.16,'triangle',.07,null,.14);break;
+  case'down':tone(392,.12,'sawtooth',.05,330);tone(330,.18,'sawtooth',.05,220,.1);break;
+  case'good':[523,659,784,1047].forEach((f,i)=>tone(f,.16,'triangle',.07,null,i*.08));break;
+  case'bad':tone(180,.32,'sawtooth',.07,110);break;
+  case'boing':tone(260,.25,'sine',.09,90);break;
+  case'slam':noise(.35,.12);tone(90,.4,'square',.08,45);break;
+  case'whoosh':noise(.45,.07);break;
+  default:tone(440,.08,'sine',.05)}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button');if(b&&!b.closest('.ncard'))snd('click')},true);
+
+// ---------------- Tip 19: every brain change = sound + number + motion
+let _lastFx=0;
+floatDelta=(o=>function(amount,up){o(amount,up);const c=$('counter');c.classList.remove('bumpU','bumpD');void c.offsetWidth;c.classList.add(up?'bumpU':'bumpD');
+  const now=performance.now();if(now-_lastFx>160&&typeof burst==='function'&&!ROOM){_lastFx=now;burst(P.x/K,PH+4,P.y/K,up?['#7dffb0','#ffd23c','#9ad1ff']:['#ff7d9a','#ff4f9a','#b47dff'],8,5,.18)}
+  if(!up&&amount>S.cells*.2+1){try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}}})(floatDelta);
+let _lastCoins=null;FRAME_HOOKS.push(()=>{const c=Math.floor(S.coins||0);if(_lastCoins!==null&&c>_lastCoins){snd('coin');const d=document.createElement('div');d.className='delta o1 coinpop';d.textContent='+'+(c-_lastCoins)+' 🪙';$('app').appendChild(d);setTimeout(()=>d.remove(),1300)}_lastCoins=c});
+
+// ---------------- Tip 23: every number in one place (and editable)
+ADM_TABS.push(['tune','🎚 Tuning']);
+admin=(o=>function(tab){o(tab);if(tab!=='tune')return;const box=$('adm');box.innerHTML='<p>Every balance number in one place. Changes save in this browser. Some apply after a reload.</p>';
+  Object.keys(TUNE_DEFAULT).forEach(k=>{const row=document.createElement('div');row.className='tunerow';const v=TUNE[k];const step=v<1?(v<.01?.001:.01):v<10?.1:5;
+    row.innerHTML=`<div><b>${k}</b><small>${esc(TUNE_INFO[k])}</small></div><button class="word">−</button><span>${+v.toFixed(4)}</span><button class="word">+</button>`;
+    const [m,p]=row.querySelectorAll('button');const set=nv=>{TUNE[k]=Math.max(0,+nv.toFixed(4));(S.tune=S.tune||{})[k]=TUNE[k];save();admin('tune')};m.onclick=()=>set(TUNE[k]-step);p.onclick=()=>set(TUNE[k]+step);box.appendChild(row)});
+  btns(box,[['↩️ Reset to defaults',()=>{S.tune={};Object.assign(TUNE,TUNE_DEFAULT);save();admin('tune')}]])})(admin);
+
+// ---------------- Tip 25: show the odds before anything random that costs you something
+setTimeout(()=>{const fsp=TOWN_SPOTS.find(t=>t.n&&t.n.includes('fountain'));if(!fsp)return;const orig=fsp.fn;fsp.fn=()=>{const lose=S.path==='Lose';
+  const odds=lose?[['Dumber (big)',25],['Dumber (small)',25],['Nothing',25],['Forget your name (dumber)',25]]:[['+Brain cells',20],['−30 stress',20],['+1 idea',20],['2 coins back',20],['Nothing',20]];
+  const el=panel('⛲ Wishing fountain',`<p>${lose?'Free on the Lose path.':'Costs 🪙 2.'} Every wish is random. <b>Here are the exact odds:</b></p><div class="odds">${odds.map(([n,p])=>`<div><span>${n}</span><b>${p}%</b></div>`).join('')}</div>`);btns(el,[['🌠 Make a wish',()=>{closePanel();orig()},'go']])}},0);
+
+// ---------------- Tip 22: something fun in the first 10 seconds (before the tutorial)
+function firstHook(path,then){const lose=path==='Lose';const wrap=document.createElement('div');wrap.className='hook';wrap.innerHTML=`<div class="hookt o">${lose?'😱 QUICK! Pop the clickbait!':'🧠 QUICK! Grab the brain cells!'}</div><div class="hookc" id="hookc">0 / 3</div>`;$('app').appendChild(wrap);
+  let n=0;const items=lose?['😱 SHOCKING','🔥 YOU WON\'T BELIEVE','🤯 GONE WRONG']:['🧠','🧠','🧠'];
+  items.forEach((t,i)=>{const b=document.createElement('button');b.className='hookb'+(lose?' bait':' orb');b.textContent=t;b.style.left=(12+i*28+Math.random()*6)+'%';b.style.top=(32+Math.random()*30)+'%';b.style.animationDelay=(i*.15)+'s';
+    b.onclick=()=>{b.remove();n++;$('hookc').textContent=n+' / 3';if(lose)lose_(1.2);else gain(1.2);if(n>=3){$('hookc').textContent=lose?'🫠 Your brain feels lighter. Nice.':'✨ Your brain grew. Nice.';snd('good');confetti();setTimeout(()=>{wrap.remove();then()},1300)}};wrap.appendChild(b)});
+  setTimeout(()=>{if(wrap.isConnected){wrap.remove();then()}},12000)}
+const lose_=p=>lose(p);
+runTutorial=(o=>function(path,replay){if(!replay&&!S.done['hook'+path]){S.done['hook'+path]=1;save();return firstHook(path,()=>o(path,replay))}return o(path,replay)})(runTutorial);
+
+
+// Tip 19: a subtle screen shake on every brain change (plus the sound + number)
+const UI_REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let shakeT=0,shakeP=0;floatDelta=(o=>function(a,up){o(a,up);shakeT=performance.now();shakeP=up?.12:.22})(floatDelta);
+FRAME_HOOKS.push(()=>{const t=(performance.now()-shakeT)/1000;if(t<.18&&!UI_REDUCED){const k=shakeP*(1-t/.18);cam.position.x+=(Math.random()-.5)*k;cam.position.y+=(Math.random()-.5)*k}});
+// Tip 27: clean screenshot camera — photo mode hides the UI AND (optionally) your character
+let photoHideMe=false;
+photoMode=(o=>function(on){o(on);let t=$('photoMe');if(on&&!t){t=document.createElement('button');t.id='photoMe';t.textContent='🙈 Hide me';t.onclick=()=>{photoHideMe=!photoHideMe;t.textContent=photoHideMe?'🙉 Show me':'🙈 Hide me'};$('app').appendChild(t)}if(!on){photoHideMe=false;t&&t.remove()}})(photoMode);
+FRAME_HOOKS.push(()=>{if(document.body.classList.contains('photo')&&photoHideMe){ME.g.visible=false;animalS.visible=false;tagS.visible=false;Object.values(ANIM).forEach(a=>a.g.visible=false);petS.visible=false;board.visible=false}});
 
 // ---------------------------------------------------------------- start
 lastStage=stageOf(S.cells).k;update();
