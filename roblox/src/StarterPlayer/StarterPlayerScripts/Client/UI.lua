@@ -181,7 +181,8 @@ local function computeScale()
 	local cam = workspace.CurrentCamera
 	local v = cam and cam.ViewportSize or Vector2.new(1000, 462)
 	local d = math.min(v.X / 1000, v.Y / 462)
-	d = math.clamp(d, 0.55, 1.35)
+	-- 1.7: never shrink below 0.7, so buttons stay thumb-sized on small phones
+	d = math.clamp(d, Config.UI.MinDeviceScale, 1.35)
 	if math.abs(d - UI.D) > 0.01 then
 		UI.D = d
 		for _, fn in ipairs(scaleListeners) do
@@ -219,6 +220,10 @@ UI.gui = Instance.new("ScreenGui")
 UI.gui.Name = "BrainUI"
 UI.gui.ResetOnSpawn = false
 UI.gui.IgnoreGuiInset = false
+-- 1.7: keep everything clear of the notch, the Dynamic Island and Roblox's top bar
+pcall(function()
+	UI.gui.ScreenInsets = Enum.ScreenInsets.CoreUISafeInsets
+end)
 UI.gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 UI.gui.Parent = player:WaitForChild("PlayerGui")
 
@@ -273,8 +278,40 @@ end
 UI.lighten = lighten
 UI.darken = darken
 
+-- 1.7: a phone = the short side of the screen is small (TouchEnabled is also true on touch PCs)
+function UI.isPhone(): boolean
+	local cam = workspace.CurrentCamera
+	local v = cam and cam.ViewportSize or Vector2.new(1000, 462)
+	return math.min(v.X, v.Y) < Config.UI.PhoneShortSide
+end
+
+-- 1.7: one switch for "calm motion": Roblox's Reduced Motion setting, or the Effects slider at 0
+function UI.reducedMotion(): boolean
+	local ok, on = pcall(function()
+		return GuiService.ReducedMotionEnabled
+	end)
+	if ok and on then
+		return true
+	end
+	return UI.effects() <= 0
+end
+
+-- 1.7: Effects intensity (0..1) from Settings. Shake, glitch, scramble and ads scale with it.
+function UI.effects(): number
+	local v = UI.settings and UI.settings.fxIntensity
+	if typeof(v) ~= "number" then
+		return 1
+	end
+	return math.clamp(v, 0, 1)
+end
+
 function UI.textSize(base: number): number
-	return UI.settings.largeText and math.floor(base * 1.25) or base
+	local size = UI.settings.largeText and math.floor(base * 1.25) or base
+	-- 1.7: readable on phones (after the device scale shrinks it)
+	if UI.isPhone() then
+		size = math.max(size, Config.UI.MinPhoneText)
+	end
+	return size
 end
 
 function UI.styleText(t)
@@ -331,6 +368,10 @@ function UI.button(parent, text: string, onClick, props)
 	for k, v in pairs(props or {}) do
 		b[k] = v
 	end
+	-- 1.7: every tappable button is at least thumb-sized
+	if b.Size.Y.Scale == 0 and b.Size.Y.Offset < Config.UI.MinTouch then
+		b.Size = UDim2.new(b.Size.X.Scale, math.max(b.Size.X.Offset, b.Size.X.Scale == 0 and Config.UI.MinTouch or 0), 0, Config.UI.MinTouch)
+	end
 	local base = b.BackgroundColor3
 	UI.gradient(b, Color3.new(1, 1, 1), Color3.fromRGB(200, 200, 210), 90)
 	if T.shine then
@@ -340,6 +381,10 @@ function UI.button(parent, text: string, onClick, props)
 		b.Rotation = math.random(-3, 3)
 	end
 	local function tweenScale(s: number)
+		if UI.reducedMotion() then
+			scale.Scale = 1
+			return
+		end
 		TweenService:Create(scale, TweenInfo.new(0.12, Enum.EasingStyle.Back), { Scale = s }):Play()
 	end
 	b.MouseEnter:Connect(function()
@@ -640,13 +685,13 @@ function UI.modal(title: string, opts)
 			UI.closeModal()
 		end, {
 			AnchorPoint = Vector2.new(1, 0.5),
-			Size = UDim2.fromOffset(40, 40),
-			Position = UDim2.new(1, -10, 0.5, 0),
+			Size = UDim2.fromOffset(Config.UI.MinTouch, Config.UI.MinTouch),
+			Position = UDim2.new(1, -8, 0.5, 0),
 			BackgroundColor3 = Color3.fromRGB(255, 80, 100),
 			TextColor3 = Color3.new(1, 1, 1),
 			ZIndex = 23,
 		})
-		UI.corner(closeBtn, 20)
+		UI.corner(closeBtn, Config.UI.MinTouch / 2)
 	end
 
 	local content = UI.new("ScrollingFrame", {
@@ -672,7 +717,7 @@ function UI.modal(title: string, opts)
 		local home = UI.new("TextButton", {
 			AnchorPoint = Vector2.new(0.5, 1),
 			Position = UDim2.new(0.5, 0, 1, -8),
-			Size = UDim2.fromOffset(150, 34),
+			Size = UDim2.fromOffset(150, 40),
 			Text = opts.onHome and "⌂  Home" or "",
 			Font = Enum.Font.GothamBold,
 			TextSize = 14,

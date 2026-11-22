@@ -199,7 +199,11 @@ Net.on("settings", function(player, d)
 			s[k] = d[k]
 		end
 	end
-	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig" }) do
+	-- 1.7: Effects intensity (0..1) and the optional "harder life" bills
+	if typeof(d.fxIntensity) == "number" then
+		s.fxIntensity = math.clamp(math.floor(d.fxIntensity * 10 + 0.5) / 10, 0, 1)
+	end
+	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud" }) do
 		if typeof(d[k]) == "boolean" then
 			s[k] = d[k]
 		end

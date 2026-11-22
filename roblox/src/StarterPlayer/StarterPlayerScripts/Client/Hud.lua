@@ -226,7 +226,7 @@ outlined(tutStep, 1.5)
 local tutTitle = text(tutorial, { Position = UDim2.fromOffset(12, 22), Size = UDim2.new(1, -24, 0, 28), TextXAlignment = Enum.TextXAlignment.Left, Text = "" })
 outlined(tutTitle, 2.5)
 local tutDesc = text(tutorial, { Position = UDim2.fromOffset(12, 52), Size = UDim2.new(1, -24, 0, 24), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, Font = Enum.Font.GothamBold, Text = "" })
-local tutClose = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(22, 22), Text = "✕", Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Parent = tutorial })
+local tutClose = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -2, 0, 2), Size = UDim2.fromOffset(36, 36), Text = "✕", Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Parent = tutorial })
 
 local TUTORIAL = {
 	Lose = {

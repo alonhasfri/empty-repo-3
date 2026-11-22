@@ -472,4 +472,61 @@ Config.RankGiveLimit = {
 	[4] = 3, -- Owner can give up to Head Moderator
 }
 
+---------------------------------------------------------------------
+-- 1.7: Brain-scaled UI, life systems and map (see docs/Brain scaled UI and map design.md)
+---------------------------------------------------------------------
+Config.UI = {
+	MinDeviceScale = 0.7, -- the whole HUD never shrinks below this on small phones
+	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone
+	MinPhoneText = 14, -- smallest text size on phones
+	MinTouch = 48, -- smallest tappable button (pixels), Google's 48dp rule
+}
+
+-- Which phone you get. IQ only matters on the Gain path; the Lose path always gets the toy phone.
+Config.PhoneTiers = {
+	CozyIQ = 95, -- clean 3x3 phone
+	RealIQ = 120, -- full phone OS: status bar, swipe pages, Hoppr, Brain Bank, Shifts
+}
+
+Config.Life = {
+	Ride = { -- Hoppr ride-hail (every ride is paid with coins you earn in-game, never Robux)
+		BaseFare = 4,
+		PerHundredStuds = 3,
+		BusyMultiplier = 1.5, -- busy hours: shown BEFORE you confirm, never random
+		BusyEverySeconds = 600, -- busy for the first 2 minutes of every 10 minutes
+		BusyLengthSeconds = 120,
+		EtaMin = 3, -- seconds until the car arrives
+		EtaMax = 7,
+		RideSeconds = 3, -- the short ride scene
+		Cooldown = 4,
+	},
+	Shift = {
+		EverySeconds = 300, -- a shift starts every 5 minutes (on the real clock)
+		GraceSeconds = 60, -- clock in up to 60 s after the start and you're on time
+		OnTimeBonus = 15, -- coins, paid on your payslip
+		MinShiftSeconds = 60, -- clock out after at least 1 minute for a payslip
+	},
+	Bank = {
+		SavingsRatePercent = 2, -- fixed and shown: +2% of savings...
+		InterestEverySeconds = 600, -- ...every 10 minutes you're online
+		MaxInterestPerTick = 200,
+		Bill = 10, -- "harder life" only (opt-in): a small bill every interest tick, never goes below 0
+	},
+}
+
+Config.LoseFX = {
+	AdEverySeconds = 75, -- silly fake ads (jokes only, never real purchases) on the Lose path
+	AdMinCells = 0, -- ads stop while you're an animal (no reading)
+	LagSeconds = 0.25, -- "brain lag" before a phone app opens at full intensity
+	WarnSeconds = 1.2, -- the "uh oh…" warning shows this long before an effect
+	ScrambleBelowCells = 45e9, -- app labels scramble below this (icons always stay right)
+}
+
+Config.Map = {
+	LandmarkHeight = 70, -- the Brain Tower in the plaza, seen from every street
+	TrailSeconds = 20, -- animal smell trail lasts this long
+	SmallDecorSize = 2, -- parts this small (every side) lose shadows and collision (phone speed)
+	NoShadowSize = 4, -- parts this small lose shadows
+}
+
 return Config
