@@ -976,4 +976,97 @@ Content.Updates = {
 	{ v = "1.0", name = "Launch", lines = { "🧠 Pick a door: Lose a Brain Cell or Gain a Brain Cell." } },
 }
 
+---------------------------------------------------------------------
+-- 1.7: real-life phone apps (original parody names only: never real brands)
+---------------------------------------------------------------------
+Content.Life = {
+	Apps = {
+		hoppr = { icon = "🚖", name = "Hoppr" },
+		bank = { icon = "🏦", name = "Brain Bank" },
+		shifts = { icon = "⏰", name = "Shifts" },
+	},
+	Ride = {
+		Title = "🚖 Hoppr",
+		WhereTo = "Where to?",
+		Work = "Work",
+		Fare = "Fare: 🪙 %d",
+		Eta = "Car arrives in %d s",
+		Busy = "⚠️ Busy hours: prices are ×1.5 right now (shown before you pay).",
+		Confirm = "Confirm ride • 🪙 %d",
+		Cancel = "Back",
+		Coming = "Your car is coming!",
+		PlateCard = "%s %s\nPlate: %s\nDriver: %s",
+		Riding = "🚗 On the way to %s…",
+		Receipt = "🧾 Receipt: %s • 🪙 %d • plate %s. Thanks for riding Hoppr!",
+		TooPoor = "You need 🪙 %d for this ride. Walk, take the free taxi on the map, or earn coins at work.",
+		Animal = "🐾 Animals can't hold a phone. Follow your nose instead!",
+		Unknown = "Hoppr can't find that place.",
+		Expired = "That price ran out. Check the fare again.",
+		Already = "You're already in a car!",
+		Wait = "Hoppr is finding the next car…",
+		Free = "Walking is free (but slower). The free taxi is in 🗺 Maps.",
+		Drivers = { "Dana ⭐4.9", "Omar ⭐4.8", "Kim ⭐5.0", "Leo ⭐4.7", "Maya ⭐4.9" },
+	},
+	Shift = {
+		Title = "⏰ Shifts",
+		NextIn = "Next shift starts in %d:%02d",
+		StartedAgo = "This shift started %d s ago. Clock in within %d s to be on time.",
+		Late = "⏰ Clocked in, but you're late. No on-time bonus this shift.",
+		OnTime = "✅ Clocked in on time! +🪙 %d bonus on your payslip.",
+		ClockIn = "🟢 Clock in",
+		ClockOut = "🔴 Clock out (get payslip)",
+		GainOnly = "Shifts are for the Gain path.",
+		NoJob = "Get a job first (📱 Jobs).",
+		NotThere = "Go to %s to clock in. Hoppr or the taxi can take you.",
+		Already = "You're already clocked in.",
+		NotOn = "You're not clocked in.",
+		TooShort = "Work a little longer first (%d s).",
+		OnShiftFor = "🟢 On shift: %d min %d s",
+		Payslip = "🧾 PAYSLIP\nJob: %s\nTime: %s min • Tasks done: %d\nWages: 🪙 %d\nOn-time bonus: 🪙 %d\nTOTAL: 🪙 %d\n💳 Paid into your Brain Bank checking.",
+		Tip = "Tip: shifts start every 5 minutes. Walking is free, but it can make you late.",
+		BonusInfo = "On-time bonus: 🪙 %d if you clock in within %d s of the start.",
+	},
+	Bank = {
+		Title = "🏦 Brain Bank",
+		Checking = "Checking (your coins): 🪙 %d",
+		Savings = "Savings: 🪙 %d",
+		Rate = "Savings grow +%d%% every %d minutes you play (fixed, never random).",
+		NextIn = "Next interest in %d:%02d",
+		Save = "Save 🪙 %d",
+		Take = "Take out 🪙 %d",
+		Amount = "Pick an amount.",
+		NotEnough = "Not enough coins for that.",
+		Interest = "🏦 Brain Bank: +🪙 %d interest on your savings!",
+		BillPaid = "🧾 Bills paid: 🪙 %d (harder life is ON in Settings).",
+		HardLife = "Harder life (bills): %s",
+		HardLifeInfo = "With harder life ON, a small bill of 🪙 %d is paid every interest time. It never goes below 0: no debt, ever.",
+		Note = "Paychecks go straight into checking. No loans, no gambling.",
+	},
+	Animal = {
+		Title = "🐾",
+		Sniff = "👃",
+		Home = "🏠",
+		Power = "⚡",
+	},
+	LoseFX = {
+		Warn = { "uh oh…", "wait… 🫠", "brain buffering…", "hmm?" },
+		Ads = {
+			{ title = "🎉 YOU WON!!!", text = "a FREE nothing! tap X to claim (nothing)" },
+			{ title = "🔥 HOT SINGLES", text = "hot single SOCKS near you 🧦🧦" },
+			{ title = "💎 1 WEIRD TRICK", text = "doctors HATE this banana 🍌" },
+			{ title = "📢 BRAIN SALE", text = "buy 0 brain cells, get 0 FREE" },
+			{ title = "🎰 SPIN!!!", text = "(just kidding, there's no wheel) 🙃" },
+		},
+		AdNote = "joke ad • not real • nothing to buy",
+		Shortcut = "🕳 Dumb shortcut! (only dumb brains fit)",
+	},
+}
+
+-- Settings text for 1.7
+Content.Settings17 = {
+	Effects = "✨ Effects intensity",
+	EffectsInfo = "Shake, glitches, scrambled words and joke ads. 0% turns them off.",
+	ClassicHud = "🧩 Simple phone (same for every brain)",
+}
+
 return Content

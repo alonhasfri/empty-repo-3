@@ -47,6 +47,7 @@ local function defaultData()
 		focusCharges = 0,
 		bonusHints = 0,
 		jobTasksDone = 0,
+		bank = { savings = 0, lastTick = 0 }, -- 1.7: Brain Bank savings (checking = coins)
 		convSeen = {}, -- 1.5: conversation scenes you've finished (older saves get this automatically)
 	}
 end

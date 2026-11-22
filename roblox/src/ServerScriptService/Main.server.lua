@@ -20,6 +20,7 @@ local CastleService = require(Services.CastleService)
 local ConversationService = require(Services.ConversationService)
 local SchoolService = require(Services.SchoolService)
 local _AnimalService = require(Services.AnimalService) -- 1.6 animal powers (listens on its own)
+local LifeService = require(Services.LifeService) -- 1.7: Hoppr rides, shifts and payslips, Brain Bank
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection
 AdminService.ringBell = SchoolService.ring
@@ -290,5 +291,6 @@ SpaceService.start()
 CastleService.start()
 ConversationService.start()
 SchoolService.start()
+LifeService.start()
 
-print("[Lose a Brain Cell] Server started (updates 1.0 – 1.6)")
+print("[Lose a Brain Cell] Server started (updates 1.0 – 1.7)")

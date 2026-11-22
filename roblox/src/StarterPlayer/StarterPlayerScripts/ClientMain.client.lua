@@ -13,6 +13,12 @@ local Effects = require(Client.Effects)
 local AdminPanel = require(Client.AdminPanel)
 local Tutorial = require(Client.Tutorial)
 local Conversation = require(Client.Conversation)
+local PhoneOS = require(Client.PhoneOS) -- 1.7: the phone changes with your brain
+
+-- 1.7: the brain-tiered phone replaces the old one (kept as the "Simple phone" setting)
+PhoneOS.stations = Stations
+PhoneOS.classicPhone = Stations.phone
+Stations.phone = PhoneOS.open
 
 Hud.onMenu = Stations.settings
 Hud.onAdmin = AdminPanel.open

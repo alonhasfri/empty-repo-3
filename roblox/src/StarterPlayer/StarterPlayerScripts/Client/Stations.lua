@@ -87,6 +87,8 @@ local PHONE_APPS = {
 	},
 }
 
+Stations.PHONE_APPS = PHONE_APPS -- 1.7: PhoneOS builds the brain-tiered phones from this list
+
 function Stations.phone()
 	event("phone")
 	local st = UI.state or {}
