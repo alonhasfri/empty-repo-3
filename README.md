@@ -13,7 +13,7 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 
 | Folder | What it is |
 |---|---|
-| `roblox/` | The Roblox game: the Luau source (`src/`), the builder (`tools/build_rbxlx.py`), the ready place files (`LoseABrainCell_v1.5.rbxlx` is the latest) and the guide `HOW_TO_USE.md`. |
+| `roblox/` | The Roblox game: the Luau source (`src/`), the builder (`tools/build_rbxlx.py`), the ready place files (`LoseABrainCell_v1.6.rbxlx` is the latest) and the guide `HOW_TO_USE.md`. |
 | `web/` | The browser version: `lose-a-brain-cell-web.html` (the built game, one file) and `src/` (its source modules). |
 | `web/tests/` | Playwright play-tests (run `node web/tests/test10.js` and the rest; screenshots go to `web/tests/shots/`). |
 | `marketing/` | Game icon (512×512) and three 1920×1080 thumbnails. |
@@ -24,9 +24,9 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 
 ## Roblox version (updates 1.0 to 1.6)
 
-The latest code (1.6: careers, Lose-path school, animal forms) is in `roblox/src` and reaches Studio through Rojo. The newest ready place file is still `LoseABrainCell_v1.5.rbxlx`; rebuild it (below) to get a 1.6 file.
+The latest code (1.6: careers, Lose-path school, animal forms) is in `roblox/src` and reaches Studio through Rojo. The newest ready place file is still `LoseABrainCell_v1.6.rbxlx`; rebuild it (below) to get a 1.6 file.
 
-1. In Roblox Studio: **File → Open from File** → `roblox/LoseABrainCell_v1.5.rbxlx`.
+1. In Roblox Studio: **File → Open from File** → `roblox/LoseABrainCell_v1.6.rbxlx`.
 2. **Home → Game Settings → Security → Enable Studio Access to API Services**.
 3. **File → Publish to Roblox As** → "brain game" → **Overwrite**.
 
@@ -35,7 +35,7 @@ The town is built by code when you press Play. Game pass, sound and badge IDs ar
 To rebuild the place file from source:
 
 ```
-python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.5.rbxlx
+python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.6.rbxlx
 ```
 
 ## Browser version (has updates 1.5, 1.6 and more)

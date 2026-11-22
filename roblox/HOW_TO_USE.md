@@ -1,10 +1,10 @@
-# How to use LoseABrainCell_v1.5.rbxlx
+# How to use LoseABrainCell_v1.6.rbxlx
 
 One Roblox place file with updates **1.0, 1.1, 1.2, 1.3 and 1.4** inside.
 
 ## 1. Open it
 1. Get the file onto the computer (WhatsApp Web, email, or claude.ai on the computer).
-2. Roblox Studio → **File → Open from File…** → pick `LoseABrainCell_v1.5.rbxlx`.
+2. Roblox Studio → **File → Open from File…** → pick `LoseABrainCell_v1.6.rbxlx`.
 3. The world looks empty in Studio. That's normal: **the town is built by code when you press Play.**
 
 ## 2. One-time settings (important for the "real" look)

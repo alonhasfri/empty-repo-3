@@ -41,7 +41,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
 - `.claude/skills/ship-browser-update/`: the release recipe (tip 10).
 
 ## Versions
-- **Roblox:** 1.0 to 1.6 (`Config.Version = "1.6"`). 1.5 = real places, conversation scenes, exit doors and Unstuck. 1.6 = career ladders, school for the Lose path, physical animal forms. Both ported from the browser and play-tested in Studio on PC and phone size (Nov 2026). `roblox/LoseABrainCell_v1.5.rbxlx` is the latest place file (built in the cloud session, since the PC has no Python); a 1.6 place file still needs building. Rojo keeps Studio in sync with `roblox/src` while working. Pass, sound and badge IDs are still 0.
+- **Roblox:** 1.0 to 1.6 (`Config.Version = "1.6"`). 1.5 = real places, conversation scenes, exit doors and Unstuck. 1.6 = career ladders, school for the Lose path, physical animal forms. Both ported from the browser and play-tested in Studio on PC and phone size (Nov 2026). `roblox/LoseABrainCell_v1.6.rbxlx` is the latest place file (built in the cloud session, since the PC has no Python); a 1.6 place file still needs building. Rojo keeps Studio in sync with `roblox/src` while working. Pass, sound and badge IDs are still 0.
 - **Browser only:**
   - (1.5 real places and conversations: now also in Roblox.)
   - (1.6 careers, school and animal forms: now also in Roblox.)
