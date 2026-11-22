@@ -19,6 +19,14 @@ local PhoneOS = require(Client.PhoneOS) -- 1.7: the phone changes with your brai
 PhoneOS.stations = Stations
 PhoneOS.classicPhone = Stations.phone
 Stations.phone = PhoneOS.open
+-- 1.7: Lose-path effects (scrambled labels, brain lag, joke ads)
+local LoseFX = require(Client.LoseFX)
+PhoneOS.label = LoseFX.label
+PhoneOS.beforeOpen = LoseFX.beforeOpen
+LoseFX.isBusy = function()
+	return Conversation.isOpen()
+end
+LoseFX.start()
 
 Hud.onMenu = Stations.settings
 Hud.onAdmin = AdminPanel.open

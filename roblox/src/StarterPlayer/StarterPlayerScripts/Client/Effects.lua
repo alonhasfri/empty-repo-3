@@ -593,9 +593,10 @@ end
 
 local function shake(seconds: number, power: number)
 	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-	if not hum or UI.settings.reduceFlashing then
+	if not hum or UI.settings.reduceFlashing or UI.reducedMotion() then
 		return
 	end
+	power *= UI.effects() -- 1.7: Effects intensity slider
 	task.spawn(function()
 		local t0 = os.clock()
 		while os.clock() - t0 < seconds do

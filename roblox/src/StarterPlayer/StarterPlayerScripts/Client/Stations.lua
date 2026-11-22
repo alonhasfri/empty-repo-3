@@ -1330,6 +1330,13 @@ function Stations.settings()
 		Stations.whatsNew()
 	end, { LayoutOrder = -1, BackgroundColor3 = Color3.fromRGB(40, 170, 110) })
 	stepper("🎵 Music volume", "music", 1)
+	-- 1.7: Effects intensity (shake, glitches, scrambled words, joke ads) and the simple phone
+	if typeof(s.fxIntensity) ~= "number" then
+		s.fxIntensity = 1
+	end
+	stepper(Content.Settings17.Effects, "fxIntensity", 8)
+	UI.label(m.content, Content.Settings17.EffectsInfo, { TextColor3 = C.muted, LayoutOrder = 10 })
+	toggle(Content.Settings17.ClassicHud, "classicHud", 11)
 	stepper("🔊 Sound effects", "sfx", 3)
 	toggle("⚡ Reduce flashing", "reduceFlashing", 5)
 	toggle("🔠 Large text", "largeText", 6)

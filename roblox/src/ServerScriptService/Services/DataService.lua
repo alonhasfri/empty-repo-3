@@ -30,7 +30,7 @@ local function defaultData()
 		embarrass = 0,
 		stress = 0,
 		position = nil,
-		settings = { music = 0.5, sfx = 0.8, reduceFlashing = false, largeText = false, extraTime = false },
+		settings = { music = 0.5, sfx = 0.8, reduceFlashing = false, largeText = false, extraTime = false, fxIntensity = 1, hardLife = false, classicHud = false },
 		manualRank = 0,
 		perks = {},
 		comeback = false,
