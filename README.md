@@ -18,6 +18,7 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 | `web/tests/` | Playwright play-tests (run `node web/tests/test10.js` and the rest; screenshots go to `web/tests/shots/`). |
 | `marketing/` | Game icon (512×512) and three 1920×1080 thumbnails. |
 | `pictures/` | Mockups, map and UI pictures, and test screenshots. |
+| `START_HERE_ON_PC.md` | Setting up a PC: Claude app, Roblox Studio, connecting Claude to Studio so it can play-test, and Rojo. |
 | `CLAUDE.md` | Rules, style and structure for any AI working on this project. Read it first. |
 | `.claude/skills/ship-browser-update/` | The step-by-step release recipe (build, test, publish, push, document). |
 

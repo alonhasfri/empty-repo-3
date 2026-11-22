@@ -28,6 +28,8 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
   - `Content.lua` holds all text and questions.
   - `Badges.lua` holds the badge list.
   - `roblox/tools/build_rbxlx.py` builds the place file.
+  - `roblox/default.project.json` is the Rojo project (same layout as the builder). `rokit.toml` pins Rojo and Selene; `selene.toml` sets up the code checker.
+- `START_HERE_ON_PC.md`: the PC setup guide (Claude app, Git, Studio, the Studio MCP connection, Rojo).
 - `web/lose-a-brain-cell-web.html`: the built browser game. It is published as a private Claude artifact at https://claude.ai/artifact/9dkh8TK9DFDEPFX8KX2uku.
 - `web/src/game.src.html`: the browser source. All balance numbers are in `TUNE` (also editable in Admin → 🎚 Tuning).
   - The other files in `web/src/` are the modules that were spliced in: `render3d`, `rooms` (1.5), `v16` (1.6), `content2`, `interact`, `horror`, `polish`.
@@ -54,6 +56,17 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
 3. Test: run the play-tests (`node web/tests/<test>.js`). For Roblox, press Play in Studio and paste any red Output errors.
 4. Check phone size (420×820) and PC size. About 80% of Roblox players are on phones.
 5. Publish, commit, push, and update this file and the memory file.
+
+## Testing in Roblox Studio (on the PC)
+When Claude Code runs on the PC with Studio's MCP server connected (see `START_HERE_ON_PC.md`):
+1. Run `list_roblox_studios` and pick the Studio that has the game open.
+2. Edit the files in `roblox/src` (the main copy). With `rojo serve` running, changes sync into Studio. Without Rojo, rebuild the place file and reopen it.
+3. Run `selene src` in `roblox/` and fix real problems.
+4. Use `start_stop_play` to play. Use `get_console_output` to read the Output and fix every red error. Use `screen_capture` to check the look. Use `character_navigation` and keyboard/mouse input to try both doors.
+5. Check phone size with Studio's device emulator.
+6. Stop the playtest. Commit only when Output has no red errors.
+
+Don't edit scripts directly in Studio (`multi_edit`) unless Rojo is off, or the files and Studio drift apart. Never run `save_place` over the published game without the user's okay.
 
 ## Saving
 - **Roblox:** DataStore with session locking.

@@ -1,0 +1,2 @@
+# Selene checks the Luau code for mistakes. Run `selene src` in the roblox folder.
+std = "roblox"
