@@ -22,13 +22,13 @@ Pick one:
 
 The folder has everything:
 
-- `roblox/`: the game code and the place file `LoseABrainCell_v1.6.rbxlx`
+- `roblox/`: the game code and the place file `LoseABrainCell_v1.7.rbxlx`
 - `web/`: the browser version
 - `CLAUDE.md`: the rules Claude reads first
 
 ## 3. Turn on Studio's Claude connection (MCP)
 
-1. Open Roblox Studio, then **File → Open from File** → `roblox/LoseABrainCell_v1.6.rbxlx`.
+1. Open Roblox Studio, then **File → Open from File** → `roblox/LoseABrainCell_v1.7.rbxlx`.
 2. **Home → Game Settings → Security** → turn on **Enable Studio Access to API Services** → **Save**.
 3. Open the **Assistant** panel → click **…** → **Manage MCP Servers**.
 4. Turn on **Enable Studio as MCP server**.

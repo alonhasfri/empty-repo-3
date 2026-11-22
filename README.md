@@ -13,7 +13,7 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 
 | Folder | What it is |
 |---|---|
-| `roblox/` | The Roblox game: the Luau source (`src/`), the builder (`tools/build_rbxlx.py`), the ready place files (`LoseABrainCell_v1.6.rbxlx` is the latest) and the guide `HOW_TO_USE.md`. |
+| `roblox/` | The Roblox game: the Luau source (`src/`), the builder (`tools/build_rbxlx.py`), the ready place files (`LoseABrainCell_v1.7.rbxlx` is the latest) and the guide `HOW_TO_USE.md`. |
 | `web/` | The browser version: `lose-a-brain-cell-web.html` (the built game, one file) and `src/` (its source modules). |
 | `web/tests/` | Playwright play-tests (run `node web/tests/test10.js` and the rest; screenshots go to `web/tests/shots/`). |
 | `marketing/` | Game icon (512×512) and three 1920×1080 thumbnails. |
@@ -22,11 +22,11 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 | `CLAUDE.md` | Rules, style and structure for any AI working on this project. Read it first. |
 | `.claude/skills/ship-browser-update/` | The step-by-step release recipe (build, test, publish, push, document). |
 
-## Roblox version (updates 1.0 to 1.6)
+## Roblox version (updates 1.0 to 1.7)
 
-The latest code (1.6: careers, Lose-path school, animal forms) is in `roblox/src` and reaches Studio through Rojo. The newest ready place file is still `LoseABrainCell_v1.6.rbxlx`; rebuild it (below) to get a 1.6 file.
+The latest code is in `roblox/src` and reaches Studio through Rojo. 1.6 added careers, Lose-path school and animal forms. 1.7 (written in the cloud, **not play-tested yet**) makes the brain run the game: a phone that changes with your brain (toy, cozy, real OS), Hoppr rides, Brain Bank, shifts and payslips, Lose-path scrambled labels, brain lag and joke ads with an Effects slider, a wordless animal menu with a smell trail, and map polish (Brain Tower, district gates, lookouts). The newest ready place file is `LoseABrainCell_v1.7.rbxlx`.
 
-1. In Roblox Studio: **File → Open from File** → `roblox/LoseABrainCell_v1.6.rbxlx`.
+1. In Roblox Studio: **File → Open from File** → `roblox/LoseABrainCell_v1.7.rbxlx`.
 2. **Home → Game Settings → Security → Enable Studio Access to API Services**.
 3. **File → Publish to Roblox As** → "brain game" → **Overwrite**.
 
@@ -35,7 +35,7 @@ The town is built by code when you press Play. Game pass, sound and badge IDs ar
 To rebuild the place file from source:
 
 ```
-python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.6.rbxlx
+python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.7.rbxlx
 ```
 
 ## Browser version (has updates 1.5, 1.6 and more)
@@ -61,7 +61,7 @@ The polish pack (from a video of AI game-making tips) adds:
 ## Not done yet
 
 - Port the rest of the browser features to Roblox (1.5 and 1.6 are done; the horror story, job minigames and the interactive world are not).
-- Build a 1.6 place file (`python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.6.rbxlx`, needs Python).
+- Play-test 1.7 in Studio.
 - Update 1.7 (time travel) and 2.0 (creator update).
 - Upload `marketing/` to the Roblox game page. These are made from the browser version; real Studio screenshots would match the Roblox game better.
 - Real sounds for the Roblox file (all sound IDs are still 0).

@@ -952,6 +952,12 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.7", name = "Your Brain Runs the Game", lines = {
+		"📱 Your phone changes with your brain: a chunky toy phone, a cozy phone, or (IQ 120+) a real phone you swipe through.",
+		"🚖 Hoppr rides: see the price and time before you pay. 🏦 Brain Bank savings. ⏰ Shifts with payslips.",
+		"🫠 Lose path: scrambled app names, brain lag and silly joke ads (turn them down in Settings → Effects).",
+		"🐾 Animals get a no-words menu and follow a smell trail. 🧠 New Brain Tower, district gates and lookouts.",
+	} },
 	{ v = "1.6", name = "Careers, School & Animals", lines = {
 		"📈 Jobs are career ladders now: work, get promoted, earn more (Bagger → Store Manager, Tutor → Dean…).",
 		"🏫 Lose path: the school bell rings. Get to class or the truant officer comes for you.",
