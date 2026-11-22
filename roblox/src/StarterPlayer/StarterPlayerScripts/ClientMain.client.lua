@@ -27,6 +27,17 @@ LoseFX.isBusy = function()
 	return Conversation.isOpen()
 end
 LoseFX.start()
+-- 1.7: animals get a wordless icon menu with a smell trail instead of the phone
+local AnimalUI = require(Client.AnimalUI)
+PhoneOS.animalUI = AnimalUI.open
+AnimalUI.hasPower = function()
+	return Hud.hasPower()
+end
+AnimalUI.onPower = function()
+	if Hud.onPower then
+		Hud.onPower()
+	end
+end
 
 Hud.onMenu = Stations.settings
 Hud.onAdmin = AdminPanel.open
@@ -128,6 +139,7 @@ local function applyState(st)
 	Style.apply(st)
 	Tutorial.onState(st)
 	Conversation.onState(st)
+	AnimalUI.onState(st)
 end
 
 Remote.on("state", applyState)
