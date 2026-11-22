@@ -49,6 +49,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
   - The polish pack (first-10-seconds hook, sound kit, triple feedback, tuning table, odds, save backup, clean photo camera).
 - **Next:**
   - Port the rest of the browser features to Roblox (1.6 careers, school and animal forms next).
+  - **Brain-scaled UI, systems and map** (after 1.6): follow `docs/Brain scaled UI and map design.md`. Brain level changes the look, the rules and the tools: low brain = loud, chunky, glitchy cash-grab UI with simple rules and dumb-only shortcuts; high brain = calm, realistic phone OS with original parody apps, ride-hail, shifts and paychecks, a bank. Lock the map and UI skeleton first. Never use real brand names or look-alike logos. Add an Effects intensity slider. Never scramble prices, odds or confirm buttons.
   - 1.7 time travel.
   - 2.0 creator update.
 
