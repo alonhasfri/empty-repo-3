@@ -39,7 +39,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
 - `.claude/skills/ship-browser-update/`: the release recipe (tip 10).
 
 ## Versions
-- **Roblox:** 1.0 to 1.5 (`Config.Version = "1.5"`). 1.5 = real places, conversation scenes, exit doors and Unstuck, ported from the browser and play-tested in Studio on PC and phone size (Nov 2026). The `.rbxlx` files in `roblox/` are still 1.4: the 1.5 code lives in `roblox/src` and reaches Studio through Rojo. Pass, sound and badge IDs are still 0.
+- **Roblox:** 1.0 to 1.5 (`Config.Version = "1.5"`). 1.5 = real places, conversation scenes, exit doors and Unstuck, ported from the browser and play-tested in Studio on PC and phone size (Nov 2026). `roblox/LoseABrainCell_v1.5.rbxlx` is the latest place file (built in the cloud session, since the PC has no Python). Rojo keeps Studio in sync with `roblox/src` while working. Pass, sound and badge IDs are still 0.
 - **Browser only:**
   - (1.5 real places and conversations: now also in Roblox.)
   - 1.6 careers, school and animal forms.
@@ -75,7 +75,7 @@ When Claude Code runs on the PC with Studio's MCP server connected (see `START_H
 Tips learned while porting 1.5:
 - A `rojo serve` may already be running (port 34872) with Studio connected. Check with `curl -s http://localhost:34872/api/rojo` before starting another one.
 - Studio test saves persist (DataStore access is on), so your path, cells and position carry over between playtests. Use the admin commands through the remote (`Request:InvokeServer("admin", {cmd = "setpath" or "setcells", target = userId, arg = ...})`) to switch path or brain level.
-- The 1.4 tutorial covers the screen on first play; hide `BrainUI.TutorialStage` from the client while testing.
+- The tutorial now has a "Skip tutorial ⏭" button, types fast, and shows NEXT as soon as the text is typed. Skipping counts as done (replay from Settings). While testing you can still hide `BrainUI.TutorialStage` from the client.
 - Simulated mouse clicks on GUI buttons often miss (inset and device-simulator offsets). Trigger prompts with `ProximityPrompt:InputHoldBegin()/InputHoldEnd()` from the client, and test GUI through keyboard shortcuts (conversation: 1/2/3 to choose, Backspace to leave).
 - `execute_luau` on the client resets a Scriptable camera to Custom. To see a scripted camera, press a key first, then `screen_capture`.
 - Phone check: set the device with `StudioDeviceSimulatorService` (iPhone 17 Pro) before pressing Play, and call `StopSimulationAsync()` afterwards.

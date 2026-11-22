@@ -13,7 +13,7 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 
 | Folder | What it is |
 |---|---|
-| `roblox/` | The Roblox game: the Luau source (`src/`), the builder (`tools/build_rbxlx.py`), the ready place files (`LoseABrainCell_v1.4.rbxlx` is the latest) and the guide `HOW_TO_USE.md`. |
+| `roblox/` | The Roblox game: the Luau source (`src/`), the builder (`tools/build_rbxlx.py`), the ready place files (`LoseABrainCell_v1.5.rbxlx` is the latest) and the guide `HOW_TO_USE.md`. |
 | `web/` | The browser version: `lose-a-brain-cell-web.html` (the built game, one file) and `src/` (its source modules). |
 | `web/tests/` | Playwright play-tests (run `node web/tests/test10.js` and the rest; screenshots go to `web/tests/shots/`). |
 | `marketing/` | Game icon (512×512) and three 1920×1080 thumbnails. |
@@ -22,9 +22,9 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 | `CLAUDE.md` | Rules, style and structure for any AI working on this project. Read it first. |
 | `.claude/skills/ship-browser-update/` | The step-by-step release recipe (build, test, publish, push, document). |
 
-## Roblox version (updates 1.0 to 1.4)
+## Roblox version (updates 1.0 to 1.5)
 
-1. In Roblox Studio: **File → Open from File** → `roblox/LoseABrainCell_v1.4.rbxlx`.
+1. In Roblox Studio: **File → Open from File** → `roblox/LoseABrainCell_v1.5.rbxlx`.
 2. **Home → Game Settings → Security → Enable Studio Access to API Services**.
 3. **File → Publish to Roblox As** → "brain game" → **Overwrite**.
 
@@ -33,7 +33,7 @@ The town is built by code when you press Play. Game pass, sound and badge IDs ar
 To rebuild the place file from source:
 
 ```
-python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.4.rbxlx
+python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.5.rbxlx
 ```
 
 ## Browser version (has updates 1.5, 1.6 and more)
@@ -58,7 +58,7 @@ The polish pack (from a video of AI game-making tips) adds:
 
 ## Not done yet
 
-- Test 1.4 in Roblox Studio.
+- Port 1.6 and the rest of the browser features to Roblox.
 - Bring the browser-only features (1.5, 1.6, the horror story) into the Roblox file.
 - Update 1.7 (time travel) and 2.0 (creator update).
 - Upload `marketing/` to the Roblox game page. These are made from the browser version; real Studio screenshots would match the Roblox game better.

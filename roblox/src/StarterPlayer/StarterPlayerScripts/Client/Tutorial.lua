@@ -1,10 +1,11 @@
 -- Tutorial (update 1.4): a guided, cinematic tutorial for each path.
 --
--- It is NOT a skippable pop-up. The first time:
+-- Shorter since 1.5: fast typing, NEXT shows as soon as the text is typed, and a
+-- "Skip tutorial" button is always there (you can replay it from Settings). The first time:
 --   * NOTE cards take over the screen: letterbox bars, the camera flies over the town,
 --     music goes quiet, "⚠️ IMPORTANT" slams in, Dr. Wrinkles talks, the text types
 --     itself out word by word, key words light up and bounce, a little animation plays.
---     The NEXT button only appears once you've had time to read it.
+--     The NEXT button appears as soon as the text is typed.
 --   * Key notes have a quick question. Wrong answer = the note plays again.
 --   * DO-IT steps: "STEP X OF Y" with a bouncing arrow on the real button. You learn by
 --     actually doing it.
@@ -404,13 +405,15 @@ local function showNote(key: string, onDone)
 	UI.stroke(nextBtn, Color3.new(0, 0, 0), 2, 0.4)
 	local nextScale = UI.new("UIScale", { Parent = nextBtn })
 	local waitLabel = UI.new("TextLabel", { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -14, 1, -12), Size = UDim2.fromScale(0.4, 0.08), BackgroundTransparency = 1, Text = "⏳ read it…", Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.fromRGB(150, 140, 150), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 105, Parent = card })
-	if state.replay then
-		local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0.11, 6), Size = UDim2.fromOffset(110, 32), Text = "Skip ⏭", Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(60, 60, 70), ZIndex = 110, Parent = stage })
+	local closeNote -- set below; lets Skip close the card in one tap
+	do
+		local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0.11, 6), Size = UDim2.fromOffset(150, 32), Text = state.replay and "Skip ⏭" or "Skip tutorial ⏭", Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(60, 60, 70), ZIndex = 110, Parent = stage })
 		UI.corner(skip, 10)
 		skip.Activated:Connect(function()
 			state.skipAll = true
-			nextBtn.Visible = true
-			nextBtn:SetAttribute("Force", true)
+			if closeNote then
+				closeNote(onDone)
+			end
 		end)
 	end
 
@@ -439,6 +442,8 @@ local function showNote(key: string, onDone)
 		end)
 	end
 
+	closeNote = close
+
 	-- play the note (and again if a quiz answer was wrong)
 	local function play()
 		label.MaxVisibleGraphemes = 0
@@ -453,11 +458,11 @@ local function showNote(key: string, onDone)
 			end
 		end
 		nextBtn.Visible = false
-		waitLabel.Visible = not state.replay
+		waitLabel.Visible = false
 		local total = plainLength(body)
-		local speed = UI.settings.extraTime and 22 or 34 -- characters per second
+		local speed = UI.settings.extraTime and 40 or 70 -- characters per second
 		task.spawn(function()
-			task.wait(0.6)
+			task.wait(0.25)
 			local shown = 0
 			while shown < total and stage.Parent do
 				if state.skipAll then
@@ -496,11 +501,8 @@ local function showNote(key: string, onDone)
 				task.wait(0.22)
 			end
 		end)
-		-- NEXT appears after enough time to actually read it (not when the typing ends)
-		local readTime = math.max(4, plainLength(body) / 15)
-		if UI.settings.extraTime then
-			readTime *= 1.6
-		end
+		-- NEXT appears when the typing ends
+		local readTime = 0.4 + plainLength(body) / speed
 		task.delay(state.replay and 0.8 or readTime, function()
 			if not stage.Parent then
 				return
@@ -611,10 +613,15 @@ local function showDo(step, index: number, count: number)
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(76, 6), Size = UDim2.new(1, -90, 0, 18), Text = "STEP " .. index .. " OF " .. count, Font = Enum.Font.GothamBlack, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 220, 60), ZIndex = 41, Parent = doCard })
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(76, 24), Size = UDim2.new(1, -90, 0, 30), Text = step.title, Font = Enum.Font.FredokaOne, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.4, ZIndex = 41, Parent = doCard })
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(76, 56), Size = UDim2.new(1, -90, 0, 34), Text = step.desc, Font = Enum.Font.GothamBold, TextScaled = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(230, 240, 255), ZIndex = 41, Parent = doCard })
-	if state.replay then
+	do
 		local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(22, 22), Text = "✕", Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 42, Parent = doCard })
 		skip.Activated:Connect(function()
-			Tutorial.stop()
+			-- first time: counts as done, so it won't come back (replay it from Settings)
+			if Tutorial.skipNow then
+				Tutorial.skipNow()
+			else
+				Tutorial.stop()
+			end
 		end)
 	end
 	tween(doCard, 0.5, { Position = UDim2.new(0.5, 0, 0, 66) }, Enum.EasingStyle.Back)
@@ -685,6 +692,10 @@ local function finish()
 end
 
 local runStep
+
+function Tutorial.skipNow()
+	finish()
+end
 
 local function advance()
 	state.step += 1
