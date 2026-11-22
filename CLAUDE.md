@@ -51,6 +51,11 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
   - 1.7 time travel.
   - 2.0 creator update.
 
+## Working with the user
+- **Always offer to do it for them.** Whenever the user is about to do something by hand (installing, clicking through settings, copying messages between chats, starting a chat, checking on a chat), do it yourself or offer a one-click way: a suggested task card for jobs that need the PC (Studio, play-testing, Rojo), a scheduled check-in on other chats, a ready-to-paste message or a link. Only hand it to the user when it truly needs them (signing in, clicking Allow, publishing, spending money), and say exactly what to click.
+- Ask first before anything hard to undo or outside-facing: deleting, making something public, emails, private info, money.
+- Explain things in plain, simple words.
+
 ## Workflow
 1. Back up first: commit before big changes. In Roblox Studio, use **File → Version History** before big edits.
 2. Build: `python3 web/src/build.py` (browser) or `python3 roblox/tools/build_rbxlx.py <name>.rbxlx` (Roblox).
