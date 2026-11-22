@@ -1069,4 +1069,23 @@ Content.Settings17 = {
 	ClassicHud = "🧩 Simple phone (same for every brain)",
 }
 
+-- 1.7: map signs and guides
+Content.Map = {
+	Tower = "🧠 THE BRAIN TOWER",
+	Talk = "Talk",
+	Gates = {
+		{ x = -85, name = "🫠 BRAINROT DISTRICT", guide = "Gate Guide Gus", color = Color3.fromRGB(255, 90, 180), tip = "🫠 This way: Brainrot Mall, Microwave Diner, Wall Alley. Lose-path fun!" },
+		{ x = 85, name = "🎓 SMARTY DISTRICT", guide = "Gate Guide Greta", color = Color3.fromRGB(70, 140, 255), tip = "🎓 This way: School, University, Cinema, Café, Hospital, Office, Job Center, Courthouse, Lab." },
+	},
+	Ends = {
+		{ x = -430, z = 0, name = "🌅 West Lookout" },
+		{ x = 430, z = 0, name = "🌄 East Lookout" },
+		{ x = 0, z = -430, name = "🏔 North Lookout" },
+		{ x = 0, z = 430, name = "🌊 South Lookout" },
+	},
+	Hole = "🕳 dumb shortcut",
+	HoleYes = "🕳 Squeeeeze! Only dumb brains fit. Welcome to the Brainrot Mall!",
+	HoleNo = "🧠 You're too smart to fit in that hole. (Take Hoppr or the taxi.)",
+}
+
 return Content

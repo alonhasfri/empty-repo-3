@@ -11,6 +11,7 @@ local Debris = game:GetService("Debris")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Content = require(ReplicatedStorage.Shared.Content)
+local Config = require(ReplicatedStorage.Shared.Config)
 
 local Net = require(script.Parent.Net)
 local DataService = require(script.Parent.DataService)
@@ -173,6 +174,10 @@ local function building(o)
 	p(CFrame.new(0, doorH + (h - doorH) / 2, -d / 2 + t / 2), Vector3.new(doorW, h - doorH, t), wall, "wall", wm)
 	-- base trim along the bottom of the front
 	p(CFrame.new(0, 0.9, -d / 2 - 0.1), Vector3.new(w + 0.4, 1.8, 0.4), Color3.fromRGB(110, 105, 100), "trim", { Material = Enum.Material.Concrete })
+	-- 1.7: wall depth: corner pilasters that stick out of the front, so walls aren't flat
+	for _, sx in ipairs({ -1, 1 }) do
+		p(CFrame.new(sx * (w / 2 - 1), h / 2, -d / 2 - 0.6), Vector3.new(2.4, h, 1.2), Color3.fromRGB(235, 232, 225), "trim", { Material = Enum.Material.Concrete })
+	end
 	-- windows (glass strips, outside)
 	local glass = { Material = Enum.Material.Glass, Transparency = 0.35, CanCollide = false }
 	local floors = math.max(1, math.floor(h / 14))
@@ -181,6 +186,10 @@ local function building(o)
 		if y < h - 3 then
 			p(CFrame.new(-(doorW / 2 + side / 2), y, -d / 2 - 0.05), Vector3.new(side * 0.75, 4, 0.2), Color3.fromRGB(150, 200, 230), nil, glass)
 			p(CFrame.new(doorW / 2 + side / 2, y, -d / 2 - 0.05), Vector3.new(side * 0.75, 4, 0.2), Color3.fromRGB(150, 200, 230), nil, glass)
+			-- 1.7: window sills (depth under each front window)
+			for _, sx in ipairs({ -1, 1 }) do
+				p(CFrame.new(sx * (doorW / 2 + side / 2), y - 2.3, -d / 2 - 0.5), Vector3.new(side * 0.8, 0.5, 1), Color3.fromRGB(235, 232, 225), "trim", { Material = Enum.Material.Concrete })
+			end
 			p(CFrame.new(-w / 2 - 0.05, y, 0), Vector3.new(0.2, 4, d * 0.7), Color3.fromRGB(150, 200, 230), nil, glass)
 			p(CFrame.new(w / 2 + 0.05, y, 0), Vector3.new(0.2, 4, d * 0.7), Color3.fromRGB(150, 200, 230), nil, glass)
 		end
@@ -1036,12 +1045,121 @@ local function buildLighting()
 	end
 end
 
+---------------------------------------------------------------------
+-- 1.7 map polish: one big landmark, district gates with a guide, streets that end
+-- at something, a dumb-only shortcut, and a phone speed pass.
+-- Landmarks never move between looks (only their paint changes), so players never get lost.
+---------------------------------------------------------------------
+local function buildPolish()
+	local CM = Content.Map
+	-- The Brain Tower: rises out of the fountain, seen from every street
+	local H = Config.Map.LandmarkHeight
+	part({ Name = "BrainTowerColumn", Shape = Enum.PartType.Cylinder, CFrame = CFrame.new(0, 10 + (H - 14) / 2, 0) * CFrame.Angles(0, 0, math.rad(90)), Size = Vector3.new(H - 14, 5, 5), Color = Color3.fromRGB(240, 235, 225), Material = Enum.Material.Marble, NoScaleSize = true }, "trim")
+	local top = part({ Name = "BrainTowerTop", Shape = Enum.PartType.Ball, Size = Vector3.new(16, 16, 16), Position = Vector3.new(0, H, 0), Color = Color3.fromRGB(255, 140, 185), Material = Enum.Material.SmoothPlastic, NoScaleSize = true }, "accent")
+	local glow = Instance.new("PointLight")
+	glow.Range = 40
+	glow.Brightness = 1.5
+	glow.Color = Color3.fromRGB(255, 170, 200)
+	glow.Parent = top
+	sign(top, CM.Tower, 12, 320, 50).Parent.MaxDistance = 2000
+
+	-- District gates on the main avenue, each with its own color, sign and a guide
+	for _, g in ipairs(CM.Gates) do
+		local x = g.x
+		local color = g.color
+		for _, z in ipairs({ -23, 23 }) do
+			part({ Name = "GatePost", Size = Vector3.new(3, 22, 3), Position = Vector3.new(x, 11, z), Color = color, Material = Enum.Material.Concrete }, "accent")
+		end
+		local beam = part({ Name = "GateBeam", Size = Vector3.new(4, 4, 50), Position = Vector3.new(x, 23, 0), Color = color, Material = Enum.Material.Concrete }, "accent")
+		sign(beam, g.name, 5, 320, 46)
+		local npc = FriendService.npc(g.guide, nil, color, Color3.fromRGB(60, 60, 70))
+		local root
+		if npc then
+			for _, d in ipairs(npc:GetDescendants()) do
+				if d:IsA("BasePart") then
+					d.Anchored = true
+				end
+			end
+			npc:PivotTo(CFrame.new(sp(Vector3.new(x, 3.8, 30))) * CFrame.Angles(0, x < 0 and -math.pi / 2 or math.pi / 2, 0))
+			npc.Parent = mapFolder
+			root = npc:FindFirstChild("HumanoidRootPart") or npc.PrimaryPart
+		end
+		if not root then
+			root = part({ Name = g.guide, Size = Vector3.new(2, 5, 1.5), Position = Vector3.new(x, 3.1, 30), Color = color }, "accent")
+		end
+		sign(root, g.guide, 4, 200, 28)
+		prompt(root, CM.Talk, g.guide).Triggered:Connect(function(player)
+			BrainService.toast(player, g.tip)
+		end)
+	end
+
+	-- Every street ends at something: a little lookout with trees, a bench and a sign
+	for _, e in ipairs(CM.Ends) do
+		local c = Vector3.new(e.x, 0.6, e.z)
+		part({ Name = "LookoutFloor", Size = Vector3.new(40, 0.6, 40), Position = c, Color = Color3.fromRGB(200, 190, 170), Material = Enum.Material.Cobblestone }, "floor")
+		tree(c + Vector3.new(-14, 0, -14), 1)
+		tree(c + Vector3.new(14, 0, -14), 1)
+		tree(c + Vector3.new(-14, 0, 14), 0.8)
+		bench(CFrame.new(c + Vector3.new(0, 0, 8)))
+		local board = part({ Name = "LookoutSign", Size = Vector3.new(24, 6, 1), Position = c + Vector3.new(0, 6, -10), Color = Color3.fromRGB(40, 70, 60) }, "accent")
+		surfaceSign(board, e.name)
+	end
+
+	-- A dumb-only shortcut: a crawl hole in the plaza that only Lose-path brains fit through
+	local function shortcut(name: string, from: Vector3, to: string)
+		local hole = part({ Name = name, Shape = Enum.PartType.Cylinder, CFrame = CFrame.new(from) * CFrame.Angles(0, 0, math.rad(90)), Size = Vector3.new(0.4, 9, 9), Color = Color3.fromRGB(30, 20, 30), Material = Enum.Material.Neon, CanCollide = false, NoScaleSize = true })
+		sign(hole, CM.Hole, 3, 220, 30)
+		local cooldown = {}
+		hole.Touched:Connect(function(hit)
+			local player = game:GetService("Players"):GetPlayerFromCharacter(hit.Parent)
+			if not player or (cooldown[player] and os.clock() < cooldown[player]) then
+				return
+			end
+			cooldown[player] = os.clock() + 3
+			local data = DataService.get(player)
+			if data and data.path == "Lose" then
+				BrainService.toast(player, CM.HoleYes)
+				WorldService.teleport(player, to)
+			else
+				BrainService.toast(player, CM.HoleNo)
+			end
+		end)
+	end
+	shortcut("DumbHole", Vector3.new(-62, 0.9, -40), "lose")
+
+	-- Phone speed pass: tiny decor casts no shadows and has no collision
+	local small, noShadow = Config.Map.SmallDecorSize, Config.Map.NoShadowSize
+	local function pass(root: Instance)
+		for _, d in ipairs(root:GetDescendants()) do
+			if d:IsA("BasePart") and not d:IsA("Seat") and not d:IsA("VehicleSeat") and not d:IsA("SpawnLocation") and d.Anchored then
+				local s = d.Size
+				local maxSide = math.max(s.X, s.Y, s.Z)
+				if maxSide <= noShadow then
+					d.CastShadow = false
+				end
+				if maxSide <= small and d:GetAttribute("Role") ~= "floor" and not d:FindFirstChildWhichIsA("ProximityPrompt") then
+					d.CanCollide = false
+				end
+			end
+		end
+	end
+	pass(mapFolder)
+	local rooms = workspace:FindFirstChild("Rooms")
+	if rooms then
+		pass(rooms)
+	end
+end
+
 function WorldService.build()
 	buildLighting()
 	buildGround()
 	buildPlaza()
 	buildLoseSide()
 	buildGainSide()
+	local ok, err = pcall(buildPolish) -- 1.7 (a problem here must never stop the town from loading)
+	if not ok then
+		warn("[WorldService] 1.7 map polish failed: " .. tostring(err))
+	end
 	-- microwave countdown text
 	task.spawn(function()
 		local seconds = 600
