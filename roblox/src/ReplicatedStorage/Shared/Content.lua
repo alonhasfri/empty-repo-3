@@ -873,4 +873,27 @@ Content.Conversations = {
 	},
 }
 
+---------------------------------------------------------------------
+-- Settings -> "What's new": one entry per update, newest first.
+-- Add a new entry at the TOP each update (and bump Config.Version).
+---------------------------------------------------------------------
+Content.Updates = {
+	{ v = "1.5", name = "Real Places", lines = {
+		"🏫 Walk into buildings that have a use: furniture, people and seats inside.",
+		"🎬 Conversation scenes: the camera moves in, pick your answer bottom-left (or press 1/2/3).",
+		"🚪 EXIT doors in every building, and a 🆘 Unstuck button (top right).",
+		"⏭ The tutorial is faster and has a Skip button.",
+	} },
+	{ v = "1.4", name = "Space & Castle", lines = {
+		"🚀 Space projects and the Moon for the smartest players.",
+		"🏰 The Castle for the dumbest players.",
+		"📖 A new guided tutorial for each path.",
+		"🏡 New cozy town look on the Gain path.",
+	} },
+	{ v = "1.3", name = "Projects", lines = { "🔬 Inventions, statues and big projects." } },
+	{ v = "1.2", name = "Smart vs Dumb", lines = { "🤝 Activities where smart and dumb players play together." } },
+	{ v = "1.1", name = "More to do", lines = { "📱 More phone apps, jobs and Skill Gates." } },
+	{ v = "1.0", name = "Launch", lines = { "🧠 Pick a door: Lose a Brain Cell or Gain a Brain Cell." } },
+}
+
 return Content

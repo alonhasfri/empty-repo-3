@@ -9,6 +9,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Brain = require(ReplicatedStorage.Shared.Brain)
+local Config = require(ReplicatedStorage.Shared.Config)
+local Content = require(ReplicatedStorage.Shared.Content)
 
 local UI = require(script.Parent.UI)
 local Remote = require(script.Parent.Remote)
@@ -1237,6 +1239,25 @@ function Stations.deathScreen(d)
 end
 
 ---------------------------------------------------------------------
+-- What's new (from Settings): the update list in Content.Updates
+---------------------------------------------------------------------
+function Stations.whatsNew()
+	local m = UI.modal("📋 What's new", { color = C.accent })
+	for i, u in ipairs(Content.Updates or {}) do
+		local head = "Update " .. u.v .. ": " .. u.name
+		if u.v == Config.Version then
+			head ..= "  ⬅ YOU ARE HERE"
+		end
+		UI.label(m.content, head, { LayoutOrder = i * 10, Font = Enum.Font.GothamBlack })
+		UI.label(m.content, table.concat(u.lines, "\n"), { LayoutOrder = i * 10 + 1, TextColor3 = C.muted })
+	end
+	UI.button(m.content, "⬅ Back to Settings", function()
+		Stations.settings()
+	end, { LayoutOrder = 9999 })
+	m.focus()
+end
+
+---------------------------------------------------------------------
 -- Settings menu
 ---------------------------------------------------------------------
 function Stations.settings()
@@ -1274,6 +1295,11 @@ function Stations.settings()
 		end, { LayoutOrder = order })
 		b.Text = label .. ": " .. (s[key] and "ON" or "OFF")
 	end
+	-- which update you're on, and what's new
+	UI.label(m.content, "🆕 You're on update " .. tostring(Config.Version), { LayoutOrder = -2 })
+	UI.button(m.content, "📋 What's new in " .. tostring(Config.Version), function()
+		Stations.whatsNew()
+	end, { LayoutOrder = -1, BackgroundColor3 = Color3.fromRGB(40, 170, 110) })
 	stepper("🎵 Music volume", "music", 1)
 	stepper("🔊 Sound effects", "sfx", 3)
 	toggle("⚡ Reduce flashing", "reduceFlashing", 5)

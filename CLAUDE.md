@@ -27,6 +27,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
   - `ReplicatedStorage/Shared/Config.lua` holds every number, pass, sound and admin setting (tip 23).
   - `Content.lua` holds all text and questions.
   - `Badges.lua` holds the badge list.
+  - `Content.Updates` is the "What's new" list shown in Settings (it shows `Config.Version`). Every update: add an entry at the top and bump `Config.Version`.
   - 1.5 port: `ServerScriptService/Services/Rooms.lua` (room layouts, furniture kit, seats, conversation spots, exit doors), `Services/ConversationService.lua` (server side of the conversation scenes), `StarterPlayerScripts/Client/Conversation.lua` (the cinematic: bars, camera cuts, choices bottom-left). The Unstuck handler is in `Main.server.lua`, its 🆘 button in `Hud.lua`. Text: `Content.Rooms`, `Content.Conversations`, `Content.ConvUI`, `Content.Unstuck`. Numbers: `Config.Rooms`, `Config.Conversations` (one `{meter, brain}` pair per choice), `Config.Unstuck`.
   - `roblox/tools/build_rbxlx.py` builds the place file.
   - `roblox/default.project.json` is the Rojo project (same layout as the builder). `rokit.toml` pins Rojo and Selene; `selene.toml` sets up the code checker.
