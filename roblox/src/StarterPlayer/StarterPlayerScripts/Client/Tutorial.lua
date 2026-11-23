@@ -204,6 +204,15 @@ local function bor(a: number, b: number): number
 	return out
 end
 
+-- Skipping counts as having seen every note, so no "moment" note pops up right after a skip
+local function markAllSeen()
+	for _, note in pairs(NOTES) do
+		if note.bit then
+			state.notesSeen = setBit(state.notesSeen or 0, note.bit)
+		end
+	end
+end
+
 local function persist(extra)
 	if state.replay or not Tutorial.save then
 		return
@@ -407,10 +416,14 @@ local function showNote(key: string, onDone)
 	local waitLabel = UI.new("TextLabel", { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -14, 1, -12), Size = UDim2.fromScale(0.4, 0.08), BackgroundTransparency = 1, Text = "⏳ read it…", Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.fromRGB(150, 140, 150), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 105, Parent = card })
 	local closeNote -- set below; lets Skip close the card in one tap
 	do
-		local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0.11, 6), Size = UDim2.fromOffset(150, 32), Text = state.replay and "Skip ⏭" or "Skip tutorial ⏭", Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(60, 60, 70), ZIndex = 110, Parent = stage })
+		local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0.11, 6), Size = UDim2.fromOffset(160, 40), Text = state.replay and "Skip ⏭" or "Skip tutorial ⏭", Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(60, 60, 70), ZIndex = 110, Parent = stage })
 		UI.corner(skip, 10)
 		skip.Activated:Connect(function()
-			state.skipAll = true
+			markAllSeen()
+			if state.running then
+				state.skipAll = true -- skip the rest of the sequence too
+			end
+			persist()
 			if closeNote then
 				closeNote(onDone)
 			end
@@ -694,6 +707,7 @@ end
 local runStep
 
 function Tutorial.skipNow()
+	markAllSeen()
 	finish()
 end
 
