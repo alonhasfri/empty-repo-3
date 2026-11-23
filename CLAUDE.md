@@ -14,8 +14,8 @@ Players do things that change their brain cells: books, jobs and inventions to g
 - **Do one feature at a time,** then test, then the next.
 - **Never say "done" without testing** (see Workflow).
 
-## Art style (locked)
-Blocky Roblox look. The town style follows brain level:
+## Art style (updated Nov 23 by the user)
+**Semi-realistic and detailed, with real textures** (PBR SurfaceAppearance or MaterialVariants, real materials, detailed buildings with trims, windows, balconies and props), not plain coloured boxes. There's a **Low detail mode** for weak phones (detected automatically, and togglable in Settings). The brain-level looks still change the mood on top of it:
 - **Lobby and start of Lose:** cute, with cash-grab signs.
 - **Lose:** cash grab, then nonsense below 45B.
 - **Gain:** cash grab (IQ 80–95), then cozy (95–120), realistic (120–135), fancy (135–200), and futuristic (200+).
