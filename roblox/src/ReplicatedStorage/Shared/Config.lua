@@ -239,6 +239,12 @@ Config.Rooms = {
 	},
 	BoardPoints = { Lose = 0.5, Gain = 0.3 }, -- writing on a whiteboard
 	FridgeOpenAngle = 110, -- degrees
+	StandUpDelay = 0.25, -- seconds between standing up from a seat and being moved
+}
+
+-- Unstuck button (1.5): takes you outside the building you're in, or to the nearest street.
+Config.Unstuck = {
+	Cooldown = 10, -- seconds
 }
 
 -- Conversation scenes (1.5). For every choice: { meter change, brain points }.

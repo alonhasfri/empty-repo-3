@@ -17,6 +17,7 @@ local Shared = ReplicatedStorage.Shared
 local Brain = require(Shared.Brain)
 local Config = require(Shared.Config)
 local Narration = require(Shared.Narration)
+local Content = require(Shared.Content)
 
 local UI = require(script.Parent.UI)
 
@@ -299,7 +300,7 @@ end
 ---------------------------------------------------------------------
 -- TOP-RIGHT: settings / staff; RIGHT: big SHOP and MAP buttons
 ---------------------------------------------------------------------
-local corner = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 6), Size = UDim2.fromOffset(120, 50), BackgroundTransparency = 1, Parent = UI.gui }, {
+local corner = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 6), Size = UDim2.fromOffset(180, 50), BackgroundTransparency = 1, Parent = UI.gui }, {
 	UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = UDim.new(0, 8) }),
 })
 local function roundButton(parent, icon: string, color: Color3, order: number, onClick)
@@ -322,6 +323,13 @@ local adminBtn = roundButton(corner, "🛠", Color3.fromRGB(170, 50, 90), 1, fun
 	end
 end)
 adminBtn.Visible = false
+-- 1.5: a way out if you get stuck (furniture, odd corners, falling behind things)
+local unstuckBtn = roundButton(corner, Content.Unstuck.Button, Color3.fromRGB(200, 120, 30), 0, function()
+	if Hud.onUnstuck then
+		Hud.onUnstuck()
+	end
+end)
+unstuckBtn.Name = "Unstuck"
 
 local rightCol = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 64), Size = UDim2.fromOffset(170, 130), BackgroundTransparency = 1, Parent = UI.gui }, {
 	UI.new("UIListLayout", { Padding = UDim.new(0, 8), HorizontalAlignment = Enum.HorizontalAlignment.Right }),

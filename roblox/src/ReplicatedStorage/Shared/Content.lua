@@ -506,6 +506,7 @@ Content.Rooms = {
 		Gain = { "¾ = 0.75", "H₂O = water", "√144 = 12", "E = mc²" },
 	},
 	Counselor = { action = "Find a job", object = "📋 Job Counselor" },
+	Exit = { sign = "🚪 EXIT", action = "Leave", object = "🚪 Exit door" },
 }
 
 ---------------------------------------------------------------------
@@ -514,6 +515,13 @@ Content.Rooms = {
 -- The numbers for every choice (meter and brain cells) are in Config.Conversations,
 -- in the same order as the choices here.
 ---------------------------------------------------------------------
+-- A way out if you get stuck (1.5)
+Content.Unstuck = {
+	Button = "🆘",
+	Done = "🆘 Unstuck! You're back outside.",
+	Wait = "🆘 Wait %d seconds before using Unstuck again.",
+}
+
 Content.ConvUI = {
 	You = "You",
 	Leave = "✕ Leave",

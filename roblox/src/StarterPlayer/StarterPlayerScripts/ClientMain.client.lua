@@ -44,6 +44,16 @@ Stations.onEvent = function(name)
 	end
 end
 Hud.onTutorialEvent = Tutorial.event
+-- 1.5: Unstuck button
+Hud.onUnstuck = function()
+	if Conversation.isOpen() then
+		Conversation.close()
+	end
+	local r = Remote.call("unstuck")
+	if r and r.msg then
+		UI.toast(r.msg, r.ok and UI.Colors.good or nil)
+	end
+end
 Tutorial.target = Hud.target
 Stations.onReplayTutorial = Tutorial.replay
 Stations.route = function(key)

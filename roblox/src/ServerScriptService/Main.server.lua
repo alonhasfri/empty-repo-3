@@ -115,6 +115,45 @@ Net.on("choose_path", function(player, d)
 	WorldService.enterDoor(player, d.path)
 	return { ok = true }
 end)
+-- 1.5: the Unstuck button. Inside a building -> out the front door; anywhere else -> nearest street spot.
+local Shared = game:GetService("ReplicatedStorage").Shared
+local Config = require(Shared.Config)
+local Content = require(Shared.Content)
+local Rooms = require(Services.Rooms)
+local unstuckAt = {}
+Net.on("unstuck", function(player)
+	local now = os.clock()
+	local last = unstuckAt[player]
+	if last and now - last < Config.Unstuck.Cooldown then
+		return { ok = false, msg = string.format(Content.Unstuck.Wait, math.ceil(Config.Unstuck.Cooldown - (now - last))) }
+	end
+	local char = player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not root or not hum or hum.Health <= 0 then
+		return { ok = false }
+	end
+	unstuckAt[player] = now
+	ConversationService.stop(player)
+	Rooms.standUp(hum)
+	local key = Rooms.buildingAt(root.Position)
+	if not (key and WorldService.Spots[key]) then
+		local best = math.huge
+		key = "lobby"
+		for k, spot in pairs(WorldService.Spots) do
+			local d = (WorldService.sp(spot) - root.Position).Magnitude
+			if d < best then
+				best, key = d, k
+			end
+		end
+	end
+	WorldService.teleport(player, key)
+	return { ok = true, msg = Content.Unstuck.Done }
+end)
+game:GetService("Players").PlayerRemoving:Connect(function(p)
+	unstuckAt[p] = nil
+end)
+
 WorldService.onCashGrab = GainService.cashGrab
 WorldService.onAverageGuy = GainService.averageGuy
 

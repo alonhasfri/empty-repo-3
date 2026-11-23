@@ -26,6 +26,7 @@ Rooms.Buildings = {} -- [key] = { cf = CFrame (real, center on the floor), half 
 Rooms.ConvSpots = {} -- [id] = { id, stand = CFrame, npc = CFrame, conv = string | {Lose=, Gain=}, who = string, prompt = ProximityPrompt }
 Rooms.onJobs = nil -- function(player) set by WorldService
 Rooms.onConv = nil -- function(player, spotId) set by ConversationService
+Rooms.onLeave = nil -- function(player, buildingKey) set by WorldService (exit doors)
 
 local R = Content.Rooms
 local C = Config.Rooms
@@ -621,6 +622,31 @@ function Rooms.furnish(key: string, rcf: CFrame, half: Vector3, outsideKey: stri
 	local ok, err = pcall(build, at)
 	if not ok then
 		warn("[Rooms] " .. key .. ": " .. tostring(err))
+	end
+	-- Exit door: a lit EXIT sign above the doorway (inside) and a Leave prompt by the door
+	local exitSign = box(folder, rcf * CFrame.new(0, 14.6, -half.Z + 0.9) * CFrame.Angles(0, PI, 0), Vector3.new(6, 1.6, 0.3), Color3.fromRGB(40, 200, 90), Enum.Material.Neon)
+	exitSign.Name = "ExitSign_" .. key
+	CollectionService:RemoveTag(exitSign, "Styled")
+	painted(exitSign, R.Exit.sign, Color3.fromRGB(30, 170, 70), Color3.new(1, 1, 1), Enum.Font.FredokaOne)
+	spot(rcf * CFrame.new(0, 0.5, -half.Z + 3.5), "exit_" .. key, R.Exit.action, R.Exit.object, function(player)
+		if Rooms.onLeave then
+			Rooms.onLeave(player, key)
+		end
+	end)
+end
+
+-- Gets a player out of any seat (so teleports don't drag the seat along).
+-- If they were sitting, waits a moment so the player's own game lets go of the seat
+-- before anything moves them.
+function Rooms.standUp(hum: Humanoid)
+	local seat = hum.SeatPart
+	hum.Sit = false
+	if seat then
+		local weld = seat:FindFirstChild("SeatWeld")
+		if weld then
+			weld:Destroy()
+		end
+		task.wait(Config.Rooms.StandUpDelay)
 	end
 end
 

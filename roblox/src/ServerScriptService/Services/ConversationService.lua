@@ -125,13 +125,7 @@ local function start(player: Player, spotId: string)
 		return
 	end
 	-- stand up from any seat, then stand at the spot facing them
-	hum.Sit = false
-	if hum.SeatPart then
-		local weld = hum.SeatPart:FindFirstChild("SeatWeld")
-		if weld then
-			weld:Destroy()
-		end
-	end
+	Rooms.standUp(hum)
 	char:PivotTo(spot.stand * CFrame.new(0, 3, 0))
 
 	local s = { key = key, scene = scene, cfg = cfg, node = "a", meter = cfg.meter, spotId = spotId }

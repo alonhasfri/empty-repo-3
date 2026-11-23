@@ -218,6 +218,14 @@ local function addPlace(key: string, name: string, cf: CFrame, size: Vector3, pa
 	-- 1.5: furniture, people and things to do inside (only buildings that have a use)
 	Rooms.furnish(key, scf(cf), Vector3.new(size.X * S / 2, size.Y, size.Z * S / 2), key)
 end
+-- 1.5 exit doors: step outside the front of the building
+Rooms.onLeave = function(player, key)
+	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if hum then
+		Rooms.standUp(hum)
+	end
+	WorldService.teleport(player, key)
+end
 Rooms.onJobs = function(player)
 	if WorldService.onStation then
 		WorldService.onStation(player, "jobs", "Gain")
