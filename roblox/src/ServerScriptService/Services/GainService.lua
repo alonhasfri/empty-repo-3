@@ -947,7 +947,15 @@ function GainService.start()
 				local data = DataService.get(player)
 				if data and data.path == "Gain" then
 					local job = jobById(data.job)
-					if job then
+					-- wages only while actually working: clocked in (LifeService sets OnShift) and at the workplace
+					local working = job ~= nil
+					if job and Config.Life.Shift.WagesNeedShift then
+						local pos = WorldService.Workplaces[job.place]
+						working = player:GetAttribute("OnShift") == true
+							and pos ~= nil
+							and WorldService.near(player, pos, Config.WorkRadius)
+					end
+					if job and working then
 						data.coins += math.floor(job.coinsPerMinute * payMult(careerOf(data)) + 0.5)
 						BrainService.push(player)
 					end

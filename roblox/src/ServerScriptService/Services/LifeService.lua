@@ -56,6 +56,8 @@ local function bank(data)
 	end
 	data.bank.savings = math.max(0, math.floor(tonumber(data.bank.savings) or 0))
 	data.bank.lastTick = tonumber(data.bank.lastTick) or 0
+	-- lowest savings since the last interest tick (old saves start from what they have)
+	data.bank.minSince = math.max(0, math.floor(tonumber(data.bank.minSince) or data.bank.savings))
 	return data.bank
 end
 
@@ -231,7 +233,9 @@ Net.on("shift_in", function(player)
 	end
 	local since = shiftClock()
 	local onTime = since <= CL.Shift.GraceSeconds
-	s.shift = { start = os.time(), onTime = onTime, coinsAt = data.coins, tasksAt = data.jobTasksDone or 0, job = job.name }
+	local window = math.floor(os.time() / CL.Shift.EverySeconds)
+	s.shift = { start = os.time(), onTime = onTime, coinsAt = data.coins, tasksAt = data.jobTasksDone or 0, job = job.name, place = job.place, window = window }
+	player:SetAttribute("OnShift", true)
 	return { ok = true, onTime = onTime, msg = onTime and string.format(TL.Shift.OnTime, CL.Shift.OnTimeBonus) or TL.Shift.Late }
 end)
 
@@ -247,8 +251,21 @@ local function clockOut(player, quiet: boolean?)
 		return { ok = false, msg = string.format(TL.Shift.TooShort, CL.Shift.MinShiftSeconds - seconds) }
 	end
 	s.shift = nil
+	player:SetAttribute("OnShift", nil)
 	local wages = math.max(0, data.coins - sh.coinsAt)
-	local bonus = (sh.onTime and seconds >= CL.Shift.MinShiftSeconds) and CL.Shift.OnTimeBonus or 0
+	local tasks = math.max(0, (data.jobTasksDone or 0) - sh.tasksAt)
+	-- the on-time bonus needs real work: tasks done, still at work, and only once per shift window
+	local pos = WorldService.Workplaces[sh.place]
+	local atWork = pos ~= nil and WorldService.near(player, pos, Config.WorkRadius)
+	local earned = sh.onTime
+		and seconds >= CL.Shift.MinShiftSeconds
+		and tasks >= CL.Shift.BonusMinTasks
+		and atWork
+		and s.bonusWindow ~= sh.window
+	local bonus = earned and CL.Shift.OnTimeBonus or 0
+	if earned then
+		s.bonusWindow = sh.window
+	end
 	data.coins += bonus
 	BrainService.push(player)
 	return {
@@ -316,6 +333,8 @@ Net.on("bank_move", function(player, d)
 		end
 		b.savings -= amount
 		data.coins += amount
+		-- interest is paid on the lowest balance since the last tick (no "park it just before the tick")
+		b.minSince = math.min(b.minSince, b.savings)
 	else
 		return { ok = false }
 	end
@@ -337,7 +356,9 @@ local function bankTick(player)
 		return
 	end
 	b.lastTick = os.time()
-	local interest = math.min(CL.Bank.MaxInterestPerTick, math.floor(b.savings * CL.Bank.SavingsRatePercent / 100))
+	local base = math.min(b.savings, b.minSince)
+	b.minSince = b.savings -- the next period starts from what is saved now
+	local interest = math.min(CL.Bank.MaxInterestPerTick, math.floor(base * CL.Bank.SavingsRatePercent / 100))
 	if interest > 0 then
 		b.savings += interest
 		BrainService.toast(player, string.format(TL.Bank.Interest, interest))
@@ -350,7 +371,14 @@ local function bankTick(player)
 		due -= fromCoins
 		local fromSavings = math.min(due, b.savings)
 		b.savings -= fromSavings
-		BrainService.toast(player, string.format(TL.Bank.BillPaid, fromCoins + fromSavings))
+		local paid = fromCoins + fromSavings
+		if paid > 0 then
+			b.brokeToldAt = nil
+			BrainService.toast(player, string.format(TL.Bank.BillPaid, paid))
+		elseif not b.brokeToldAt then
+			b.brokeToldAt = os.time() -- say "skipped" once, not every tick
+			BrainService.toast(player, TL.Bank.BillSkipped)
+		end
 	end
 	BrainService.push(player)
 end

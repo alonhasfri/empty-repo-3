@@ -506,11 +506,13 @@ Config.Life = {
 		GraceSeconds = 60, -- clock in up to 60 s after the start and you're on time
 		OnTimeBonus = 15, -- coins, paid on your payslip
 		MinShiftSeconds = 60, -- clock out after at least 1 minute for a payslip
+		BonusMinTasks = 1, -- the on-time bonus needs at least this many tasks done on the shift
+		WagesNeedShift = true, -- per-minute wages are only paid while clocked in AND at the workplace
 	},
 	Bank = {
-		SavingsRatePercent = 2, -- fixed and shown: +2% of savings...
+		SavingsRatePercent = 0.5, -- fixed and shown: +0.5% of the LOWEST savings balance since the last tick...
 		InterestEverySeconds = 600, -- ...every 10 minutes you're online
-		MaxInterestPerTick = 200,
+		MaxInterestPerTick = 25, -- so saving never beats working (best job pays 20/min)
 		Bill = 10, -- "harder life" only (opt-in): a small bill every interest tick, never goes below 0
 	},
 }
