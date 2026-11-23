@@ -1189,6 +1189,43 @@ Content.Horror = {
 	},
 }
 
+-- 1.8: free new places on the west side (Slime Shop, Trampoline Park, Fortune Teller)
+Content.Fun = {
+	PickPath = "Pick a door first: Lose or Gain.",
+	GoThere = "Walk up to the counter first.",
+	Wait = "Give it %d s.",
+	OddsTitle = "🎲 Exact odds (free, nothing to buy):",
+	Odds = { silly = "🤪 Silly fortune: %d%%", wise = "🦉 Wise fortune: %d%%", weird = "🌀 Weird fortune: %d%%" },
+	OddsEffect = "Lose path: silly fortunes cost a few cells. Gain path: wise ones give a few.",
+	slime = {
+		Title = "🫧 Slime Shop",
+		Sign = "🫧 SLIME SHOP",
+		Desc = "Make the slimiest slime",
+		Lose = "🫧 Make the SLIMIEST slime",
+		Gain = "🔬 Learn the science of slime",
+		LoseDone = { "🫧 SPLORCH. Your slime is perfect. Your brain is sticky.", "🫧 You mixed glitter, glue and… cereal? Brain cells slide away.", "🫧 It's so slimy it ate a brain cell." },
+		GainDone = { "🔬 Slime is a polymer: long sticky chains. Neat! Brain cells up.", "🔬 More glue = stretchier. You made a graph about it. Brain cells up." },
+	},
+	trampoline = {
+		Title = "🤸 Trampoline Park",
+		Sign = "🤸 TRAMPOLINE PARK",
+		Desc = "Bounce!",
+		Lose = "🤸 BOUNCE as high as you can",
+		Gain = "🏃 Do a proper workout",
+		LoseDone = { "🤸 BOING! Brain cells fly out of your ears!", "🤸 Triple flip! (Your brain stayed on the ground.)", "🤸 You bounced so hard you forgot your name for a second." },
+		GainDone = { "🏃 Good workout! Your head feels clear. Stress down.", "🏃 Jumping jacks done right. Stress down." },
+	},
+	fortune = {
+		Title = "🔮 Fortune Teller",
+		Sign = "🔮 FORTUNE TELLER",
+		Desc = "Free fortunes (exact odds shown)",
+		Button = "🔮 Tell my fortune (free)",
+		silly = { "🔮 \"You will step on a LEGO. Twice.\"", "🔮 \"Your next sandwich will be… a sandwich.\"", "🔮 \"A pigeon will judge you today.\"" },
+		wise = { "🔮 \"Read one page a day and you'll read a book a year.\"", "🔮 \"Asking questions is how smart people got smart.\"", "🔮 \"Sleep is brain food.\"" },
+		weird = { "🔮 \"…the crystal ball just shows a perfectly average man.\"", "🔮 \"The ball is buffering. 🌀\"" },
+	},
+}
+
 -- 1.8 (Life Pack plan step 1): the free Phone Shop. Parody phones only (original names, no real brands or logos).
 Content.PhoneShop = {
 	Title = "📱 Phone Shop",

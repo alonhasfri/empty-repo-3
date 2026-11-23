@@ -148,6 +148,23 @@ Config.Boards = {
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
 }
 
+-- 1.8: free new places on the west (Lose) side. Free to use; the fortune odds are shown on screen.
+Config.Fun = {
+	Radius = 30, -- studs from the counter
+	slime = { Cooldown = 20, Lose = 1.2, Gain = 0.6 },
+	trampoline = { Cooldown = 15, Lose = 1, Stress = 6 },
+	fortune = {
+		Cooldown = 30,
+		SillyLose = 0.8,
+		WiseGain = 0.8,
+		Odds = { -- weights add up to 100, shown exactly as percentages
+			{ kind = "silly", weight = 60 },
+			{ kind = "wise", weight = 30 },
+			{ kind = "weird", weight = 10 },
+		},
+	},
+}
+
 -- 1.8: the free Phone Shop (in-game coins only)
 Config.PhoneShop = {
 	MaxStickers = 4,

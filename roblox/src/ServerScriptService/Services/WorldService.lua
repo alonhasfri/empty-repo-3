@@ -648,7 +648,27 @@ local function buildLoseSide()
 	station("phoneshop", "Any", Content.PhoneShop.StationTitle, Content.PhoneShop.StationDesc, pcf * CFrame.new(0, 0.5, 6), Color3.fromRGB(120, 90, 255))
 	-- the scam stall, outside by the door
 	station("scam", "Any", Content.PhoneShop.ScamTitle, Content.PhoneShop.ScamDesc, pcf * CFrame.new(22, 0.5, -psize.Z / 2 - 12), Color3.fromRGB(255, 200, 40))
-	house(Vector3.new(-260, 0.6, 70), FACE_NORTH)
+	-- 1.8 (Life Pack plan step 2): free new west-side places replace locked houses
+	local function funPlace(key: string, center: Vector3, yaw: number, dims: Vector3, wall: Color3, roof: Color3)
+		local T = Content.Fun[key]
+		local fcf, fsize = building({
+			name = string.gsub(T.Title, "^%S+%s", ""):gsub("%s", ""),
+			center = center,
+			yaw = yaw,
+			size = dims,
+			wall = wall,
+			wallMaterial = Enum.Material.SmoothPlastic,
+			roof = roof,
+			accent = roof,
+			door = 14,
+			sign = T.Sign,
+		})
+		addPlace(key, T.Title, fcf, fsize, "Lose")
+		station(key, "Any", T.Title, T.Desc, fcf * CFrame.new(0, 0.5, 4), roof)
+		return fcf, fsize
+	end
+	WorldService.funPlace = funPlace
+	funPlace("slime", Vector3.new(-260, 0.6, 70), FACE_NORTH, Vector3.new(44, 16, 36), Color3.fromRGB(190, 255, 200), Color3.fromRGB(60, 220, 120))
 
 	-- Supermarket (cashier job)
 	local smcf, ssize = building({
@@ -671,11 +691,11 @@ local function buildLoseSide()
 	end
 
 	-- houses
-	for _, c in ipairs({ Vector3.new(-100, 0.6, -300), Vector3.new(-300, 0.6, -300) }) do
-		house(c + Vector3.new(-40, 0, 0), FACE_SOUTH)
-		house(c + Vector3.new(40, 0, 0), FACE_SOUTH)
-		tree(c + Vector3.new(0, 0.6, 30))
-	end
+	-- 1.8: the north-west block becomes the Trampoline Park; one house becomes the Fortune Teller
+	funPlace("trampoline", Vector3.new(-300, 0.6, -300), FACE_SOUTH, Vector3.new(120, 20, 60), Color3.fromRGB(255, 230, 120), Color3.fromRGB(255, 120, 40))
+	funPlace("fortune", Vector3.new(-140, 0.6, -300), FACE_SOUTH, Vector3.new(36, 16, 30), Color3.fromRGB(80, 50, 120), Color3.fromRGB(170, 80, 255))
+	house(Vector3.new(-60, 0.6, -300), FACE_SOUTH)
+	tree(Vector3.new(-100, 0.6, -270))
 	for _, c in ipairs({ Vector3.new(-100, 0.6, 300), Vector3.new(-300, 0.6, 300) }) do
 		house(c + Vector3.new(-40, 0, 0), FACE_NORTH)
 		house(c + Vector3.new(40, 0, 0), FACE_NORTH)

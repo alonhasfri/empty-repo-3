@@ -24,6 +24,7 @@ local LifeService = require(Services.LifeService) -- 1.7: Hoppr rides, shifts an
 local BoardService = require(Services.BoardService) -- 1.7.2: plaza leaderboards
 local HorrorService = require(Services.HorrorService) -- 1.7.3: The Average Files (part 1)
 local PhoneShopService = require(Services.PhoneShopService) -- 1.8: Phone Shop, case maker, scam stall
+local FunService = require(Services.FunService) -- 1.8: Slime Shop, Trampoline Park, Fortune Teller
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection
 AdminService.ringBell = SchoolService.ring
@@ -46,6 +47,9 @@ local STATION_PATH = {
 	work = "Gain",
 	phoneshop = "Any", -- 1.8
 	scam = "Any", -- 1.8
+	slime = "Any", -- 1.8
+	trampoline = "Any", -- 1.8
+	fortune = "Any", -- 1.8
 	lab = "Gain",
 	shop = "Any",
 }
@@ -335,5 +339,6 @@ LifeService.start()
 BoardService.start()
 HorrorService.start()
 PhoneShopService.start()
+FunService.start()
 
 print("[Lose a Brain Cell] Server started (updates 1.0 – 1.7)")

@@ -2200,6 +2200,39 @@ function Stations.scam()
 	m.focus()
 end
 
+---------------------------------------------------------------------
+-- 1.8: free west-side places (Slime Shop, Trampoline Park, Fortune Teller)
+---------------------------------------------------------------------
+local function funScreen(key: string)
+	local TF = Content.Fun
+	local T = TF[key]
+	local m = UI.modal(T.Title, { color = Color3.fromRGB(170, 80, 255) })
+	local path = UI.state and UI.state.path
+	if key == "fortune" then
+		-- exact odds, shown before you ask
+		UI.label(m.content, "<b>" .. TF.OddsTitle .. "</b>", { LayoutOrder = 1 })
+		for i, o in ipairs(Config.Fun.fortune.Odds) do
+			UI.label(m.content, string.format(TF.Odds[o.kind], o.weight), { LayoutOrder = 1 + i })
+		end
+		UI.label(m.content, TF.OddsEffect, { LayoutOrder = 10, TextColor3 = C.muted })
+	end
+	local label = key == "fortune" and T.Button or (path == "Gain" and T.Gain or T.Lose)
+	UI.button(m.content, label, function()
+		local r = Remote.call("fun_do", { key = key })
+		UI.toast(tostring(r.msg or ""), r.ok and C.good or C.bad, 5)
+	end, { LayoutOrder = 20, BackgroundColor3 = Color3.fromRGB(170, 80, 255) })
+	m.focus()
+end
+function Stations.slime()
+	funScreen("slime")
+end
+function Stations.trampoline()
+	funScreen("trampoline")
+end
+function Stations.fortune()
+	funScreen("fortune")
+end
+
 function Stations.open(key: string)
 	local fn = Stations[key]
 	if fn and key ~= "open" then
