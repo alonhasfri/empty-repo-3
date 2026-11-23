@@ -225,6 +225,23 @@ Config.Castle = {
 }
 
 ---------------------------------------------------------------------
+-- UPDATE 1.5: REAL PLACES
+---------------------------------------------------------------------
+Config.Rooms = {
+	SpotCooldown = 4, -- seconds between uses of the same room spot (per player)
+	PromptDistance = 9, -- how close you must be to use a room spot
+	SeatPromptDistance = 6,
+	-- brain points for the small things to do in rooms
+	Actions = {
+		arcade = { path = "Lose", lose = 2 },
+		plushie = { path = "Lose", lose = 1.5 },
+		cereal = { path = "Lose", lose = 1 },
+	},
+	BoardPoints = { Lose = 0.5, Gain = 0.3 }, -- writing on a whiteboard
+	FridgeOpenAngle = 110, -- degrees
+}
+
+---------------------------------------------------------------------
 -- FEATURE SWITCHES (Head Moderators can flip these live)
 ---------------------------------------------------------------------
 Config.Features = {

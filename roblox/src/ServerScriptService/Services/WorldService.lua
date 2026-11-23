@@ -17,6 +17,7 @@ local DataService = require(script.Parent.DataService)
 local BrainService = require(script.Parent.BrainService)
 local FriendService = require(script.Parent.FriendService)
 local Props = require(script.Parent.Props)
+local Rooms = require(script.Parent.Rooms)
 
 local WorldService = {}
 
@@ -190,8 +191,14 @@ local function building(o)
 	p(CFrame.new(0, h + 1.6, -d / 2 - 1.2), Vector3.new(w + 3, 1, 0.6), Color3.fromRGB(235, 235, 230), "trim", { Material = Enum.Material.Concrete })
 	-- awning + painted sign above the door
 	p(CFrame.new(0, doorH + 0.4, -d / 2 - 2), Vector3.new(doorW + 6, 0.6, 4), o.accent or Color3.fromRGB(200, 60, 60), "accent", { Material = Enum.Material.Fabric })
-	-- glass doors
-	p(CFrame.new(0, doorH / 2, -d / 2 + 0.6), Vector3.new(doorW - 1, doorH - 0.5, 0.2), Color3.fromRGB(170, 210, 230), nil, { Material = Enum.Material.Glass, Transparency = 0.6, CanCollide = false })
+	-- glass doors (1.5: buildings with no use get a solid, locked door instead)
+	if o.closed then
+		local shut = p(CFrame.new(0, doorH / 2, -d / 2 + 0.6), Vector3.new(doorW - 1, doorH - 0.5, 0.6), Color3.fromRGB(120, 80, 55), "trim", { Material = Enum.Material.WoodPlanks })
+		shut.Name = "ClosedDoor"
+		sign(shut, Content.Rooms.Closed, 2, 200, 30)
+	else
+		p(CFrame.new(0, doorH / 2, -d / 2 + 0.6), Vector3.new(doorW - 1, doorH - 0.5, 0.2), Color3.fromRGB(170, 210, 230), nil, { Material = Enum.Material.Glass, Transparency = 0.6, CanCollide = false })
+	end
 	local boardH = math.max(4, math.min(8, h - doorH - 1.5))
 	local board = p(CFrame.new(0, doorH + 1.2 + boardH / 2, -d / 2 - 0.4), Vector3.new(math.min(w - 6, 46), boardH, 0.5), o.signColor or Color3.fromRGB(40, 40, 60), "accent")
 	surfaceSign(board, o.sign or o.name)
@@ -208,6 +215,13 @@ local function addPlace(key: string, name: string, cf: CFrame, size: Vector3, pa
 	local spot = (cf * CFrame.new(0, 3, -size.Z / 2 - 10)).Position
 	WorldService.Spots[key] = spot
 	table.insert(WorldService.Places, { key = key, name = name, path = path })
+	-- 1.5: furniture, people and things to do inside (only buildings that have a use)
+	Rooms.furnish(key, scf(cf), Vector3.new(size.X * S / 2, size.Y, size.Z * S / 2), key)
+end
+Rooms.onJobs = function(player)
+	if WorldService.onStation then
+		WorldService.onStation(player, "jobs", "Gain")
+	end
 end
 
 -- A kiosk/counter station inside a building, facing the building's front (-Z)
@@ -357,6 +371,7 @@ local function house(center: Vector3, yaw: number)
 		accent = Color3.fromRGB(120, 90, 70),
 		door = 8,
 		sign = "🏠",
+		closed = true, -- 1.5: nothing to do in houses, so they stay closed
 	})
 end
 

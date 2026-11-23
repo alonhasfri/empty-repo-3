@@ -442,4 +442,69 @@ Content.CastleWrong = {
 	"Wrong turn. The castle resets. The castle always resets.",
 }
 
+---------------------------------------------------------------------
+-- UPDATE 1.5: REAL PLACES (furniture, people and things to do inside buildings)
+---------------------------------------------------------------------
+Content.Rooms = {
+	Closed = "🔒 Closed: nobody home",
+	ClosedToast = "🔒 This building is closed. Nothing to do in there.",
+	SmartOnly = "🧠 This is a smart place. Not for the Lose path.",
+	DumbOnly = "🫠 This is a dumb place. Not for the Gain path.",
+	PickPath = "Pick a path first: Lose or Gain.",
+	Sit = "Sit",
+	Seat = "🪑 Seat",
+	Couch = "🛋 Couch",
+	Busy = "Wait a second…",
+	-- signs inside rooms
+	Signs = {
+		arcade = "🕹 ARCADE ZONE",
+		plushie = "🧸 PLUSHIE DISPLAY",
+		classroom = "✏️ CLASSROOM",
+		lecture = "🎓 LECTURE HALL",
+		debate = "🎤 THE DEBATE SHOW",
+		snacks = "🍿 SNACKS",
+		therapy = "🛋 DR. CALM: THERAPY",
+		checkup = "🩺 CHECK-UPS",
+		patient = "🛹 PATIENT",
+		newsroom = "📰 THE BRAINVILLE TIMES",
+		counselor = "📋 JOB COUNSELOR",
+		court = "⚖️ COURTROOM",
+		election = "🗳 ELECTION PODIUM",
+		maze = "🐭 MOUSE MAZE",
+	},
+	-- people who live in rooms (name tags)
+	People = {
+		host = "Ms. Mic (host)",
+		editor = "Editor (Brainville Times)",
+		teacher = "Teacher",
+		student = "Student",
+		doctor = "Dr. Wrinkle-Free",
+		patient = "Skater kid (patient)",
+		therapist = "Dr. Calm (therapist)",
+		judge = "Judge Gavel",
+		voter = "Voters of Brainville",
+		counselor = "Job Counselor",
+		barista = "Barista",
+		assistant = "Lab assistant",
+	},
+	ArcadeTitles = { "SKIBIDI", "BRAIN.EXE", "JUMP!!", "CLICK ME" },
+	-- small things you can do (lose = Lose path only, gain = Gain path only)
+	Actions = {
+		arcade = { action = "Play the arcade", object = "🕹 Arcade", toast = "🕹️ 47 flashing lights later…" },
+		plushie = { action = "Hug the display plushie (free)", object = "🧸 Skibidi Plushie", toast = "🧸 You hug it. It does not hug back." },
+		cereal = { action = "Shake the cereal box", object = "🥣 Cereal", toast = "🥣 *shake shake* There is no prize." },
+	},
+	Fridge = { open = "Open", close = "Close", object = "🧊 Fridge", toast = "🧊 The fridge only has microwave meals. Of course." },
+	Board = { action = "Write on the board", object = "🧑‍🏫 Whiteboard", toast = "🧑‍🏫 You wrote: %s" },
+	BoardStart = {
+		school = { Lose = "2 + 2 = fish", Gain = "Today: fractions" },
+		university = "E = mc²   a² + b² = c²",
+	},
+	BoardLines = {
+		Lose = { "2 + 2 = fish", "the sun is a big lamp", "skibidi = science", "cats are just loud bread" },
+		Gain = { "¾ = 0.75", "H₂O = water", "√144 = 12", "E = mc²" },
+	},
+	Counselor = { action = "Find a job", object = "📋 Job Counselor" },
+}
+
 return Content
