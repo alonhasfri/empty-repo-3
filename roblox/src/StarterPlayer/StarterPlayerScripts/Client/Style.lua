@@ -494,7 +494,7 @@ end
 
 local function petEmoji(cells: number): string
 	if cells > 10e9 then
-		return "🪨👀"
+		return "🗿👀"
 	elseif cells > 1e9 then
 		return "🧦"
 	elseif cells > 1e6 then

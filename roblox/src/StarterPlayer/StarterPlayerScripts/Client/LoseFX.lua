@@ -83,7 +83,7 @@ function LoseFX.beforeOpen(_key: string, go)
 		go()
 		return
 	end
-	UI.toast("🫠 " .. TF.Warn[math.random(#TF.Warn)], nil, 1)
+	UI.toast("🥴 " .. TF.Warn[math.random(#TF.Warn)], nil, 1)
 	task.delay(lag, go)
 end
 
@@ -149,7 +149,7 @@ function LoseFX.start()
 			-- lower intensity = fewer ads; 0% = none
 			task.wait(CF.AdEverySeconds / math.max(eff, 0.25))
 			if active() and eff > 0 and not UI.isModalOpen() and not (LoseFX.isBusy and LoseFX.isBusy()) then
-				UI.toast("🫠 " .. TF.Warn[math.random(#TF.Warn)], nil, CF.WarnSeconds)
+				UI.toast("🥴 " .. TF.Warn[math.random(#TF.Warn)], nil, CF.WarnSeconds)
 				task.wait(CF.WarnSeconds)
 				if active() and not UI.isModalOpen() and not (LoseFX.isBusy and LoseFX.isBusy()) then
 					showAd()

@@ -952,7 +952,7 @@ function Stations.map(free: boolean?)
 		UI.corner(me, 9)
 		UI.stroke(me, Color3.fromRGB(255, 60, 60), 4, 0)
 	end
-	UI.label(m.content, "🩷 Lose places  •  💙 Gain places  •  💛 everyone  •  ⚪ you. Tap a pin to take the 🚕 taxi.", { TextColor3 = Color3.fromRGB(210, 210, 220), TextSize = UI.textSize(12), LayoutOrder = 2 })
+	UI.label(m.content, "💗 Lose places  •  💙 Gain places  •  💛 everyone  •  ⚪ you. Tap a pin to take the 🚕 taxi.", { TextColor3 = Color3.fromRGB(210, 210, 220), TextSize = UI.textSize(12), LayoutOrder = 2 })
 	for i, p in ipairs(r.places) do
 		local tag = (p.path and myPath and p.path ~= myPath) and " (other path)" or ""
 		UI.button(m.content, p.name .. tag, function()
@@ -1031,7 +1031,7 @@ function Stations.coffee()
 	UI.label(m.content, "Beethoven counted EXACTLY 60 coffee beans for every cup. Count yours.", { LayoutOrder = 1 })
 	local count = 0
 	local label = UI.label(m.content, "Beans: 0", { Font = Enum.Font.FredokaOne, TextSize = UI.textSize(30), TextXAlignment = Enum.TextXAlignment.Center, LayoutOrder = 2 })
-	UI.button(m.content, "🫘 +1 bean", function()
+	UI.button(m.content, "🟤 +1 bean", function()
 		count += 1
 		label.Text = "Beans: " .. count
 	end, { Size = UDim2.new(1, 0, 0, 70), TextSize = 26, LayoutOrder = 3 })
@@ -1864,7 +1864,7 @@ end
 
 -- Oxygen: the needle drops all the time. Tap BREATHE to keep it in the green zone for 15 s.
 Stations.astro_oxygen = function()
-	local m = UI.modal("🫧 Oxygen", phoneOpts(SPACE))
+	local m = UI.modal("💦 Oxygen", phoneOpts(SPACE))
 	UI.label(m.content, "Keep the needle in the <b>green zone</b> for 15 seconds. Too much oxygen is bad too!", { TextColor3 = Color3.new(1, 1, 1), LayoutOrder = 1 })
 	local f = miniFrame(m.content, 70)
 	local zone = UI.new("Frame", { Position = UDim2.new(0.4, 0, 0.2, 0), Size = UDim2.new(0.3, 0, 0.6, 0), BackgroundColor3 = Color3.fromRGB(60, 200, 110), BackgroundTransparency = 0.3, Parent = f })
@@ -1895,7 +1895,7 @@ Stations.astro_oxygen = function()
 			reportTraining("oxygen", outside <= 3, Stations.astroTraining)
 		end
 	end)
-	UI.button(m.content, "🫁 BREATHE", function()
+	UI.button(m.content, "💨 BREATHE", function()
 		value = math.clamp(value + 0.12, 0, 1)
 	end, { LayoutOrder = 7, BackgroundColor3 = Color3.fromRGB(60, 140, 220) })
 	m.focus()

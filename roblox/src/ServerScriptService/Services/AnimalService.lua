@@ -1,7 +1,7 @@
 -- AnimalService (update 1.6): animal powers (from web/src/v16.js).
 --   🐶 Dog: BARK (pigeons fly off, nearby players hear it)
---   🪰 Fly / 🐝 Bee: BUZZ UP (the client pushes you up into the air)
---   🪱 Worm: DIG a tunnel to another building
+--   🦟 Fly / 🐝 Bee: BUZZ UP (the client pushes you up into the air)
+--   🐛 Worm: DIG a tunnel to another building
 -- The bodies are built by AnimalForms; text in Content.Animals, numbers in Config.Animals.
 
 local Players = game:GetService("Players")

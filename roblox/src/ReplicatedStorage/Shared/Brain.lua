@@ -141,16 +141,16 @@ end
 -- Animal stages (real neuron counts, roughly)
 ---------------------------------------------------------------------
 Brain.Stages = {
-	{ key = "dead", max = 0, name = "Rock", emoji = "🪨", walk = 0, scale = 1 },
+	{ key = "dead", max = 0, name = "Rock", emoji = "🗿", walk = 0, scale = 1 },
 	{ key = "microbe", max = 10, name = "Microbe", emoji = "🦠", walk = 10, scale = 0.25, secret = true },
 	{ key = "tardigrade", max = 200, name = "Tardigrade", emoji = "🐛", walk = 6, scale = 0.4, secret = true },
-	{ key = "worm", max = 302, name = "Worm", emoji = "🪱", walk = 5, scale = 0.45 },
-	{ key = "fly", max = 140000, name = "Fruit Fly", emoji = "🪰", walk = 22, scale = 0.5 },
+	{ key = "worm", max = 302, name = "Worm", emoji = "🐛", walk = 5, scale = 0.45 },
+	{ key = "fly", max = 140000, name = "Fruit Fly", emoji = "🦟", walk = 22, scale = 0.5 },
 	{ key = "bee", max = 1e6, name = "Honeybee", emoji = "🐝", walk = 20, scale = 0.55 },
 	{ key = "mouse", max = 70e6, name = "Mouse", emoji = "🐭", walk = 18, scale = 0.6 },
 	{ key = "octopus", max = 500e6, name = "Octopus", emoji = "🐙", walk = 12, scale = 0.85 },
 	{ key = "dog", max = 2e9, name = "Dog", emoji = "🐶", walk = 20, scale = 0.8 },
-	{ key = "barelyhuman", max = Config.HumanFloorCells, name = "Barely Human", emoji = "🫠", walk = 14, scale = 1 },
+	{ key = "barelyhuman", max = Config.HumanFloorCells, name = "Barely Human", emoji = "🥴", walk = 14, scale = 1 },
 	{ key = "human", max = math.huge, name = "Human", emoji = "🧠", walk = 16, scale = 1 },
 }
 

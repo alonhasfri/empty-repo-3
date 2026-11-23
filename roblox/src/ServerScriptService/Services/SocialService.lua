@@ -121,12 +121,12 @@ local FEELINGS = {
 
 local EXPERIMENTS = {
 	dog = { title = "🐶 Pavlov's Bell", scientist = { "🔔 Ring the bell", "🍖 Show food", "🔔🍖 Bell, then food" }, animal = { smart = "🤤 Drool at the bell", dumb = "🐕 Chase your tail", other = "🐾 Sit" } },
-	octopus = { title = "🐙 The Escape Tank", scientist = { "🔓 Leave the lid open", "🔒 Lock the lid", "🍤 Put a shrimp outside" }, animal = { smart = "🚪 Escape", dumb = "🫧 Stay stuck forever", other = "🎨 Change color" } },
+	octopus = { title = "🐙 The Escape Tank", scientist = { "🔓 Leave the lid open", "🔒 Lock the lid", "🍤 Put a shrimp outside" }, animal = { smart = "🚪 Escape", dumb = "💦 Stay stuck forever", other = "🎨 Change color" } },
 	mouse = { title = "🐭 The Maze", scientist = { "🧀 Cheese on the left", "🧀 Cheese on the right", "🧀 Cheese straight ahead" }, animal = { smart = "👃 Follow the smell", dumb = "🌀 Run in circles", other = "😴 Nap" } },
 	bee = { title = "🐝 The Waggle Dance", scientist = { "🌸 Point at the flowers", "📝 Take notes", "🎥 Film the dance" }, animal = { smart = "💃 Dance the real directions", dumb = "🌀 Dance total nonsense", other = "🍯 Make honey" } },
-	fly = { title = "🪰 The Genetics Lab", scientist = { "🔬 Use the microscope", "🧬 Check the DNA", "🍌 Offer a banana" }, animal = { smart = "🍌 Go to the banana", dumb = "💡 Fly into the lamp", other = "🪟 Bump the window" } },
-	worm = { title = "🪱 Darwin's Worm Concert", scientist = { "🎺 Play the bassoon", "🎹 Play the piano", "📣 Shout" }, animal = { smart = "🕺 Wiggle to the beat", dumb = "😐 Ignore the music", other = "🌱 Dig" } },
-	microbe = { title = "🦠 The Microscope", scientist = { "🔬 Zoom in", "💧 Add a drop", "🧫 New petri dish" }, animal = { smart = "➡️ Swim to the food", dumb = "🌀 Spin aimlessly", other = "🫧 Split in two" } },
+	fly = { title = "🦟 The Genetics Lab", scientist = { "🔬 Use the microscope", "🧬 Check the DNA", "🍌 Offer a banana" }, animal = { smart = "🍌 Go to the banana", dumb = "💡 Fly into the lamp", other = "🖼 Bump the window" } },
+	worm = { title = "🐛 Darwin's Worm Concert", scientist = { "🎺 Play the bassoon", "🎹 Play the piano", "📣 Shout" }, animal = { smart = "🕺 Wiggle to the beat", dumb = "😐 Ignore the music", other = "🌱 Dig" } },
+	microbe = { title = "🦠 The Microscope", scientist = { "🔬 Zoom in", "💧 Add a drop", "🧫 New petri dish" }, animal = { smart = "➡️ Swim to the food", dumb = "🌀 Spin aimlessly", other = "💦 Split in two" } },
 	tardigrade = { title = "🐛 Extreme Survival Test", scientist = { "🧊 Freeze it", "🔥 Heat it", "🚀 Space vacuum" }, animal = { smart = "🛡 Survive cleverly", dumb = "😴 Just sleep through it", other = "🐾 Walk away" } },
 }
 
@@ -340,7 +340,7 @@ ACT.doctor = {
 					return "The doctor hands you medicine. What do you do?"
 				end,
 				options = function()
-					return { "💊 Take it", "🫣 Hide it in your sock", "🤮 Spit it out" }
+					return { "💊 Take it", "🙈 Hide it in your sock", "🤮 Spit it out" }
 				end,
 				onPick = function(i)
 					if i == 1 and sess.correct then
@@ -354,7 +354,7 @@ ACT.doctor = {
 						if sess.correct then
 							sess:gain("a", 0.5)
 						end
-						sess:line("🫣 The patient refused the medicine. Classic.")
+						sess:line("🙈 The patient refused the medicine. Classic.")
 					end
 				end,
 			},

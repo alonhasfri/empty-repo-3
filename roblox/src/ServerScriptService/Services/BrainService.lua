@@ -384,7 +384,7 @@ function BrainService.applyCharacter(player)
 			table.insert(parts, "[🧑‍🚀 Astronaut]")
 		end
 		if punished then
-			table.insert(parts, "\n🪧 " .. tostring(punished))
+			table.insert(parts, "\n📋 " .. tostring(punished))
 		end
 		gui.Text.Text = table.concat(parts, " ")
 		gui.Text.TextColor3 = Config.RankColors[rank] or Color3.new(1, 1, 1)

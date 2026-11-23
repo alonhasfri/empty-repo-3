@@ -37,7 +37,7 @@ local NOTES = {
 		title = "⚠️ IMPORTANT",
 		top = "This is the ONLY text in this game you're allowed to read. Read it.",
 		text = "Your goal: lose **all 86 billion** brain cells and reach **0**. Every dumb thing you do takes cells away. Every boring text you READ gives them back. So after this… **skip everything**.",
-		art = { "🧠", "➡️", "🫠", "➡️", "💀" },
+		art = { "🧠", "➡️", "🥴", "➡️", "💀" },
 		color = Color3.fromRGB(255, 70, 140),
 	},
 	town = {

@@ -207,16 +207,16 @@ Content.Animals = {
 	Transform = "You are now: %s %s",
 	Forms = {
 		dog = { sub = "\"bro is a dog now 💀\"", tip = "🐶 Power: BARK (button bottom-right). Pigeons fly away, people jump." },
-		fly = { sub = "\"bro is a fruit fly now 💀\"", tip = "🪰 Power: BUZZ UP (button bottom-right) to fly over things." },
+		fly = { sub = "\"bro is a fruit fly now 💀\"", tip = "🦟 Power: BUZZ UP (button bottom-right) to fly over things." },
 		bee = { sub = "\"bro is a bee now 💀\"", tip = "🐝 Power: BUZZ UP (button bottom-right) to fly over things." },
 		mouse = { sub = "\"bro is a mouse now 💀\"", tip = "🐭 You're tiny. Squeak." },
-		worm = { sub = "\"bro is a worm now 💀\"", tip = "🪱 Worms can't jump. Power: DIG a tunnel to another building." },
-		dead = { sub = "You are a rock. Rocks don't do much.", tip = "🪨 Rocks can't move. You won the Lose path!" },
+		worm = { sub = "\"bro is a worm now 💀\"", tip = "🐛 Worms can't jump. Power: DIG a tunnel to another building." },
+		dead = { sub = "You are a rock. Rocks don't do much.", tip = "🗿 Rocks can't move. You won the Lose path!" },
 	},
-	Powers = { bark = "🐶 Bark", buzz = "🪰 Buzz up", dig = "🪱 Dig" },
+	Powers = { bark = "🐶 Bark", buzz = "🦟 Buzz up", dig = "🐛 Dig" },
 	Woof = "🐶 WOOF!",
 	BarkedAt = "🐶 A dog barked at you! (it's %s)",
-	Dug = "🪱 You dug a tunnel to %s!",
+	Dug = "🐛 You dug a tunnel to %s!",
 	NoSit = "🐾 Animals can't sit on chairs.",
 	Wait = "⏳ Your power needs a moment.",
 }
@@ -470,7 +470,7 @@ Content.SpaceGates = {
 -- Astronaut training (real minigames, not quizzes)
 Content.AstroTraining = {
 	{ key = "dock", icon = "🛰", name = "Docking", desc = "Tap DOCK when the capsule lines up with the port. Too early or late = bonk." },
-	{ key = "oxygen", icon = "🫧", name = "Oxygen", desc = "Keep the oxygen needle in the green zone for 15 seconds. Tap to breathe in." },
+	{ key = "oxygen", icon = "💦", name = "Oxygen", desc = "Keep the oxygen needle in the green zone for 15 seconds. Tap to breathe in." },
 	{ key = "zerog", icon = "🧑‍🚀", name = "Zero-G", desc = "Push off in the right direction to grab each handle. Space has no brakes." },
 }
 
@@ -521,7 +521,7 @@ Content.Rooms = {
 	Closed = "🔒 Closed: nobody home",
 	ClosedToast = "🔒 This building is closed. Nothing to do in there.",
 	SmartOnly = "🧠 This is a smart place. Not for the Lose path.",
-	DumbOnly = "🫠 This is a dumb place. Not for the Gain path.",
+	DumbOnly = "🥴 This is a dumb place. Not for the Gain path.",
 	PickPath = "Pick a path first: Lose or Gain.",
 	Sit = "Sit",
 	Talk = "Talk",
@@ -623,7 +623,7 @@ Content.AnimalTalk = {
 Content.Conversations = {
 	therapist = {
 		who = "Dr. Calm",
-		meter = "🫶 Trust",
+		meter = "🤗 Trust",
 		action = "Talk to the therapist",
 		nodes = {
 			a = { say = "Welcome. Take a seat. So… how's your brain lately?", opts = {
@@ -699,7 +699,7 @@ Content.Conversations = {
 		ends = {
 			good = { line = "The doctor is relieved. You are not (it's bad for your run).", result = "📚 The doctor believes in you. Ew." },
 			mid = { line = "You leave with a sticker.", result = "🩹 You got a sticker." },
-			bad = { line = "The doctor sighs so hard the X-ray machine turns on.", result = "🫠 Extra brainrot for the road" },
+			bad = { line = "The doctor sighs so hard the X-ray machine turns on.", result = "🥴 Extra brainrot for the road" },
 		},
 	},
 	courtL = {
@@ -726,7 +726,7 @@ Content.Conversations = {
 		ends = {
 			good = { line = "Case dismissed. The judge tells you to read more. (Ugh.)", result = "⚖️ Case dismissed" },
 			mid = { line = "Small fine: you must read one (1) terms of service.", result = "📜 Community reading service" },
-			bad = { line = "GUILTY. You must hold a sign in the plaza: 'I BELIEVED A FAKE HEADLINE'.", result = "🪧 Embarrassment +35" },
+			bad = { line = "GUILTY. You must hold a sign in the plaza: 'I BELIEVED A FAKE HEADLINE'.", result = "📋 Embarrassment +35" },
 		},
 	},
 	courtG = {
@@ -955,7 +955,7 @@ Content.Updates = {
 	{ v = "1.7", name = "Your Brain Runs the Game", lines = {
 		"📱 Your phone changes with your brain: a chunky toy phone, a cozy phone, or (IQ 120+) a real phone you swipe through.",
 		"🚖 Hoppr rides: see the price and time before you pay. 🏦 Brain Bank savings. ⏰ Shifts with payslips.",
-		"🫠 Lose path: scrambled app names, brain lag and silly joke ads (turn them down in Settings → Effects).",
+		"🥴 Lose path: scrambled app names, brain lag and silly joke ads (turn them down in Settings → Effects).",
 		"🐾 Animals get a no-words menu and follow a smell trail. 🧠 New Brain Tower, district gates and lookouts.",
 	} },
 	{ v = "1.6", name = "Careers, School & Animals", lines = {
@@ -1055,7 +1055,7 @@ Content.Life = {
 		Power = "⚡",
 	},
 	LoseFX = {
-		Warn = { "uh oh…", "wait… 🫠", "brain buffering…", "hmm?" },
+		Warn = { "uh oh…", "wait… 🥴", "brain buffering…", "hmm?" },
 		Ads = {
 			{ title = "🎉 YOU WON!!!", text = "a FREE nothing! tap X to claim (nothing)" },
 			{ title = "🔥 HOT SINGLES", text = "hot single SOCKS near you 🧦🧦" },
@@ -1080,7 +1080,7 @@ Content.Map = {
 	Tower = "🧠 THE BRAIN TOWER",
 	Talk = "Talk",
 	Gates = {
-		{ x = -85, name = "🫠 BRAINROT DISTRICT", guide = "Gate Guide Gus", color = Color3.fromRGB(255, 90, 180), tip = "🫠 This way: Brainrot Mall, Microwave Diner, Wall Alley. Lose-path fun!" },
+		{ x = -85, name = "🥴 BRAINROT DISTRICT", guide = "Gate Guide Gus", color = Color3.fromRGB(255, 90, 180), tip = "🥴 This way: Brainrot Mall, Microwave Diner, Wall Alley. Lose-path fun!" },
 		{ x = 85, name = "🎓 SMARTY DISTRICT", guide = "Gate Guide Greta", color = Color3.fromRGB(70, 140, 255), tip = "🎓 This way: School, University, Cinema, Café, Hospital, Office, Job Center, Courthouse, Lab." },
 	},
 	Ends = {
