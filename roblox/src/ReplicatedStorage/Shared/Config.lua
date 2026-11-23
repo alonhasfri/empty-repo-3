@@ -527,6 +527,11 @@ Config.Map = {
 	TrailSeconds = 20, -- animal smell trail lasts this long
 	SmallDecorSize = 2, -- parts this small (every side) lose shadows and collision (phone speed)
 	NoShadowSize = 4, -- parts this small lose shadows
+	-- Lighting per look. Roblox only lets Studio change Lighting.LightingStyle (scripts get
+	-- "lacking capability PluginOrOpenCloud"), so the low-brain looks get their soft feel from
+	-- these instead (soft = cute/cash-grab/cozy/nonsense, sharp = realistic/fancy/future).
+	SoftLight = { ShadowSoftness = 0.9, EnvironmentDiffuseScale = 0.35, EnvironmentSpecularScale = 0.15 },
+	SharpLight = { ShadowSoftness = 0.2, EnvironmentDiffuseScale = 1, EnvironmentSpecularScale = 1 },
 }
 
 return Config

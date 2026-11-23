@@ -245,12 +245,17 @@ local function applyLighting(look: string)
 	end
 	Lighting.GlobalShadows = look ~= "nonsense"
 	cc.TintColor = Color3.new(1, 1, 1)
-	-- 1.7: Soft lighting (classic Roblox look) for cute/cash-grab/cozy, Realistic for the smart looks.
-	-- pcall: older Studio builds don't have LightingStyle, and some can't change it at runtime.
-	pcall(function()
-		local real = look == "realistic" or look == "fancy" or look == "future"
-		Lighting.LightingStyle = real and Enum.LightingStyle.Realistic or Enum.LightingStyle.Soft
-	end)
+	-- 1.7: soft light for cute/cash-grab/cozy/nonsense, sharp light for the smart looks.
+	-- (Game scripts can't change Lighting.LightingStyle, so this uses settings they can change.)
+	local real = look == "realistic" or look == "fancy" or look == "future"
+	for prop, value in pairs(real and Config.Map.SharpLight or Config.Map.SoftLight) do
+		local ok, err = pcall(function()
+			Lighting[prop] = value
+		end)
+		if not ok then
+			warn("[Style] lighting " .. prop .. ": " .. tostring(err))
+		end
+	end
 	if look == "future" then
 		-- dusk with a cool sci-fi tint
 		Lighting.ClockTime = 18.2
