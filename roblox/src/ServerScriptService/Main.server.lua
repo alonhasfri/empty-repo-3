@@ -53,6 +53,11 @@ local STATION_PATH = {
 	slime = "Any", -- 1.8
 	trampoline = "Any", -- 1.8
 	fortune = "Any", -- 1.8
+	party = "Any",
+	kindergarten = "Any",
+	daycare = "Any",
+	retirement = "Any",
+	toystore = "Any",
 	lab = "Gain",
 	shop = "Any",
 }

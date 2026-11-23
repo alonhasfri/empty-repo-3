@@ -2227,6 +2227,11 @@ local function funScreen(key: string)
 	local label = key == "fortune" and T.Button or (path == "Gain" and T.Gain or T.Lose)
 	UI.button(m.content, label, function()
 		local r = Remote.call("fun_do", { key = key })
+		if r.card then
+			m.close()
+			Stations.lifePackCard(r)
+			return
+		end
 		UI.toast(tostring(r.msg or ""), r.ok and C.good or C.bad, 5)
 	end, { LayoutOrder = 20, BackgroundColor3 = Color3.fromRGB(170, 80, 255) })
 	m.focus()
@@ -2240,6 +2245,30 @@ end
 function Stations.fortune()
 	funScreen("fortune")
 end
+-- 1.8: the honest Life Pack card (price + contents first) and the five hidden places
+function Stations.lifePackCard(r)
+	local TP = Content.LifePackPlaces
+	local m = UI.modal(TP.CardTitle, { color = Color3.fromRGB(255, 200, 220) })
+	UI.label(m.content, string.format(TP.CardText, tonumber(r.price) or 100), { LayoutOrder = 1 })
+	if not r.previewUsed then
+		UI.button(m.content, TP.Preview, function()
+			local x = Remote.call("life_preview")
+			UI.toast(tostring(x.msg or ""), x.ok and C.good or C.bad, 5)
+			m.close()
+		end, { LayoutOrder = 2, BackgroundColor3 = C.good })
+	end
+	UI.button(m.content, TP.SeePass, function()
+		m.close()
+		Stations.buyPass("LifePack")
+	end, { LayoutOrder = 3 })
+	m.focus()
+end
+for _, k in ipairs({ "party", "kindergarten", "daycare", "retirement", "toystore" }) do
+	Stations[k] = function()
+		funScreen(k)
+	end
+end
+
 
 ---------------------------------------------------------------------
 -- 1.8: Life Pack: the Crossroads Ceremony and starting a new life

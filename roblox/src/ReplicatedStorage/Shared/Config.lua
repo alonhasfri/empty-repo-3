@@ -169,6 +169,13 @@ Config.LifeStages = {
 Config.Fun = {
 	Radius = 30, -- studs from the counter
 	slime = { Cooldown = 20, Lose = 1.2, Gain = 0.6 },
+	-- 1.8 Life Pack places (NeedsPass: owners, or anyone during their one free 2-minute preview)
+	party = { Cooldown = 20, Lose = 1.5, Stress = 20, NeedsPass = true }, -- Gain: NO cells, a big stress drop
+	kindergarten = { Cooldown = 20, Lose = 1, Gain = 0.5, NeedsPass = true },
+	daycare = { Cooldown = 20, Lose = 0.8, Stress = 10, NeedsPass = true },
+	retirement = { Cooldown = 20, Lose = 1, Gain = 0.8, NeedsPass = true },
+	toystore = { Cooldown = 20, Lose = 1, Gain = 0.5, NeedsPass = true },
+	PreviewSeconds = 120, -- the free Life Pack preview tour, once per player
 	trampoline = { Cooldown = 15, Lose = 1, Stress = 6 },
 	fortune = {
 		Cooldown = 30,

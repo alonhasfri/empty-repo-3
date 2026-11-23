@@ -40,6 +40,10 @@ Net.on("fun_do", function(player, d)
 	if not cfg or not data then
 		return { ok = false }
 	end
+	-- 1.8 Life Pack places: owners, or anyone during their one free preview; everyone else gets the honest card
+	if cfg.NeedsPass and not (data.perks and data.perks.LifePack) and (tonumber(data.lifePreviewUntil) or 0) < os.time() then
+		return { ok = false, card = true, price = Config.GamePasses.LifePack.price, previewUsed = data.lifePreviewUsed == true }
+	end
 	if not data.path or data.dead then
 		return { ok = false, msg = TF.PickPath }
 	end
@@ -77,6 +81,20 @@ Net.on("fun_do", function(player, d)
 		BrainService.stress(player, -cfg.Stress)
 	end
 	return { ok = true, msg = T.GainDone[math.random(1, #T.GainDone)] }
+end)
+
+-- 1.8: the free 2-minute Life Pack preview (once per player, saved)
+Net.on("life_preview", function(player)
+	local data = DataService.get(player)
+	if not data then
+		return { ok = false }
+	end
+	if data.lifePreviewUsed then
+		return { ok = false, msg = Content.LifePackPlaces.PreviewUsed }
+	end
+	data.lifePreviewUsed = true
+	data.lifePreviewUntil = os.time() + CF.PreviewSeconds
+	return { ok = true, msg = Content.LifePackPlaces.PreviewOn }
 end)
 
 function FunService.start()

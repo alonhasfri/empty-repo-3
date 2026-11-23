@@ -374,9 +374,9 @@ local function bench(cf: CFrame)
 	Props.bench(scf(cf))
 end
 
-local function house(center: Vector3, yaw: number)
+local function house(center: Vector3, yaw: number, dlcKey: string?)
 	local colors = { Color3.fromRGB(240, 220, 190), Color3.fromRGB(200, 225, 240), Color3.fromRGB(240, 200, 200), Color3.fromRGB(210, 235, 200) }
-	building({
+	local hcf, hsize = building({
 		name = "House",
 		center = center,
 		yaw = yaw,
@@ -390,6 +390,11 @@ local function house(center: Vector3, yaw: number)
 		sign = "🏠",
 		closed = true, -- 1.5: nothing to do in houses, so they stay closed
 	})
+	-- 1.8 Life Pack: some houses hide a Life Pack building. Everyone sees the same plain house;
+	-- the knock prompt opens it for owners, or the honest pass card (and a free preview) for everyone else.
+	if dlcKey then
+		station(dlcKey, "Any", Content.LifePackPlaces.DoorTitle, Content.LifePackPlaces.DoorDesc, hcf * CFrame.new(0, 0.5, -hsize.Z / 2 - 3), Color3.fromRGB(150, 70, 60))
+	end
 end
 
 ---------------------------------------------------------------------
@@ -694,11 +699,12 @@ local function buildLoseSide()
 	-- 1.8: the north-west block becomes the Trampoline Park; one house becomes the Fortune Teller
 	funPlace("trampoline", Vector3.new(-300, 0.6, -300), FACE_SOUTH, Vector3.new(120, 20, 60), Color3.fromRGB(255, 230, 120), Color3.fromRGB(255, 120, 40))
 	funPlace("fortune", Vector3.new(-140, 0.6, -300), FACE_SOUTH, Vector3.new(36, 16, 30), Color3.fromRGB(80, 50, 120), Color3.fromRGB(170, 80, 255))
-	house(Vector3.new(-60, 0.6, -300), FACE_SOUTH)
+	house(Vector3.new(-60, 0.6, -300), FACE_SOUTH, "party")
 	tree(Vector3.new(-100, 0.6, -270))
-	for _, c in ipairs({ Vector3.new(-100, 0.6, 300), Vector3.new(-300, 0.6, 300) }) do
-		house(c + Vector3.new(-40, 0, 0), FACE_NORTH)
-		house(c + Vector3.new(40, 0, 0), FACE_NORTH)
+	for i, c in ipairs({ Vector3.new(-100, 0.6, 300), Vector3.new(-300, 0.6, 300) }) do
+		-- 1.8: these four plain houses hide Life Pack places (kindergarten, daycare, retirement home, toy store)
+		house(c + Vector3.new(-40, 0, 0), FACE_NORTH, i == 1 and "kindergarten" or "retirement")
+		house(c + Vector3.new(40, 0, 0), FACE_NORTH, i == 1 and "daycare" or "toystore")
 		tree(c + Vector3.new(0, 0.6, -30))
 	end
 end

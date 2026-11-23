@@ -1189,6 +1189,18 @@ Content.Horror = {
 	},
 }
 
+-- 1.8: Life Pack places hidden in plain houses + the honest pass card
+Content.LifePackPlaces = {
+	DoorTitle = "🏠 A house",
+	DoorDesc = "Knock knock?",
+	CardTitle = "🎟 Life Pack (optional)",
+	CardText = "This house is a Life Pack place. The Life Pack costs R$ %d and gives you:\n• Grow up from baby to grandparent, with birthdays\n• The Crossroads Ceremony: pick your path at age 8–20\n• 5 places: 🧸 Kindergarten, 🍼 Daycare, 👴 Retirement Home, 🎉 Party Center, 🧸 Toy Store\nThe base game is fully playable without it.",
+	Preview = "👀 Free 2-minute preview",
+	PreviewOn = "👀 Preview on! You can use all 5 Life Pack places for 2 minutes.",
+	PreviewUsed = "You already used your free preview.",
+	SeePass = "🎟 See the pass",
+}
+
 -- 1.8: Life Pack life stages (kid-safe: friends and family only, never dating)
 Content.LifeStages = {
 	StageNames = { baby = "Baby", kinder = "Kindergarten kid", kid = "Kid", teen = "Teen", adult = "Adult", grandparent = "Grandparent" },
@@ -1245,6 +1257,42 @@ Content.Fun = {
 		Gain = "🏃 Do a proper workout",
 		LoseDone = { "🤸 BOING! Brain cells fly out of your ears!", "🤸 Triple flip! (Your brain stayed on the ground.)", "🤸 You bounced so hard you forgot your name for a second." },
 		GainDone = { "🏃 Good workout! Your head feels clear. Stress down.", "🏃 Jumping jacks done right. Stress down." },
+	},
+	-- 1.8 Life Pack places (kids' party hall, not a club: cake, balloons, bouncy castle)
+	party = {
+		Title = "🎉 Party Center",
+		Lose = "🎂 Face-plant into the birthday cake",
+		Gain = "🎈 Play party games and chill",
+		LoseDone = { "🎂 SPLAT! Cake everywhere. Brain cells too.", "🕺 You won the silly dance-off. Your brain lost.", "🎈 You stuck a balloon to your head. It's stuck. So are you." },
+		GainDone = { "🎈 Party games with friends! Stress melts away.", "🍰 Cake, music and laughs. You feel great. Stress way down." },
+	},
+	kindergarten = {
+		Title = "🧸 Kindergarten",
+		Lose = "🖍 Eat a crayon (the red one)",
+		Gain = "🧱 Build the tallest block tower",
+		LoseDone = { "🖍 Tastes like… red. Brain cells drop.", "🎨 You finger-painted your own face." },
+		GainDone = { "🧱 Your tower is 12 blocks tall! Balance and planning. Brain cells up.", "📖 Show-and-tell: you explained how magnets work!" },
+	},
+	daycare = {
+		Title = "🍼 Daycare",
+		Lose = "🍼 Drool on the toys",
+		Gain = "😴 Take a cosy nap",
+		LoseDone = { "🍼 Blubblub. That's all you can say now.", "🧦 You tried to eat a sock." },
+		GainDone = { "😴 Best nap ever. Stress down.", "🧸 Cuddled the big teddy. So calm. Stress down." },
+	},
+	retirement = {
+		Title = "👴 Retirement Home",
+		Lose = "👓 Look for your glasses (they're on your head)",
+		Gain = "🧩 Grandpa's wisdom quiz and bingo",
+		LoseDone = { "👓 \"Where are my glasses?\" (on your head). Brain cells wander off.", "🧶 You knitted a sock… for a snake." },
+		GainDone = { "🧩 Bingo AND you knew every capital city. Brain cells up!", "📚 Grandma's long story had a great lesson in it. Brain cells up." },
+	},
+	toystore = {
+		Title = "🧸 Toy Store",
+		Lose = "🔊 Squeeze every squeaky toy",
+		Gain = "🧩 Solve the puzzle cube",
+		LoseDone = { "🔊 SQUEAK SQUEAK SQUEAK. Brain cells squeaked out.", "🪀 The yo-yo won. You lost." },
+		GainDone = { "🧩 Puzzle cube solved! Brain cells up.", "♟ You beat the toy chess robot. Brain cells up." },
 	},
 	fortune = {
 		Title = "🔮 Fortune Teller",
