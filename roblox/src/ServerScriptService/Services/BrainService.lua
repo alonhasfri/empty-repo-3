@@ -13,6 +13,7 @@ local Narration = require(Shared.Narration)
 
 local Net = require(script.Parent.Net)
 local DataService = require(script.Parent.DataService)
+local AnimalForms = require(script.Parent.AnimalForms)
 
 local BrainService = {}
 
@@ -355,6 +356,11 @@ function BrainService.applyCharacter(player)
 		char.Bandage:Destroy()
 	end
 
+	-- 1.6: physically become the animal (blocky body, avatar hidden) and move like one
+	AnimalForms.apply(char, stage.key)
+	humanoid.UseJumpPower = false
+	humanoid.JumpHeight = Config.Animals.Jump[stage.key] or Config.Animals.HumanJump
+
 	-- punishment sign from court (update 1.2)
 	local punished = player:GetAttribute("PunishSign")
 
@@ -399,8 +405,15 @@ local function afterChange(player)
 
 	if r.lastStage and r.lastStage ~= stage.key then
 		BrainService.narrate(player, "stage")
-		if stage.key ~= "human" and stage.key ~= "dead" then
+		local form = Content.Animals.Forms[stage.key]
+		if form and stage.key ~= "dead" then -- (at 0 the death ending plays instead)
+			-- 1.6: the transformation moment (with a tip about the new body)
+			Net.send(player, "transform", { emoji = stage.emoji, name = stage.name, sub = form.sub, tip = form.tip, power = Config.Animals.Powers[stage.key] })
+		elseif stage.key ~= "human" and stage.key ~= "dead" then
 			BrainService.toast(player, "You are now: " .. stage.emoji .. " " .. stage.name, "CartoonBoing")
+		end
+		if BrainService.hooks.onStageChange then
+			task.spawn(BrainService.hooks.onStageChange, player)
 		end
 		if stage.key == "microbe" then
 			BrainService.awardBadge(player, "WhereAmI")

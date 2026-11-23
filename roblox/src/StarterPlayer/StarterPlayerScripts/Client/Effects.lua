@@ -822,4 +822,29 @@ function Effects.promoted(d)
 	end
 end
 
+---------------------------------------------------------------------
+-- UPDATE 1.6: "You are now: 🐶 Dog" (you physically turned into an animal)
+---------------------------------------------------------------------
+function Effects.transform(d)
+	local AT = require(game:GetService("ReplicatedStorage").Shared.Content).Animals
+	UI.sound("CartoonBoing", 0.8)
+	local bg = overlay(Color3.new(0, 0, 0), 1, 65)
+	bg.Active = false
+	local big = bigText(bg, string.format(AT.Transform, d.emoji or "", d.name or ""), 65)
+	big.Size = UDim2.fromScale(0.8, 0.14)
+	big.Position = UDim2.fromScale(0.1, 0.3)
+	local sc = UI.new("UIScale", { Scale = 2, Parent = big })
+	TweenService:Create(sc, TweenInfo.new(0.35, Enum.EasingStyle.Back), { Scale = 1 }):Play()
+	local sub = bigText(bg, d.sub or "", 65)
+	sub.Size = UDim2.fromScale(0.7, 0.06)
+	sub.Position = UDim2.fromScale(0.15, 0.46)
+	sub.Font = Enum.Font.GothamBold
+	task.delay(3.5, function()
+		fadeOut(bg, 0.5)
+		if d.tip then
+			UI.toast(d.tip, nil, 7)
+		end
+	end)
+end
+
 return Effects

@@ -799,7 +799,47 @@ local function progress(st): (number, string)
 	return 0, ""
 end
 
+---------------------------------------------------------------------
+-- 1.6: animal power button (bottom right, above the jump button)
+---------------------------------------------------------------------
+local currentPower = nil
+local powerBtn = UI.new("TextButton", {
+	Name = "AnimalPower",
+	AnchorPoint = Vector2.new(1, 1),
+	Position = UDim2.new(1, -125, 1, -22), -- left of the phone jump button, under the narrator
+	Size = UDim2.fromOffset(120, 52),
+	BackgroundColor3 = Color3.fromRGB(255, 170, 40),
+	TextColor3 = Color3.new(1, 1, 1),
+	Font = Enum.Font.FredokaOne,
+	TextScaled = true,
+	Text = "",
+	Visible = false,
+	Parent = UI.gui,
+}, {
+	UI.new("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8), PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 6) }),
+})
+UI.corner(powerBtn, 16)
+UI.stroke(powerBtn, Color3.new(0, 0, 0), 2, 0.3)
+UI.autoScale(powerBtn)
+powerBtn.Activated:Connect(function()
+	if Hud.onPower then
+		Hud.onPower()
+	end
+end)
+function Hud.hasPower(): boolean
+	return currentPower ~= nil
+end
+local function updatePower(st)
+	local power = st and not st.dead and Config.Animals.Powers[st.stage] or nil
+	currentPower = power
+	powerBtn.Visible = power ~= nil
+	if power then
+		powerBtn.Text = Content.Animals.Powers[power] or power
+	end
+end
+
 function Hud.update(st)
+	updatePower(st)
 	UI.setTier(st.tier)
 	if st.settings then
 		Hud.layoutCounter(st.settings)

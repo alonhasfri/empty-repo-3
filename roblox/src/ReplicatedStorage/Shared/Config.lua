@@ -267,6 +267,17 @@ Config.Rooms = {
 	StandUpDelay = 0.25, -- seconds between standing up from a seat and being moved
 }
 
+-- 1.6 animal forms: body size, jump height and power per animal (walk speed is in Brain.lua stages).
+Config.Animals = {
+	HumanJump = 7.2, -- normal jump height (studs)
+	Jump = { dog = 8, fly = 16, bee = 16, mouse = 6, worm = 0, dead = 0, octopus = 4, tardigrade = 2, microbe = 0 },
+	BodyScale = { dog = 1.1, fly = 0.75, bee = 0.9, mouse = 0.9, worm = 1, dead = 1 },
+	Powers = { dog = "bark", fly = "buzz", bee = "buzz", worm = "dig" },
+	PowerCooldown = 6, -- seconds
+	BarkRadius = 40, -- studs
+	BuzzUp = 55, -- upward push (studs per second)
+}
+
 -- 1.6 school (Lose path): the bell rings every BellEvery seconds for human Lose players.
 Config.School = {
 	FirstBellAfter = 240, -- seconds after joining

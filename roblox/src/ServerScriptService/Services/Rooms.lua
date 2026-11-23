@@ -222,6 +222,10 @@ local function makeSeat(m: Model, cf: CFrame, size: Vector3, color: Color3, obje
 	pp.RequiresLineOfSight = false
 	pp.Parent = seat
 	pp.Triggered:Connect(function(player)
+		if Rooms.isAnimal(player) then
+			BrainService.toast(player, Content.Animals.NoSit) -- 1.6: animal limits
+			return
+		end
 		local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 		if hum and not seat.Occupant and hum.Health > 0 then
 			seat:Sit(hum)

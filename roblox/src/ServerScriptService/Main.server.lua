@@ -19,9 +19,11 @@ local SpaceService = require(Services.SpaceService)
 local CastleService = require(Services.CastleService)
 local ConversationService = require(Services.ConversationService)
 local SchoolService = require(Services.SchoolService)
+local _AnimalService = require(Services.AnimalService) -- 1.6 animal powers (listens on its own)
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection
 AdminService.ringBell = SchoolService.ring
+BrainService.hooks.onStageChange = GainService.applyUniform -- 1.6: no work vest on animals
 
 WorldService.build()
 

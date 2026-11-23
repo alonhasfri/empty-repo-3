@@ -202,6 +202,25 @@ Content.Jobs = {
 	{ id = "scientist", name = "Scientist", place = "lab", placeName = "the Science Lab", minIQ = 135, coinsPerMinute = 20, task = "scientist" },
 }
 
+-- 1.6: ANIMAL FORMS. When your brain shrinks enough you physically become the animal.
+Content.Animals = {
+	Transform = "You are now: %s %s",
+	Forms = {
+		dog = { sub = "\"bro is a dog now 💀\"", tip = "🐶 Power: BARK (button bottom-right). Pigeons fly away, people jump." },
+		fly = { sub = "\"bro is a fruit fly now 💀\"", tip = "🪰 Power: BUZZ UP (button bottom-right) to fly over things." },
+		bee = { sub = "\"bro is a bee now 💀\"", tip = "🐝 Power: BUZZ UP (button bottom-right) to fly over things." },
+		mouse = { sub = "\"bro is a mouse now 💀\"", tip = "🐭 You're tiny. Squeak." },
+		worm = { sub = "\"bro is a worm now 💀\"", tip = "🪱 Worms can't jump. Power: DIG a tunnel to another building." },
+		dead = { sub = "You are a rock. Rocks don't do much.", tip = "🪨 Rocks can't move. You won the Lose path!" },
+	},
+	Powers = { bark = "🐶 Bark", buzz = "🪰 Buzz up", dig = "🪱 Dig" },
+	Woof = "🐶 WOOF!",
+	BarkedAt = "🐶 A dog barked at you! (it's %s)",
+	Dug = "🪱 You dug a tunnel to %s!",
+	NoSit = "🐾 Animals can't sit on chairs.",
+	Wait = "⏳ Your power needs a moment.",
+}
+
 -- 1.6: SCHOOL for the Lose path (the bell, the truant officer, class)
 Content.School = {
 	Bell = "🔔 SCHOOL BELL! Get to the 🏫 School in %d seconds or the truant officer comes for you.",

@@ -200,6 +200,21 @@ Remote.on("testDay", Effects.testDay)
 -- 1.6 careers
 Remote.on("promoted", Effects.promoted)
 Remote.on("reportCard", Stations.reportCard)
+-- 1.6 animal forms
+Remote.on("transform", Effects.transform)
+Hud.onPower = function()
+	local r = Remote.call("animal_power")
+	if r and r.msg then
+		UI.toast(r.msg)
+	end
+	if r and r.ok and r.power == "buzz" then
+		local root = game:GetService("Players").LocalPlayer.Character and game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+		if root then
+			local v = root.AssemblyLinearVelocity
+			root.AssemblyLinearVelocity = Vector3.new(v.X, r.up or 55, v.Z)
+		end
+	end
+end
 -- 1.6 school objective banner
 Remote.on("objective", function(d)
 	Hud.objective(d.text)
@@ -281,6 +296,15 @@ ContextActionService:BindAction("BrainMenu", function(_, inputState)
 	end
 	return Enum.ContextActionResult.Sink
 end, false, Enum.KeyCode.ButtonY, Enum.KeyCode.M)
+
+-- 1.6: animal power (F on keyboard, X on a controller)
+ContextActionService:BindAction("AnimalPower", function(_, inputState)
+	if inputState == Enum.UserInputState.Begin and Hud.onPower and Hud.hasPower() then
+		Hud.onPower()
+		return Enum.ContextActionResult.Sink
+	end
+	return Enum.ContextActionResult.Pass
+end, false, Enum.KeyCode.F, Enum.KeyCode.ButtonX)
 
 ContextActionService:BindAction("BrainAdmin", function(_, inputState)
 	if inputState == Enum.UserInputState.Begin then
