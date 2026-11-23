@@ -631,7 +631,10 @@ function UI.modal(title: string, opts)
 		UI.new("UISizeConstraint", { MaxSize = phone and Vector2.new(400, 820) or (opts.maxSize or Vector2.new(580, 500)) }),
 	})
 	if phone then
-		UI.new("UIAspectRatioConstraint", { AspectRatio = 0.52, DominantAxis = Enum.DominantAxis.Height, Parent = frame })
+		-- on a sideways phone screen a tall phone would be tiny, so it gets a wider shape there
+		local v = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1000, 462)
+		local aspect = (UI.isPhone() and v.X > v.Y) and Config.UI.LandscapePhoneAspect or 0.52
+		UI.new("UIAspectRatioConstraint", { AspectRatio = aspect, DominantAxis = Enum.DominantAxis.Height, Parent = frame })
 		UI.corner(frame, 34)
 		UI.stroke(frame, Color3.fromRGB(10, 10, 12), 8, 0)
 		-- notch
@@ -654,7 +657,8 @@ function UI.modal(title: string, opts)
 		Name = "Header",
 		BackgroundColor3 = Color3.new(1, 1, 1),
 		Position = phone and UDim2.fromOffset(0, 28) or UDim2.new(),
-		Size = UDim2.new(1, 0, 0, phone and 44 or 56),
+		-- tall enough for the 48 px close button (1.7 skeleton), so it can't poke into the status bar
+		Size = UDim2.new(1, 0, 0, phone and (Config.UI.MinTouch + 4) or math.max(56, Config.UI.MinTouch + 8)),
 		ZIndex = 21,
 		Parent = frame,
 	})
@@ -681,9 +685,10 @@ function UI.modal(title: string, opts)
 
 	local closeBtn = nil
 	if not opts.noClose then
-		closeBtn = UI.button(header, "✕", function()
+		closeBtn = UI.button(header, "X", function() -- (the ✕ symbol isn't in these fonts: it showed as a box)
 			UI.closeModal()
 		end, {
+			Font = Enum.Font.GothamBlack,
 			AnchorPoint = Vector2.new(1, 0.5),
 			Size = UDim2.fromOffset(Config.UI.MinTouch, Config.UI.MinTouch),
 			Position = UDim2.new(1, -8, 0.5, 0),
@@ -697,8 +702,8 @@ function UI.modal(title: string, opts)
 	local content = UI.new("ScrollingFrame", {
 		Name = "Content",
 		BackgroundTransparency = 1,
-		Position = phone and UDim2.fromOffset(8, 78) or UDim2.fromOffset(14, 66),
-		Size = phone and UDim2.new(1, -16, 1, -128) or UDim2.new(1, -28, 1, -78),
+		Position = phone and UDim2.fromOffset(8, 28 + Config.UI.MinTouch + 4 + 6) or UDim2.fromOffset(14, math.max(56, Config.UI.MinTouch + 8) + 10),
+		Size = phone and UDim2.new(1, -16, 1, -(28 + Config.UI.MinTouch + 4 + 6 + 50)) or UDim2.new(1, -28, 1, -(math.max(56, Config.UI.MinTouch + 8) + 22)),
 		CanvasSize = UDim2.new(),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		ScrollBarThickness = 5,

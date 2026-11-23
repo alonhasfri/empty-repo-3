@@ -124,7 +124,11 @@ end
 -- One app icon (icons never scramble, so the phone always still works)
 local function appIcon(parent, app, order: number, size: number, labelH: number)
 	local cell = UI.new("TextButton", { Text = "", BackgroundTransparency = 1, LayoutOrder = order, Selectable = true, Parent = parent })
-	local icon = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0), Size = UDim2.fromOffset(size, size), BackgroundColor3 = WHITE, Parent = cell })
+	-- the icon fills its grid cell (up to `size`), so narrow phones never get overlapping icons
+	local icon = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0), Size = UDim2.fromScale(0.9, 0.9), BackgroundColor3 = WHITE, Parent = cell }, {
+		UI.new("UIAspectRatioConstraint", { AspectRatio = 1, DominantAxis = Enum.DominantAxis.Width }),
+		UI.new("UISizeConstraint", { MaxSize = Vector2.new(size, size) }),
+	})
 	UI.corner(icon, math.floor(size * 0.27))
 	UI.gradient(icon, app.c1, app.c2, 45)
 	local pad = math.floor(size * 0.17)
@@ -132,7 +136,7 @@ local function appIcon(parent, app, order: number, size: number, labelH: number)
 		UI.new("UIPadding", { PaddingTop = UDim.new(0, pad), PaddingBottom = UDim.new(0, pad), PaddingLeft = UDim.new(0, pad), PaddingRight = UDim.new(0, pad) }),
 	})
 	if labelH > 0 then
-		UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, size + 3), Size = UDim2.new(1, 0, 0, labelH), Text = appLabel(app.name), Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = WHITE, Parent = cell })
+		UI.new("TextLabel", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, labelH), Text = appLabel(app.name), Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = WHITE, Parent = cell })
 	end
 	cell.Activated:Connect(function()
 		openApp(app)
@@ -180,16 +184,13 @@ end
 -- The real-feeling phone OS: status bar, swipe pages, page dots, dock
 local function realHome(m, st)
 	local apps = appsFor(st, "real")
-	-- status bar
-	local bar = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 22), LayoutOrder = 1, Parent = m.content })
-	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(0.5, 0, 1, 0), Text = os.date("%H:%M"), Font = Enum.Font.GothamBold, TextSize = UI.textSize(14), TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = WHITE, Parent = bar })
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromScale(0.5, 0), Size = UDim2.new(0.5, 0, 1, 0), Text = "🪙 " .. tostring(st.coins or 0) .. "   📶 5G  🔋 87%", Font = Enum.Font.GothamBold, TextSize = UI.textSize(14), TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = WHITE, Parent = bar })
+	-- (the phone frame already draws the status bar; a second one here showed the time twice)
 	-- widget
 	local widget = UI.new("Frame", { BackgroundColor3 = WHITE, Size = UDim2.new(1, 0, 0, 74), LayoutOrder = 2, Parent = m.content })
 	UI.corner(widget, 18)
 	UI.gradient(widget, Color3.fromRGB(30, 50, 90), Color3.fromRGB(70, 110, 160), 90)
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(14, 6), Size = UDim2.new(1, -28, 0, 36), Text = os.date("%A %H:%M"), Font = Enum.Font.GothamMedium, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = WHITE, Parent = widget })
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(14, 44), Size = UDim2.new(1, -28, 0, 20), Text = "IQ " .. tostring(st.iq or "?") .. (st.job and ("  •  💼 " .. st.job) or ""), Font = Enum.Font.Gotham, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = widget })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(14, 44), Size = UDim2.new(1, -28, 0, 20), Text = "IQ " .. (st.iq and tostring(math.floor(st.iq)) or "?") .. (st.job and ("  •  💼 " .. st.job) or "") .. "  •  💰 " .. tostring(st.coins or 0), Font = Enum.Font.Gotham, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = widget })
 
 	-- swipe pages: 4 columns x 3 rows per page; the last 4 apps sit in the dock
 	local perPage = 12
@@ -309,7 +310,7 @@ function PhoneOS.hoppr()
 		m.clear()
 		whiteLabel(m.content, "📍 " .. tostring(q.name), 1, { Font = Enum.Font.GothamBold, TextSize = UI.textSize(20) })
 		whiteLabel(m.content, string.format(TL.Ride.Fare, q.fare) .. "   •   " .. string.format(TL.Ride.Eta, q.eta), 2)
-		whiteLabel(m.content, "🪙 " .. tostring(q.coins) .. "  •  " .. tostring(q.distance) .. " studs", 3, { TextColor3 = SOFT })
+		whiteLabel(m.content, "💰 " .. tostring(q.coins) .. "  •  " .. tostring(q.distance) .. " studs", 3, { TextColor3 = SOFT })
 		if q.busy then
 			whiteLabel(m.content, TL.Ride.Busy, 4, { TextColor3 = Color3.fromRGB(255, 210, 90) })
 		end

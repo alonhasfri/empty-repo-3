@@ -627,7 +627,7 @@ local function showDo(step, index: number, count: number)
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(76, 24), Size = UDim2.new(1, -90, 0, 30), Text = step.title, Font = Enum.Font.FredokaOne, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.4, ZIndex = 41, Parent = doCard })
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(76, 56), Size = UDim2.new(1, -90, 0, 34), Text = step.desc, Font = Enum.Font.GothamBold, TextScaled = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(230, 240, 255), ZIndex = 41, Parent = doCard })
 	do
-		local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(22, 22), Text = "✕", Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 42, Parent = doCard })
+		local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(22, 22), Text = "X", Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 42, Parent = doCard })
 		skip.Activated:Connect(function()
 			-- first time: counts as done, so it won't come back (replay it from Settings)
 			if Tutorial.skipNow then

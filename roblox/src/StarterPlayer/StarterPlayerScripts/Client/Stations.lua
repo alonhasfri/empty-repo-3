@@ -873,7 +873,7 @@ function Stations.work()
 		for bi, b in ipairs(buttons) do
 			b.BackgroundColor3 = bi == res.answer and C.good or (bi == i and C.bad or C.panel2)
 		end
-		UI.toast(res.correct and "✅ Good work! +🪙" or "❌ Oops.", res.correct and C.good or C.bad)
+		UI.toast(res.correct and "✅ Good work! +💰" or "❌ Oops.", res.correct and C.good or C.bad)
 		task.wait(0.8)
 		if m.alive() then
 			m.clear()

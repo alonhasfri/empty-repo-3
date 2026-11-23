@@ -480,6 +480,7 @@ Config.UI = {
 	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone
 	MinPhoneText = 14, -- smallest text size on phones
 	MinTouch = 48, -- smallest tappable button (pixels), Google's 48dp rule
+	LandscapePhoneAspect = 1.05, -- the in-game phone on a sideways phone screen (portrait 0.52 is only ~146 px wide there)
 }
 
 -- Which phone you get. IQ only matters on the Gain path; the Lose path always gets the toy phone.

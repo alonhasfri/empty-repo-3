@@ -119,7 +119,7 @@ local function showAd()
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(1, -6, 0, 6),
 		Size = UDim2.fromOffset(56, 56),
-		Text = "✕",
+		Text = "X",
 		Font = Enum.Font.GothamBlack,
 		TextScaled = true,
 		TextColor3 = Color3.new(1, 1, 1),
