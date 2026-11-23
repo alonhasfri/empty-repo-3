@@ -148,6 +148,18 @@ Config.Boards = {
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
 }
 
+-- 1.8.1: day-night cycle in town (same clock for everyone). Settings → Always day turns it off.
+Config.DayNight = {
+	DayMinutes = 20, -- one full day
+	StartHour = 6, -- where the clock is at the start of each cycle
+	LightsOnAt = 18.5, -- streetlights on (and night ambient)
+	LightsOffAt = 6.2,
+	NightAmbient = Color3.fromRGB(70, 78, 105), -- night is never pitch black
+	NightOutdoor = Color3.fromRGB(90, 100, 130),
+	TownRadius = 400, -- the cycle only runs in town (not on the Moon or in the castle)
+	TownMaxY = 500,
+}
+
 -- 1.8: pets (Life Pack) and the friends meter (everyone; preset high-fives only)
 Config.PetsFriends = {
 	Pets = {

@@ -1230,6 +1230,15 @@ function WorldService.build()
 		p.Position = w[1]
 		p.Size = w[2]
 		p.Parent = mapFolder
+		-- 1.8.1: a friendly message instead of a silent invisible wall
+		local told = {}
+		p.Touched:Connect(function(hit)
+			local pl = game:GetService("Players"):GetPlayerFromCharacter(hit.Parent)
+			if pl and (told[pl] or 0) < os.clock() then
+				told[pl] = os.clock() + 8
+				BrainService.toast(pl, Content.Settings17.EdgeOfTown)
+			end
+		end)
 	end
 	-- microwave countdown text
 	task.spawn(function()

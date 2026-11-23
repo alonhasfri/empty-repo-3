@@ -320,6 +320,7 @@ local function applyLighting(look: string)
 		cc.Contrast = -0.05
 		cc.TintColor = Color3.fromRGB(250, 235, 255)
 	end
+	Lighting:SetAttribute("LookClock", Lighting.ClockTime) -- 1.8.1: "Always day" goes back to the look's own time
 end
 
 local function applyCashGrabParts(look: string)

@@ -32,6 +32,7 @@ local AnimalUI = require(Client.AnimalUI)
 local Guide = require(Client.Guide)
 local LowGraphics = require(Client.LowGraphics)
 local SpeedrunTimer = require(Client.SpeedrunTimer)
+local DayNight = require(Client.DayNight)
 local _Horror = require(Client.Horror) -- 1.7.3: The Average Files (listens on its own)
 local _HighFive = require(Client.HighFive) -- 1.8: friends meter (listens on its own)
 PhoneOS.animalUI = AnimalUI.open
@@ -148,6 +149,7 @@ local function applyState(st)
 	Guide.onState(st)
 	LowGraphics.onState(st)
 	SpeedrunTimer.onState(st)
+	DayNight.onState(st)
 end
 
 Remote.on("state", applyState)
