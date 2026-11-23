@@ -799,10 +799,17 @@ function Stations.jobs()
 		end, { LayoutOrder = 2, BackgroundColor3 = Color3.fromRGB(240, 190, 30), TextColor3 = Color3.new(0, 0, 0) })
 		ideaBar(m.content, r.idea, r.ideaMax, 3)
 	end
-	UI.label(m.content, "<b>Jobs</b> (pay coins every minute + per task):", { LayoutOrder = 4 })
+	local CT = Content.Careers
+	if r.career then
+		local c = r.career
+		local line = string.format(CT.Ladder, c.ladder) .. "\n" .. string.format(CT.Now, c.title, c.xp)
+		line ..= c.nextXP and string.format(CT.Next, c.nextXP, c.nextIQ) or CT.Top
+		UI.label(m.content, line, { LayoutOrder = 3 })
+	end
+	UI.label(m.content, CT.Pick, { LayoutOrder = 4 })
 	for i, j in ipairs(r.jobs) do
-		local status = j.current and "  ✅ YOUR JOB" or (j.available and "" or ("  🔒 IQ " .. math.max(0, j.minIQ) .. "+"))
-		UI.button(m.content, j.name .. "  •  🪙 " .. j.coins .. "/min  •  📍 " .. j.placeName .. status, function()
+		local status = j.current and CT.Yours or (j.available and "" or string.format(CT.Locked, math.max(0, j.minIQ)))
+		UI.button(m.content, string.format(CT.JobButton, j.first or j.name, j.top or j.name, j.coins, j.placeName, status), function()
 			if not j.available or j.current then
 				return
 			end
@@ -814,6 +821,26 @@ function Stations.jobs()
 			m.close()
 		end, { LayoutOrder = 10 + i, TextSize = UI.textSize(14), BackgroundColor3 = j.current and C.good or (j.available and C.panel2 or C.panel) })
 	end
+	m.focus()
+end
+
+-- 1.6: report card every few shifts
+function Stations.reportCard(d)
+	local CT = Content.Careers
+	local m = UI.modal(CT.ReportTitle, { color = C.good })
+	local rows = { d.title, d.accuracy, d.speed, d.vibes }
+	for i, name in ipairs(CT.ReportRows) do
+		UI.label(m.content, name .. ":  <b>" .. tostring(rows[i]) .. "</b>", { LayoutOrder = i })
+	end
+	local prog = d.need and (d.xp .. "/" .. d.need) or CT.Max
+	UI.label(m.content, string.format(CT.ReportProgress, prog), { LayoutOrder = 10 })
+	local back = UI.new("Frame", { Size = UDim2.new(1, 0, 0, 12), BackgroundColor3 = C.panel, LayoutOrder = 11, Parent = m.content })
+	UI.corner(back, 6)
+	local fill = UI.new("Frame", { Size = UDim2.fromScale(d.need and math.clamp(d.xp / d.need, 0.02, 1) or 1, 1), BackgroundColor3 = Color3.fromRGB(47, 191, 113), Parent = back })
+	UI.corner(fill, 6)
+	UI.button(m.content, "OK", function()
+		m.close()
+	end, { LayoutOrder = 20, BackgroundColor3 = C.good })
 	m.focus()
 end
 

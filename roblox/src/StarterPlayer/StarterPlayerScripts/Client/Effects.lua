@@ -765,4 +765,61 @@ function Effects.castleEnter()
 	fadeOut(o, 1)
 end
 
+---------------------------------------------------------------------
+-- UPDATE 1.6: PROMOTED! (a new staff name tag prints out, coworkers clap)
+---------------------------------------------------------------------
+function Effects.promoted(d)
+	local CT = require(game:GetService("ReplicatedStorage").Shared.Content).Careers
+	UI.closeModal()
+	local bg = overlay(Color3.fromRGB(11, 13, 26), 0.08, 70)
+	UI.gradient(bg, Color3.fromRGB(42, 59, 107), Color3.fromRGB(11, 13, 26), 90)
+	local title = bigText(bg, CT.Promoted, 70)
+	title.TextColor3 = Color3.fromRGB(255, 216, 74)
+	title.Size = UDim2.fromScale(0.8, 0.16)
+	title.Position = UDim2.fromScale(0.1, 0.08)
+	local sc = UI.new("UIScale", { Scale = 2.5, Parent = title })
+	TweenService:Create(sc, TweenInfo.new(0.35, Enum.EasingStyle.Back), { Scale = 1 }):Play()
+	UI.sound("LevelUp", 0.8)
+	-- the staff name tag
+	local card = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.3), Size = UDim2.fromScale(0.42, 0.26), BackgroundColor3 = Color3.fromRGB(250, 250, 245), ZIndex = 72, Parent = bg })
+	UI.corner(card, 12)
+	UI.new("UIAspectRatioConstraint", { AspectRatio = 2.4, Parent = card })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 0.22), Text = "BRAINVILLE • STAFF", Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.fromRGB(90, 90, 110), ZIndex = 73, Parent = card })
+	local name = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromScale(0.05, 0.25), Size = UDim2.fromScale(0.9, 0.45), Text = d.title or "", MaxVisibleGraphemes = 0, Font = Enum.Font.FredokaOne, TextScaled = true, TextColor3 = Color3.fromRGB(28, 30, 50), ZIndex = 73, Parent = card })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromScale(0, 0.74), Size = UDim2.fromScale(1, 0.2), Text = "🧠 " .. require(game:GetService("ReplicatedStorage").Shared.Brain).formatNumber(d.cells or 0) .. " brain cells", Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.fromRGB(90, 90, 110), ZIndex = 73, Parent = card })
+	local claps = UI.new("TextLabel", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.6), Size = UDim2.fromScale(0.8, 0.1), Text = "", Font = Enum.Font.FredokaOne, TextScaled = true, ZIndex = 72, Parent = bg })
+	UI.new("TextLabel", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.71), Size = UDim2.fromScale(0.8, 0.06), Text = string.format(CT.PromotedSub, d.payPercent or 50), Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), ZIndex = 72, Parent = bg })
+	local done = false
+	local btn = UI.button(bg, CT.BackToWork, function()
+		if not done then
+			done = true
+			fadeOut(bg, 0.3)
+		end
+	end, { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.8), Size = UDim2.new(0.3, 0, 0, 46), ZIndex = 74, BackgroundColor3 = C.good })
+	btn.Name = "BackToWork"
+	task.spawn(function()
+		local total = utf8.len(d.title or "") or 0
+		for i = 1, total do
+			name.MaxVisibleGraphemes = i
+			UI.sound("TypeTick", 0.3)
+			task.wait(0.07)
+		end
+		name.MaxVisibleGraphemes = -1
+		claps.Text = string.rep("🧑‍💼", 7)
+		task.wait(0.8)
+		claps.Text = string.rep("👏", 7)
+		Effects.confetti()
+	end)
+	-- close by itself after a while too
+	task.delay(9, function()
+		if not done and bg.Parent then
+			done = true
+			fadeOut(bg, 0.4)
+		end
+	end)
+	if UI.isGamepad() then
+		game:GetService("GuiService").SelectedObject = btn
+	end
+end
+
 return Effects

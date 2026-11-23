@@ -111,6 +111,29 @@ Config.ViralBadgeCount = 5
 Config.Stress = { Max = 100, FreezeAt = 100 }
 Config.EurekaTasks = 6 -- job tasks needed to fill the idea meter (Eureka cutscene)
 Config.WorkRadius = 45 -- how close to your workplace you must be to work
+-- 1.6 careers: XP to reach level 2/3/4 of a job's ladder, and the IQ each level needs:
+-- job.minIQ + StartIQ + (level-1) * IQPerLevel (+ TopBonusIQ for the top level).
+Config.Careers = {
+	XPNeed = { 0, 4, 10, 18 }, -- total XP for level 1, 2, 3, 4 (1 XP per task done right)
+	StartIQ = -14,
+	IQPerLevel = 7,
+	TopBonusIQ = 1,
+	PayPerLevel = 0.5, -- each promotion adds +50% pay (tasks and per-minute pay)
+	TaskPay = 2, -- coins per task = coinsPerMinute * TaskPay * level bonus
+	ReportEvery = 3, -- a report card every 3 shifts
+	PromotionDelay = 0.9,
+	Uniforms = {
+		cashier = Color3.fromRGB(232, 66, 63),
+		office = Color3.fromRGB(59, 74, 107),
+		teacher = Color3.fromRGB(47, 154, 88),
+		professor = Color3.fromRGB(107, 63, 138),
+		doctor = Color3.fromRGB(242, 246, 255),
+		lawyer = Color3.fromRGB(32, 34, 42),
+		scientist = Color3.fromRGB(230, 251, 255),
+		janitor = Color3.fromRGB(90, 122, 154),
+		sweeper = Color3.fromRGB(240, 138, 36),
+	},
+}
 Config.TaxiCooldown = 8
 Config.ElectionMinutes = 20 -- an election starts this often (update 1.2)
 Config.ComebackMakeoverIQ = 145 -- Comeback players who reach this get Complete Makeover

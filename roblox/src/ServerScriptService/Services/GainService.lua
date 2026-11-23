@@ -250,11 +250,109 @@ local function jobById(id)
 	return nil
 end
 
+---------------------------------------------------------------------
+-- Careers (1.6): every job is a ladder of 4 titles. 1 XP per task done right;
+-- enough XP + enough IQ = promotion (more pay, new uniform).
+---------------------------------------------------------------------
+local CC = Config.Careers
+local CT = Content.Careers
+
+-- IQ needed for ladder level (1-4)
+local function levelIQ(job, level: number): number
+	return job.minIQ + CC.StartIQ + (level - 1) * CC.IQPerLevel + (level == 4 and CC.TopBonusIQ or 0)
+end
+
+local function ladderOf(job)
+	return CT.Ladders[job.id] or { job.name, job.name, job.name, job.name }
+end
+
+-- The career record for your current job (made fresh when you switch jobs)
+local function careerOf(data)
+	if not data.job then
+		return nil
+	end
+	local c = data.career
+	if typeof(c) ~= "table" or c.id ~= data.job then
+		c = { id = data.job, level = 1, xp = 0, shift = 0, ok = 0 }
+		data.career = c
+	end
+	return c
+end
+
+local function payMult(c): number
+	return 1 + ((c and c.level or 1) - 1) * CC.PayPerLevel
+end
+
+local function titleOf(job, c): string
+	return ladderOf(job)[c and c.level or 1]
+end
+
+-- Uniform: a colored vest and your job title over your head (Gain path, human form only)
+local function applyUniform(player)
+	local char = player.Character
+	if not char then
+		return
+	end
+	local old = char:FindFirstChild("Uniform")
+	if old then
+		old:Destroy()
+	end
+	local data = DataService.get(player)
+	local job = data and jobById(data.job)
+	local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso")
+	if not job or not torso or data.path ~= "Gain" or data.dead then
+		return
+	end
+	local stage = Brain.stage(data.cells, BrainService.secretAnimals).key
+	if stage ~= "human" and stage ~= "barelyhuman" then
+		return
+	end
+	local c = careerOf(data)
+	local folder = Instance.new("Folder")
+	folder.Name = "Uniform"
+	local vest = Instance.new("Part")
+	vest.Name = "Vest"
+	vest.Size = Vector3.new(torso.Size.X + 0.12, torso.Size.Y * 0.8, torso.Size.Z + 0.12)
+	vest.Color = CC.Uniforms[job.id] or Color3.fromRGB(120, 120, 130)
+	vest.Material = Enum.Material.Fabric
+	vest.CanCollide = false
+	vest.CanQuery = false
+	vest.CanTouch = false
+	vest.Massless = true
+	vest.CFrame = torso.CFrame * CFrame.new(0, -torso.Size.Y * 0.1, 0)
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = torso
+	weld.Part1 = vest
+	weld.Parent = vest
+	vest.Parent = folder
+	local head = char:FindFirstChild("Head")
+	if head then
+		local g = Instance.new("BillboardGui")
+		g.Name = "JobTitle"
+		g.Size = UDim2.new(5, 0, 0.8, 0)
+		g.StudsOffset = Vector3.new(0, 3.2, 0)
+		g.MaxDistance = 60
+		g.Adornee = head
+		local l = Instance.new("TextLabel")
+		l.Size = UDim2.fromScale(1, 1)
+		l.BackgroundTransparency = 1
+		l.TextScaled = true
+		l.Font = Enum.Font.FredokaOne
+		l.TextColor3 = Color3.fromRGB(255, 240, 170)
+		l.TextStrokeTransparency = 0.3
+		l.Text = "💼 " .. titleOf(job, c)
+		l.Parent = g
+		g.Parent = folder
+	end
+	folder.Parent = char
+end
+GainService.applyUniform = applyUniform
+
 local function jobAvailable(data, job): boolean
 	if job.comebackOnly and not data.comeback then
 		return false
 	end
-	return Brain.iq(data.cells) >= job.minIQ
+	return Brain.iq(data.cells) >= levelIQ(job, 1)
 end
 
 local function atWork(player, job): boolean
@@ -271,21 +369,35 @@ Net.on("jobs_list", function(player)
 	local list = {}
 	for _, j in ipairs(Content.Jobs) do
 		if not j.comebackOnly or data.comeback then
+			local ladder = ladderOf(j)
 			table.insert(list, {
 				id = j.id,
 				name = j.name,
+				first = ladder[1],
+				top = ladder[4],
 				coins = j.coinsPerMinute,
 				available = jobAvailable(data, j),
 				current = data.job == j.id,
-				minIQ = j.minIQ,
+				minIQ = levelIQ(j, 1),
 				placeName = j.placeName,
 			})
 		end
 	end
 	local current = jobById(data.job)
+	local career = nil
+	if current then
+		local c = careerOf(data)
+		local ladder = ladderOf(current)
+		career = { ladder = table.concat(ladder, " → "), title = ladder[c.level], level = c.level, xp = c.xp }
+		if c.level < 4 then
+			career.nextXP = CC.XPNeed[c.level + 1]
+			career.nextIQ = levelIQ(current, c.level + 1)
+		end
+	end
 	return {
 		ok = true,
 		jobs = list,
+		career = career,
 		atWork = current ~= nil and atWork(player, current),
 		workplace = current and current.placeName or nil,
 		idea = data.ideaMeter,
@@ -300,10 +412,12 @@ Net.on("job_take", function(player, d)
 		return { ok = false, msg = "You can't take that job right now." }
 	end
 	data.job = job.id
+	local c = careerOf(data) -- a new job starts at the bottom of its ladder
 	BrainService.awardBadge(player, "FirstJob")
 	BrainService.push(player)
+	applyUniform(player)
 	Net.send(player, "workMarker", { pos = WorldService.Workplaces[job.place], name = job.placeName })
-	return { ok = true, msg = "You're now a " .. job.name .. "! Go to " .. job.placeName .. " to work. 🚕" }
+	return { ok = true, msg = string.format(CT.Taken, titleOf(job, c), job.placeName) }
 end)
 
 -- Taxi: quick travel around town (both paths)
@@ -485,9 +599,55 @@ local function eureka(player, data)
 	Net.send(player, "eureka", { choices = cards })
 end
 
-local function finishTask(player, data, job, correct)
+local function promote(player, data, job, c)
+	c.level += 1
+	c.waitTold = false
+	local title = titleOf(job, c)
+	applyUniform(player)
+	Net.send(player, "promoted", { title = title, cells = data.cells, payPercent = math.floor(CC.PayPerLevel * 100 + 0.5) })
+	BrainService.toast(player, string.format(CT.Boss, title), "LevelUp")
+	BrainService.push(player)
+end
+
+-- After every shift: XP, promotions and report cards
+local function careerShift(player, data, job, correct: boolean)
+	local c = careerOf(data)
+	c.shift += 1
 	if correct then
-		data.coins += job.coinsPerMinute * 2
+		c.ok += 1
+		c.xp += 1
+	end
+	local nextLevel = c.level + 1
+	if correct and nextLevel <= 4 and c.xp >= CC.XPNeed[nextLevel] then
+		if Brain.iq(data.cells) >= levelIQ(job, nextLevel) then
+			task.delay(CC.PromotionDelay, function()
+				if data.career == c and c.level + 1 == nextLevel then
+					promote(player, data, job, c)
+				end
+			end)
+		elseif not c.waitTold then
+			c.waitTold = true
+			BrainService.toast(player, string.format(CT.EarnedWait, levelIQ(job, nextLevel)))
+		end
+	end
+	if c.shift % CC.ReportEvery == 0 then
+		local need = c.level < 4 and CC.XPNeed[c.level + 1] or nil
+		Net.send(player, "reportCard", {
+			title = titleOf(job, c),
+			accuracy = CT.Accuracy[math.min(c.ok, 3)],
+			speed = CT.Speed[math.random(1, #CT.Speed)],
+			vibes = CT.Vibes[math.random(1, #CT.Vibes)],
+			xp = c.xp,
+			need = need,
+		})
+		c.ok = 0
+	end
+end
+
+local function finishTask(player, data, job, correct)
+	careerShift(player, data, job, correct)
+	if correct then
+		data.coins += math.floor(job.coinsPerMinute * CC.TaskPay * payMult(data.career) + 0.5)
 		data.jobTasksDone += 1
 		BrainService.gain(player, 0.5, "job")
 		BrainService.stress(player, 4)
@@ -650,7 +810,7 @@ Net.on("invention_use", function(player, d)
 			return { ok = false, msg = "The robot needs you to have a job first." }
 		end
 		finishTask(player, data, job, true)
-		msg = "🤖 Beep boop. Job task done. +" .. (job.coinsPerMinute * 2) .. " coins."
+		msg = "🤖 Beep boop. Job task done. +" .. math.floor(job.coinsPerMinute * CC.TaskPay * payMult(data.career) + 0.5) .. " coins."
 	end
 	sess.cooldowns[inv.key] = os.clock() + inv.cooldown * (ProjectService.isActive("battery") and 0.5 or 1)
 	return { ok = true, msg = msg }
@@ -743,9 +903,21 @@ end
 ---------------------------------------------------------------------
 function GainService.reset(player)
 	sessions[player] = nil
+	task.defer(applyUniform, player) -- path changed: put the uniform on or take it off
 end
 
 function GainService.start()
+	-- 1.6: put the work uniform back on after respawning
+	local function watch(p)
+		p.CharacterAdded:Connect(function()
+			task.delay(1.5, applyUniform, p)
+		end)
+	end
+	Players.PlayerAdded:Connect(watch)
+	for _, p in ipairs(Players:GetPlayers()) do
+		watch(p)
+		task.delay(1.5, applyUniform, p)
+	end
 	Players.PlayerRemoving:Connect(function(p)
 		sessions[p] = nil
 	end)
@@ -776,7 +948,7 @@ function GainService.start()
 				if data and data.path == "Gain" then
 					local job = jobById(data.job)
 					if job then
-						data.coins += job.coinsPerMinute
+						data.coins += math.floor(job.coinsPerMinute * payMult(careerOf(data)) + 0.5)
 						BrainService.push(player)
 					end
 					if data.stress > 0 then

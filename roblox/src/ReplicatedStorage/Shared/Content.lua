@@ -202,6 +202,44 @@ Content.Jobs = {
 	{ id = "scientist", name = "Scientist", place = "lab", placeName = "the Science Lab", minIQ = 135, coinsPerMinute = 20, task = "scientist" },
 }
 
+-- 1.6: careers. Every job is a ladder: you start at the bottom and get promoted by working.
+Content.Careers = {
+	Ladders = {
+		cashier = { "Bagger", "Cashier", "Shift Lead", "Store Manager" },
+		office = { "Intern", "Office Worker", "Manager", "CEO" },
+		teacher = { "Teacher's Assistant", "Substitute Teacher", "Teacher", "Head Teacher" },
+		professor = { "Tutor", "Lecturer", "Professor", "Dean" },
+		doctor = { "Hospital Volunteer", "Nurse", "Doctor", "Chief of Medicine" },
+		lawyer = { "Court Clerk", "Paralegal", "Lawyer", "Judge" },
+		scientist = { "Lab Assistant", "Researcher", "Scientist", "Lead Scientist" },
+		janitor = { "Janitor", "Head Janitor", "Facilities Boss", "Janitor Legend" },
+		sweeper = { "Street Sweeper", "Senior Sweeper", "Road Boss", "Street Legend" },
+	},
+	Taken = "💼 You're now a %s! Go to %s to work. 🚕",
+	EarnedWait = "📈 You've earned a promotion! Reach IQ %d to get it.",
+	Promoted = "📈 PROMOTED!",
+	PromotedSub = "New uniform unlocked. Pay +%d%%.",
+	Boss = "💬 Your boss: \"Congrats on becoming %s! 🎉\"",
+	BackToWork = "Back to work",
+	TaskDone = "✅ Task done! +%d coins",
+	TaskFail = "❌ Your boss sighs.",
+	ReportTitle = "📋 Shift report card",
+	ReportRows = { "Job", "Accuracy", "Speed", "Coworker vibes" },
+	ReportProgress = "Promotion progress: <b>%s XP</b>",
+	Max = "MAX",
+	Accuracy = { [0] = "F", [1] = "C", [2] = "B", [3] = "A" }, -- tasks right in the last shift
+	Speed = { "A", "B", "B+", "A−" },
+	Vibes = { "A", "A−", "B+", "B" },
+	Ladder = "Your career: %s",
+	Now = "Now: <b>%s</b>  •  XP %d",
+	Next = "  •  next promotion at %d XP and IQ %d",
+	Top = "  •  top of the ladder!",
+	Pick = "<b>Careers</b>: you start at the bottom and get promoted by working. Pay goes up with every promotion.",
+	JobButton = "%s → … → %s  •  🪙 %d/min  •  📍 %s%s",
+	Yours = "  ✅ YOURS",
+	Locked = "  🔒 IQ %d+",
+}
+
 Content.Diagnoses = {
 	{ symptoms = "Sneezing, itchy eyes, only in spring.", options = { "Allergies", "Broken leg", "Sunburn", "Hiccups" }, answer = 1 },
 	{ symptoms = "Arm hurts after falling off a skateboard; it's swollen and bent.", options = { "A cold", "Possible fracture", "Allergies", "Too much coffee" }, answer = 2 },
