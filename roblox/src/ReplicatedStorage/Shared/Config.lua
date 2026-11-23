@@ -230,7 +230,7 @@ Config.PhoneShop = {
 	ShopPos = Vector3.new(-340, 0.6, 70), -- replaces a locked house on the empty west side
 }
 
-Config.VsLobbySignPos = Vector3.new(0, 9, 34) -- 1.7.3: plaza, behind the spawn
+Config.VsLobbySignPos = Vector3.new(22, 7, 4) -- 1.8.1: plaza, to the side (it used to block the view at spawn)
 
 -- 1.7.3: "The Average Files" part 1 (notes + sightings). Kid-safe; Settings → Horror: Off / Spooky / Full.
 Config.Horror = {
@@ -685,8 +685,15 @@ Config.Map = {
 	-- Lighting per look. Roblox only lets Studio change Lighting.LightingStyle (scripts get
 	-- "lacking capability PluginOrOpenCloud"), so the low-brain looks get their soft feel from
 	-- these instead (soft = cute/cash-grab/cozy/nonsense, sharp = realistic/fancy/future).
-	GrassColor = Color3.fromRGB(104, 178, 70), -- 1.7.3: bright natural green terrain grass
+	GrassColor = Color3.fromRGB(88, 148, 60), -- 1.8.1: natural green (the brighter one looked neon under the cash-grab colour boost)
 	EdgeWallHeight = 120, -- 1.7.4: invisible walls at the edge of the ground
+	-- 1.8.1: "Realistic Clear Skies" (free Creator Store asset 11219565245): only its image IDs are used
+	Sky = {
+		Side = "rbxassetid://91458024",
+		Up = "rbxassetid://91458002",
+		Down = "rbxassetid://91457980",
+		Stars = 1500,
+	},
 	SoftLight = { ShadowSoftness = 0.9, EnvironmentDiffuseScale = 0.35, EnvironmentSpecularScale = 0.15 },
 	SharpLight = { ShadowSoftness = 0.2, EnvironmentDiffuseScale = 1, EnvironmentSpecularScale = 1 },
 }

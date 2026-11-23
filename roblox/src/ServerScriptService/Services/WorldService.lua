@@ -1091,10 +1091,18 @@ local function buildLighting()
 		rays.Spread = 0.6
 		rays.Parent = Lighting
 	end
-	if not Lighting:FindFirstChildOfClass("Sky") then
-		local sky = Instance.new("Sky")
+	local sky = Lighting:FindFirstChildOfClass("Sky")
+	if not sky then
+		sky = Instance.new("Sky")
 		sky.SunAngularSize = 14
 		sky.Parent = Lighting
+	end
+	-- 1.8.1: a realistic clear sky (image IDs only, copied from a free Creator Store skybox; no model or script kept)
+	local CS = Config.Map.Sky
+	if CS then
+		sky.SkyboxBk, sky.SkyboxFt, sky.SkyboxLf, sky.SkyboxRt = CS.Side, CS.Side, CS.Side, CS.Side
+		sky.SkyboxUp, sky.SkyboxDn = CS.Up, CS.Down
+		sky.StarCount = CS.Stars
 	end
 end
 

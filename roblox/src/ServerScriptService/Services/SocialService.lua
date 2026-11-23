@@ -883,8 +883,8 @@ local function lobbySign()
 	p.Position = Config.VsLobbySignPos
 	p.Parent = workspace
 	local bb = Instance.new("BillboardGui")
-	bb.Size = UDim2.fromOffset(320, 150)
-	bb.MaxDistance = 90
+	bb.Size = UDim2.fromOffset(220, 100)
+	bb.MaxDistance = 60
 	bb.Parent = p
 	local l = Instance.new("TextLabel")
 	l.Size = UDim2.fromScale(1, 1)
