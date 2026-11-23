@@ -148,6 +148,22 @@ Config.Boards = {
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
 }
 
+-- 1.8: the free Phone Shop (in-game coins only)
+Config.PhoneShop = {
+	MaxStickers = 4,
+	MaxRot = 15, -- top of the Brainrot meter (colour + 4 stickers)
+	ShowCooldown = 45, -- seconds between "show off my case"
+	ShowLosePerRot = 0.4, -- Lose: brain points lost per meter point
+	CalmMaxRot = 1, -- Gain: a case this calm counts as relaxing
+	CalmStress = 8,
+	ScamPrice = 300, -- the "iBrainz 99 MEGA" (a calculator)
+	ScamUseCooldown = 30,
+	ScamUseLose = 1.5,
+	ReportCooldown = 600, -- Gain: report the scammer once per 10 min
+	ReportGain = 4,
+	ShopPos = Vector3.new(-340, 0.6, 70), -- replaces a locked house on the empty west side
+}
+
 Config.VsLobbySignPos = Vector3.new(0, 9, 34) -- 1.7.3: plaza, behind the spawn
 
 -- 1.7.3: "The Average Files" part 1 (notes + sightings). Kid-safe; Settings → Horror: Off / Spooky / Full.

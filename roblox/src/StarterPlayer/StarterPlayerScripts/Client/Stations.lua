@@ -2072,6 +2072,134 @@ end
 ---------------------------------------------------------------------
 -- Dispatcher
 ---------------------------------------------------------------------
+---------------------------------------------------------------------
+-- 1.8: Phone Shop (phones, case maker with Brainrot meter) and the scam stall
+---------------------------------------------------------------------
+function Stations.phoneshop()
+	local TP = Content.PhoneShop
+	local r = Remote.call("phone_shop")
+	if not r.ok then
+		return
+	end
+	local m = UI.modal(TP.Title, { color = Color3.fromRGB(120, 90, 255) })
+	local meter
+	local function refreshMeter(x)
+		if meter then
+			meter.Text = string.format(TP.Meter, x.rot or 0, x.maxRot or 15)
+		end
+	end
+	for i, ph in ipairs(r.phones) do
+		local label = ph.name .. "\n<font size=\"13\">" .. ph.desc .. "</font>"
+		local btnText = ph.using and TP.Using or (ph.owned and TP.Use or (ph.price == 0 and TP.Free or string.format(TP.BuyFor, ph.price)))
+		local row = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, UI.minTouch() + 10), LayoutOrder = i, Parent = m.content })
+		UI.label(row, label, { Size = UDim2.new(0.6, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.None })
+		UI.button(row, btnText, function()
+			if ph.using then
+				return
+			end
+			local b = Remote.call("phone_buy", { key = ph.key })
+			UI.toast((b.ok and "" or "⛔ ") .. tostring(b.msg or ""), b.ok and C.good or C.bad)
+			if b.ok then
+				m.close()
+				Stations.phoneshop()
+			end
+		end, { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, 0, 0.5, 0), Size = UDim2.new(0.38, 0, 0, UI.minTouch()), BackgroundColor3 = ph.using and C.good or nil })
+	end
+	-- case maker
+	UI.label(m.content, "<b>" .. TP.CaseHeader .. "</b>", { LayoutOrder = 50 })
+	local state = { color = r.color, stickers = {} }
+	for _, k in ipairs(r.stickers or {}) do
+		state.stickers[k] = true
+	end
+	local function send()
+		local list = {}
+		for _, s in ipairs(TP.Stickers) do
+			if state.stickers[s.key] then
+				table.insert(list, s.key)
+			end
+		end
+		local x = Remote.call("case_set", { color = state.color, stickers = list })
+		if x.ok then
+			refreshMeter(x)
+		end
+		return x
+	end
+	UI.label(m.content, TP.ColorHeader, { LayoutOrder = 51 })
+	for i, c in ipairs(TP.Colors) do
+		local b
+		b = UI.button(m.content, (state.color == c.key and "✅ " or "") .. c.name, function()
+			state.color = c.key
+			send()
+			m.close()
+			Stations.phoneshop()
+		end, { LayoutOrder = 51 + i })
+		local _ = b
+	end
+	UI.label(m.content, string.format(TP.StickerHeader, 4), { LayoutOrder = 60 })
+	for i, s in ipairs(TP.Stickers) do
+		local b
+		b = UI.button(m.content, (state.stickers[s.key] and "✅ " or "➕ ") .. s.name, function()
+			state.stickers[s.key] = not state.stickers[s.key] or nil
+			local x = send()
+			-- the server keeps at most 4: show what it really kept
+			state.stickers = {}
+			for _, k in ipairs(x.stickers or {}) do
+				state.stickers[k] = true
+			end
+			b.Text = (state.stickers[s.key] and "✅ " or "➕ ") .. s.name
+		end, { LayoutOrder = 60 + i })
+	end
+	meter = UI.label(m.content, "", { LayoutOrder = 70, Font = Enum.Font.FredokaOne, TextSize = UI.textSize(18) })
+	refreshMeter(r)
+	UI.label(m.content, TP.MeterInfo, { LayoutOrder = 71, TextColor3 = C.muted })
+	UI.button(m.content, TP.Show, function()
+		local x = Remote.call("case_show")
+		UI.toast(tostring(x.msg or ""), x.ok and C.good or C.bad)
+	end, { LayoutOrder = 72, BackgroundColor3 = Color3.fromRGB(255, 120, 220) })
+	m.focus()
+end
+
+function Stations.scam()
+	local TP = Content.PhoneShop
+	local r = Remote.call("phone_shop")
+	if not r.ok then
+		return
+	end
+	local m = UI.modal(TP.ScamTitle, { color = Color3.fromRGB(255, 200, 40) })
+	UI.label(m.content, TP.ScamPitch, { LayoutOrder = 1 })
+	if r.path == "Gain" then
+		-- smart players see what's really going on
+		UI.label(m.content, "<b>" .. TP.RedFlagsTitle .. "</b>", { LayoutOrder = 2 })
+		for i, f in ipairs(TP.RedFlags) do
+			UI.label(m.content, f, { LayoutOrder = 2 + i })
+		end
+		UI.button(m.content, TP.Report, function()
+			local x = Remote.call("scam_report")
+			UI.toast(tostring(x.msg or ""), x.ok and C.good or C.bad)
+			if x.ok then
+				m.close()
+			end
+		end, { LayoutOrder = 20, BackgroundColor3 = Color3.fromRGB(60, 110, 230) })
+	else
+		-- honest money: the price and the (unknown) effect are shown before you pay
+		UI.label(m.content, string.format(TP.ScamPrice, Config.PhoneShop.ScamPrice), { LayoutOrder = 2 })
+		UI.label(m.content, TP.ScamEffect, { LayoutOrder = 3, TextColor3 = C.muted })
+		if r.scam then
+			UI.button(m.content, TP.ScamUse, function()
+				local x = Remote.call("scam_use")
+				UI.toast(tostring(x.msg or ""), x.ok and C.good or C.bad)
+			end, { LayoutOrder = 10 })
+		else
+			UI.button(m.content, string.format(TP.ScamBuy, Config.PhoneShop.ScamPrice), function()
+				local x = Remote.call("scam_buy")
+				UI.toast(tostring(x.msg or ""), x.ok and C.good or C.bad)
+				m.close()
+			end, { LayoutOrder = 10, BackgroundColor3 = Color3.fromRGB(255, 170, 40) })
+		end
+	end
+	m.focus()
+end
+
 function Stations.open(key: string)
 	local fn = Stations[key]
 	if fn and key ~= "open" then

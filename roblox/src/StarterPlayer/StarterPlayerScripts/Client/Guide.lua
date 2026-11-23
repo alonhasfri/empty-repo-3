@@ -26,7 +26,8 @@ line = UI.new("TextLabel", {
 	Name = "GuideLine",
 	AnchorPoint = Vector2.new(0.5, 0),
 	Position = UDim2.new(0.5, 0, 0, 74),
-	Size = UDim2.fromOffset(360, UI.textSize(16) + 14),
+	Size = UDim2.fromOffset(520, UI.textSize(16) + 14),
+	AutomaticSize = Enum.AutomaticSize.Y, -- long goals wrap instead of being cut off
 	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
 	BackgroundTransparency = 0.25,
 	TextColor3 = Color3.new(1, 1, 1),
@@ -38,6 +39,11 @@ line = UI.new("TextLabel", {
 })
 UI.corner(line, 10)
 UI.autoScale(line)
+UI.new("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4), Parent = line })
+-- 1.8 (screenshot check): sit under the title banner, not on top of it
+UI.onScale(function(d)
+	line.Position = UDim2.new(0.5, 0, 0, 8 + 112 * d)
+end)
 
 local function makeArrow()
 	local m = Instance.new("Model")

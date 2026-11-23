@@ -631,7 +631,23 @@ local function buildLoseSide()
 	WorldService.Zones.wall = { cframe = CFrame.new(-300, 1, 128), size = Vector3.new(60, 14, 40) }
 	WorldService.Spots.wall = Vector3.new(-300, 3, 110)
 	table.insert(WorldService.Places, { key = "wall", name = "🧱 Wall Alley", path = "Lose" })
-	house(Vector3.new(-340, 0.6, 70), FACE_NORTH)
+	-- 1.8: the free Phone Shop replaces a locked house (Life Pack plan step 1)
+	local pcf, psize = building({
+		name = "PhoneShop",
+		center = Config.PhoneShop.ShopPos,
+		yaw = FACE_NORTH,
+		size = Vector3.new(54, 18, 40),
+		wall = Color3.fromRGB(245, 245, 250),
+		wallMaterial = Enum.Material.SmoothPlastic,
+		roof = Color3.fromRGB(80, 60, 200),
+		accent = Color3.fromRGB(255, 120, 220),
+		door = 14,
+		sign = Content.PhoneShop.Sign,
+	})
+	addPlace("phoneshop", Content.PhoneShop.Title, pcf, psize, nil)
+	station("phoneshop", "Any", Content.PhoneShop.StationTitle, Content.PhoneShop.StationDesc, pcf * CFrame.new(0, 0.5, 6), Color3.fromRGB(120, 90, 255))
+	-- the scam stall, outside by the door
+	station("scam", "Any", Content.PhoneShop.ScamTitle, Content.PhoneShop.ScamDesc, pcf * CFrame.new(22, 0.5, -psize.Z / 2 - 12), Color3.fromRGB(255, 200, 40))
 	house(Vector3.new(-260, 0.6, 70), FACE_NORTH)
 
 	-- Supermarket (cashier job)

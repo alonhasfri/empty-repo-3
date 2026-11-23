@@ -431,6 +431,8 @@ local function buildPasses(path: string?)
 			c:Destroy()
 		end
 	end
+	-- selene: allow(shadowing)
+	local PH = math.max(40, UI.minTouch()) -- 1.8: measured now, not when the HUD was first built
 	for i, p in ipairs(PASS_BUTTONS[key] or {}) do
 		local pass = Config.GamePasses[p.key]
 		local b = UI.new("TextButton", { Text = "", AutoButtonColor = true, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(122, PH), LayoutOrder = i, Parent = passRow })
@@ -762,6 +764,55 @@ end
 for _, inst in ipairs({ grid, banner, tutorial, corner, rightCol, bottom, pickRow, status }) do
 	UI.autoScale(inst)
 end
+-- 1.8 (screenshot check): the thumb-size minimum depends on the real screen size, which isn't known
+-- when the HUD is first built, so re-size the touch targets whenever the scale changes...
+UI.onScale(function()
+	local mt = UI.minTouch()
+	corner.Size = UDim2.fromOffset(3 * mt + 16, mt + 2)
+	for _, b in ipairs(corner:GetChildren()) do
+		if b:IsA("TextButton") then
+			b.Size = UDim2.fromOffset(mt, mt)
+		end
+	end
+	local big = math.max(58, mt)
+	rightCol.Size = UDim2.fromOffset(170, 2 * big + 14)
+	for _, b in ipairs(rightCol:GetChildren()) do
+		if b:IsA("TextButton") then
+			b.Size = UDim2.fromOffset(170, big)
+		end
+	end
+	local cell = math.max(60, mt)
+	local gl = grid:FindFirstChildOfClass("UIGridLayout")
+	if gl then
+		gl.CellSize = UDim2.fromOffset(cell, cell)
+	end
+	local ph = math.max(40, mt)
+	bottom.Size = UDim2.fromOffset(400, 72 + ph)
+	passRow.Size = UDim2.new(1, 0, 0, ph)
+	for _, b in ipairs(passRow:GetChildren()) do
+		if b:IsA("TextButton") then
+			b.Size = UDim2.fromOffset(122, ph)
+		end
+	end
+end)
+-- ...and keep the bottom bar fully on screen (a UIScale grows it past the bottom edge on big screens)
+local function fitBottom()
+	bottom.Position = UDim2.new(0.5, 0, 1, -6)
+	task.defer(function()
+		local limit = UI.gui.AbsoluteSize.Y - 6
+		local lowest = bottom.AbsolutePosition.Y + bottom.AbsoluteSize.Y
+		for _, d in ipairs(bottom:GetDescendants()) do
+			if d:IsA("GuiObject") and d.Visible then
+				lowest = math.max(lowest, d.AbsolutePosition.Y + d.AbsoluteSize.Y)
+			end
+		end
+		if lowest > limit then
+			bottom.Position = UDim2.new(0.5, 0, 1, -6 - (lowest - limit))
+		end
+	end)
+end
+UI.onScale(fitBottom)
+UI.gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitBottom)
 UI.onScale(function(d)
 	topScale.Scale = ((UI.settings and UI.settings.counterBig) and 1.3 or 1) * d
 	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 68 * d) or 8)
