@@ -964,6 +964,12 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.8", name = "Life Pack & Phone Shop", lines = {
+		"📱 New free Phone Shop: parody phones, a case maker with a 🧠 Brainrot meter, and a very suspicious scam stall.",
+		"🫧 Slime Shop, 🤸 Trampoline Park and 🔮 Fortune Teller (exact odds shown) on the west side, free for everyone.",
+		"👶 Optional Life Pack: grow up from baby to grandparent, pick your path at the 🌟 Crossroads Ceremony, hidden places, pets.",
+		"🖐 High-five other players to become Friends → Good friends → Best friends. (The base game stays free and complete.)",
+	} },
 	{ v = "1.7.4", name = "No Pushing, No Falling", lines = {
 		"👻 Players walk through each other now: nobody can push you or block a doorway.",
 		"🧱 The edge of town has an invisible wall, so you can't walk off into the void.",
@@ -1187,6 +1193,23 @@ Content.Horror = {
 		"Outliers scare him. Things that are one of a kind. If he takes you to The Mean, find three of them. Don't let him make you average.",
 		"He isn't evil. He's lonely. Nobody is actually average. So nobody is like him. Nobody.",
 	},
+}
+
+-- 1.8: pets and the friends meter (friends and family only, never dating)
+Content.PetsFriends = {
+	PetNames = { dog = "🐶", cat = "🐱", fish = "🐟" },
+	PetHeader = "🐾 Adopt a pet (Life Pack, free to adopt)",
+	PetButtons = { dog = "🐶 Adopt a dog", cat = "🐱 Adopt a cat", fish = "🐟 Adopt a goldfish", none = "🏠 Pet stays home" },
+	Adopted = "%s is your new best buddy!",
+	PetHome = "🏠 Your pet is napping at home.",
+	NeedPass = "Pets are part of the Life Pack (optional).",
+	HighFive = "High-five",
+	NoOne = "Nobody to high-five.",
+	TooFar = "Get a bit closer first.",
+	Wait = "Your hand needs a rest. 🖐",
+	GaveFive = "🖐 High-five with %s! (%s)",
+	GotFive = "🖐 %s high-fived you! (%s)",
+	Levels = { "Friend", "Good friend", "Best friend 🤝" },
 }
 
 -- 1.8: Life Pack places hidden in plain houses + the honest pass card

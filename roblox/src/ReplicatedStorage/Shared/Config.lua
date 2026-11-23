@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.7.4"
+Config.Version = "1.8"
 
 ---------------------------------------------------------------------
 -- COMMUNITY (GROUP) RANKS -> IN-GAME RANKS
@@ -146,6 +146,19 @@ Config.Boards = {
 	Refresh = 60, -- seconds between saving new scores and redrawing the boards
 	WeeklyPay = { Store = "WeeklyPay", Top = 10, Pos = Vector3.new(-30, 7, 16), Facing = Vector3.new(1, 0, 0.15) }, -- left of spawn, facing it
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
+}
+
+-- 1.8: pets (Life Pack) and the friends meter (everyone; preset high-fives only)
+Config.PetsFriends = {
+	Pets = {
+		dog = { color = Color3.fromRGB(190, 140, 90), size = Vector3.new(1.4, 1.2, 2.2), head = Vector3.new(1.1, 1.1, 1.1), float = -1.6 },
+		cat = { color = Color3.fromRGB(240, 170, 90), size = Vector3.new(1.1, 1, 1.8), head = Vector3.new(0.9, 0.9, 0.9), float = -1.7 },
+		fish = { color = Color3.fromRGB(255, 150, 40), size = Vector3.new(0.5, 0.8, 1.2), head = Vector3.new(0.5, 0.6, 0.5), float = 1 },
+	},
+	HighFiveRadius = 12,
+	HighFiveCooldown = 5,
+	Levels = { 0, 10, 25 }, -- Friend, Good friend, Best friend
+	MaxPoints = 999,
 }
 
 -- 1.8: Life Pack life stages (only for Life Pack owners who start a new life)

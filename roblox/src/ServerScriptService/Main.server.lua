@@ -27,6 +27,7 @@ local PhoneShopService = require(Services.PhoneShopService) -- 1.8: Phone Shop, 
 local FunService = require(Services.FunService) -- 1.8: Slime Shop, Trampoline Park, Fortune Teller
 local LifeStageService = require(Services.LifeStageService) -- 1.8: Life Pack life stages
 WorldService.doorGuard = LifeStageService.doorBlocked
+local PetFriendService = require(Services.PetFriendService) -- 1.8: pets + friends meter
 BrainService.hooks.lifeInfo = LifeStageService.info
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection
@@ -349,5 +350,6 @@ HorrorService.start()
 PhoneShopService.start()
 FunService.start()
 LifeStageService.start()
+PetFriendService.start()
 
 print("[Lose a Brain Cell] Server started (updates 1.0 – 1.7)")

@@ -2224,6 +2224,17 @@ local function funScreen(key: string)
 		end
 		UI.label(m.content, TF.OddsEffect, { LayoutOrder = 10, TextColor3 = C.muted })
 	end
+	if key == "toystore" and UI.state and UI.state.perks and UI.state.perks.LifePack then
+		-- 1.8: adopt a pet here (Life Pack)
+		local TP = Content.PetsFriends
+		UI.label(m.content, "<b>" .. TP.PetHeader .. "</b>", { LayoutOrder = 30 })
+		for i, kind in ipairs({ "dog", "cat", "fish", "none" }) do
+			UI.button(m.content, TP.PetButtons[kind], function()
+				local x = Remote.call("pet_adopt", { kind = kind })
+				UI.toast(tostring(x.msg or ""), x.ok and C.good or C.bad)
+			end, { LayoutOrder = 30 + i })
+		end
+	end
 	local label = key == "fortune" and T.Button or (path == "Gain" and T.Gain or T.Lose)
 	UI.button(m.content, label, function()
 		local r = Remote.call("fun_do", { key = key })
