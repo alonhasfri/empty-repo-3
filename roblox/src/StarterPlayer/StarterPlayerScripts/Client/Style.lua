@@ -245,6 +245,13 @@ local function applyLighting(look: string)
 	end
 	Lighting.GlobalShadows = look ~= "nonsense"
 	cc.TintColor = Color3.new(1, 1, 1)
+	-- 1.7.3 (user feedback "too dark and grey"): clear sky-blue air instead of grey fog, warm daylight, a little exposure
+	atmosphere.Color = Color3.fromRGB(200, 222, 245)
+	atmosphere.Decay = Color3.fromRGB(120, 150, 190)
+	atmosphere.Glare = 0
+	Lighting.OutdoorAmbient = Color3.fromRGB(150, 145, 135)
+	Lighting.ExposureCompensation = 0.15
+	cc.Brightness = 0.03
 	-- 1.7: soft light for cute/cash-grab/cozy/nonsense, sharp light for the smart looks.
 	-- (Game scripts can't change Lighting.LightingStyle, so this uses settings they can change.)
 	local real = look == "realistic" or look == "fancy" or look == "future"
@@ -259,30 +266,30 @@ local function applyLighting(look: string)
 	if look == "future" then
 		-- dusk with a cool sci-fi tint
 		Lighting.ClockTime = 18.2
-		Lighting.Brightness = 2.4
-		Lighting.Ambient = Color3.fromRGB(80, 95, 120)
-		atmosphere.Density = 0.3
-		atmosphere.Haze = 1.2
-		cc.Saturation = 0.1
+		Lighting.Brightness = 2.8
+		Lighting.Ambient = Color3.fromRGB(105, 115, 140)
+		atmosphere.Density = 0.22
+		atmosphere.Haze = 0.5
+		cc.Saturation = 0.18
 		cc.Contrast = 0.12
 		cc.TintColor = Color3.fromRGB(225, 245, 255)
 	elseif look == "fancy" then
 		-- golden hour, soft and expensive-looking
 		Lighting.ClockTime = 16.6
-		Lighting.Brightness = 2.6
-		Lighting.Ambient = Color3.fromRGB(95, 90, 100)
-		atmosphere.Density = 0.3
-		atmosphere.Haze = 1.4
-		cc.Saturation = 0.05
+		Lighting.Brightness = 3
+		Lighting.Ambient = Color3.fromRGB(125, 115, 110)
+		atmosphere.Density = 0.2
+		atmosphere.Haze = 0.5
+		cc.Saturation = 0.18
 		cc.Contrast = 0.1
 		cc.TintColor = Color3.fromRGB(255, 244, 228)
 	elseif look == "realistic" then
 		Lighting.ClockTime = 14
-		Lighting.Brightness = 2.2
-		Lighting.Ambient = Color3.fromRGB(110, 105, 100)
-		atmosphere.Density = 0.25
-		atmosphere.Haze = 0.6
-		cc.Saturation = 0
+		Lighting.Brightness = 2.9
+		Lighting.Ambient = Color3.fromRGB(130, 125, 118)
+		atmosphere.Density = 0.18
+		atmosphere.Haze = 0.2
+		cc.Saturation = 0.14
 		cc.Contrast = 0.04
 	elseif look == "cozy" or look == "cozycash" then
 		-- bright, warm, toy-town sunshine
@@ -304,12 +311,14 @@ local function applyLighting(look: string)
 		cc.Contrast = 0.15
 	elseif look == "nonsense" then
 		Lighting.ClockTime = 12
-		Lighting.Brightness = 1
-		Lighting.Ambient = Color3.fromRGB(150, 150, 150)
-		atmosphere.Density = 0.45
-		atmosphere.Haze = 2.5
-		cc.Saturation = -0.8
-		cc.Contrast = -0.1
+		-- still strange and washed-out (it's the nonsense look), but never dark or dull
+		Lighting.Brightness = 2
+		Lighting.Ambient = Color3.fromRGB(165, 155, 175)
+		atmosphere.Density = 0.3
+		atmosphere.Haze = 1.4
+		cc.Saturation = -0.35
+		cc.Contrast = -0.05
+		cc.TintColor = Color3.fromRGB(250, 235, 255)
 	end
 end
 

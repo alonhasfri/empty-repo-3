@@ -400,6 +400,11 @@ local function buildGround()
 	local ok = pcall(function()
 		terrain:FillBlock(CFrame.new(0, -4, 0), Vector3.new(940 * S + 40, 8, 940 * S + 40), Enum.Material.Grass)
 		terrain:FillBlock(CFrame.new(0, -9, 0), Vector3.new(940 * S + 40, 4, 940 * S + 40), Enum.Material.Rock)
+		-- 1.7.3 (user feedback "the grass looks uncanny"): a natural bright green instead of the default grey-green
+		terrain:SetMaterialColor(Enum.Material.Grass, Config.Map.GrassColor)
+		pcall(function()
+			terrain.Decoration = true -- little grass blades where the engine allows it
+		end)
 		if not terrain:FindFirstChildOfClass("Clouds") then
 			local clouds = Instance.new("Clouds")
 			clouds.Cover = 0.55

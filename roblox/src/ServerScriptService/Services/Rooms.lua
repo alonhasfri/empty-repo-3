@@ -648,6 +648,30 @@ function Rooms.furnish(key: string, rcf: CFrame, half: Vector3, outsideKey: stri
 	if not ok then
 		warn("[Rooms] " .. key .. ": " .. tostring(err))
 	end
+	-- 1.7.3 (user feedback "inside looks uncanny"): warm ceiling lamps in a grid, so rooms are lit like real rooms
+	local CR = Config.Rooms
+	local step = CR.LampSpacing
+	local nx = math.max(1, math.floor(half.X * 2 / step))
+	local nz = math.max(1, math.floor(half.Z * 2 / step))
+	for ix = 1, nx do
+		for iz = 1, nz do
+			local x = -half.X + (ix - 0.5) * (half.X * 2 / nx)
+			local z = -half.Z + (iz - 0.5) * (half.Z * 2 / nz)
+			local lamp = box(folder, rcf * CFrame.new(x, CR.LampHeight, z), Vector3.new(3, 0.3, 3), Color3.fromRGB(255, 240, 210), Enum.Material.Neon)
+			lamp.Name = "CeilingLamp"
+			lamp.CanCollide = false
+			lamp.CastShadow = false
+			CollectionService:RemoveTag(lamp, "Styled")
+			local light = Instance.new("SurfaceLight")
+			light.Face = Enum.NormalId.Bottom
+			light.Color = Color3.fromRGB(255, 220, 170)
+			light.Brightness = CR.LampBrightness
+			light.Range = CR.LampRange
+			light.Angle = 120
+			light.Shadows = false
+			light.Parent = lamp
+		end
+	end
 	-- Exit door: a lit EXIT sign above the doorway (inside) and a Leave prompt by the door
 	local exitSign = box(folder, rcf * CFrame.new(0, 14.6, -half.Z + 0.9) * CFrame.Angles(0, PI, 0), Vector3.new(6, 1.6, 0.3), Color3.fromRGB(40, 200, 90), Enum.Material.Neon)
 	exitSign.Name = "ExitSign_" .. key
