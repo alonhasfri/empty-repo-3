@@ -29,6 +29,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
   - `Badges.lua` holds the badge list.
   - `Content.Updates` is the "What's new" list shown in Settings (it shows `Config.Version`). Every update: add an entry at the top and bump `Config.Version`.
   - 1.5 port: `ServerScriptService/Services/Rooms.lua` (room layouts, furniture kit, seats, conversation spots, exit doors), `Services/ConversationService.lua` (server side of the conversation scenes), `StarterPlayerScripts/Client/Conversation.lua` (the cinematic: bars, camera cuts, choices bottom-left). The Unstuck handler is in `Main.server.lua`, its 🆘 button in `Hud.lua`. Text: `Content.Rooms`, `Content.Conversations`, `Content.ConvUI`, `Content.Unstuck`. Numbers: `Config.Rooms`, `Config.Conversations` (one `{meter, brain}` pair per choice), `Config.Unstuck`.
+  - 1.6 port: careers live in `GainService.lua` (ladders, XP, promotions, report cards, the work vest), `Services/SchoolService.lua` (Lose-path school bell, truant officer, class), `Services/AnimalForms.lua` (blocky animal bodies welded on, avatar hidden; called from `BrainService.applyCharacter`), `Services/AnimalService.lua` (animal powers: Bark, Buzz up, Dig). The objective banner and power button are in `Hud.lua`; the PROMOTED! and "You are now: 🐶 Dog" screens in `Effects.lua`. Text: `Content.Careers`, `Content.School`, `Content.Animals`. Numbers: `Config.Careers`, `Config.School`, `Config.Animals`. Admin command `schoolbell` rings the bell for one player. Saves gain `career` (made on demand, so old saves are fine).
   - `roblox/tools/build_rbxlx.py` builds the place file.
   - `roblox/default.project.json` is the Rojo project (same layout as the builder). `rokit.toml` pins Rojo and Selene; `selene.toml` sets up the code checker.
 - `START_HERE_ON_PC.md`: the PC setup guide (Claude app, Git, Studio, the Studio MCP connection, Rojo).
@@ -40,15 +41,15 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
 - `.claude/skills/ship-browser-update/`: the release recipe (tip 10).
 
 ## Versions
-- **Roblox:** 1.0 to 1.5 (`Config.Version = "1.5"`). 1.5 = real places, conversation scenes, exit doors and Unstuck, ported from the browser and play-tested in Studio on PC and phone size (Nov 2026). `roblox/LoseABrainCell_v1.5.rbxlx` is the latest place file (built in the cloud session, since the PC has no Python). Rojo keeps Studio in sync with `roblox/src` while working. Pass, sound and badge IDs are still 0.
+- **Roblox:** 1.0 to 1.6 (`Config.Version = "1.6"`). 1.5 = real places, conversation scenes, exit doors and Unstuck. 1.6 = career ladders, school for the Lose path, physical animal forms. Both ported from the browser and play-tested in Studio on PC and phone size (Nov 2026). `roblox/LoseABrainCell_v1.5.rbxlx` is the latest place file (built in the cloud session, since the PC has no Python); a 1.6 place file still needs building. Rojo keeps Studio in sync with `roblox/src` while working. Pass, sound and badge IDs are still 0.
 - **Browser only:**
   - (1.5 real places and conversations: now also in Roblox.)
-  - 1.6 careers, school and animal forms.
+  - (1.6 careers, school and animal forms: now also in Roblox.)
   - The content pack and the interactive world.
   - "The Average Files" horror side plot.
   - The polish pack (first-10-seconds hook, sound kit, triple feedback, tuning table, odds, save backup, clean photo camera).
 - **Next:**
-  - Port the rest of the browser features to Roblox (1.6 careers, school and animal forms next).
+  - Port the rest of the browser features to Roblox (still browser-only: the horror side plot, job minigames, the interactive world, glasses at the Optician).
   - **Brain-scaled UI, systems and map** (after 1.6): follow `docs/Brain scaled UI and map design.md`. Brain level changes the look, the rules and the tools: low brain = loud, chunky, glitchy cash-grab UI with simple rules and dumb-only shortcuts; high brain = calm, realistic phone OS with original parody apps, ride-hail, shifts and paychecks, a bank. Lock the map and UI skeleton first. Never use real brand names or look-alike logos. Add an Effects intensity slider. Never scramble prices, odds or confirm buttons.
   - 1.7 time travel.
   - 2.0 creator update.
@@ -77,11 +78,12 @@ When Claude Code runs on the PC with Studio's MCP server connected (see `START_H
 Tips learned while porting 1.5:
 - A `rojo serve` may already be running (port 34872) with Studio connected. Check with `curl -s http://localhost:34872/api/rojo` before starting another one.
 - Studio test saves persist (DataStore access is on), so your path, cells and position carry over between playtests. Use the admin commands through the remote (`Request:InvokeServer("admin", {cmd = "setpath" or "setcells", target = userId, arg = ...})`) to switch path or brain level.
-- The tutorial now has a "Skip tutorial ⏭" button, types fast, and shows NEXT as soon as the text is typed. Skipping counts as done (replay from Settings). While testing you can still hide `BrainUI.TutorialStage` from the client.
-- Simulated mouse clicks on GUI buttons often miss (inset and device-simulator offsets). Trigger prompts with `ProximityPrompt:InputHoldBegin()/InputHoldEnd()` from the client, and test GUI through keyboard shortcuts (conversation: 1/2/3 to choose, Backspace to leave).
+- The tutorial now has a "Skip tutorial ⏭" button, types fast, and shows NEXT as soon as the text is typed. Skipping counts as done and marks every note as seen (replay from Settings). Use the admin `resettutorial` command to see it again. While testing you can still hide `BrainUI.TutorialStage` from the client.
+- Simulated mouse clicks on GUI buttons usually miss. Trigger prompts with `ProximityPrompt:InputHoldBegin()/InputHoldEnd()` from the client. To press any GUI button, set `GuiService.SelectedObject` to it from the client, then send the Return key. Keyboard shortcuts also work (conversation: 1/2/3 to choose, Backspace to leave; M = Settings; F = animal power).
 - `execute_luau` on the client resets a Scriptable camera to Custom. To see a scripted camera, press a key first, then `screen_capture`.
 - Phone check: set the device with `StudioDeviceSimulatorService` (iPhone 17 Pro) before pressing Play, and call `StopSimulationAsync()` afterwards.
 - No real Python on this PC (only the Store alias), so `build_rbxlx.py` and `web/src/build.py` can't run here.
+- To test an animal form or school, change brain cells with the admin `setcells` command (dog = 1000000000, fly = 100000, worm = 250) and put them back afterwards (70000000000). Avoid 0 on your own test account: it plays the death ending. The school bell needs the player OUTSIDE the School when it rings, or it counts as already in class.
 
 Don't edit scripts directly in Studio (`multi_edit`) unless Rojo is off, or the files and Studio drift apart. Never run `save_place` over the published game without the user's okay.
 
