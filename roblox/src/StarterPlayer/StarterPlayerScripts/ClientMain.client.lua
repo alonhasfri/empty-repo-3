@@ -200,6 +200,10 @@ Remote.on("testDay", Effects.testDay)
 -- 1.6 careers
 Remote.on("promoted", Effects.promoted)
 Remote.on("reportCard", Stations.reportCard)
+-- 1.6 school objective banner
+Remote.on("objective", function(d)
+	Hud.objective(d.text)
+end)
 Remote.on("freeTaxi", function()
 	Stations.map(true)
 end)

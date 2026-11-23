@@ -202,6 +202,21 @@ Content.Jobs = {
 	{ id = "scientist", name = "Scientist", place = "lab", placeName = "the Science Lab", minIQ = 135, coinsPerMinute = 20, task = "scientist" },
 }
 
+-- 1.6: SCHOOL for the Lose path (the bell, the truant officer, class)
+Content.School = {
+	Bell = "🔔 SCHOOL BELL! Get to the 🏫 School in %d seconds or the truant officer comes for you.",
+	GoObjective = "🏫 Go to school! (%ds)",
+	InClass = "✅ You made it to class. Now act dumb: sleep, throw paper, fail the quiz.",
+	ClassObjective = "😴 In class. Act dumb: sleep, throw paper, take the pop quiz.",
+	ClassOver = "🔔 Class is over. Freedom!",
+	Officer = "👮 TRUANT OFFICER",
+	Chase = "👮 The truant officer is coming! Run (or just go to school)!",
+	ChaseObjective = "👮 Run! (or go to school)",
+	Caught = "👮 CAUGHT! The officer walks you to class. Embarrassment +%d",
+	CaughtMoment = "Got walked to class by the truant officer",
+	Escaped = "😮‍💨 You escaped the truant officer. Legend.",
+	NoAnimals = "🚫 No animals in school. You're officially too dumb for school now.",
+}
 -- 1.6: careers. Every job is a ladder: you start at the bottom and get promoted by working.
 Content.Careers = {
 	Ladders = {
@@ -532,6 +547,8 @@ Content.Rooms = {
 		arcade = { action = "Play the arcade", object = "🕹 Arcade", toast = "🕹️ 47 flashing lights later…" },
 		plushie = { action = "Hug the display plushie (free)", object = "🧸 Skibidi Plushie", toast = "🧸 You hug it. It does not hug back." },
 		cereal = { action = "Shake the cereal box", object = "🥣 Cereal", toast = "🥣 *shake shake* There is no prize." },
+		sleep = { action = "Sleep in class", object = "😴 Your desk", toast = "😴 Zzz… you drooled on the desk." },
+		paper = { action = "Throw a paper airplane", object = "✈️ Paper", toast = "✈️ It hit the teacher. Detention vibes." },
 	},
 	Fridge = { open = "Open", close = "Close", object = "🧊 Fridge", toast = "🧊 The fridge only has microwave meals. Of course." },
 	Board = { action = "Write on the board", object = "🧑‍🏫 Whiteboard", toast = "🧑‍🏫 You wrote: %s" },

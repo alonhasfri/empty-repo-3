@@ -15,6 +15,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Content = require(ReplicatedStorage.Shared.Content)
+local Brain = require(ReplicatedStorage.Shared.Brain)
 
 local Props = require(script.Parent.Props)
 local FriendService = require(script.Parent.FriendService)
@@ -157,6 +158,16 @@ local function spot(cf: CFrame, name: string, actionText: string, objectText: st
 		end
 	end)
 	return p, pp
+end
+
+-- Animals (and rocks) can't do human things like going to school (1.6)
+function Rooms.isAnimal(player: Player): boolean
+	local d = DataService.get(player)
+	if not d then
+		return false
+	end
+	local k = Brain.stage(d.cells, BrainService.secretAnimals).key
+	return k ~= "human" and k ~= "barelyhuman"
 end
 
 local function pathOf(player: Player): string?
@@ -374,6 +385,13 @@ local function action(cf: CFrame, key: string)
 		if not guard(player, cfg.path) then
 			return
 		end
+		if cfg.humanOnly and Rooms.isAnimal(player) then
+			BrainService.toast(player, Content.School.NoAnimals)
+			return
+		end
+		if cfg.embarrass then
+			BrainService.embarrass(player, cfg.embarrass, text.toast)
+		end
 		if cfg.lose then
 			BrainService.lose(player, cfg.lose, key)
 		end
@@ -511,6 +529,9 @@ LAYOUT.gain = function(at)
 			end
 		end
 	end
+	-- 1.6: Lose-path class actions at the middle desks
+	action(at(12, 8.4, 0), "sleep")
+	action(at(12, 15.4, 0), "paper")
 	convSpot("classroom", at(16, 30.6, 0), P.teacher, Color3.fromRGB(58, 123, 255), { Lose = "classroomL", Gain = "classroomG" }, nil, { table = false, dist = 8, labels = true })
 end
 

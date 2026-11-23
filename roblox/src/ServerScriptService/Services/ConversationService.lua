@@ -106,6 +106,10 @@ local function start(player: Player, spotId: string)
 		warn("[Conversation] missing scene " .. tostring(key))
 		return
 	end
+	if cfg.noAnimals and isAnimal(data) then
+		BrainService.toast(player, Content.School.NoAnimals)
+		return
+	end
 	local blocked = BrainService.blocked(player)
 	if blocked and not (cfg.allowFrozen and BrainService.isFrozen(player)) then
 		BrainService.toast(player, "⛔ " .. blocked)

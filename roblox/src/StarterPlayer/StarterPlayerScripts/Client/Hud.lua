@@ -573,6 +573,32 @@ local MOOD = {
 	caveman = { emoji = "🦴", font = Enum.Font.Fantasy, color = Color3.fromRGB(200, 150, 100), title = "WRINKL" },
 }
 local sayToken = 0
+---------------------------------------------------------------------
+-- 1.6: current objective (a small banner under the title, e.g. "🏫 Go to school!")
+---------------------------------------------------------------------
+local objectiveLabel = UI.new("TextLabel", {
+	Name = "Objective",
+	AnchorPoint = Vector2.new(0.5, 0),
+	Position = UDim2.new(0.5, 0, 0, 62),
+	Size = UDim2.fromOffset(340, 30),
+	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
+	BackgroundTransparency = 0.2,
+	TextColor3 = Color3.fromRGB(255, 225, 120),
+	Font = Enum.Font.FredokaOne,
+	TextScaled = true,
+	Text = "",
+	Visible = false,
+	Parent = UI.gui,
+}, {
+	UI.new("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 3) }),
+})
+UI.corner(objectiveLabel, 10)
+UI.autoScale(objectiveLabel)
+function Hud.objective(msg: string?)
+	objectiveLabel.Text = msg or ""
+	objectiveLabel.Visible = msg ~= nil and msg ~= ""
+end
+
 function Hud.say(msg: string, mood: string?)
 	local look = MOOD[mood or "host"] or MOOD.host
 	nameLabel.Text = look.title

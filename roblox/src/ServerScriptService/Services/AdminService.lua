@@ -419,6 +419,14 @@ H.secretanimals = function()
 	return "Secret animals are now " .. (BrainService.secretAnimals and "ON (tardigrade, microbe)" or "OFF") .. " in this server."
 end
 
+-- 1.6: ring the school bell for a Lose-path player (set by Main from SchoolService)
+H.schoolbell = function(_, target)
+	if not AdminService.ringBell then
+		return "School isn't running."
+	end
+	return AdminService.ringBell(target) and ("🔔 Rang the school bell for " .. target.Name .. ".") or "Only human players on the Lose path go to school."
+end
+
 H.rubberduck = function()
 	if duck and duck.Parent then
 		duck:Destroy()

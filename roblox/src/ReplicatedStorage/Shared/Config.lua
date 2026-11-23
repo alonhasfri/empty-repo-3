@@ -259,10 +259,25 @@ Config.Rooms = {
 		arcade = { path = "Lose", lose = 2 },
 		plushie = { path = "Lose", lose = 1.5 },
 		cereal = { path = "Lose", lose = 1 },
+		sleep = { path = "Lose", lose = 1.5, humanOnly = true }, -- 1.6 school
+		paper = { path = "Lose", lose = 1, embarrass = 5, humanOnly = true },
 	},
 	BoardPoints = { Lose = 0.5, Gain = 0.3 }, -- writing on a whiteboard
 	FridgeOpenAngle = 110, -- degrees
 	StandUpDelay = 0.25, -- seconds between standing up from a seat and being moved
+}
+
+-- 1.6 school (Lose path): the bell rings every BellEvery seconds for human Lose players.
+Config.School = {
+	FirstBellAfter = 240, -- seconds after joining
+	BellEvery = 600,
+	LateAfter = 90, -- seconds to reach the School before the truant officer comes
+	ChaseSeconds = 30, -- survive this long and you escaped
+	OfficerSpeed = 13, -- studs per second (a bit slower than you)
+	OfficerStartDistance = 45,
+	CatchDistance = 5,
+	ClassSeconds = 60,
+	CaughtEmbarrass = 10,
 }
 
 -- Unstuck button (1.5): takes you outside the building you're in, or to the nearest street.
@@ -314,7 +329,7 @@ Config.Conversations = {
 		election = { meter = 40,
 			a = { { 20, 0 }, { -15, -1 }, { 10, 0 } }, b = { { 20, 1 }, { 5, -1 }, { -15, -1 } }, c = { { 20, 1 }, { -5, -1 }, { 15, 0 } },
 			good = { confetti = true, path = 3 }, mid = {}, bad = {} },
-		classroomL = { meter = 60,
+		classroomL = { meter = 60, noAnimals = true, -- 1.6: no animals in school
 			a = { { -15, -2 }, { 15, 2 }, { -10, -2 } }, b = { { -10, -2 }, { 15, 2 }, { -15, -1 } }, c = { { -10, -2 }, { 15, 2 }, { -15, -2 } },
 			good = {}, mid = {}, bad = { lose = 2 } },
 		classroomG = { meter = 50,
@@ -376,6 +391,7 @@ Config.Commands = {
 	smsg = { min = 2, cat = "Server", label = "Server Message", arg = "text" },
 	secretanimals = { min = 2, cat = "Game", label = "Toggle Secret Animals" },
 	rubberduck = { min = 2, cat = "Game", label = "Secret Invention: Rubber Duck" },
+	schoolbell = { min = 1, cat = "Game", label = "🔔 Ring the School Bell (1.6)", target = true },
 
 	-- Head Moderator
 	unban = { min = 3, cat = "Players", label = "Unban", arg = "user ID" },
