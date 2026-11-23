@@ -1,5 +1,5 @@
 --[[
-	LOSE A BRAIN CELL / GAIN A BRAIN CELL  -  updates 1.0 - 1.4
+	LOSE A BRAIN CELL / GAIN A BRAIN CELL  -  updates 1.0 - 1.5
 
 	WHERE THINGS ARE
 	- ReplicatedStorage > Shared > Config     : all settings, IDs (group, sounds, passes), admin commands
@@ -21,6 +21,10 @@
 	- Open the staff panel with the 🛠 button, P on keyboard, or the Select button on a controller.
 	- 1.4: SpaceService (Astronaut, Moon, World's Smartest), CastleService (the secret Endless Castle),
 	  Client > Tutorial (the guided tutorial with the notes).
+	- 1.5: Rooms (furniture, people, seats and exit doors inside buildings that have a use; houses stay
+	  closed), ConversationService + Client > Conversation (the cinematic conversation scenes),
+	  and the 🆘 Unstuck button (handled in Main).
+	  Room furniture is in Workspace > Rooms when you press Play.
 	- Chat commands also work, starting with ;  for example:  ;kick name reason   ;setcells me 1000
 ]]
 

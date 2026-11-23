@@ -27,6 +27,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
   - `ReplicatedStorage/Shared/Config.lua` holds every number, pass, sound and admin setting (tip 23).
   - `Content.lua` holds all text and questions.
   - `Badges.lua` holds the badge list.
+  - 1.5 port: `ServerScriptService/Services/Rooms.lua` (room layouts, furniture kit, seats, conversation spots, exit doors), `Services/ConversationService.lua` (server side of the conversation scenes), `StarterPlayerScripts/Client/Conversation.lua` (the cinematic: bars, camera cuts, choices bottom-left). The Unstuck handler is in `Main.server.lua`, its 🆘 button in `Hud.lua`. Text: `Content.Rooms`, `Content.Conversations`, `Content.ConvUI`, `Content.Unstuck`. Numbers: `Config.Rooms`, `Config.Conversations` (one `{meter, brain}` pair per choice), `Config.Unstuck`.
   - `roblox/tools/build_rbxlx.py` builds the place file.
   - `roblox/default.project.json` is the Rojo project (same layout as the builder). `rokit.toml` pins Rojo and Selene; `selene.toml` sets up the code checker.
 - `START_HERE_ON_PC.md`: the PC setup guide (Claude app, Git, Studio, the Studio MCP connection, Rojo).
@@ -38,15 +39,15 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
 - `.claude/skills/ship-browser-update/`: the release recipe (tip 10).
 
 ## Versions
-- **Roblox file:** 1.0 to 1.4. Not yet play-tested in Studio after 1.4. Pass, sound and badge IDs are still 0.
+- **Roblox:** 1.0 to 1.5 (`Config.Version = "1.5"`). 1.5 = real places, conversation scenes, exit doors and Unstuck, ported from the browser and play-tested in Studio on PC and phone size (Nov 2026). The `.rbxlx` files in `roblox/` are still 1.4: the 1.5 code lives in `roblox/src` and reaches Studio through Rojo. Pass, sound and badge IDs are still 0.
 - **Browser only:**
-  - 1.5 real places and conversations.
+  - (1.5 real places and conversations: now also in Roblox.)
   - 1.6 careers, school and animal forms.
   - The content pack and the interactive world.
   - "The Average Files" horror side plot.
   - The polish pack (first-10-seconds hook, sound kit, triple feedback, tuning table, odds, save backup, clean photo camera).
 - **Next:**
-  - Port the browser features to Roblox.
+  - Port the rest of the browser features to Roblox (1.6 careers, school and animal forms next).
   - 1.7 time travel.
   - 2.0 creator update.
 
@@ -65,6 +66,15 @@ When Claude Code runs on the PC with Studio's MCP server connected (see `START_H
 4. Use `start_stop_play` to play. Use `get_console_output` to read the Output and fix every red error. Use `screen_capture` to check the look. Use `character_navigation` and keyboard/mouse input to try both doors.
 5. Check phone size with Studio's device emulator.
 6. Stop the playtest. Commit only when Output has no red errors.
+
+Tips learned while porting 1.5:
+- A `rojo serve` may already be running (port 34872) with Studio connected. Check with `curl -s http://localhost:34872/api/rojo` before starting another one.
+- Studio test saves persist (DataStore access is on), so your path, cells and position carry over between playtests. Use the admin commands through the remote (`Request:InvokeServer("admin", {cmd = "setpath" or "setcells", target = userId, arg = ...})`) to switch path or brain level.
+- The 1.4 tutorial covers the screen on first play; hide `BrainUI.TutorialStage` from the client while testing.
+- Simulated mouse clicks on GUI buttons often miss (inset and device-simulator offsets). Trigger prompts with `ProximityPrompt:InputHoldBegin()/InputHoldEnd()` from the client, and test GUI through keyboard shortcuts (conversation: 1/2/3 to choose, Backspace to leave).
+- `execute_luau` on the client resets a Scriptable camera to Custom. To see a scripted camera, press a key first, then `screen_capture`.
+- Phone check: set the device with `StudioDeviceSimulatorService` (iPhone 17 Pro) before pressing Play, and call `StopSimulationAsync()` afterwards.
+- No real Python on this PC (only the Store alias), so `build_rbxlx.py` and `web/src/build.py` can't run here.
 
 Don't edit scripts directly in Studio (`multi_edit`) unless Rojo is off, or the files and Studio drift apart. Never run `save_place` over the published game without the user's okay.
 
