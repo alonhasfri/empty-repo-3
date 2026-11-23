@@ -287,4 +287,4 @@ CastleService.start()
 ConversationService.start()
 SchoolService.start()
 
-print("[Lose a Brain Cell] Server started (updates 1.0 – 1.5)")
+print("[Lose a Brain Cell] Server started (updates 1.0 – 1.6)")

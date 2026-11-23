@@ -22,7 +22,9 @@ The game is published on Roblox as **"brain game"** under the **Cult of the 39**
 | `CLAUDE.md` | Rules, style and structure for any AI working on this project. Read it first. |
 | `.claude/skills/ship-browser-update/` | The step-by-step release recipe (build, test, publish, push, document). |
 
-## Roblox version (updates 1.0 to 1.5)
+## Roblox version (updates 1.0 to 1.6)
+
+The latest code (1.6: careers, Lose-path school, animal forms) is in `roblox/src` and reaches Studio through Rojo. The newest ready place file is still `LoseABrainCell_v1.5.rbxlx`; rebuild it (below) to get a 1.6 file.
 
 1. In Roblox Studio: **File → Open from File** → `roblox/LoseABrainCell_v1.5.rbxlx`.
 2. **Home → Game Settings → Security → Enable Studio Access to API Services**.
@@ -58,8 +60,8 @@ The polish pack (from a video of AI game-making tips) adds:
 
 ## Not done yet
 
-- Port 1.6 and the rest of the browser features to Roblox.
-- Bring the browser-only features (1.5, 1.6, the horror story) into the Roblox file.
+- Port the rest of the browser features to Roblox (1.5 and 1.6 are done; the horror story, job minigames and the interactive world are not).
+- Build a 1.6 place file (`python3 roblox/tools/build_rbxlx.py LoseABrainCell_v1.6.rbxlx`, needs Python).
 - Update 1.7 (time travel) and 2.0 (creator update).
 - Upload `marketing/` to the Roblox game page. These are made from the browser version; real Studio screenshots would match the Roblox game better.
 - Real sounds for the Roblox file (all sound IDs are still 0).

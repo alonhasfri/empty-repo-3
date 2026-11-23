@@ -1,5 +1,5 @@
 --[[
-	LOSE A BRAIN CELL / GAIN A BRAIN CELL  -  updates 1.0 - 1.5
+	LOSE A BRAIN CELL / GAIN A BRAIN CELL  -  updates 1.0 - 1.6
 
 	WHERE THINGS ARE
 	- ReplicatedStorage > Shared > Config     : all settings, IDs (group, sounds, passes), admin commands
@@ -25,6 +25,8 @@
 	  closed), ConversationService + Client > Conversation (the cinematic conversation scenes),
 	  and the 🆘 Unstuck button (handled in Main).
 	  Room furniture is in Workspace > Rooms when you press Play.
+	- 1.6: careers (GainService + Content.Careers), SchoolService (Lose-path school bell + truant officer),
+	  AnimalForms (blocky animal bodies) + AnimalService (animal powers).
 	- Chat commands also work, starting with ;  for example:  ;kick name reason   ;setcells me 1000
 ]]
 

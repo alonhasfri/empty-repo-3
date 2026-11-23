@@ -952,6 +952,12 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.6", name = "Careers, School & Animals", lines = {
+		"📈 Jobs are career ladders now: work, get promoted, earn more (Bagger → Store Manager, Tutor → Dean…).",
+		"🏫 Lose path: the school bell rings. Get to class or the truant officer comes for you.",
+		"🐶 Turn into a real animal: dog, fly, bee, mouse, worm, rock. Each one moves differently.",
+		"🐾 Animal powers: Bark, Buzz up, Dig (button bottom right, or F).",
+	} },
 	{ v = "1.5", name = "Real Places", lines = {
 		"🏫 Walk into buildings that have a use: furniture, people and seats inside.",
 		"🎬 Conversation scenes: the camera moves in, pick your answer bottom-left (or press 1/2/3).",
