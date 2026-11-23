@@ -661,6 +661,11 @@ function BrainService.blocked(player): string?
 	return nil
 end
 
+-- 1.5: frozen from stress? (the therapist still lets you in)
+function BrainService.isFrozen(player): boolean
+	return rt(player).frozen == true
+end
+
 ---------------------------------------------------------------------
 -- Player lifecycle
 ---------------------------------------------------------------------

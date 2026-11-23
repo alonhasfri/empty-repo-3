@@ -241,6 +241,62 @@ Config.Rooms = {
 	FridgeOpenAngle = 110, -- degrees
 }
 
+-- Conversation scenes (1.5). For every choice: { meter change, brain points }.
+-- Brain points > 0 = gain brain cells, < 0 = lose brain cells (times BrainScale).
+-- Endings: good if the meter ends >= GoodAt, bad if <= BadAt, otherwise mid.
+-- Ending rewards: coins, gain, lose, path (gain on Gain / lose on Lose), stress, embarrass, idea, confetti.
+Config.Conversations = {
+	BrainScale = 0.6,
+	GoodAt = 65,
+	BadAt = 25,
+	StartRadius = 14, -- you must be this close to the spot to start
+	Cooldown = 3, -- seconds between conversations
+	TypeSpeed = 38, -- letters per second
+	SmartTypeSpeed = 60, -- smart players (IQ >= SmartIQ) read faster
+	SmartIQ = 120,
+	CameraTween = 0.55, -- seconds for each camera cut
+	PauseAfterLine = 0.5, -- seconds after a line finishes
+	OpenDelay = 0.9, -- seconds of the wide shot before the first line
+	Scenes = {
+		therapist = { meter = 50, allowFrozen = true,
+			a = { { 15, 1 }, { -5, -1 }, { -10, 0 } }, b = { { 15, 1 }, { -10, -2 }, { 5, 0 } }, c = { { 20, 1 }, { 10, 0 }, { -10, -2 } },
+			good = { stress = -45, embarrass = -30 }, mid = { stress = -15 }, bad = {} },
+		doctorG = { meter = 50,
+			a = { { 20, 2 }, { -25, -1 }, { -15, -1 } }, b = { { 25, 2 }, { -15, -1 }, { 5, 0 } }, c = { { 20, 1 }, { -20, 0 }, { -5, -1 } },
+			good = { coins = 30 }, mid = { coins = 10 }, bad = { stress = 10 } },
+		doctorL = { meter = 60,
+			a = { { -5, -1 }, { -10, -2 }, { 5, 1 } }, b = { { -10, -2 }, { 10, 1 }, { -5, -1 } }, c = { { -15, -2 }, { 15, 2 }, { -5, -1 } },
+			good = {}, mid = {}, bad = { lose = 2 } },
+		courtL = { meter = 60,
+			a = { { 15, 1 }, { -15, -2 }, { -10, -1 } }, b = { { 15, 1 }, { -15, -2 }, { -5, -1 } }, c = { { 15, 1 }, { -20, -2 }, { -10, -1 } },
+			good = {}, mid = {}, bad = { embarrass = 35 } },
+		courtG = { meter = 50,
+			a = { { 30, 2 }, { -20, -1 }, { -10, -1 } }, b = { { 25, 2 }, { -25, -1 }, { -5, 0 } }, c = { { 25, 2 }, { -10, 0 }, { 5, 0 } },
+			good = { coins = 40, gain = 2 }, mid = { coins = 10 }, bad = { stress = 15 } },
+		debate = { meter = 50,
+			a = { { 20, 2 }, { -10, -2 }, { 5, -1 } }, b = { { 20, 2 }, { -15, -1 }, { -5, -1 } }, c = { { 20, 1 }, { -10, -2 }, { 0, -1 } },
+			good = { confetti = true }, mid = {}, bad = { embarrass = 20 } },
+		journalistL = { meter = 40,
+			a = { { 20, -2 }, { -15, 1 }, { 10, -1 } }, b = { { 15, -2 }, { -10, 2 }, { 5, -1 } }, c = { { 20, -2 }, { -15, 1 }, { 10, -1 } },
+			good = { lose = 3 }, mid = { lose = 1 }, bad = {} },
+		journalistG = { meter = 50,
+			a = { { 25, 2 }, { -20, -1 }, { -15, -1 } }, b = { { 25, 2 }, { -15, -1 }, { -5, 0 } }, c = { { 25, 2 }, { -20, -1 }, { -5, 0 } },
+			good = { coins = 30, gain = 1.5 }, mid = { coins = 10 }, bad = { stress = 10 } },
+		election = { meter = 40,
+			a = { { 20, 0 }, { -15, -1 }, { 10, 0 } }, b = { { 20, 1 }, { 5, -1 }, { -15, -1 } }, c = { { 20, 1 }, { -5, -1 }, { 15, 0 } },
+			good = { confetti = true, path = 3 }, mid = {}, bad = {} },
+		classroomL = { meter = 60,
+			a = { { -15, -2 }, { 15, 2 }, { -10, -2 } }, b = { { -10, -2 }, { 15, 2 }, { -15, -1 } }, c = { { -10, -2 }, { 15, 2 }, { -15, -2 } },
+			good = {}, mid = {}, bad = { lose = 2 } },
+		classroomG = { meter = 50,
+			a = { { 25, 1 }, { -10, 0 }, { -20, -1 } }, b = { { 25, 1 }, { -20, -2 }, { -10, 0 } }, c = { { 20, 1 }, { -15, 0 }, { 25, 1 } },
+			good = { coins = 35, idea = 1 }, mid = { coins = 15 }, bad = { stress = 12 } },
+		experiment = { meter = 40,
+			a = { { 25, 1 }, { -15, -1 }, { -10, -2 } }, b = { { 25, 2 }, { -15, -1 }, { 0, 0 } }, c = { { 25, 2 }, { -10, -1 }, { -15, -2 } },
+			good = { gain = 2, idea = 1 }, mid = { gain = 0.5 }, bad = {} },
+	},
+}
+
 ---------------------------------------------------------------------
 -- FEATURE SWITCHES (Head Moderators can flip these live)
 ---------------------------------------------------------------------

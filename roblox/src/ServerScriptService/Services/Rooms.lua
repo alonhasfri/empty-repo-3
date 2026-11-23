@@ -427,7 +427,7 @@ local function convSpot(id: string, npcCf: CFrame, who: string, shirt: Color3, c
 	if opts.table ~= false then
 		K.table(npcCf * CFrame.new(0, 0, -dist / 2), 4, 2.2)
 	end
-	local p, pp = spot(standCf, "conv_" .. id, "Talk", who, function(player)
+	local p, pp = spot(standCf, "conv_" .. id, R.Talk, who, function(player)
 		if Rooms.onConv then
 			Rooms.onConv(player, id)
 		end
@@ -551,8 +551,8 @@ end
 
 -- 🏥 Hospital: check-ups (Lose), a patient (Gain), and Dr. Calm's therapy corner (everyone)
 LAYOUT.hospital = function(at)
-	convSpot("doctor", at(-18, -4, 0), P.doctor, Color3.fromRGB(233, 242, 255), "doctorL", R.Signs.checkup)
-	convSpot("patient", at(-14.5, 10, 0), P.patient, Color3.fromRGB(255, 143, 163), "doctorG", R.Signs.patient, { table = false })
+	convSpot("doctor", at(-18, -4, 0), P.doctor, Color3.fromRGB(233, 242, 255), { Lose = "doctorL" }, R.Signs.checkup)
+	convSpot("patient", at(-14.5, 10, 0), P.patient, Color3.fromRGB(255, 143, 163), { Gain = "doctorG" }, R.Signs.patient, { table = false })
 	K.rug(at(22, 12, 0), 14, 12, Color3.fromRGB(127, 178, 160))
 	convSpot("therapist", at(22, 17, 0), P.therapist, Color3.fromRGB(160, 200, 184), "therapist", R.Signs.therapy, { table = false })
 	K.couch(at(29, 9, PI / 2), Color3.fromRGB(127, 178, 160))

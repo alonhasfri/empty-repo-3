@@ -34,7 +34,8 @@ local Badges = {
 	WorldsSmartest = { id = 0, version = "1.4", secret = true, name = "World's Smartest", desc = "Reach 200 IQ." },
 	TooMuchBrain = { id = 0, version = "1.4", secret = true, name = "Too Much Brain", desc = "Reach 1 trillion brain cells. +1 IQ. Worth it?" },
 	LostAndFound = { id = 0, version = "1.4", secret = true, name = "Lost and Found", desc = "Solve the Endless Castle." },
-	FooledYou = { id = 0, version = "event", secret = false, name = "Fooled You", desc = "Find the April Fools rubber chicken." },
+	SmallTalk = { id = 0, version = "1.5", secret = false, name = "Small Talk", desc = "Finish a conversation scene." },
+	FooledYou ={ id = 0, version = "event", secret = false, name = "Fooled You", desc = "Find the April Fools rubber chicken." },
 }
 
 return Badges

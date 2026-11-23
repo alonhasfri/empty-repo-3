@@ -452,6 +452,7 @@ Content.Rooms = {
 	DumbOnly = "🫠 This is a dumb place. Not for the Gain path.",
 	PickPath = "Pick a path first: Lose or Gain.",
 	Sit = "Sit",
+	Talk = "Talk",
 	Seat = "🪑 Seat",
 	Couch = "🛋 Couch",
 	Busy = "Wait a second…",
@@ -505,6 +506,363 @@ Content.Rooms = {
 		Gain = { "¾ = 0.75", "H₂O = water", "√144 = 12", "E = mc²" },
 	},
 	Counselor = { action = "Find a job", object = "📋 Job Counselor" },
+}
+
+---------------------------------------------------------------------
+-- UPDATE 1.5: CONVERSATION SCENES
+-- Two people, the camera cuts to whoever talks, you pick what to say (bottom-left).
+-- The numbers for every choice (meter and brain cells) are in Config.Conversations,
+-- in the same order as the choices here.
+---------------------------------------------------------------------
+Content.ConvUI = {
+	You = "You",
+	Leave = "✕ Leave",
+	Done = "Leave",
+	Objection = "OBJECTION!",
+	Fast = "⏩ Tap the text to skip",
+	Busy = "You're already talking to someone.",
+	TooFar = "Walk up to them first.",
+	EmbarrassMoment = "Lost a conversation in front of everyone",
+}
+
+-- Animals can't talk. They still get three choices (same effects, in order).
+Content.AnimalTalk = {
+	worm = { "*wiggles politely*", "*wiggles rudely*", "*wiggles away*" },
+	fly = { "*bzzz (agreeing)*", "*lands on their nose*", "*bzzzzzzz*" },
+	bee = { "*happy buzz*", "*angry buzz*", "*waggle dance*" },
+	mouse = { "*squeak (yes)*", "*squeak (no)*", "*eats the paperwork*" },
+	octopus = { "*waves one arm*", "*squirts ink*", "*changes color*" },
+	dog = { "*sits like a good dog*", "*barks at nothing*", "*chases own tail*" },
+	microbe = { "*divides in half*", "*floats*", "*…*" },
+	tardigrade = { "*survives*", "*survives harder*", "*naps for 30 years*" },
+	default = { "*ook ook*", "*grunts*", "*points at a pigeon*" },
+}
+
+Content.Conversations = {
+	therapist = {
+		who = "Dr. Calm",
+		meter = "🫶 Trust",
+		action = "Talk to the therapist",
+		nodes = {
+			a = { say = "Welcome. Take a seat. So… how's your brain lately?", opts = {
+				{ t = "Honestly? A bit stressed. Gates, jobs, everything.", n = "b" },
+				{ t = "bro my brain is just loading 🔄", n = "b" },
+				{ t = "I'd rather not talk about it.", n = "b" },
+			} },
+			b = { say = "Hm. When you feel overwhelmed, what do you usually do?", opts = {
+				{ t = "Take a break. Coffee, a nap, a walk.", n = "c" },
+				{ t = "Scroll BrainTok for 6 hours.", n = "c" },
+				{ t = "Panic, mostly.", n = "c" },
+			} },
+			c = { say = "Here's a trick: name one thing you did well today.", opts = {
+				{ t = "I learned something new." },
+				{ t = "I didn't walk into the wall. Today." },
+				{ t = "I clicked every clickbait 😎" },
+			} },
+		},
+		ends = {
+			good = { line = "You leave feeling lighter.", result = "😌 Stress −45, embarrassment −30" },
+			mid = { line = "That was a good start.", result = "😌 Stress −15" },
+			bad = { line = "Dr. Calm writes something in a notebook. Very long.", result = "📝 \"Patient is… a lot.\"" },
+		},
+	},
+	doctorG = {
+		who = "Skater kid (patient)",
+		meter = "🩺 Patient trust",
+		action = "See a patient",
+		nodes = {
+			a = { say = "Doc, I fell off my skateboard. My arm is swollen and bent. 😭", opts = {
+				{ t = "Let's get an X-ray. It might be a fracture.", n = "b" },
+				{ t = "Just walk it off.", n = "b" },
+				{ t = "Have you tried turning it off and on again?", n = "b" },
+			} },
+			b = { say = "The X-ray shows a crack in the bone. What now?", opts = {
+				{ t = "A cast for about 6 weeks, then a check-up.", n = "c" },
+				{ t = "A plaster. Like a cartoon.", n = "c" },
+				{ t = "Ice cream. For morale.", n = "c" },
+			} },
+			c = { say = "Will I be able to skate again?", opts = {
+				{ t = "Yes! Once it heals. Wear a helmet and pads." },
+				{ t = "Never. Become a librarian." },
+				{ t = "Only backwards." },
+			} },
+		},
+		ends = {
+			good = { line = "The patient gives you a thumbs up with the good arm.", result = "🪙 +30 coins, the hospital is impressed" },
+			mid = { line = "The patient is OK. You could've been clearer.", result = "🪙 +10 coins" },
+			bad = { line = "The patient asks for a second opinion. From a pigeon.", result = "😰 Stress +10" },
+		},
+	},
+	doctorL = {
+		who = "Dr. Wrinkle-Free",
+		meter = "🩺 Doctor patience",
+		action = "Get checked",
+		nodes = {
+			a = { say = "So. What brings you in today?", opts = {
+				{ t = "My brain feels… quieter. It's great.", n = "b" },
+				{ t = "I think I'm getting smarter. Make it stop.", n = "b" },
+				{ t = "I read a book by accident.", n = "b" },
+			} },
+			b = { say = "Hmm. Follow my finger with your eyes. Left… right…", opts = {
+				{ t = "*follows a pigeon instead*", n = "c" },
+				{ t = "*follows perfectly*", n = "c" },
+				{ t = "Which finger? You have ten.", n = "c" },
+			} },
+			c = { say = "My diagnosis: acute brainrot. I prescribe one (1) book a day.", opts = {
+				{ t = "Can I get that as a 15-second video?" },
+				{ t = "Fine. One book." },
+				{ t = "Is brainrot contagious? Asking for my friends." },
+			} },
+		},
+		ends = {
+			good = { line = "The doctor is relieved. You are not (it's bad for your run).", result = "📚 The doctor believes in you. Ew." },
+			mid = { line = "You leave with a sticker.", result = "🩹 You got a sticker." },
+			bad = { line = "The doctor sighs so hard the X-ray machine turns on.", result = "🫠 Extra brainrot for the road" },
+		},
+	},
+	courtL = {
+		who = "Judge Gavel",
+		meter = "⚖️ Judge patience",
+		action = "Answer the lawsuit",
+		nodes = {
+			a = { say = "Order! The Brainville Times is suing you for spreading a fake headline. How do you plead?", opts = {
+				{ t = "Guilty. I shared it without reading it.", n = "b" },
+				{ t = "Not guilty. The headline had 🔥 emojis, so it's true.", n = "b" },
+				{ t = "What's a headline?", n = "b" },
+			} },
+			b = { say = "Did you check any other source before sharing it?", opts = {
+				{ t = "No, and I should have.", n = "c" },
+				{ t = "I checked the comments. They said 'real'.", n = "c" },
+				{ t = "OBJECTION! …wait, I'm the one being sued.", n = "c", slam = true },
+			} },
+			c = { say = "Any final words before I decide?", opts = {
+				{ t = "I'll read before I share." },
+				{ t = "Like and subscribe." },
+				{ t = "Can I get my sentence as a meme?" },
+			} },
+		},
+		ends = {
+			good = { line = "Case dismissed. The judge tells you to read more. (Ugh.)", result = "⚖️ Case dismissed" },
+			mid = { line = "Small fine: you must read one (1) terms of service.", result = "📜 Community reading service" },
+			bad = { line = "GUILTY. You must hold a sign in the plaza: 'I BELIEVED A FAKE HEADLINE'.", result = "🪧 Embarrassment +35" },
+		},
+	},
+	courtG = {
+		who = "Judge Gavel",
+		meter = "⚖️ Jury",
+		action = "Take the case",
+		nodes = {
+			a = { say = "Counselor, the witness says: 'I was home all evening. I watched TV until 9. I was at the park at 8.'", opts = {
+				{ t = "OBJECTION! They can't be home AND at the park at 8.", n = "b", slam = true },
+				{ t = "Sounds fine to me.", n = "b" },
+				{ t = "Can the witness do a backflip?", n = "b" },
+			} },
+			b = { say = "The other lawyer says your client 'looks guilty'. Your response?", opts = {
+				{ t = "Looking guilty isn't evidence. Show proof.", n = "c" },
+				{ t = "Fair point, they do.", n = "c" },
+				{ t = "YOU look guilty.", n = "c" },
+			} },
+			c = { say = "Closing statement, counselor.", opts = {
+				{ t = "The story doesn't add up. The jury must find my client not guilty." },
+				{ t = "Uhh… thank you for coming to my TED talk." },
+				{ t = "*slams table* NO FURTHER QUESTIONS", slam = true },
+			} },
+		},
+		ends = {
+			good = { line = "NOT GUILTY! Your client hugs you. The judge nods.", result = "🪙 +40 coins, 🧠 brain cells" },
+			mid = { line = "Hung jury. Try again another day.", result = "🪙 +10" },
+			bad = { line = "You lost the case. Your client is very confused.", result = "😰 Stress +15" },
+		},
+	},
+	debate = {
+		who = "Ms. Mic (host)",
+		meter = "📊 Audience",
+		action = "Join the Debate Show",
+		nodes = {
+			a = { say = "Welcome to THE DEBATE SHOW! Topic: should kids read more? Opening statement!", opts = {
+				{ t = "Yes. Reading grows your vocabulary and focus.", n = "b" },
+				{ t = "No. Videos are just books that move.", n = "b" },
+				{ t = "*airhorn noises*", n = "b" },
+			} },
+			b = { say = "Your opponent says 'books are boring'. Rebuttal?", opts = {
+				{ t = "Boring to start, but they let you imagine anything.", n = "c" },
+				{ t = "Agreed. Next topic.", n = "c" },
+				{ t = "Your FACE is boring.", n = "c" },
+			} },
+			c = { say = "Final 10 seconds! Make them count!", opts = {
+				{ t = "Read 20 minutes a day. Your future self will thank you." },
+				{ t = "Follow me on BrainTok." },
+				{ t = "*dabs*" },
+			} },
+		},
+		ends = {
+			good = { line = "The audience gives you a standing ovation! 👏", result = "🏆 You won the Debate Show" },
+			mid = { line = "A draw. The host is disappointed in both of you.", result = "🤝 Draw" },
+			bad = { line = "The audience throws (foam) tomatoes. 🍅", result = "🍅 SPLAT" },
+		},
+	},
+	journalistL = {
+		who = "Editor (Brainville Times)",
+		meter = "📰 Clicks",
+		action = "Write a headline",
+		nodes = {
+			a = { say = "We need a headline about the new park. Make people click!", opts = {
+				{ t = "'You WON'T BELIEVE what's in the PARK 😱😱'", n = "b" },
+				{ t = "'New park opens on Main Street'", n = "b" },
+				{ t = "'PARK? MORE LIKE BARK 🐶'", n = "b" },
+			} },
+			b = { say = "Good. Now the article. Facts or vibes?", opts = {
+				{ t = "Vibes. Only vibes.", n = "c" },
+				{ t = "Facts, with quotes from real people.", n = "c" },
+				{ t = "Just the word 'park' 400 times.", n = "c" },
+			} },
+			c = { say = "Last thing: a thumbnail.", opts = {
+				{ t = "Me pointing at a pigeon with a red arrow and a shocked face" },
+				{ t = "A nice photo of the park" },
+				{ t = "Just a red circle. On nothing." },
+			} },
+		},
+		ends = {
+			good = { line = "Your article goes MEGA viral. Dumb players everywhere read it.", result = "🔥 2 million clicks. Zero facts." },
+			mid = { line = "It's… fine. Some clicks.", result = "📰 Published" },
+			bad = { line = "Your article is accurate. Nobody clicks. Tragic.", result = "📉 4 clicks (one was your mom)" },
+		},
+	},
+	journalistG = {
+		who = "Editor (Brainville Times)",
+		meter = "🔎 Accuracy",
+		action = "Fact-check the news",
+		nodes = {
+			a = { say = "Fact-check this headline: 'Great Wall of China easily visible from space!'", opts = {
+				{ t = "False. Astronauts say you can't see it with the naked eye.", n = "b" },
+				{ t = "True, it's huge.", n = "b" },
+				{ t = "Let me ask BrainTok.", n = "b" },
+			} },
+			b = { say = "Next: 'Study shows chocolate makes you a genius.' Your note?", opts = {
+				{ t = "Check who paid for the study and how many people were in it.", n = "c" },
+				{ t = "Publish it, I love chocolate.", n = "c" },
+				{ t = "Only dark chocolate.", n = "c" },
+			} },
+			c = { say = "Last one. A quote with no source. Run it?", opts = {
+				{ t = "No. Find the original source first." },
+				{ t = "Yes, it sounds smart." },
+				{ t = "Attribute it to Albert Zweistein." },
+			} },
+		},
+		ends = {
+			good = { line = "The Brainville Times prints a correction, thanks to you.", result = "🪙 +30, 🧠 brain cells" },
+			mid = { line = "Mostly right. Good work.", result = "🪙 +10" },
+			bad = { line = "The fake news got printed. Oops.", result = "😰 Stress +10" },
+		},
+	},
+	election = {
+		who = "Voters of Brainville",
+		meter = "🗳 Votes",
+		action = "Give an election speech",
+		nodes = {
+			a = { say = "Citizens gather at the podium. 'Why should we vote for you?'", opts = {
+				{ t = { Lose = "FREE BRAINTOK FOR EVERYONE", Gain = "More libraries and free tutoring." }, n = "b" },
+				{ t = "Because I said so.", n = "b" },
+				{ t = "I promise a pigeon in every home.", n = "b" },
+			} },
+			b = { say = "A voter asks: 'What will you do about the potholes?'", opts = {
+				{ t = "Fix the worst ones first and publish a plan.", n = "c" },
+				{ t = "Turn them into tiny swimming pools.", n = "c" },
+				{ t = "What's a pothole?", n = "c" },
+			} },
+			c = { say = "Final words before the vote!", opts = {
+				{ t = "Vote for me. I'll listen to you." },
+				{ t = "VOTE OR ELSE (please)" },
+				{ t = "*throws confetti at the crowd*" },
+			} },
+		},
+		ends = {
+			good = { line = "YOU WON THE ELECTION! Your path gets a boost.", result = "🏛 Mayor of Brainville (temporary)" },
+			mid = { line = "You lost, but it was close!", result = "🗳 Close race" },
+			bad = { line = "You got 3 votes. One was a pigeon.", result = "🐦 3 votes" },
+		},
+	},
+	classroomL = {
+		who = "Teacher",
+		meter = "😤 Teacher patience",
+		action = "Take the pop quiz",
+		nodes = {
+			a = { say = "Pop quiz! What is the capital of France?", opts = {
+				{ t = "F.", n = "b" },
+				{ t = "Paris.", n = "b" },
+				{ t = "France is a fake country.", n = "b" },
+			} },
+			b = { say = "…OK. How many legs does a spider have?", opts = {
+				{ t = "Spiders are just ants that gave up.", n = "c" },
+				{ t = "Eight.", n = "c" },
+				{ t = "*throws paper airplane*", n = "c" },
+			} },
+			c = { say = "Last question. What is 7 × 8?", opts = {
+				{ t = "78" },
+				{ t = "56" },
+				{ t = "*falls asleep*" },
+			} },
+		},
+		ends = {
+			good = { line = "The teacher is proud. You feel… smarter. Gross.", result = "📝 A+. Oh no." },
+			mid = { line = "C−. Perfectly average.", result = "📝 C−" },
+			bad = { line = "The teacher gives up and puts on a movie.", result = "📺 Movie day. Brain off." },
+		},
+	},
+	classroomG = {
+		who = "The class",
+		meter = "🙋 Class attention",
+		action = "Teach the class",
+		nodes = {
+			a = { say = "Students: 'Why do we need fractions?!'", opts = {
+				{ t = "Pizza. If you share a pizza with 4 friends, that's quarters.", n = "b" },
+				{ t = "Because the test says so.", n = "b" },
+				{ t = "You don't. Class dismissed.", n = "b" },
+			} },
+			b = { say = "A student says: 'Is ½ bigger than ⅓?'", opts = {
+				{ t = "Yes. Cut a pizza in 2 vs 3: halves are bigger slices.", n = "c" },
+				{ t = "No, 3 is bigger than 2.", n = "c" },
+				{ t = "Ask your parents.", n = "c" },
+			} },
+			c = { say = "Students: 'Can we have a fun fact?'", opts = {
+				{ t = "Octopuses have three hearts!" },
+				{ t = "Homework is a fun fact." },
+				{ t = "Wombat poop is cube-shaped." },
+			} },
+		},
+		ends = {
+			good = { line = "The whole class claps. One kid says you're the best teacher ever.", result = "🪙 +35, 💡 idea +1" },
+			mid = { line = "Half the class was listening. Not bad.", result = "🪙 +15" },
+			bad = { line = "A paper airplane hits you in the head.", result = "✈️ Stress +12" },
+		},
+	},
+	experiment = {
+		who = "Lab assistant",
+		meter = "🐭 Mouse progress",
+		action = "Mouse maze experiment",
+		nodes = {
+			a = { say = "The mouse needs to learn the maze. How should we start?", opts = {
+				{ t = "Put a treat at the end and let it explore.", n = "b" },
+				{ t = "Yell directions at it.", n = "b" },
+				{ t = "Show it a BrainTok tutorial.", n = "b" },
+			} },
+			b = { say = "Should we change the maze every time?", opts = {
+				{ t = "No. Keep it the same so we can measure learning.", n = "c" },
+				{ t = "Yes! Chaos!", n = "c" },
+				{ t = "Let the mouse design it.", n = "c" },
+			} },
+			c = { say = "How do we know it learned?", opts = {
+				{ t = "Time it every run. If it gets faster, it learned." },
+				{ t = "Ask the mouse." },
+				{ t = "Vibes." },
+			} },
+		},
+		ends = {
+			good = { line = "The mouse runs the maze in 9 seconds! Science! 🎉", result = "🐭 Experiment success, 💡 idea +1" },
+			mid = { line = "The mouse found the treat. Eventually.", result = "🐭 Partial success" },
+			bad = { line = "The mouse is now in charge of the lab.", result = "🐭 New lab director" },
+		},
+	},
 }
 
 return Content

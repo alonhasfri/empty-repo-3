@@ -17,6 +17,7 @@ local SocialService = require(Services.SocialService)
 local ProjectService = require(Services.ProjectService)
 local SpaceService = require(Services.SpaceService)
 local CastleService = require(Services.CastleService)
+local ConversationService = require(Services.ConversationService)
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection
 
@@ -240,5 +241,6 @@ SocialService.start()
 ProjectService.start()
 SpaceService.start()
 CastleService.start()
+ConversationService.start()
 
 print("[Lose a Brain Cell] Server started (updates 1.0 – 1.4)")

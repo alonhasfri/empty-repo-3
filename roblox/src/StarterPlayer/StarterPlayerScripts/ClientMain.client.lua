@@ -12,6 +12,7 @@ local Style = require(Client.Style)
 local Effects = require(Client.Effects)
 local AdminPanel = require(Client.AdminPanel)
 local Tutorial = require(Client.Tutorial)
+local Conversation = require(Client.Conversation)
 
 Hud.onMenu = Stations.settings
 Hud.onAdmin = AdminPanel.open
@@ -102,6 +103,7 @@ local function applyState(st)
 	Hud.update(st)
 	Style.apply(st)
 	Tutorial.onState(st)
+	Conversation.onState(st)
 end
 
 Remote.on("state", applyState)
