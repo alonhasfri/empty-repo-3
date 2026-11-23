@@ -50,7 +50,7 @@ Content.Headlines = {
 	{ tier = 2, bait = false, text = "Weather Service Expects Rain This Weekend", article = "Bring an umbrella on Saturday afternoon." },
 	{ tier = 2, bait = true, text = "Scientists HATE Him for This One Weird Brain Trick", article = "Scientists do not hate him. They have never heard of him." },
 	-- tier 3: obvious
-	{ tier = 3, bait = true, text = "🚨🚨 SKIBIDI FOUND IN REAL LIFE 🚨🚨", article = "It was a guy in a costume." },
+	{ tier = 3, bait = true, text = "🚨🚨 BONKADOO FOUND IN REAL LIFE 🚨🚨", article = "It was a guy in a costume." },
 	{ tier = 3, bait = true, text = "CLICK HERE 4 FREE BRAIN", article = "no brain here srry" },
 	{ tier = 3, bait = true, text = "TOP 10 REASONS 2 CLICK THIS (NUMBER 7 IS CRAZY)", article = "there r no reasons" },
 	{ tier = 3, bait = false, text = "water is wet (real)", article = "yes" },
@@ -90,7 +90,7 @@ Content.CommentWords = {
 	{ text = "bruh", dumb = 2 },
 	{ text = "no cap", dumb = 2 },
 	{ text = "fake", dumb = 2 },
-	{ text = "skibidi", dumb = 4 },
+	{ text = "bonkadoo", dumb = 4 },
 	{ text = "me", dumb = 1 },
 	{ text = "🗿", dumb = 3 },
 	{ text = "nice video", dumb = 0 },
@@ -560,11 +560,11 @@ Content.Rooms = {
 		barista = "Barista",
 		assistant = "Lab assistant",
 	},
-	ArcadeTitles = { "SKIBIDI", "BRAIN.EXE", "JUMP!!", "CLICK ME" },
+	ArcadeTitles = { "BONKADOO", "BRAIN.EXE", "JUMP!!", "CLICK ME" },
 	-- small things you can do (lose = Lose path only, gain = Gain path only)
 	Actions = {
 		arcade = { action = "Play the arcade", object = "🕹 Arcade", toast = "🕹️ 47 flashing lights later…" },
-		plushie = { action = "Hug the display plushie (free)", object = "🧸 Skibidi Plushie", toast = "🧸 You hug it. It does not hug back." },
+		plushie = { action = "Hug the display plushie (free)", object = "🧸 Bonkadoo Plushie", toast = "🧸 You hug it. It does not hug back." },
 		cereal = { action = "Shake the cereal box", object = "🥣 Cereal", toast = "🥣 *shake shake* There is no prize." },
 		sleep = { action = "Sleep in class", object = "😴 Your desk", toast = "😴 Zzz… you drooled on the desk." },
 		paper = { action = "Throw a paper airplane", object = "✈️ Paper", toast = "✈️ It hit the teacher. Detention vibes." },
@@ -576,7 +576,7 @@ Content.Rooms = {
 		university = "E = mc²   a² + b² = c²",
 	},
 	BoardLines = {
-		Lose = { "2 + 2 = fish", "the sun is a big lamp", "skibidi = science", "cats are just loud bread" },
+		Lose = { "2 + 2 = fish", "the sun is a big lamp", "bonkadoo = science", "cats are just loud bread" },
 		Gain = { "¾ = 0.75", "H₂O = water", "√144 = 12", "E = mc²" },
 	},
 	Counselor = { action = "Find a job", object = "📋 Job Counselor" },

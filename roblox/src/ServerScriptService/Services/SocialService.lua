@@ -793,7 +793,7 @@ end)
 ---------------------------------------------------------------------
 local SPEECHES = {
 	Gain = { "I will build more libraries.", "I promise free tutoring for everyone.", "Science funding for all!" },
-	Lose = { "Free microwaves for everyone!!", "I will ban reading. Forever.", "Every day is Skibidi Day." },
+	Lose = { "Free microwaves for everyone!!", "I will ban reading. Forever.", "Every day is Bonkadoo Day." },
 }
 local election = nil
 

@@ -202,7 +202,7 @@ function Props.newsstand(cf: CFrame)
 	box(m, cf * CFrame.new(0, 9.1, 0), Vector3.new(9, 0.4, 5), Color3.fromRGB(200, 40, 40), Enum.Material.Fabric)
 	-- magazine rack on the front
 	local covers = { Color3.fromRGB(255, 80, 80), Color3.fromRGB(80, 160, 255), Color3.fromRGB(255, 220, 60), Color3.fromRGB(120, 220, 120), Color3.fromRGB(240, 120, 240) }
-	local headlines = { "SHOCKING!", "YOU WON'T BELIEVE", "SKIBIDI?!", "FREE BRAIN", "😱 WOW" }
+	local headlines = { "SHOCKING!", "YOU WON'T BELIEVE", "BONKADOO?!", "FREE BRAIN", "😱 WOW" }
 	for i = 1, 5 do
 		local cover = box(m, cf * CFrame.new(-3.2 + i * 1.07, 5.5, 0.9) * CFrame.Angles(math.rad(-10), 0, 0), Vector3.new(0.9, 1.3, 0.08), covers[i], Enum.Material.SmoothPlastic)
 		screen(cover, headlines[i], Enum.NormalId.Front, covers[i], Color3.new(1, 1, 1)).Font = Enum.Font.GothamBlack

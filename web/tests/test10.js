@@ -57,7 +57,7 @@ const fs = require('fs');
   await ev(() => enterRoom(B.find(x => x.id === 'diner'))); await W(1400); await ev(() => microwave()); await W(5600); await shot('microwave_boom');
   await ev(() => { leaveRoom(true); enterRoom(B.find(x => x.id === 'wall')); }); await W(1400);
   await ev(() => { for (let i = 0; i < 6; i++) bonkWall(); }); await W(500); await shot('wall');
-  await ev(() => { leaveRoom(true); viralBillboard('first!! skibidi'); P.x = 300; P.y = 600; }); await W(800); await shot('billboard');
+  await ev(() => { leaveRoom(true); viralBillboard('first!! bonkadoo'); P.x = 300; P.y = 600; }); await W(800); await shot('billboard');
   await ev(() => { startChase('Toaster'); }); await W(300); await ev(() => { P.x = CHASE.x; P.y = CHASE.y + 10; }); await W(500); await shot('chase');
   await ev(() => { if (CHASE) endChase(true); });
   await ev(() => newsCatch()); await W(2500); await shot('newsstand'); await ev(() => closePanel());
