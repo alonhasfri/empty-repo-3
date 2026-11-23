@@ -177,6 +177,23 @@ function BoardService.start()
 			return string.format(TB.Coins, v)
 		end,
 	})
+	BoardService.define("Speedrun", {
+		Store = CB.Speedrun.Store,
+		Best = true,
+		Ascending = true,
+		Top = CB.Speedrun.Top,
+		Pos = CB.Speedrun.Pos,
+		Facing = CB.Speedrun.Facing,
+		Title = TB.SpeedrunTitle,
+		Format = function(v)
+			v = math.floor(v)
+			local h = math.floor(v / 3600)
+			if h > 0 then
+				return string.format("%d:%02d:%02d", h, math.floor(v / 60) % 60, v % 60)
+			end
+			return string.format("%d:%02d", math.floor(v / 60), v % 60)
+		end,
+	})
 	task.spawn(function()
 		while true do
 			for _, b in pairs(boards) do

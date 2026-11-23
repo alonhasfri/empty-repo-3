@@ -150,29 +150,31 @@ end
 
 local coinPaidAt = {} -- [player][scene key] = os.clock() of the last coin reward
 local function giveRewards(player: Player, data, r, key: string?)
-	if r.coins then
-		coinPaidAt[player] = coinPaidAt[player] or {}
-		local last = key and coinPaidAt[player][key]
-		if last and os.clock() - last < CC.CoinRewardEvery then
-			BrainService.toast(player, Content.ConvUI.NoTip)
-		else
-			data.coins += r.coins
-			if key then
-				coinPaidAt[player][key] = os.clock()
-			end
-		end
+	-- 1.7.3: the same scene again within CoinRewardEvery: no coins and only RepeatBrainFactor of the brain cells
+	-- (learning still counts a little, but the repeat loop dies)
+	coinPaidAt[player] = coinPaidAt[player] or {}
+	local last = key and coinPaidAt[player][key]
+	local again = last ~= nil and os.clock() - last < CC.CoinRewardEvery
+	local f = again and CC.RepeatBrainFactor or 1
+	if again then
+		BrainService.toast(player, Content.ConvUI.Again)
+	elseif key then
+		coinPaidAt[player][key] = os.clock()
+	end
+	if r.coins and not again then
+		data.coins += r.coins
 	end
 	if r.gain then
-		BrainService.gain(player, r.gain, "conversation")
+		BrainService.gain(player, r.gain * f, "conversation")
 	end
 	if r.lose then
-		BrainService.lose(player, r.lose, "conversation")
+		BrainService.lose(player, r.lose * f, "conversation")
 	end
 	if r.path then
 		if data.path == "Gain" then
-			BrainService.gain(player, r.path, "conversation")
+			BrainService.gain(player, r.path * f, "conversation")
 		else
-			BrainService.lose(player, r.path, "conversation")
+			BrainService.lose(player, r.path * f, "conversation")
 		end
 	end
 	if r.stress then

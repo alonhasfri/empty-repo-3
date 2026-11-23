@@ -31,6 +31,8 @@ LoseFX.start()
 local AnimalUI = require(Client.AnimalUI)
 local Guide = require(Client.Guide)
 local LowGraphics = require(Client.LowGraphics)
+local SpeedrunTimer = require(Client.SpeedrunTimer)
+local _Horror = require(Client.Horror) -- 1.7.3: The Average Files (listens on its own)
 PhoneOS.animalUI = AnimalUI.open
 AnimalUI.hasPower = function()
 	return Hud.hasPower()
@@ -144,9 +146,17 @@ local function applyState(st)
 	AnimalUI.onState(st)
 	Guide.onState(st)
 	LowGraphics.onState(st)
+	SpeedrunTimer.onState(st)
 end
 
 Remote.on("state", applyState)
+
+-- 1.7.3: the first big moment of a run: title + shake (the big number comes with the delta)
+Remote.on("firstWow", function(d)
+	local FW = require(game:GetService("ReplicatedStorage").Shared.Content).FirstWow
+	UI.toast(d.up and FW.Gain or FW.Lose, d.up and UI.Colors.good or UI.Colors.bad, 4)
+	UI.sound(d.up and "LevelUp" or "CartoonBoing", 0.7)
+end)
 
 Remote.on("delta", function(d)
 	Hud.delta(d.amount, d.up)

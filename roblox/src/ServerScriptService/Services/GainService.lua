@@ -16,6 +16,7 @@ local WorldService = require(script.Parent.WorldService)
 local ProjectService = require(script.Parent.ProjectService)
 local ConversationService = require(script.Parent.ConversationService)
 local BoardService = require(script.Parent.BoardService)
+local HorrorService = require(script.Parent.HorrorService)
 
 local GainService = {}
 
@@ -950,6 +951,7 @@ function GainService.averageGuy(player)
 	averageVisits[player] = n
 	local lines = Content.AverageGuy
 	BrainService.toast(player, lines[math.min(n, #lines)], "NotificationPing")
+	HorrorService.talked(player)
 end
 Players.PlayerRemoving:Connect(function(p)
 	averageVisits[p] = nil

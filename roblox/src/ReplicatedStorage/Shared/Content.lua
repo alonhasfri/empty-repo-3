@@ -609,7 +609,7 @@ Content.Unstuck = {
 Content.ConvUI = {
 	You = "You",
 	Leave = "Leave",
-	NoTip = "(No coins this time: you already got paid for this chat recently.)",
+	Again = "💬 You already talked about this. (Tiny brain change, no coins. Try another chat!)",
 	Done = "Leave",
 	Objection = "OBJECTION!",
 	Fast = "⏩ Tap the text to skip",
@@ -1029,6 +1029,13 @@ Content.Life = {
 		Receipt = "🧾 Receipt: %s • 💰 %d • plate %s. Thanks for riding Hoppr!",
 		TooPoor = "You need 💰 %d for this ride. Walk, take the free 🚌 Brain Bus from the map, or earn coins at work.",
 		Refunded = "🚗 Your driver waited, but you were busy talking. Fare refunded: 💰 %d.",
+		Invite = "🚗 %s booked Hoppr to %s.\nJoin the ride? You pay 💰 %d.",
+		Join = "✅ Join (💰 %d)",
+		NoThanks = "No thanks",
+		Joined = "🚗 You're in! Riding to %s (💰 %d).",
+		GroupGone = "That ride already left.",
+		GroupFull = "That car is full.",
+		GroupFar = "Stand next to your friend to join.",
 		Animal = "🐾 Animals can't hold a phone. Follow your nose instead!",
 		Unknown = "Hoppr can't find that place.",
 		Expired = "That price ran out. Check the fare again.",
@@ -1106,6 +1113,73 @@ Content.Settings17 = {
 	Guide = "🧭 \"What do I do now?\" arrow",
 	LowGraphics = "🥔 Low graphics (for slow phones)",
 	LowGraphicsInfo = "Turns off street lights, sparkles, extra decorations and shadows so the game runs smoother.",
+	SpeedrunTimer = "⏱ Speedrun timer",
+}
+
+-- 1.7.3: badge checklist (Settings → 🏅). Kid-friendly hints for locked SECRET badges (they never say exactly how).
+Content.BadgeUI = {
+	Button = "🏅 Badges (%d/%d)",
+	Title = "🏅 Badge checklist",
+	Got = "✅",
+	Locked = "🔒",
+	Secret = "Secret badge",
+	Hints = {
+		ReadTOS = "Some people never read the small print. Be different.",
+		ClickedEverything = "Curiosity clicked the cat… many, many times.",
+		WhereAmI = "How small can a brain get before you stop being an animal?",
+		PerfectlyAverage = "Someone plain and grey in the plaza wants to chat.",
+		AllInventions = "Keep working until every idea goes ding.",
+		Coffee60 = "A famous composer was very picky about his coffee.",
+		CompleteMakeover = "Hit the very bottom… then climb all the way back.",
+		RefusedPrize = "Not every prize has to be accepted.",
+		MaybeNextTime = "Some machines need a LOT of tries.",
+		WorldsSmartest = "Keep getting smarter. Like, really smart.",
+		TooMuchBrain = "Is there such a thing as too smart?",
+		LostAndFound = "A strange little house at the end of a road. Look closer.",
+	},
+}
+
+-- 1.7.3: the first big moment of a new run
+Content.FirstWow = {
+	Lose = "💥 BRAIN DROP! A meme just deleted a chunk of your brain!",
+	Gain = "✨ BRAIN BOOST! Your first big idea!",
+}
+
+-- 1.7.3: Vs Mode lobby sign (near spawn)
+Content.VsLobby = {
+	Title = "🎭 VS MODE LOBBY (tap 🎭 Vs Mode)",
+	Waiting = "%d waiting: %s as %s. Needs a %s!",
+	Nobody = "Nobody waiting yet. Be the first!",
+}
+
+-- 1.7.3: "The Average Files", part 1 (ported from the browser game's notes). Slow, kid-safe dread. No gore.
+Content.Horror = {
+	ReadNote = "Read",
+	NoteObject = "📄 A beige note",
+	NoteTitle = "📄 The Average Files (%d/%d)",
+	AnimalNote = "📄 The paper smells… perfectly average. You can't read it, but your fur stands up a little. 🐾",
+	StageToast = {
+		[1] = "😐 You feel like someone perfectly ordinary is watching. Probably nothing.",
+		[2] = "😐 The town feels a little more… average today.",
+		[3] = "😐 Someone counted your steps. Exactly average. Again.",
+	},
+	Setting = "😐 Horror: %s",
+	SettingNames = { off = "Off", spooky = "Spooky (no jump scares)", full = "Full" },
+	Notes = {
+		"Day 1. A new man stands in the plaza. Height: average. Smile: average. He said 'perfectly average day' 41 times today. I counted. It's not a big number. It's not a small number.",
+		"Nobody remembers when he arrived. Everyone says 'he's always been there.' The town records say he arrived every single year.",
+		"I measured him. IQ: 100. Exactly. Not 99.9. Not 100.1. Nothing in nature is that exact. Nothing.",
+		"When I'm not looking, he's closer. When I look, he's just standing there. Averagely.",
+		"He told me: 'Add up everyone in Brainville. Divide by everyone. That's me. Everyone becomes me, eventually.'",
+		"The Mean is a place. Beige hallways. Every door opens into the same room. The clock always says 3:00.",
+		"Outliers scare him. Things that are one of a kind. If he takes you to The Mean, find three of them. Don't let him make you average.",
+		"He isn't evil. He's lonely. Nobody is actually average. So nobody is like him. Nobody.",
+	},
+}
+
+-- 1.7.3: speedrun timer
+Content.Speedrun = {
+	Timer = "⏱ %s",
 }
 
 -- 1.7.2: plaza leaderboards (display names only)
@@ -1172,8 +1246,8 @@ Content.Map = {
 	},
 	Ends = {
 		{ x = -430, z = 0, name = "🌅 West Lookout" },
-		{ x = 430, z = 0, name = "🌄 East Lookout" },
-		{ x = 0, z = -430, name = "🏔 North Lookout" },
+		{ x = 430, z = 60, name = "🌄 East Lookout" }, -- 1.7.2: beside the road end, off the rocket pad
+		{ x = -60, z = -430, name = "🏔 North Lookout" }, -- 1.7.2: beside the odd house, not on top of it
 		{ x = 0, z = 430, name = "🌊 South Lookout" },
 	},
 	Hole = "🕳 dumb shortcut",

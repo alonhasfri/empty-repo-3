@@ -168,6 +168,44 @@ Net.on("ride_book", function(player, d)
 		fare = q.fare,
 		name = q.name,
 	}
+	-- 1.7.3: group rides. Up to MaxFriends nearby players are invited; each sees the fare first and pays their own.
+	local group = { key = q.key, fare = q.fare, name = q.name, riders = {}, open = true, closesAt = os.clock() + q.eta }
+	s.group = group
+	local invited = 0
+	local leaderRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	for _, other in ipairs(Players:GetPlayers()) do
+		if other ~= player and invited < CL.Ride.MaxFriends and not sess(other).riding and leaderRoot then
+			local od = DataService.get(other)
+			if od and not isAnimal(od) and WorldService.near(other, leaderRoot.Position, CL.Ride.GroupRadius) then
+				invited += 1
+				Net.send(other, "rideInvite", { leaderId = player.UserId, from = player.DisplayName, fare = q.fare, name = q.name, seconds = q.eta })
+			end
+		end
+	end
+	task.delay(q.eta + CL.Ride.RideSeconds, function()
+		group.open = false
+		for _, rider in ipairs(group.riders) do
+			local rs = sess(rider)
+			rs.riding = false
+			rs.rideAt = os.clock() + CL.Ride.Cooldown
+			local rd = DataService.get(rider)
+			if rider.Parent and rd then
+				if player.Parent and ConversationService.readyToTravel(rider) then
+					local pos = destination(player, data, q.key)
+					if q.key ~= "work" and WorldService.Spots[q.key] then
+						WorldService.teleport(rider, q.key)
+					elseif pos and rider.Character then
+						rider.Character:PivotTo(CFrame.new(pos + Vector3.new(3, 3, -8)))
+					end
+					Net.send(rider, "rideDone", { fare = q.fare, name = q.name, plate = plate })
+				else
+					rd.coins += q.fare
+					BrainService.push(rider)
+					Net.send(rider, "rideDone", { refunded = true, fare = q.fare })
+				end
+			end
+		end
+	end)
 	task.delay(q.eta + CL.Ride.RideSeconds, function()
 		s.riding = false
 		s.rideAt = os.clock() + CL.Ride.Cooldown
@@ -190,6 +228,36 @@ Net.on("ride_book", function(player, d)
 		Net.send(player, "rideDone", { fare = q.fare, name = q.name, plate = plate })
 	end)
 	return { ok = true, ride = ride }
+end)
+
+-- 1.7.3: join a friend's ride (the invite showed the fare; you pay your own share)
+Net.on("ride_join", function(player, d)
+	local leader = Players:GetPlayerByUserId(tonumber(d.leaderId) or 0)
+	local data = DataService.get(player)
+	local g = leader and sess(leader).group
+	local s = sess(player)
+	if not data or not g or not g.open or os.clock() > g.closesAt or leader == player then
+		return { ok = false, msg = TL.Ride.GroupGone }
+	end
+	if s.riding then
+		return { ok = false, msg = TL.Ride.Already }
+	end
+	if #g.riders >= CL.Ride.MaxFriends or isAnimal(data) then
+		return { ok = false, msg = TL.Ride.GroupFull }
+	end
+	local root = leader.Character and leader.Character:FindFirstChild("HumanoidRootPart")
+	if not root or not WorldService.near(player, root.Position, CL.Ride.GroupRadius) then
+		return { ok = false, msg = TL.Ride.GroupFar }
+	end
+	if data.coins < g.fare then
+		return { ok = false, msg = string.format(TL.Ride.TooPoor, g.fare) }
+	end
+	data.coins -= g.fare
+	s.riding = true
+	s.quote = nil
+	table.insert(g.riders, player)
+	BrainService.push(player)
+	return { ok = true, msg = string.format(TL.Ride.Joined, g.name, g.fare) }
 end)
 
 ---------------------------------------------------------------------

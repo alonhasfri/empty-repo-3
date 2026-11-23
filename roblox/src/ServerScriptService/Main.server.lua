@@ -22,6 +22,7 @@ local SchoolService = require(Services.SchoolService)
 local _AnimalService = require(Services.AnimalService) -- 1.6 animal powers (listens on its own)
 local LifeService = require(Services.LifeService) -- 1.7: Hoppr rides, shifts and payslips, Brain Bank
 local BoardService = require(Services.BoardService) -- 1.7.2: plaza leaderboards
+local HorrorService = require(Services.HorrorService) -- 1.7.3: The Average Files (part 1)
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection
 AdminService.ringBell = SchoolService.ring
@@ -210,7 +211,7 @@ Net.on("settings", function(player, d)
 	if isNum(d.fxIntensity) then
 		s.fxIntensity = math.clamp(math.floor(d.fxIntensity * 10 + 0.5) / 10, 0, 1)
 	end
-	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud", "guide", "lowGraphics" }) do
+	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud", "guide", "lowGraphics", "speedrunTimer" }) do
 		if typeof(d[k]) == "boolean" then
 			s[k] = d[k]
 		end
@@ -299,5 +300,6 @@ ConversationService.start()
 SchoolService.start()
 LifeService.start()
 BoardService.start()
+HorrorService.start()
 
 print("[Lose a Brain Cell] Server started (updates 1.0 – 1.7)")

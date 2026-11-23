@@ -148,8 +148,41 @@ Config.Boards = {
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
 }
 
+Config.VsLobbySignPos = Vector3.new(0, 9, 34) -- 1.7.3: plaza, behind the spawn
+
+-- 1.7.3: "The Average Files" part 1 (notes + sightings). Kid-safe; Settings → Horror: Off / Spooky / Full.
+Config.Horror = {
+	Stage1After = 200, -- seconds on a path before the mystery starts
+	Stage1AfterTalk = 70, -- ...or this soon after you talked to the Perfectly Average guy
+	NotesForStage2 = 3,
+	NotesForStage3 = 5,
+	NoteGate = { 1, 1, 1, 2, 2, 3, 3, 1 }, -- the stage each note appears at
+	NoteSpots = { -- next to existing things (found by name), so they move with the town
+		{ near = "Station_library", offset = Vector3.new(3, -2.4, 3) },
+		{ near = "Station_clickbait", offset = Vector3.new(-3, -2.4, 3) },
+		{ near = "Station_coffee", offset = Vector3.new(3, -2.4, -3) },
+		{ near = "Station_jobs", offset = Vector3.new(-3, -2.4, 3) },
+		{ near = "Station_theater", offset = Vector3.new(4, -2.4, 2) },
+		{ near = "Station_gate", offset = Vector3.new(-4, -2.4, 2) },
+		{ near = "Station_steal", offset = Vector3.new(3, -2.4, 3) },
+		{ near = "FountainBase", offset = Vector3.new(0, 1, 15) },
+	},
+	SightingEvery = 90, -- seconds (plus jitter) between far-away sightings, from stage 1
+	SightingJitter = 60,
+	SightingDistance = 70, -- studs away: always far, never in your face
+	SightingSeconds = 6,
+	SightingVanishAt = 35, -- walk this close and he isn't there
+}
+
+-- 1.7.3: the first "wow" of a new run (a big brain drop or boost, with a big counter)
+Config.FirstWow = {
+	Delay = 20, -- seconds after picking a door
+	LosePoints = 3, -- about -4% of your cells
+	GainPoints = 10, -- about +2% of your cells
+}
+
 Config.Bus = {
-	WaitSeconds = 20, -- the free map bus is slow on purpose; Hoppr (coins) is fast, walking is free
+	WaitSeconds = 6, -- 1.7.2 map review: the town is ~15 s across, so a 20 s wait was slower than walking anywhere
 	Cooldown = 10, -- after a trip
 }
 Config.ElectionMinutes = 20 -- an election starts this often (update 1.2)
@@ -324,6 +357,7 @@ Config.Conversations = {
 	StartRadius = 14, -- you must be this close to the spot to start
 	Cooldown = 3, -- seconds between conversations
 	CoinRewardEvery = 600, -- 1.7.2: a scene pays coins at most once per 10 min (so talking never beats working)
+	RepeatBrainFactor = 0.1, -- 1.7.3: repeating the same scene within that time gives 10% of the brain cells
 	TypeSpeed = 38, -- letters per second
 	SmartTypeSpeed = 60, -- smart players (IQ >= SmartIQ) read faster
 	SmartIQ = 120,
@@ -494,6 +528,7 @@ Config.RankGiveLimit = {
 -- 1.7: Brain-scaled UI, life systems and map (see docs/Brain scaled UI and map design.md)
 ---------------------------------------------------------------------
 Config.UI = {
+	BigDeltaShare = 0.02, -- 1.7.3: a brain change this big (share of your cells) gets the big centre counter
 	MinDeviceScale = 0.7, -- the whole HUD never shrinks below this on small phones
 	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone
 	MinPhoneText = 14, -- smallest text size on phones
@@ -518,6 +553,8 @@ Config.Life = {
 		EtaMax = 7,
 		RideSeconds = 3, -- the short ride scene
 		Cooldown = 4,
+		MaxFriends = 3, -- 1.7.3: group rides: up to 3 friends can join one Hoppr ride
+		GroupRadius = 20, -- studs: friends this close to the booker get an invite
 	},
 	Shift = {
 		EverySeconds = 300, -- a shift starts every 5 minutes (on the real clock)

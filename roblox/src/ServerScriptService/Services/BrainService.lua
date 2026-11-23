@@ -167,6 +167,9 @@ function BrainService.state(player)
 	end
 	return {
 		jobPlace = jobPlace, -- 1.7.2: the "What do I do now?" guide points at Work_<jobPlace>
+		runStart = data.runStart, -- 1.7.3: the optional speedrun timer counts from here (server time)
+		badges = data.badges, -- 1.7.3: the badge checklist in Settings
+		serverNow = os.time(),
 		cells = cells,
 		cellsText = Brain.formatNumber(cells),
 		path = data.path,
@@ -462,6 +465,14 @@ local function afterChange(player)
 		if iq >= Config.Space.SmartestIQ and not data.worldsSmartest and BrainService.hooks.onSmartest then
 			data.worldsSmartest = true
 			task.spawn(BrainService.hooks.onSmartest, player)
+			-- 1.7.3: speedrun board (server-timed from the start of this run; the client can't send a time)
+			local secs = math.max(1, os.time() - (data.runStart or os.time()))
+			if not data.bestIQ200Seconds or secs < data.bestIQ200Seconds then
+				data.bestIQ200Seconds = secs
+			end
+			if not data.adminTouched then -- admin-set brains never reach the boards
+				require(script.Parent.BoardService).submitBest("Speedrun", player, secs)
+			end
 		end
 		if data.cells >= 257e9 and not data.elephantJoke then
 			data.elephantJoke = true
@@ -607,6 +618,23 @@ function BrainService.startPath(player, path: string, comeback: boolean?)
 	BrainService.applyCharacter(player)
 	if BrainService.hooks.onPathReset then
 		BrainService.hooks.onPathReset(player)
+	end
+	-- 1.7.3: a big "wow" moment within the first minute of a new run (YouTuber panel: faster first hook)
+	local runId = data.runStart
+	local FW = Config.FirstWow
+	if FW and not comeback then
+		task.delay(FW.Delay, function()
+			local d = DataService.get(player)
+			if not d or d.dead or d.runStart ~= runId or d.path ~= path then
+				return -- left, died, or started another run meanwhile
+			end
+			if path == "Lose" then
+				BrainService.lose(player, FW.LosePoints, "firstWow")
+			else
+				BrainService.gain(player, FW.GainPoints, "firstWow")
+			end
+			Net.send(player, "firstWow", { up = path == "Gain" })
+		end)
 	end
 end
 
