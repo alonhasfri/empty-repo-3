@@ -169,6 +169,7 @@ function BrainService.state(player)
 		jobPlace = jobPlace, -- 1.7.2: the "What do I do now?" guide points at Work_<jobPlace>
 		runStart = data.runStart, -- 1.7.3: the optional speedrun timer counts from here (server time)
 		badges = data.badges, -- 1.7.3: the badge checklist in Settings
+		life = BrainService.hooks.lifeInfo and BrainService.hooks.lifeInfo(data) or nil, -- 1.8: Life Pack age/stage
 		serverNow = os.time(),
 		cells = cells,
 		cellsText = Brain.formatNumber(cells),

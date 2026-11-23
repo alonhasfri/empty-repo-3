@@ -25,6 +25,9 @@ local BoardService = require(Services.BoardService) -- 1.7.2: plaza leaderboards
 local HorrorService = require(Services.HorrorService) -- 1.7.3: The Average Files (part 1)
 local PhoneShopService = require(Services.PhoneShopService) -- 1.8: Phone Shop, case maker, scam stall
 local FunService = require(Services.FunService) -- 1.8: Slime Shop, Trampoline Park, Fortune Teller
+local LifeStageService = require(Services.LifeStageService) -- 1.8: Life Pack life stages
+WorldService.doorGuard = LifeStageService.doorBlocked
+BrainService.hooks.lifeInfo = LifeStageService.info
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection
 AdminService.ringBell = SchoolService.ring
@@ -218,7 +221,7 @@ Net.on("settings", function(player, d)
 	if isNum(d.fxIntensity) then
 		s.fxIntensity = math.clamp(math.floor(d.fxIntensity * 10 + 0.5) / 10, 0, 1)
 	end
-	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud", "guide", "lowGraphics", "speedrunTimer" }) do
+	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud", "guide", "lowGraphics", "speedrunTimer", "lifePause" }) do
 		if typeof(d[k]) == "boolean" then
 			s[k] = d[k]
 		end
@@ -340,5 +343,6 @@ BoardService.start()
 HorrorService.start()
 PhoneShopService.start()
 FunService.start()
+LifeStageService.start()
 
 print("[Lose a Brain Cell] Server started (updates 1.0 – 1.7)")

@@ -916,6 +916,12 @@ function WorldService.enterDoor(player: Player, path: string)
 		Net.send(player, "deathScreen", {})
 		return
 	end
+	-- 1.8: Life Pack little kids pick their path at the Crossroads Ceremony instead (hook set in Main)
+	local blocked = data.path == nil and WorldService.doorGuard and WorldService.doorGuard(player)
+	if blocked then
+		BrainService.toast(player, blocked)
+		return
+	end
 	if data.path == nil then
 		BrainService.startPath(player, path)
 		BrainService.narrate(player, path == "Lose" and "choseLose" or "choseGain")

@@ -1189,6 +1189,37 @@ Content.Horror = {
 	},
 }
 
+-- 1.8: Life Pack life stages (kid-safe: friends and family only, never dating)
+Content.LifeStages = {
+	StageNames = { baby = "Baby", kinder = "Kindergarten kid", kid = "Kid", teen = "Teen", adult = "Adult", grandparent = "Grandparent" },
+	NeedPass = "👶 Growing up from baby is part of the Life Pack (optional). The base game is fully playable without it.",
+	Born = "👶 Waaah! A new life begins. Grow up, and pick your path at the 🌟 fountain from age 8.",
+	BornAgain = "👶 Generation %d! Your new baby inherits 💰 %d from grandma/grandpa.",
+	Birthday = "🎂 Happy birthday! You're %d!",
+	NewStage = "%s You're a %s now!",
+	TooYoung = "🚪 Too little for the big doors! Pick your path at the 🌟 Crossroads Ceremony (fountain) from age %d. (You're %d.)",
+	CrossroadsOpen = "🌟 You're 8! The Crossroads Ceremony at the fountain is open: pick Lose or Gain whenever you're ready (until 20).",
+	CrossroadsLast = "🌟 Time to choose! Visit the Crossroads Ceremony at the fountain.",
+	AlreadyChose = "You already picked your path.",
+	ChoseGain = "🌟 You chose to GAIN brain cells. The smart life begins!",
+	ChoseLose = "🌟 You chose to LOSE brain cells. The silly life begins!",
+	Legacy = "🌅 What a life! You can retire now: Settings → 👶 Start a new life. Your next baby inherits 💰 %d.",
+	CeremonyAction = "Crossroads",
+	CeremonyObject = "🌟 Crossroads Ceremony",
+	CeremonyNotYou = "🌟 This ceremony is for Life Pack kids picking their path.",
+	CeremonyTitle = "🌟 The Crossroads Ceremony",
+	CeremonyText = "You're %d. Which way will your life go?",
+	CeremonyWait = "You're %d. Come back at age %d!",
+	PickGain = "🧠 GAIN: get smarter",
+	PickLose = "🥴 LOSE: get sillier",
+	NotNow = "Not yet",
+	StartLife = "👶 Start a new life (Life Pack)",
+	StartLifeConfirm = "Start over as a baby? Your path and brain cells reset (badges, coins and passes stay).",
+	StartLifeYes = "👶 Yes, start a new life",
+	Pause = "⏸ Pause aging",
+	AgeChip = "%s Age %d",
+}
+
 -- 1.8: free new places on the west side (Slime Shop, Trampoline Park, Fortune Teller)
 Content.Fun = {
 	PickPath = "Pick a door first: Lose or Gain.",
@@ -1320,6 +1351,8 @@ Content.Boards = {
 -- 1.7.2: "What do I do now?" (a goal line + an arrow to the next useful place). Short, picture-first lines.
 Content.Guide = {
 	PickDoor = "🚪 Pick a door: get dumber or get smarter!",
+	LifeGrow = "%s Age %d: play and grow up! Your path opens at age 8 (🌟 fountain).",
+	LifeCrossroads = "🌟 Go to the Crossroads Ceremony at the fountain and pick your path!",
 	Animal = "🐾 Sniff your way to the 🛍 Mall stands!",
 	LoseStands = "📰 Go to the 🛍 Brainrot Mall and click some bait!",
 	LoseSchool = "🏫 The bell! Get to school!",

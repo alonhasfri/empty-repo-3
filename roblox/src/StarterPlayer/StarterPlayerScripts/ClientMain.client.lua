@@ -174,6 +174,9 @@ end)
 
 Remote.on("badge", Effects.badge)
 
+Remote.on("crossroads", function(d)
+	Stations.crossroads(d)
+end)
 Remote.on("openStation", function(d)
 	Stations.open(d.station)
 end)

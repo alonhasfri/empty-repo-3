@@ -93,6 +93,13 @@ local function pick(st)
 	if not st or st.dead then
 		return nil, nil
 	end
+	if st.life and not st.path then
+		-- 1.8 Life Pack: little kids grow up first, then the Crossroads Ceremony at the fountain
+		if (st.life.age or 0) < 8 then
+			return string.format(G.LifeGrow, st.life.emoji or "👶", st.life.age or 0), nil
+		end
+		return G.LifeCrossroads, "CrossroadsSpot"
+	end
 	if not st.path then
 		return G.PickDoor, nil
 	end

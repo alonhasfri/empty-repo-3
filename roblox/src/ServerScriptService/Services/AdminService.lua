@@ -648,6 +648,15 @@ H.size = function(actor, target, arg)
 	target.Character:SetAttribute("AppliedScale", n)
 	return target.Name .. " size = " .. n .. "."
 end
+-- 1.8: Life Pack for testing before the real pass ID exists (owner rank only)
+H.lifepack = function(_actor, target)
+	local data = DataService.get(target)
+	data.perks.LifePack = true
+	data.adminTouched = true
+	BrainService.push(target)
+	return target.Name .. " now has the Life Pack (test)."
+end
+
 H.coins = function(actor, target, arg)
 	local n = numberArg(arg, -1e6, 1e6)
 	if not n then

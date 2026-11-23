@@ -1394,6 +1394,14 @@ function Stations.settings()
 	toggle(Content.Settings17.Guide, "guide", 12)
 	toggle(Content.Settings17.LowGraphics, "lowGraphics", 13)
 	toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 15)
+	-- 1.8: Life Pack (only shown to owners)
+	if UI.state and UI.state.perks and UI.state.perks.LifePack then
+		UI.button(m.content, Content.LifeStages.StartLife, function()
+			m.close()
+			Stations.startLife()
+		end, { LayoutOrder = 17, BackgroundColor3 = Color3.fromRGB(255, 170, 200) })
+		toggle(Content.LifeStages.Pause, "lifePause", 18)
+	end
 	-- 1.7.3: horror setting (Off / Spooky / Full), saved on the server
 	do
 		local TH = Content.Horror
@@ -2231,6 +2239,49 @@ function Stations.trampoline()
 end
 function Stations.fortune()
 	funScreen("fortune")
+end
+
+---------------------------------------------------------------------
+-- 1.8: Life Pack: the Crossroads Ceremony and starting a new life
+---------------------------------------------------------------------
+function Stations.crossroads(d)
+	local TL = Content.LifeStages
+	local m = UI.modal(TL.CeremonyTitle, { color = Color3.fromRGB(255, 210, 80) })
+	if d.chosen then
+		UI.label(m.content, TL.AlreadyChose, { LayoutOrder = 1 })
+	elseif (d.age or 0) < (d.from or 8) then
+		UI.label(m.content, string.format(TL.CeremonyWait, d.age or 0, d.from or 8), { LayoutOrder = 1 })
+	else
+		UI.label(m.content, string.format(TL.CeremonyText, d.age or 0), { LayoutOrder = 1 })
+		for i, p in ipairs({ "Gain", "Lose" }) do
+			UI.button(m.content, p == "Gain" and TL.PickGain or TL.PickLose, function()
+				local r = Remote.call("crossroads", { path = p })
+				UI.toast(tostring(r.msg or ""), r.ok and C.good or C.bad, 5)
+				if r.ok then
+					m.close()
+				end
+			end, { LayoutOrder = 1 + i, BackgroundColor3 = p == "Gain" and Color3.fromRGB(70, 140, 255) or Color3.fromRGB(255, 90, 180) })
+		end
+		UI.button(m.content, TL.NotNow, function()
+			m.close()
+		end, { LayoutOrder = 10 })
+	end
+	m.focus()
+end
+
+function Stations.startLife()
+	local TL = Content.LifeStages
+	local m = UI.modal(TL.StartLife, { color = Color3.fromRGB(255, 200, 220) })
+	UI.label(m.content, TL.StartLifeConfirm, { LayoutOrder = 1 })
+	UI.button(m.content, TL.StartLifeYes, function()
+		local r = Remote.call("life_start", { confirm = true })
+		UI.toast(tostring(r.msg or ""), r.ok and C.good or C.bad, 6)
+		m.close()
+	end, { LayoutOrder = 2, BackgroundColor3 = C.good })
+	UI.button(m.content, TL.NotNow, function()
+		m.close()
+	end, { LayoutOrder = 3 })
+	m.focus()
 end
 
 function Stations.open(key: string)

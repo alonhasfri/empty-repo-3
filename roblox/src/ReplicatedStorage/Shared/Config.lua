@@ -148,6 +148,23 @@ Config.Boards = {
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
 }
 
+-- 1.8: Life Pack life stages (only for Life Pack owners who start a new life)
+Config.LifeStages = {
+	SecondsPerYear = 120, -- about 2 minutes of play per year
+	CrossroadsFrom = 8, -- pick your path at the fountain from this age...
+	CrossroadsTo = 20, -- ...up to this age (after that you get reminders)
+	LegacyAge = 80, -- retire and start a new baby who inherits a small bonus
+	LegacyCoins = 50,
+	Stages = {
+		{ key = "baby", emoji = "👶", from = 0, to = 2, scale = 0.55, walk = 8 },
+		{ key = "kinder", emoji = "🧸", from = 3, to = 5, scale = 0.7, walk = 12 },
+		{ key = "kid", emoji = "🎒", from = 6, to = 12, scale = 0.82 },
+		{ key = "teen", emoji = "🛹", from = 13, to = 19, scale = 0.95 },
+		{ key = "adult", emoji = "💼", from = 20, to = 64, scale = 1 },
+		{ key = "grandparent", emoji = "👴", from = 65, to = 999, scale = 0.97, walk = 12 },
+	},
+}
+
 -- 1.8: free new places on the west (Lose) side. Free to use; the fortune odds are shown on screen.
 Config.Fun = {
 	Radius = 30, -- studs from the counter
@@ -315,6 +332,15 @@ Config.GamePasses = {
 		cellsLost = 0,
 		name = "Astronaut Early Access",
 		desc = "Unlocks the Astronaut job right now, for every run. Heads up: once ANY player invents Space Travel, Astronaut becomes free for everyone.",
+	},
+	-- 1.8: Life Pack (create a 100-Robux pass called "Life Pack" on create.roblox.com and paste its ID here)
+	LifePack = {
+		id = 0,
+		price = 100,
+		path = "Any",
+		cellsLost = 0,
+		name = "Life Pack",
+		desc = "Grow up from baby to grandparent: life stages, birthdays, the Crossroads Ceremony where you pick your path (age 8–20), + 5 new buildings only you can enter. The base game stays fully playable without it.",
 	},
 }
 
@@ -492,6 +518,7 @@ Config.Commands = {
 	secretanimals = { min = 2, cat = "Game", label = "Toggle Secret Animals" },
 	rubberduck = { min = 2, cat = "Game", label = "Secret Invention: Rubber Duck" },
 	schoolbell = { min = 1, cat = "Game", label = "🔔 Ring the School Bell (1.6)", target = true },
+	lifepack = { min = 4, cat = "Players", label = "👶 Give Life Pack (testing, owner only)", target = true },
 
 	-- Head Moderator
 	unban = { min = 3, cat = "Players", label = "Unban", arg = "user ID" },
