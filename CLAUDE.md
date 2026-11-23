@@ -52,6 +52,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
 - **Next:**
   - Port the rest of the browser features to Roblox (still browser-only: the horror side plot, job minigames, the interactive world, glasses at the Optician).
   - **Brain-scaled UI, systems and map**: first pass is 1.7 (untested). Still to do from the plan: a cozy-tier bus timetable, investing at the fancy tier, a hologram HUD at 200+, more dumb-only shortcuts, per-district NPCs beyond the two gate guides. Follow `docs/Brain scaled UI and map design.md`. Brain level changes the look, the rules and the tools: low brain = loud, chunky, glitchy cash-grab UI with simple rules and dumb-only shortcuts; high brain = calm, realistic phone OS with original parody apps, ride-hail, shifts and paychecks, a bank. Lock the map and UI skeleton first. Never use real brand names or look-alike logos. Add an Effects intensity slider. Never scramble prices, odds or confirm buttons.
+  - **Map rebuild (chosen Nov 23):** option 2 River City with option 1's Main Street center (see `docs/map_options/`), a fake skyline beyond an invisible wall, a realistic sky and a day-night cycle, real assets with their scripts stripped. Planned as 1.8. Then the Life Pack and Phone Shop (`docs/Life Pack and Phone Shop plan.md`) as 1.9.
   - 1.7 time travel.
   - 2.0 creator update.
 
