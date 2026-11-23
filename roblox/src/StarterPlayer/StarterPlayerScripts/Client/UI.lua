@@ -205,6 +205,11 @@ task.defer(function()
 end)
 computeScale()
 
+-- 1.7 fix: the 48 px touch minimum, measured AFTER the device scale shrinks the UI on phones
+function UI.minTouch(): number
+	return math.ceil(Config.UI.MinTouch / math.min(UI.D, 1))
+end
+
 -- Adds a UIScale that follows the device scale (times an optional extra factor)
 function UI.autoScale(inst, extra: number?)
 	local sc = inst:FindFirstChild("DeviceScale") or Instance.new("UIScale")
@@ -309,7 +314,7 @@ function UI.textSize(base: number): number
 	local size = UI.settings.largeText and math.floor(base * 1.25) or base
 	-- 1.7: readable on phones (after the device scale shrinks it)
 	if UI.isPhone() then
-		size = math.max(size, Config.UI.MinPhoneText)
+		size = math.max(size, math.ceil(Config.UI.MinPhoneText / math.min(UI.D, 1)))
 	end
 	return size
 end
@@ -369,8 +374,8 @@ function UI.button(parent, text: string, onClick, props)
 		b[k] = v
 	end
 	-- 1.7: every tappable button is at least thumb-sized
-	if b.Size.Y.Scale == 0 and b.Size.Y.Offset < Config.UI.MinTouch then
-		b.Size = UDim2.new(b.Size.X.Scale, math.max(b.Size.X.Offset, b.Size.X.Scale == 0 and Config.UI.MinTouch or 0), 0, Config.UI.MinTouch)
+	if b.Size.Y.Scale == 0 and b.Size.Y.Offset < UI.minTouch() then
+		b.Size = UDim2.new(b.Size.X.Scale, math.max(b.Size.X.Offset, b.Size.X.Scale == 0 and UI.minTouch() or 0), 0, UI.minTouch())
 	end
 	local base = b.BackgroundColor3
 	UI.gradient(b, Color3.new(1, 1, 1), Color3.fromRGB(200, 200, 210), 90)
@@ -658,7 +663,7 @@ function UI.modal(title: string, opts)
 		BackgroundColor3 = Color3.new(1, 1, 1),
 		Position = phone and UDim2.fromOffset(0, 28) or UDim2.new(),
 		-- tall enough for the 48 px close button (1.7 skeleton), so it can't poke into the status bar
-		Size = UDim2.new(1, 0, 0, phone and (Config.UI.MinTouch + 4) or math.max(56, Config.UI.MinTouch + 8)),
+		Size = UDim2.new(1, 0, 0, phone and (UI.minTouch() + 4) or math.max(56, UI.minTouch() + 8)),
 		ZIndex = 21,
 		Parent = frame,
 	})
@@ -690,20 +695,20 @@ function UI.modal(title: string, opts)
 		end, {
 			Font = Enum.Font.GothamBlack,
 			AnchorPoint = Vector2.new(1, 0.5),
-			Size = UDim2.fromOffset(Config.UI.MinTouch, Config.UI.MinTouch),
+			Size = UDim2.fromOffset(UI.minTouch(), UI.minTouch()),
 			Position = UDim2.new(1, -8, 0.5, 0),
 			BackgroundColor3 = Color3.fromRGB(255, 80, 100),
 			TextColor3 = Color3.new(1, 1, 1),
 			ZIndex = 23,
 		})
-		UI.corner(closeBtn, Config.UI.MinTouch / 2)
+		UI.corner(closeBtn, UI.minTouch() / 2)
 	end
 
 	local content = UI.new("ScrollingFrame", {
 		Name = "Content",
 		BackgroundTransparency = 1,
-		Position = phone and UDim2.fromOffset(8, 28 + Config.UI.MinTouch + 4 + 6) or UDim2.fromOffset(14, math.max(56, Config.UI.MinTouch + 8) + 10),
-		Size = phone and UDim2.new(1, -16, 1, -(28 + Config.UI.MinTouch + 4 + 6 + 50)) or UDim2.new(1, -28, 1, -(math.max(56, Config.UI.MinTouch + 8) + 22)),
+		Position = phone and UDim2.fromOffset(8, 28 + UI.minTouch() + 4 + 6) or UDim2.fromOffset(14, math.max(56, UI.minTouch() + 8) + 10),
+		Size = phone and UDim2.new(1, -16, 1, -(28 + UI.minTouch() + 4 + 6 + 50)) or UDim2.new(1, -28, 1, -(math.max(56, UI.minTouch() + 8) + 22)),
 		CanvasSize = UDim2.new(),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		ScrollBarThickness = 5,

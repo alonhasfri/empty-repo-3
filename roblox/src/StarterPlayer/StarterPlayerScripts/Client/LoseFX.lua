@@ -135,8 +135,13 @@ local function showAd()
 	end
 	x.Activated:Connect(close)
 	if not UI.reducedMotion() then
-		local sc = UI.new("UIScale", { Scale = 0.6, Parent = frame })
-		TweenService:Create(sc, TweenInfo.new(0.25, Enum.EasingStyle.Back), { Scale = 1 }):Play()
+		-- pop in by tweening the one DeviceScale (Roblox only honours one UIScale per object)
+		local sc = frame:FindFirstChild("DeviceScale")
+		if sc then
+			local target = sc.Scale
+			sc.Scale = 0.6 * target
+			TweenService:Create(sc, TweenInfo.new(0.25, Enum.EasingStyle.Back), { Scale = target }):Play()
+		end
 	end
 	UI.sound("AirHorn", 0.15 * UI.effects())
 	task.delay(8, close)
