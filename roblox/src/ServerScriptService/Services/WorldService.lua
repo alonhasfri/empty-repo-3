@@ -1125,7 +1125,7 @@ local function buildPolish()
 			end
 		end)
 	end
-	shortcut("DumbHole", Vector3.new(-62, 0.9, -40), "lose")
+	shortcut("DumbHole", Vector3.new(-62, 0.9, -30), "lose") -- on the grass in front of the Mall (z -40 clipped into its front wall)
 
 	-- Phone speed pass: tiny decor casts no shadows and has no collision
 	local small, noShadow = Config.Map.SmallDecorSize, Config.Map.NoShadowSize
