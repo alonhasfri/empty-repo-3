@@ -544,7 +544,7 @@ function CastleService.reward(player)
 	end
 	Net.send(player, "confetti", {})
 	if first then
-		BrainService.toast(player, "🗺 You got the CASTLE MAP: your taxi never has to wait again (fast travel anywhere).", "LevelUp")
+		BrainService.toast(player, "🗺 You got the CASTLE MAP: the map bus never has to wait again (instant travel anywhere).", "LevelUp")
 	end
 	BrainService.push(player)
 end

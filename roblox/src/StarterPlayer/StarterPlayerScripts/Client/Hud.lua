@@ -240,7 +240,7 @@ local TUTORIAL = {
 		{ event = "library", title = "READ A BOOK!", desc = "Tap 📚 Library, read for 10 seconds, then answer." },
 		{ event = "theater", title = "WATCH JACK B!", desc = "Open 📱 Phone → Jack B and learn a fun fact." },
 		{ event = "job", title = "GET A JOB!", desc = "Open 📱 Phone → Jobs and pick one your IQ allows." },
-		{ event = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (take the 🚕 taxi) and finish a task." },
+		{ event = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (take the 🚌 bus or Hoppr) and finish a task." },
 		{ event = "gate", title = "FACE THE SKILL GATE!", desc = "Reach the gate's IQ, then tap 🚧 Gate. YOU must be smart." },
 	},
 }
@@ -357,7 +357,7 @@ local shopBtn, shopGrad = bigButton("🛒 SHOP", "passes • always optional", C
 	end
 end)
 Hud.shopButton = shopBtn
-local mapBtn = bigButton("🗺 MAP", "taxi anywhere", Color3.fromRGB(40, 200, 120), Color3.fromRGB(40, 140, 240), 2, function()
+local mapBtn = bigButton("🗺 MAP", Content.Bus.MapButtonSub, Color3.fromRGB(40, 200, 120), Color3.fromRGB(40, 140, 240), 2, function()
 	if Hud.onStation then
 		Hud.onStation("map")
 	end

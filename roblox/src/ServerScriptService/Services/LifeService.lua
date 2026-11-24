@@ -20,6 +20,7 @@ local Net = require(script.Parent.Net)
 local DataService = require(script.Parent.DataService)
 local BrainService = require(script.Parent.BrainService)
 local WorldService = require(script.Parent.WorldService)
+local ConversationService = require(script.Parent.ConversationService)
 
 local LifeService = {}
 
@@ -170,6 +171,13 @@ Net.on("ride_book", function(player, d)
 		s.riding = false
 		s.rideAt = os.clock() + CL.Ride.Cooldown
 		if not player.Parent then
+			return
+		end
+		-- never yank someone out of a conversation; stand them up from a seat first
+		if not ConversationService.readyToTravel(player) then
+			data.coins += q.fare
+			BrainService.push(player)
+			Net.send(player, "rideDone", { refunded = true, fare = q.fare })
 			return
 		end
 		local pos = destination(player, data, q.key)

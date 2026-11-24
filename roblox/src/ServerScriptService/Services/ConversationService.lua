@@ -234,6 +234,20 @@ function ConversationService.active(player: Player): boolean
 	return sessions[player] ~= nil
 end
 
+-- Delayed travel (bus, Hoppr): false while the player is in a conversation scene;
+-- otherwise stands them up from any seat (so a seat weld can't drag or fling them) and returns true.
+function ConversationService.readyToTravel(player: Player): boolean
+	if sessions[player] then
+		return false
+	end
+	local hum = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if not hum or hum.Health <= 0 then
+		return false
+	end
+	Rooms.standUp(hum)
+	return true
+end
+
 Net.on("conv_close", function(player)
 	if sessions[player] then
 		sessions[player] = nil

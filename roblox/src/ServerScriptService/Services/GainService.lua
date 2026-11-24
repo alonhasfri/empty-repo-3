@@ -14,6 +14,7 @@ local DataService = require(script.Parent.DataService)
 local BrainService = require(script.Parent.BrainService)
 local WorldService = require(script.Parent.WorldService)
 local ProjectService = require(script.Parent.ProjectService)
+local ConversationService = require(script.Parent.ConversationService)
 
 local GainService = {}
 
@@ -434,30 +435,65 @@ Net.on("taxi", function(player, d)
 		end
 	end
 	local tdata = DataService.get(player)
-	if onPad or (tdata and tdata.castleMap) then
-		sess.taxi = nil -- teleport pad, or the Endless Castle Map (1.4): no waiting
-	end
-	if sess.taxi and os.clock() < sess.taxi then
-		return { ok = false, msg = "The taxi is on its way… " .. math.ceil(sess.taxi - os.clock()) .. "s" }
-	end
+	local instant = onPad or (tdata and tdata.castleMap) -- teleport pad, or the Endless Castle Map (1.4): no waiting
 	local key = tostring(d.key)
+	local dest, destName
 	if key == "work" then
-		local data = DataService.get(player)
-		local job = data and jobById(data.job)
+		local job = tdata and jobById(tdata.job)
 		if not job then
 			return { ok = false, msg = "You don't have a job yet." }
 		end
-		local pos = WorldService.Workplaces[job.place]
-		if player.Character and pos then
-			player.Character:PivotTo(CFrame.new(pos + Vector3.new(0, 3, -8)))
+		dest, destName = WorldService.Workplaces[job.place], job.placeName
+		if not dest then
+			return { ok = false, msg = "Unknown place." }
 		end
 	elseif WorldService.Spots[key] then
-		WorldService.teleport(player, key)
+		destName = key
+		for _, p in ipairs((WorldService.placeList())) do
+			if p.key == key then
+				destName = p.name
+			end
+		end
 	else
 		return { ok = false, msg = "Unknown place." }
 	end
-	sess.taxi = os.clock() + Config.TaxiCooldown
-	return { ok = true, msg = "🚕 Here you go!" }
+	local function go()
+		if dest then
+			if player.Character then
+				player.Character:PivotTo(CFrame.new(dest + Vector3.new(0, 3, -8)))
+			end
+		else
+			WorldService.teleport(player, key)
+		end
+	end
+	if instant then
+		go()
+		return { ok = true, msg = "🌀 Here you go!" }
+	end
+	-- 1.7 fix: the free map ride is a slow bus (Hoppr costs coins but is fast, walking is free)
+	local now = os.clock()
+	if sess.busAt then
+		return { ok = false, msg = string.format(Content.Bus.Waiting, math.max(1, math.ceil(sess.busAt - now))) }
+	end
+	if sess.taxi and now < sess.taxi then
+		return { ok = false, msg = string.format(Content.Bus.Cooldown, math.ceil(sess.taxi - now)) }
+	end
+	local wait = Config.Bus.WaitSeconds
+	sess.busAt = now + wait
+	task.delay(wait, function()
+		sess.busAt = nil
+		sess.taxi = os.clock() + Config.Bus.Cooldown
+		if not player.Parent then
+			return
+		end
+		if not ConversationService.readyToTravel(player) then
+			BrainService.toast(player, Content.Bus.Missed)
+			return
+		end
+		go()
+		BrainService.toast(player, string.format(Content.Bus.Arrived, tostring(destName)))
+	end)
+	return { ok = true, msg = string.format(Content.Bus.Coming, wait) }
 end)
 
 Net.on("places", function(player)
@@ -560,7 +596,7 @@ Net.on("job_task", function(player)
 	end
 	if not atWork(player, job) then
 		Net.send(player, "workMarker", { pos = WorldService.Workplaces[job.place], name = job.placeName })
-		return { ok = false, msg = "You're not at work! Go to " .. job.placeName .. " (or take the 🚕 taxi).", notAtWork = true }
+		return { ok = false, msg = "You're not at work! Go to " .. job.placeName .. " (Hoppr or the 🚌 bus can take you).", notAtWork = true }
 	end
 	local t = makeTask(job)
 	s(player).job = t

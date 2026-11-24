@@ -792,7 +792,7 @@ function Stations.jobs()
 	local m = UI.modal("💼 Job Board", { color = C.good })
 	if r.workplace then
 		UI.label(m.content, "Your workplace: <b>" .. r.workplace .. "</b>", { LayoutOrder = 1 })
-		UI.button(m.content, "🚕 Taxi to work", function()
+		UI.button(m.content, Content.Bus.ToWork, function()
 			local t = Remote.call("taxi", { key = "work" })
 			resultToast(t)
 			if t.ok then
@@ -853,7 +853,7 @@ function Stations.work()
 		if t.notAtWork then
 			local m = UI.modal("💼 Not at work", { color = C.gold })
 			UI.label(m.content, tostring(t.msg), { LayoutOrder = 1 })
-			UI.button(m.content, "🚕 Taxi to work", function()
+			UI.button(m.content, Content.Bus.ToWork, function()
 				resultToast(Remote.call("taxi", { key = "work" }))
 				m.close()
 			end, { LayoutOrder = 2, BackgroundColor3 = Color3.fromRGB(240, 190, 30), TextColor3 = Color3.new(0, 0, 0) })
@@ -952,7 +952,7 @@ function Stations.map(free: boolean?)
 		UI.corner(me, 9)
 		UI.stroke(me, Color3.fromRGB(255, 60, 60), 4, 0)
 	end
-	UI.label(m.content, "💗 Lose places  •  💙 Gain places  •  💛 everyone  •  ⚪ you. Tap a pin to take the 🚕 taxi.", { TextColor3 = Color3.fromRGB(210, 210, 220), TextSize = UI.textSize(12), LayoutOrder = 2 })
+	UI.label(m.content, string.format(Content.Bus.MapHint, Config.Bus.WaitSeconds), { TextColor3 = Color3.fromRGB(210, 210, 220), TextSize = UI.textSize(12), LayoutOrder = 2 })
 	for i, p in ipairs(r.places) do
 		local tag = (p.path and myPath and p.path ~= myPath) and " (other path)" or ""
 		UI.button(m.content, p.name .. tag, function()

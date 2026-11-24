@@ -158,7 +158,7 @@ local SEQ = {
 		{ note = "rare" },
 		{ note = "job" },
 		{ event = "job", target = "phone", title = "GET A JOB!", desc = "Open 📱 Phone → Jobs. Pick one your IQ allows." },
-		{ event = "work", target = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (or take the 🚕 taxi) and finish a task at your job." },
+		{ event = "work", target = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (or take the 🚌 bus) and finish a task at your job." },
 		{ note = "workIdeas" },
 		{ note = "stress" },
 		{ event = "habit", target = "coffee", title = "DO A GENIUS HABIT!", desc = "Tap ☕ Coffee, 😴 Nap or 🐦 Pigeons to lower stress." },

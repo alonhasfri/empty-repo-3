@@ -337,7 +337,7 @@ Net.on("space_launch", function(player)
 		local data = DataService.get(player)
 		if data and isAstronaut(player) then
 			WorldService.teleport(player, "launchpad")
-			return { ok = true, msg = "🚕 Taxi to the Launch Pad. Walk up to the rocket and launch!" }
+			return { ok = true, msg = "🚀 Shuttle to the Launch Pad. Walk up to the rocket and launch!" }
 		end
 	end
 	SpaceService.launch(player)

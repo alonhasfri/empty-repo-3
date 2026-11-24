@@ -134,7 +134,11 @@ Config.Careers = {
 		sweeper = Color3.fromRGB(240, 138, 36),
 	},
 }
-Config.TaxiCooldown = 8
+Config.TaxiCooldown = 8 -- (old instant taxi; now only teleport pads and the Castle Map are instant)
+Config.Bus = {
+	WaitSeconds = 20, -- the free map bus is slow on purpose; Hoppr (coins) is fast, walking is free
+	Cooldown = 10, -- after a trip
+}
 Config.ElectionMinutes = 20 -- an election starts this often (update 1.2)
 Config.ComebackMakeoverIQ = 145 -- Comeback players who reach this get Complete Makeover
 

@@ -342,7 +342,7 @@ Content.CashGrabButtons = {
 -- qs = research questions based on the real science (simplified)
 ---------------------------------------------------------------------
 Content.Projects = {
-	{ key = "teleport", icon = "🌀", name = "Teleportation", unlock = "Teleport pads appear around town (free taxi).",
+	{ key = "teleport", icon = "🌀", name = "Teleportation", unlock = "Teleport pads appear around town (free, instant travel).",
 		qs = {
 			{ q = "Real 'quantum teleportation' sends…", options = { "Objects", "Information about a quantum state", "People", "Sound" }, answer = 2 },
 			{ q = "Two particles linked so measuring one tells you about the other are…", options = { "Magnetized", "Entangled", "Frozen", "Charged" }, answer = 2 },
@@ -1004,13 +1004,14 @@ Content.Life = {
 		PlateCard = "%s %s\nPlate: %s\nDriver: %s",
 		Riding = "🚗 On the way to %s…",
 		Receipt = "🧾 Receipt: %s • 💰 %d • plate %s. Thanks for riding Hoppr!",
-		TooPoor = "You need 💰 %d for this ride. Walk, take the free taxi on the map, or earn coins at work.",
+		TooPoor = "You need 💰 %d for this ride. Walk, take the free 🚌 Brain Bus from the map, or earn coins at work.",
+		Refunded = "🚗 Your driver waited, but you were busy talking. Fare refunded: 💰 %d.",
 		Animal = "🐾 Animals can't hold a phone. Follow your nose instead!",
 		Unknown = "Hoppr can't find that place.",
 		Expired = "That price ran out. Check the fare again.",
 		Already = "You're already in a car!",
 		Wait = "Hoppr is finding the next car…",
-		Free = "Walking is free (but slower). The free taxi is in 🗺 Maps.",
+		Free = "Walking is free. The free 🚌 Brain Bus (🗺 Maps) is slow. Hoppr is door to door, fast.",
 		Drivers = { "Dana ⭐4.9", "Omar ⭐4.8", "Kim ⭐5.0", "Leo ⭐4.7", "Maya ⭐4.9" },
 	},
 	Shift = {
@@ -1023,7 +1024,7 @@ Content.Life = {
 		ClockOut = "🔴 Clock out (get payslip)",
 		GainOnly = "Shifts are for the Gain path.",
 		NoJob = "Get a job first (📱 Jobs).",
-		NotThere = "Go to %s to clock in. Hoppr or the taxi can take you.",
+		NotThere = "Go to %s to clock in. Hoppr or the 🚌 bus can take you.",
 		Already = "You're already clocked in.",
 		NotOn = "You're not clocked in.",
 		TooShort = "Work a little longer first (%d s).",
@@ -1077,6 +1078,17 @@ Content.Settings17 = {
 }
 
 -- 1.7: map signs and guides
+Content.Bus = {
+	Coming = "🚌 The free Brain Bus picks you up in %d s. Stay put! (Hoppr is faster.)",
+	Waiting = "🚌 Your bus is on its way… %d s",
+	Arrived = "🚌 Ding ding! Bus stop: %s.",
+	Missed = "🚌 The bus left: you were busy. Call it again from the map.",
+	ToWork = "🚌 Bus to work",
+	MapButtonSub = "free bus",
+	MapHint = "💗 Lose places  •  💙 Gain places  •  💛 everyone  •  ⚪ you. Tap a pin to call the free 🚌 bus (it takes %d s).",
+	Cooldown = "🚌 The next bus comes in %d s.",
+}
+
 Content.Map = {
 	Tower = "🧠 THE BRAIN TOWER",
 	Talk = "Talk",
@@ -1092,7 +1104,7 @@ Content.Map = {
 	},
 	Hole = "🕳 dumb shortcut",
 	HoleYes = "🕳 Squeeeeze! Only dumb brains fit. Welcome to the Brainrot Mall!",
-	HoleNo = "🧠 You're too smart to fit in that hole. (Take Hoppr or the taxi.)",
+	HoleNo = "🧠 You're too smart to fit in that hole. (Take Hoppr or the bus.)",
 }
 
 return Content

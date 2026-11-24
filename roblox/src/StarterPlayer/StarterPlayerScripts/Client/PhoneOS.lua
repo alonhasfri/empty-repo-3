@@ -362,6 +362,10 @@ Remote.on("rideDone", function(d)
 		riding.close()
 	end
 	riding = nil
+	if d.refunded then
+		UI.toast(string.format(TL.Ride.Refunded, tonumber(d.fare) or 0), C.good, 6)
+		return
+	end
 	UI.toast(string.format(TL.Ride.Receipt, tostring(d.name), tonumber(d.fare) or 0, tostring(d.plate)), C.good, 6)
 end)
 
