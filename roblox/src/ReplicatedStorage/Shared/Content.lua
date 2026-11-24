@@ -1029,6 +1029,13 @@ Content.Life = {
 		Receipt = "🧾 Receipt: %s • 💰 %d • plate %s. Thanks for riding Hoppr!",
 		TooPoor = "You need 💰 %d for this ride. Walk, take the free 🚌 Brain Bus from the map, or earn coins at work.",
 		Refunded = "🚗 Your driver waited, but you were busy talking. Fare refunded: 💰 %d.",
+		Invite = "🚗 %s booked Hoppr to %s.\nJoin the ride? You pay 💰 %d.",
+		Join = "✅ Join (💰 %d)",
+		NoThanks = "No thanks",
+		Joined = "🚗 You're in! Riding to %s (💰 %d).",
+		GroupGone = "That ride already left.",
+		GroupFull = "That car is full.",
+		GroupFar = "Stand next to your friend to join.",
 		Animal = "🐾 Animals can't hold a phone. Follow your nose instead!",
 		Unknown = "Hoppr can't find that place.",
 		Expired = "That price ran out. Check the fare again.",
@@ -1136,6 +1143,13 @@ Content.BadgeUI = {
 Content.FirstWow = {
 	Lose = "💥 BRAIN DROP! A meme just deleted a chunk of your brain!",
 	Gain = "✨ BRAIN BOOST! Your first big idea!",
+}
+
+-- 1.7.3: Vs Mode lobby sign (near spawn)
+Content.VsLobby = {
+	Title = "🎭 VS MODE LOBBY (tap 🎭 Vs Mode)",
+	Waiting = "%d waiting: %s as %s. Needs a %s!",
+	Nobody = "Nobody waiting yet. Be the first!",
 }
 
 -- 1.7.3: speedrun timer

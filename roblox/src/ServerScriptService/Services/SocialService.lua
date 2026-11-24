@@ -871,7 +871,54 @@ Net.on("election_cast", function(player, d)
 	return { ok = true, msg = "🗳 Vote counted!" }
 end)
 
+-- 1.7.3: Vs Mode lobby sign near spawn, so friends can see who is waiting and for which side
+local function lobbySign()
+	local TV = Content.VsLobby
+	local p = Instance.new("Part")
+	p.Name = "VsLobbySign"
+	p.Anchored = true
+	p.CanCollide = false
+	p.Transparency = 1
+	p.Size = Vector3.new(1, 1, 1)
+	p.Position = Config.VsLobbySignPos
+	p.Parent = workspace
+	local bb = Instance.new("BillboardGui")
+	bb.Size = UDim2.fromOffset(320, 150)
+	bb.MaxDistance = 90
+	bb.Parent = p
+	local l = Instance.new("TextLabel")
+	l.Size = UDim2.fromScale(1, 1)
+	l.BackgroundColor3 = Color3.fromRGB(30, 20, 50)
+	l.BackgroundTransparency = 0.2
+	l.TextColor3 = Color3.new(1, 1, 1)
+	l.Font = Enum.Font.FredokaOne
+	l.TextScaled = true
+	l.Parent = bb
+	local c = Instance.new("UICorner")
+	c.Parent = l
+	task.spawn(function()
+		while true do
+			local lines = { TV.Title }
+			for key, act in pairs(ACT) do
+				for _, roleKey in ipairs({ "a", "b" }) do
+					local n = #queues[key][roleKey]
+					if n > 0 then
+						local other = roleKey == "a" and "b" or "a"
+						table.insert(lines, string.format(TV.Waiting, n, act.name, act[roleKey].label, act[other].label))
+					end
+				end
+			end
+			if #lines == 1 then
+				table.insert(lines, TV.Nobody)
+			end
+			l.Text = table.concat(lines, "\n")
+			task.wait(3)
+		end
+	end)
+end
+
 function SocialService.start()
+	lobbySign()
 	LoseService.onDumbAction = SocialService.maybeSue
 	Players.PlayerRemoving:Connect(function(p)
 		removeFromQueues(p)

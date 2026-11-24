@@ -357,6 +357,30 @@ function PhoneOS.hoppr()
 	m.focus()
 end
 
+-- 1.7.3: a friend nearby booked Hoppr; join their ride (the fare is shown before you pay)
+Remote.on("rideInvite", function(d)
+	local m = UI.modal(TL.Ride.Title, { color = Color3.fromRGB(40, 40, 50) })
+	UI.label(m.content, string.format(TL.Ride.Invite, tostring(d.from), tostring(d.name), tonumber(d.fare) or 0), { LayoutOrder = 1 })
+	UI.button(m.content, string.format(TL.Ride.Join, tonumber(d.fare) or 0), function()
+		m.close()
+		local r = Remote.call("ride_join", { leaderId = d.leaderId })
+		UI.toast((r.ok and "" or "⛔ ") .. tostring(r.msg or ""), r.ok and C.good or C.bad)
+		if r.ok then
+			riding = nil
+		end
+	end, { LayoutOrder = 2, BackgroundColor3 = C.good })
+	UI.button(m.content, TL.Ride.NoThanks, function()
+		m.close()
+	end, { LayoutOrder = 3 })
+	m.focus()
+	-- the invite expires when the car leaves
+	task.delay(tonumber(d.seconds) or 5, function()
+		if m.alive and m.alive() then
+			m.close()
+		end
+	end)
+end)
+
 Remote.on("rideDone", function(d)
 	if riding and riding.alive() then
 		riding.close()

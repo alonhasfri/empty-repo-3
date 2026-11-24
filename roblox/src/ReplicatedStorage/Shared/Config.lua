@@ -148,6 +148,8 @@ Config.Boards = {
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
 }
 
+Config.VsLobbySignPos = Vector3.new(0, 9, 34) -- 1.7.3: plaza, behind the spawn
+
 -- 1.7.3: the first "wow" of a new run (a big brain drop or boost, with a big counter)
 Config.FirstWow = {
 	Delay = 20, -- seconds after picking a door
@@ -527,6 +529,8 @@ Config.Life = {
 		EtaMax = 7,
 		RideSeconds = 3, -- the short ride scene
 		Cooldown = 4,
+		MaxFriends = 3, -- 1.7.3: group rides: up to 3 friends can join one Hoppr ride
+		GroupRadius = 20, -- studs: friends this close to the booker get an invite
 	},
 	Shift = {
 		EverySeconds = 300, -- a shift starts every 5 minutes (on the real clock)
