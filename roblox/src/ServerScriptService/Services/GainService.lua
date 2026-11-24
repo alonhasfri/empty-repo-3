@@ -855,12 +855,23 @@ end)
 ---------------------------------------------------------------------
 -- Genius habits (lower stress)
 ---------------------------------------------------------------------
+Net.on("habit_coffee_start", function(player)
+	s(player).coffeeAt = os.clock()
+	return { ok = true }
+end)
+
 Net.on("habit_coffee", function(player, d)
 	local bad = guard(player, "Habits", true)
 	if bad then
 		return bad
 	end
 	local count = tonumber(d.count) or 0
+	-- the server times the counting (opened with habit_coffee_start), so a script can't just send 60
+	local started = s(player).coffeeAt
+	s(player).coffeeAt = nil
+	if not started or os.clock() - started < Config.MinigameMinSeconds.Coffee then
+		return { ok = true, msg = "Too fast! Beethoven counts every bean slowly. No stress relief." }
+	end
 	if count == 60 then
 		BrainService.stress(player, -35)
 		BrainService.awardBadge(player, "Coffee60")

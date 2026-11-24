@@ -345,6 +345,12 @@ Net.on("space_launch", function(player)
 end)
 
 local trainCooldown = {}
+local trainStart = {} -- [userId .. key] = when the round was opened (server time)
+Net.on("astro_train_start", function(player, d)
+	trainStart[player.UserId .. tostring(d and d.key)] = os.clock()
+	return { ok = true }
+end)
+
 Net.on("astro_train_done", function(player, d)
 	local data = DataService.get(player)
 	if not data or not isAstronaut(player) then
@@ -368,7 +374,11 @@ Net.on("astro_train_done", function(player, d)
 		return { ok = false, msg = "Catch your breath first (" .. math.ceil(trainCooldown[cdKey] - os.clock()) .. "s)." }
 	end
 	trainCooldown[cdKey] = os.clock() + 15
-	if d.success ~= true then
+	-- a success only counts if the round was really played (opened on the server, and long enough)
+	local started = trainStart[cdKey]
+	trainStart[cdKey] = nil
+	local played = started ~= nil and os.clock() - started >= Config.MinigameMinSeconds.Astro
+	if d.success ~= true or not played then
 		BrainService.stress(player, 4)
 		return { ok = true, msg = "💫 Bonk. Try again, space cadet." }
 	end

@@ -1028,6 +1028,7 @@ end
 ---------------------------------------------------------------------
 function Stations.coffee()
 	local m = UI.modal("☕ Beethoven's Coffee", { color = Color3.fromRGB(150, 100, 60) })
+	Remote.call("habit_coffee_start") -- the server times the counting
 	UI.label(m.content, "Beethoven counted EXACTLY 60 coffee beans for every cup. Count yours.", { LayoutOrder = 1 })
 	local count = 0
 	local label = UI.label(m.content, "Beans: 0", { Font = Enum.Font.FredokaOne, TextSize = UI.textSize(30), TextXAlignment = Enum.TextXAlignment.Center, LayoutOrder = 2 })
@@ -1813,6 +1814,7 @@ function Stations.astroTraining()
 	local _ = st
 	for i, t in ipairs(require(ReplicatedStorage.Shared.Content).AstroTraining) do
 		UI.button(m.content, t.icon .. "  " .. t.name .. "\n<font size=\"12\">" .. t.desc .. "</font>", function()
+			Remote.call("astro_train_start", { key = t.key }) -- the server times each round
 			Stations["astro_" .. t.key]()
 		end, { LayoutOrder = i, Size = UDim2.new(1, 0, 0, 70), TextXAlignment = Enum.TextXAlignment.Left, BackgroundColor3 = Color3.fromRGB(40, 50, 110) })
 	end

@@ -135,6 +135,12 @@ Config.Careers = {
 	},
 }
 Config.TaxiCooldown = 8 -- (old instant taxi; now only teleport pads and the Castle Map are instant)
+-- 1.7 audit (E1, E2): minigames the server can time, so a script can't skip them
+Config.MinigameMinSeconds = {
+	Coffee = 8, -- counting 60 beans takes longer than this
+	Astro = 4, -- each astronaut training round
+}
+
 Config.Bus = {
 	WaitSeconds = 20, -- the free map bus is slow on purpose; Hoppr (coins) is fast, walking is free
 	Cooldown = 10, -- after a trip
