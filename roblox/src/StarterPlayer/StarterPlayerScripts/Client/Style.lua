@@ -456,7 +456,7 @@ function Style.apply(state)
 	currentCells = state.cells
 	local tier = state.look or state.tier
 	local styleName = state.style or Style.pick(state)
-	local low = state.settings ~= nil and state.settings.lowGraphics == true
+	local low = (state.settings ~= nil and state.settings.lowGraphics == true) or player:GetAttribute("AutoLowDetail") == true
 	local changed = tier ~= currentTier or styleName ~= currentStyle or low ~= lowDetail
 	local styleChanged = styleName ~= currentStyle or low ~= lowDetail
 	currentTier = tier

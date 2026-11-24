@@ -154,6 +154,14 @@ end
 
 Remote.on("state", applyState)
 
+-- 1.8.2: the slow-device check switched Low detail on: simplify the style too and say so once
+LowGraphics.onAuto = function()
+	if UI.state then
+		Style.apply(UI.state)
+	end
+	UI.toast(require(game:GetService("ReplicatedStorage").Shared.Content).Settings17.LowGraphicsAuto)
+end
+
 -- 1.7.3: the first big moment of a run: title + shake (the big number comes with the delta)
 Remote.on("firstWow", function(d)
 	local FW = require(game:GetService("ReplicatedStorage").Shared.Content).FirstWow

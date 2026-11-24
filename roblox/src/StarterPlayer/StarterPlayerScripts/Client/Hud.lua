@@ -587,7 +587,7 @@ UI.stroke(face, Color3.new(1, 1, 1), 3, 0)
 local moodBadge = text(face, { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 6, 1, 6), Size = UDim2.fromOffset(24, 24), BackgroundTransparency = 0, BackgroundColor3 = Color3.new(1, 1, 1), Text = "🎤" })
 UI.corner(moodBadge, 12)
 local nameLabel = text(bubble, { Position = UDim2.fromOffset(54, 4), Size = UDim2.new(1, -62, 0, 18), TextXAlignment = Enum.TextXAlignment.Left, Text = Narration.Name })
-local speech = text(bubble, { Position = UDim2.fromOffset(54, 24), Size = UDim2.new(1, -62, 1, -28), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, Font = Enum.Font.GothamMedium, Text = "" }, {})
+local speech = text(bubble, { Position = UDim2.fromOffset(54, 24), Size = UDim2.new(1, -62, 1, -28), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, Font = Enum.Font.GothamMedium, Text = "" })
 UI.new("UITextSizeConstraint", { MaxTextSize = 16, Parent = speech })
 themedPart(function(T)
 	bubble.BackgroundColor3 = T.bg

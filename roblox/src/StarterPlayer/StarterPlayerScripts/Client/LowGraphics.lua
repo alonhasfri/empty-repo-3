@@ -87,8 +87,47 @@ function LowGraphics.set(enabled: boolean)
 	end
 end
 
+-- 1.8.2: automatic Low detail. If the player never chose a setting themselves, the client
+-- measures the frame rate once, shortly after joining; a slow device gets Low detail by itself.
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Config = require(game:GetService("ReplicatedStorage").Shared.Config)
+local autoOn = false
+local probed = false
+LowGraphics.onAuto = nil -- set by ClientMain: re-applies the style and shows a toast
+
+local function probe()
+	probed = true
+	task.delay(Config.UI.AutoLowDelay, function()
+		local frames, t0 = 0, os.clock()
+		local c = RunService.RenderStepped:Connect(function()
+			frames += 1
+		end)
+		task.wait(Config.UI.AutoLowProbeSeconds)
+		c:Disconnect()
+		local fps = frames / math.max(os.clock() - t0, 0.001)
+		if fps < Config.UI.AutoLowFps and not on then
+			autoOn = true
+			Players.LocalPlayer:SetAttribute("AutoLowDetail", true)
+			LowGraphics.set(true)
+			if LowGraphics.onAuto then
+				LowGraphics.onAuto()
+			end
+		end
+	end)
+end
+
 function LowGraphics.onState(st)
 	local s = st and st.settings
+	if s ~= nil and s.lowGraphicsChosen ~= true then
+		if not probed then
+			probe()
+		end
+		LowGraphics.set(s.lowGraphics == true or autoOn)
+		return
+	end
+	autoOn = false
+	Players.LocalPlayer:SetAttribute("AutoLowDetail", nil)
 	LowGraphics.set(s ~= nil and s.lowGraphics == true)
 end
 

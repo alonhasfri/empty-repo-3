@@ -1017,6 +1017,13 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.8.2", name = "Busy Streets", lines = {
+		"🏘 Every street is busier: globe lamps, planters, benches and trees along the sidewalks, and bunting over Main Street.",
+		"🏠 Houses got pitched roofs and flower boxes; shops got striped awnings.",
+		"🌆 A bigger city behind the town: tall towers with lit windows at night, hills and a highway.",
+		"🎨 The town changes its art style with your brain level.",
+		"🥔 Slow phone? Low graphics now switches on by itself (you can turn it off in Settings).",
+	} },
 	{ v = "1.8", name = "Life Pack & Phone Shop", lines = {
 		"📱 New free Phone Shop: parody phones, a case maker with a 🧠 Brainrot meter, and a very suspicious scam stall.",
 		"🫧 Slime Shop, 🤸 Trampoline Park and 🔮 Fortune Teller (exact odds shown) on the west side, free for everyone.",
@@ -1184,6 +1191,7 @@ Content.Settings17 = {
 	Guide = "🧭 \"What do I do now?\" arrow",
 	LowGraphics = "🥔 Low graphics (for slow phones)",
 	LowGraphicsInfo = "Turns off street lights, sparkles, extra decorations and shadows so the game runs smoother.",
+	LowGraphicsAuto = "🥔 Your device seemed slow, so Low graphics is on. You can switch it off in Settings.",
 	SpeedrunTimer = "⏱ Speedrun timer",
 	AlwaysDay = "☀️ Always day (no night)",
 	FewerToasts = "🔕 Fewer notifications",

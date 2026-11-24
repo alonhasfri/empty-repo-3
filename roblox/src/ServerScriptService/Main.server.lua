@@ -234,6 +234,10 @@ Net.on("settings", function(player, d)
 			s[k] = d[k]
 		end
 	end
+	-- 1.8.2: once a player flips Low graphics themselves, the automatic slow-device check leaves it alone
+	if typeof(d.lowGraphics) == "boolean" then
+		s.lowGraphicsChosen = true
+	end
 	BrainService.push(player)
 	return { ok = true }
 end)

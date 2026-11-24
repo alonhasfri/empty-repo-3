@@ -44,7 +44,7 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 1. [x] **Publish** (done Nov 24, 13:35: 1.8 + styles, background, BrainTalks; private) to "brain game" (Cult of the 39) using File → Publish to Roblox As → brain game → Overwrite. Keep it private and change no settings. Take a screenshot to `docs/screens/publish.png`.
    - The user said yes on Nov 24, but the PC was locked. Do it when the user is back and the screen is unlocked.
 2. [x] **UI fixes:** phone app labels, UI size, tidy buttons (`docs/UI review.md`), small merged toasts, and the "Fewer notifications" setting.
-3. [~] **Map.** Done:
+3. [x] **Map.** (1.8.2: street dressing, pitched roofs, flower boxes, striped awnings, bunting; auto Low detail; tested in Studio on PC; phone size and night screenshots not done) Done:
    - River City with Main Street
    - paved ground
    - denser filler buildings

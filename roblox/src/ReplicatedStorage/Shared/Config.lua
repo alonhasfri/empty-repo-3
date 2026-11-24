@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.8"
+Config.Version = "1.8.2"
 
 ---------------------------------------------------------------------
 -- COMMUNITY (GROUP) RANKS -> IN-GAME RANKS
@@ -628,6 +628,9 @@ Config.UI = {
 	BigDeltaShare = 0.02, -- 1.7.3: a brain change this big (share of your cells) gets the big centre counter
 	MinDeviceScale = 0.7, -- the whole HUD never shrinks below this on small phones
 	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone
+	AutoLowFps = 32, -- 1.8.2: if a phone averages under this many FPS at the start, Low detail switches on by itself
+	AutoLowProbeSeconds = 12, -- how long it measures (after the town has loaded)
+	AutoLowDelay = 8, -- seconds to wait before measuring
 	MinPhoneText = 12, -- smallest text size on phones (1.8.1: 14 made the UI too big)
 	MinTouch = 42, -- smallest tappable button on screen (1.8.1: 48 made the UI too big; ~44 is comfortable)
 	MaxDeviceScale = 1, -- 1.8.1: the UI stops growing on big screens (1.35 looked huge on PC)
@@ -714,6 +717,23 @@ Config.Map = {
 		LoseColors = { Color3.fromRGB(255, 200, 230), Color3.fromRGB(200, 240, 255), Color3.fromRGB(255, 240, 170), Color3.fromRGB(220, 200, 255), Color3.fromRGB(200, 255, 210) },
 		GainColors = { Color3.fromRGB(240, 220, 190), Color3.fromRGB(200, 225, 240), Color3.fromRGB(240, 200, 200), Color3.fromRGB(210, 235, 200) },
 		LoseSigns = { "🍭 CANDY", "🎈 TOYS", "🍟 SNACKS", "🕹 GAMES", "🧢 MERCH", "🍦 ICE CREAM", "📼 VIDEOS", "🎁 GIFTS" },
+	},
+	-- 1.8.2: street dressing (like docs/style_options/style5_street.png): along every sidewalk, in turn,
+	-- a globe lamp, a planter, a bench and a tree; bunting across Main Street; pitched roofs, flower boxes, striped awnings
+	Street = {
+		Step = 30, -- design studs between street items
+		Offset = 19.5, -- from the road centre to the outer sidewalk edge
+		Max = 240, -- street items in total (phone speed)
+		SkipPlaza = 75, -- keep the plaza crossing clear
+		BuntingEvery = 2, -- one bunting line every N steps on Main Street
+		BuntingFlags = 6,
+		GableRise = 7, -- pitched house roofs, this tall
+		FlowerColors = { Color3.fromRGB(230, 70, 90), Color3.fromRGB(250, 200, 60), Color3.fromRGB(240, 130, 200), Color3.fromRGB(250, 250, 250) },
+		BuntingColors = { Color3.fromRGB(220, 60, 60), Color3.fromRGB(60, 140, 220), Color3.fromRGB(250, 200, 50), Color3.fromRGB(70, 170, 90) },
+		Planter = Color3.fromRGB(140, 95, 60),
+		Lamp = Color3.fromRGB(40, 40, 45),
+		Globe = Color3.fromRGB(255, 244, 215),
+		Stripe = Color3.fromRGB(250, 250, 245),
 	},
 	-- one place for the town's base colours and materials, so the chosen visual style can be swapped in quickly
 	Style = {

@@ -65,9 +65,10 @@ local function part(props, role: string?)
 	if not props.NoScale then
 		p.CFrame = scf(p.CFrame)
 		if not props.NoScaleSize then
-			if p.Shape == Enum.PartType.Cylinder then
+			local shape = p:IsA("Part") and p.Shape or Enum.PartType.Block -- WedgeParts have no Shape
+			if shape == Enum.PartType.Cylinder then
 				p.Size = Vector3.new(p.Size.X, p.Size.Y * S, p.Size.Z * S)
-			elseif p.Shape ~= Enum.PartType.Ball then
+			elseif shape ~= Enum.PartType.Ball then
 				p.Size = Vector3.new(p.Size.X * S, p.Size.Y, p.Size.Z * S)
 			end
 		end
@@ -189,6 +190,12 @@ local function building(o)
 			-- 1.7: window sills (depth under each front window)
 			for _, sx in ipairs({ -1, 1 }) do
 				p(CFrame.new(sx * (doorW / 2 + side / 2), y - 2.3, -d / 2 - 0.5), Vector3.new(side * 0.8, 0.5, 1), Color3.fromRGB(235, 232, 225), "trim", { Material = Enum.Material.Concrete })
+				-- 1.8.2: flower boxes under the front windows (the flowers hide in Low graphics)
+				if o.flowers then
+					local ST = Config.Map.Street
+					p(CFrame.new(sx * (doorW / 2 + side / 2), y - 3.1, -d / 2 - 1.1), Vector3.new(side * 0.6, 1.1, 1.2), ST.Planter, nil, { Name = "FlowerBox", Material = Enum.Material.WoodPlanks, CanCollide = false })
+					p(CFrame.new(sx * (doorW / 2 + side / 2), y - 2.3, -d / 2 - 1.1), Vector3.new(side * 0.55, 0.7, 0.9), ST.FlowerColors[math.random(1, #ST.FlowerColors)], nil, { Name = "Flower", Material = Enum.Material.Fabric, CanCollide = false })
+				end
 			end
 			p(CFrame.new(-w / 2 - 0.05, y, 0), Vector3.new(0.2, 4, d * 0.7), Color3.fromRGB(150, 200, 230), nil, glass)
 			p(CFrame.new(w / 2 + 0.05, y, 0), Vector3.new(0.2, 4, d * 0.7), Color3.fromRGB(150, 200, 230), nil, glass)
@@ -200,6 +207,19 @@ local function building(o)
 	p(CFrame.new(0, h + 1.6, -d / 2 - 1.2), Vector3.new(w + 3, 1, 0.6), Color3.fromRGB(235, 235, 230), "trim", { Material = Enum.Material.Concrete })
 	-- awning + painted sign above the door
 	p(CFrame.new(0, doorH + 0.4, -d / 2 - 2), Vector3.new(doorW + 6, 0.6, 4), o.accent or Color3.fromRGB(200, 60, 60), "accent", { Material = Enum.Material.Fabric })
+	-- 1.8.2: white stripes on shop awnings, and a pitched roof on houses
+	if o.stripes then
+		for i = -1, 1 do
+			p(CFrame.new(i * (doorW + 6) / 3, doorH + 0.75, -d / 2 - 2), Vector3.new((doorW + 6) / 6, 0.1, 4), Config.Map.Street.Stripe, nil, { Name = "Decor", Material = Enum.Material.Fabric, CanCollide = false })
+		end
+	end
+	if o.gable then
+		local rise = Config.Map.Street.GableRise
+		for _, back in ipairs({ false, true }) do
+			local wedge = p(CFrame.new(0, h + 1.2 + rise / 2, back and d / 4 + 0.75 or -d / 4 - 0.75) * CFrame.Angles(0, back and math.pi or 0, 0), Vector3.new(w + 3, rise, d / 2 + 1.5), o.roof or Color3.fromRGB(150, 70, 60), "trim", { ClassName = "WedgePart", Material = Enum.Material.RoofShingles })
+			wedge.Name = "Gable"
+		end
+	end
 	-- glass doors (1.5: buildings with no use get a solid, locked door instead)
 	if o.closed then
 		local shut = p(CFrame.new(0, doorH / 2, -d / 2 + 0.6), Vector3.new(doorW - 1, doorH - 0.5, 0.6), Color3.fromRGB(120, 80, 55), "trim", { Material = Enum.Material.WoodPlanks })
@@ -389,6 +409,8 @@ local function house(center: Vector3, yaw: number, dlcKey: string?)
 		door = 8,
 		sign = "🏠",
 		closed = true, -- 1.5: nothing to do in houses, so they stay closed
+		gable = true,
+		flowers = true,
 	})
 	-- 1.8 Life Pack: some houses hide a Life Pack building. Everyone sees the same plain house;
 	-- the knock prompt opens it for owners, or the honest pass card (and a free preview) for everyone else.
@@ -1333,12 +1355,77 @@ local function fillTown()
 						door = 8,
 						sign = lose and CF.LoseSigns[(count % #CF.LoseSigns) + 1] or "🏠",
 						closed = true,
+						gable = not lose,
+						flowers = true,
+						stripes = lose,
 					})
 				end
 			end
 		end
 	end
 	return count
+end
+
+-- 1.8.2: street dressing along every sidewalk (globe lamps, planters, benches, trees) and bunting
+-- over Main Street, so streets look like the chosen style picture. Skips the plaza and the river.
+local function dressStreets(): number
+	local ST = Config.Map.Street
+	local R = Config.Map.River
+	local segs = {
+		{ Vector3.new(-237, 0, 0), 346, true },
+		{ Vector3.new(237, 0, 0), 346, true },
+		{ Vector3.new(0, 0, -237), 346, false },
+		{ Vector3.new(0, 0, 237), 346, false },
+		{ Vector3.new(-200, 0, -200), 400, false },
+		{ Vector3.new(200, 0, -200), 400, false },
+		{ Vector3.new(-200, 0, 200), 400, false },
+		{ Vector3.new(200, 0, 200), 400, false },
+	}
+	local n = 0
+	local function ok(pos: Vector3): boolean
+		if math.abs(pos.X - R.X) < R.Width / 2 + R.Width / 3 then
+			return false
+		end
+		return not (math.abs(pos.X) < ST.SkipPlaza and math.abs(pos.Z) < ST.SkipPlaza)
+	end
+	for si, s in ipairs(segs) do
+		local center, len, alongX = s[1], s[2], s[3]
+		local k = 0
+		for a = -len / 2 + ST.Step / 2, len / 2 - ST.Step / 2, ST.Step do
+			k += 1
+			for _, sgn in ipairs({ -1, 1 }) do
+				local pos = alongX and center + Vector3.new(a, 0.5, sgn * ST.Offset) or center + Vector3.new(sgn * ST.Offset, 0.5, a)
+				if n < ST.Max and ok(pos) then
+					n += 1
+					local kind = (k + si + (sgn > 0 and 2 or 0)) % 4
+					local faceRoad = alongX and (sgn > 0 and 0 or math.pi) or (sgn > 0 and math.pi / 2 or -math.pi / 2)
+					if kind == 0 then -- globe lamp (like the picture), only the globe glows
+						part({ Name = "LampPost", Shape = Enum.PartType.Cylinder, CFrame = CFrame.new(pos + Vector3.new(0, 6, 0)) * CFrame.Angles(0, 0, math.rad(90)), Size = Vector3.new(12, 0.7, 0.7), Color = ST.Lamp, Material = Enum.Material.Metal, NoScaleSize = true }, "trim")
+						part({ Name = "LampGlobe", Shape = Enum.PartType.Ball, Size = Vector3.new(1.8, 1.8, 1.8), Position = pos + Vector3.new(0, 12.6, 0), Color = ST.Globe, Material = Enum.Material.Neon, CanCollide = false, NoScaleSize = true })
+					elseif kind == 1 then -- planter with a round shrub
+						part({ Name = "Planter", Size = Vector3.new(4, 1.6, 4), Position = pos + Vector3.new(0, 0.8, 0), Color = ST.Planter, Material = Enum.Material.WoodPlanks, NoScaleSize = true }, "trim")
+						part({ Name = "Bush", Shape = Enum.PartType.Ball, Size = Vector3.new(3.4, 3.4, 3.4), Position = pos + Vector3.new(0, 2.6, 0), Color = Color3.fromRGB(70, 140, 60), Material = Enum.Material.LeafyGrass, CanCollide = false, NoScaleSize = true }, "nature")
+					elseif kind == 2 then -- bench facing the road
+						bench(CFrame.new(pos) * CFrame.Angles(0, faceRoad, 0))
+					else -- street tree
+						tree(pos, 0.7)
+					end
+				end
+			end
+			-- bunting across Main Street (the north–south road through the plaza)
+			if not alongX and center.X == 0 and k % ST.BuntingEvery == 0 then
+				local mid = center + Vector3.new(0, 15, a)
+				if ok(mid) then
+					part({ Name = "Decor", Size = Vector3.new(2 * ST.Offset, 0.15, 0.15), Position = mid, Color = Color3.fromRGB(240, 240, 240), CanCollide = false, CastShadow = false })
+					for f = 1, ST.BuntingFlags do
+						local x = -ST.Offset + (f - 0.5) * (2 * ST.Offset / ST.BuntingFlags)
+						part({ Name = "Decor", ClassName = "WedgePart", Size = Vector3.new(1.6, 1.8, 0.1), CFrame = CFrame.new(mid + Vector3.new(x, -1, 0)) * CFrame.Angles(math.pi, 0, 0), Color = ST.BuntingColors[(f % #ST.BuntingColors) + 1], Material = Enum.Material.Fabric, CanCollide = false, CastShadow = false, NoScaleSize = true })
+					end
+				end
+			end
+		end
+	end
+	return n
 end
 
 -- 1.8 River City: a real Terrain-water river between the Lose side (west) and the plaza (east).
@@ -1541,6 +1628,10 @@ function WorldService.build()
 	local okF, filled = pcall(fillTown) -- 1.8: fill free street slots with closed shops and houses
 	if not okF then
 		warn("[WorldService] fill: " .. tostring(filled))
+	end
+	local okS, errS = pcall(dressStreets) -- 1.8.2 street dressing
+	if not okS then
+		warn("[WorldService] streets: " .. tostring(errS))
 	end
 	local okR, errR = pcall(buildRiver) -- 1.8 River City
 	if not okR then
