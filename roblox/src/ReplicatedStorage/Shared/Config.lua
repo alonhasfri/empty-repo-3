@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.7.3"
+Config.Version = "1.7.4"
 
 ---------------------------------------------------------------------
 -- COMMUNITY (GROUP) RANKS -> IN-GAME RANKS
@@ -594,6 +594,7 @@ Config.Map = {
 	-- "lacking capability PluginOrOpenCloud"), so the low-brain looks get their soft feel from
 	-- these instead (soft = cute/cash-grab/cozy/nonsense, sharp = realistic/fancy/future).
 	GrassColor = Color3.fromRGB(104, 178, 70), -- 1.7.3: bright natural green terrain grass
+	EdgeWallHeight = 120, -- 1.7.4: invisible walls at the edge of the ground
 	SoftLight = { ShadowSoftness = 0.9, EnvironmentDiffuseScale = 0.35, EnvironmentSpecularScale = 0.15 },
 	SharpLight = { ShadowSoftness = 0.2, EnvironmentDiffuseScale = 1, EnvironmentSpecularScale = 1 },
 }

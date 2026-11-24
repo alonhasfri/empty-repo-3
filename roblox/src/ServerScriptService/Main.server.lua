@@ -224,6 +224,36 @@ Net.on("hello", function(player)
 	return { ok = true, state = BrainService.state(player) }
 end)
 
+-- 1.7.4 (round 4, Hacker B): players walk through each other, so nobody can push you or block a doorway
+local PhysicsService = game:GetService("PhysicsService")
+pcall(function()
+	PhysicsService:RegisterCollisionGroup("Players")
+	PhysicsService:CollisionGroupSetCollidable("Players", "Players", false)
+end)
+local function ghostCharacter(char: Model)
+	local function set(d)
+		if d:IsA("BasePart") then
+			d.CollisionGroup = "Players"
+		end
+	end
+	for _, d in ipairs(char:GetDescendants()) do
+		set(d)
+	end
+	char.DescendantAdded:Connect(set) -- animal bodies and the work vest are welded on later
+end
+game:GetService("Players").PlayerAdded:Connect(function(p)
+	p.CharacterAdded:Connect(ghostCharacter)
+	if p.Character then
+		ghostCharacter(p.Character)
+	end
+end)
+for _, p in ipairs(game:GetService("Players"):GetPlayers()) do
+	p.CharacterAdded:Connect(ghostCharacter)
+	if p.Character then
+		ghostCharacter(p.Character)
+	end
+end
+
 local function onPlayerAdded(player: Player)
 	local data = DataService.load(player)
 	if not player.Parent then

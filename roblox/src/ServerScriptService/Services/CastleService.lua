@@ -527,6 +527,12 @@ function CastleService.reward(player)
 	local first = not data.badges.LostAndFound
 	data.castleMap = true
 	BrainService.awardBadge(player, "LostAndFound")
+	if data.path == nil or data.dead then
+		-- 1.7.4 (round 4, castle explorer): no path yet = no reward, and the season's treasure is NOT used up
+		BrainService.toast(player, Content.CastleNoPath, "LibrarianChime")
+		BrainService.push(player)
+		return
+	end
 	if data.castleSeason == season then
 		BrainService.toast(player, "🗝 You already took this season's treasure. The route changes next season!", "LibrarianChime")
 		return

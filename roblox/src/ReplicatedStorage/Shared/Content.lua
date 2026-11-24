@@ -507,6 +507,7 @@ Content.CastleRight = {
 	"A chicken clucks with all its might: \"BAWK!\" (that means RIGHT).",
 }
 Content.CastleEnd = "And when you're lost and feeling small, knock on the old brick wall."
+Content.CastleNoPath = "🗝 The chest hums… but it waits for someone who has picked a door. Come back after you choose: Lose or Gain!"
 Content.CastleWrong = {
 	"This hallway looks… familiar.",
 	"You've been here before. Haven't you?",
@@ -963,6 +964,11 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.7.4", name = "No Pushing, No Falling", lines = {
+		"👻 Players walk through each other now: nobody can push you or block a doorway.",
+		"🧱 The edge of town has an invisible wall, so you can't walk off into the void.",
+		"🏰 Endless Castle: the treasure waits for you if you haven't picked a door yet (it doesn't get used up).",
+	} },
 	{ v = "1.7.3", name = "Everyone's Ideas", lines = {
 		"🧭 A \"What do I do now?\" arrow, 🥔 Low graphics, ⏱ a speedrun timer and 🏅 a badge checklist (all in Settings).",
 		"🏆 Plaza boards: top earners this week and fastest to IQ 200. 🚗 Ride Hoppr with up to 3 friends. 🎭 Vs Mode lobby sign.",

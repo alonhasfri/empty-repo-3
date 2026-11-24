@@ -1165,6 +1165,24 @@ function WorldService.build()
 	if not ok then
 		warn("[WorldService] 1.7 map polish failed: " .. tostring(err))
 	end
+	-- 1.7.4 (round 4, Hacker B): invisible walls at the edge of the ground, so nobody walks off into the void
+	local edge = (940 * S + 40) / 2
+	local wallH = Config.Map.EdgeWallHeight
+	for _, w in ipairs({
+		{ Vector3.new(edge + 1, wallH / 2, 0), Vector3.new(2, wallH, edge * 2 + 4) },
+		{ Vector3.new(-edge - 1, wallH / 2, 0), Vector3.new(2, wallH, edge * 2 + 4) },
+		{ Vector3.new(0, wallH / 2, edge + 1), Vector3.new(edge * 2 + 4, wallH, 2) },
+		{ Vector3.new(0, wallH / 2, -edge - 1), Vector3.new(edge * 2 + 4, wallH, 2) },
+	}) do
+		local p = Instance.new("Part")
+		p.Name = "EdgeWall"
+		p.Anchored = true
+		p.Transparency = 1
+		p.CanQuery = false
+		p.Position = w[1]
+		p.Size = w[2]
+		p.Parent = mapFolder
+	end
 	-- microwave countdown text
 	task.spawn(function()
 		local seconds = 600

@@ -269,3 +269,31 @@ Each item was tested in Studio play mode through the game's code. There were no 
 - **Interior materials:** baseboards, windows and room sizes.
 - **Bigger map layout:** waiting for the user to pick a layout option.
 - **For the user:** the free chat decision, real pass and badge IDs, and the friends desync test.
+
+---
+
+# Round 4 (1.7.4): breakers, horror fan, speedrunner and castle explorer
+
+The PC's screen was locked (Windows lock screen), so Studio couldn't draw anything and there are no screenshots. The Studio window was restored and maximized, but rendering only comes back once the screen is unlocked. Every run below went through the game's own code, live in Studio.
+
+| Player | Fun | Looks | Ease | Clarity | Best moment | Worst moment |
+|---|---|---|---|---|---|---|
+| Hacker A (server/economy) | 2 | – | 3 | 3 | Nothing broke: 76 remotes × 7 bad payloads (nil, string, number, bool, NaN, inf, ±huge, wrong types, 10,000-letter strings) gave 0 errors. Coins, savings and cells unchanged. 6 parallel bank takes and 6 parallel clock-outs did nothing. 189 of 200 spam calls were refused | There's no way to fake a leaderboard time (the server measures it), so nothing to report |
+| Hacker B (movement/world) | 3 | – | 3 | 3 | The dumb-only hole refuses smart players. Closed houses are solid | **Players could push each other and block doorways** (fixed: a "Players" collision group). **No wall at the map edge**, so you could walk off into the void (fixed: invisible edge walls, tested: stopped at x = 278) |
+| Horror fan | 3 | – | 3 | 3 | Notes appear one by one. The sightings are far away and silent | Part 2 (the phone call, The Mean, the endings) isn't built yet. Off/Spooky/Full works and Off hides everything |
+| Speedrunner | 3 | – | 3 | 3 | The ⏱ timer and the IQ 200 board | The chat repeat loop is gone (10% after the first time). The fastest route is now the Library plus jobs and the Skill Gates. No skips found |
+| Castle explorer | 4 | – | 3 | 4 | The hole → white room drop works. Falling into the void catches you (health 100). The rhyming hints match the route. The route resets on a wrong turn and when you leave by the back door. The treasure is once per season | **Bug:** a player who hadn't picked a door could open the chest, get nothing, and use up that season's treasure (fixed: it now waits for them). Box/door prompts and Unstuck inside the castle couldn't be pressed with the screen locked |
+
+**Map feedback (round 4):**
+- Hacker B likes that the town is small and solid, dislikes the void edge (fixed), and suggests a fence or hedge at the edge so the wall can be seen.
+- The castle explorer loves the odd house standing alone, and wants a single creepy lamp by it, as the map analysis also suggests.
+
+**Fixed in 1.7.4:**
+- Player collision group: no pushing, no door-blocking.
+- Invisible edge walls.
+- Castle chest without a path no longer uses up the season's treasure.
+
+**Still open:**
+- Horror part 2.
+- Pressing the castle prompts and checking it at phone size, once the screen is unlocked.
+- Choosing a map layout.
