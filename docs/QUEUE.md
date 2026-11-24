@@ -43,6 +43,18 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
       - a sound and a number pop on every reward
       - no centre banners
     - **Test:** a new player on a phone knows what to press and gets their first points within 30 s. Screenshots go to docs/screens/ui-final/.
+4d. **Better tutorial** (user, Nov 24): short, interactive, learn by doing.
+    - Under 60–90 s and skippable.
+    - One action per step, with an arrow on the real button: pick a door → ⚡ Quick Play (answer one question) → open the Phone → walk to one place → watch the brain counter change.
+    - One-line texts, a big friendly guide, Hebrew-ready, a reward at the end.
+    - Separate short versions for Lose, Gain and the Life Pack baby start.
+    - Teaches the goal line, the progress bar and the daily tasks.
+    - Replayable from Settings.
+4e. **HUD leftovers** (from docs/screens/fix-1124/hud_after_iq213.jpg):
+    - SHOP and MAP become small icon buttons, the same size as the ⚙️/🛠/SOS row.
+    - The job/glasses tag moves into the profile card or goes.
+    - The bottom "stress • Overflow" line gets slimmer, or hides when it isn't relevant.
+    - The Dr. Wrinkles card title is easier to read.
 
 **Tier 2: memorable moments and a fuller Lose side**
 5. Item 10: **brain animations** (the shredder, the 0-cell POOF).
