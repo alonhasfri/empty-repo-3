@@ -152,3 +152,7 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
     - Pass and badge IDs: the user adds them after publishing.
     - Free chat: leave as it is for now.
     - CLAUDE.md edits: ask first.
+
+## Publish log
+- Nov 24, 13:35: 1.8 + styles, background, BrainTalks (private)
+- Nov 24, 14:28: 1.8.3 (1.8.2 Busy Streets + 1.8.3 Tidier screen), private. Save check: only new field settings.lowGraphicsChosen (nil for old saves); no keys renamed or removed.
