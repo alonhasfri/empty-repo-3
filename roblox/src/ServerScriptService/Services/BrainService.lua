@@ -619,6 +619,23 @@ function BrainService.startPath(player, path: string, comeback: boolean?)
 	if BrainService.hooks.onPathReset then
 		BrainService.hooks.onPathReset(player)
 	end
+	-- 1.7.3: a big "wow" moment within the first minute of a new run (YouTuber panel: faster first hook)
+	local runId = data.runStart
+	local FW = Config.FirstWow
+	if FW and not comeback then
+		task.delay(FW.Delay, function()
+			local d = DataService.get(player)
+			if not d or d.dead or d.runStart ~= runId or d.path ~= path then
+				return -- left, died, or started another run meanwhile
+			end
+			if path == "Lose" then
+				BrainService.lose(player, FW.LosePoints, "firstWow")
+			else
+				BrainService.gain(player, FW.GainPoints, "firstWow")
+			end
+			Net.send(player, "firstWow", { up = path == "Gain" })
+		end)
+	end
 end
 
 ---------------------------------------------------------------------

@@ -1132,6 +1132,12 @@ Content.BadgeUI = {
 	},
 }
 
+-- 1.7.3: the first big moment of a new run
+Content.FirstWow = {
+	Lose = "💥 BRAIN DROP! A meme just deleted a chunk of your brain!",
+	Gain = "✨ BRAIN BOOST! Your first big idea!",
+}
+
 -- 1.7.3: speedrun timer
 Content.Speedrun = {
 	Timer = "⏱ %s",

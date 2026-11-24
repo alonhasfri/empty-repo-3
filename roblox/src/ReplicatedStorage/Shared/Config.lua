@@ -148,6 +148,13 @@ Config.Boards = {
 	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
 }
 
+-- 1.7.3: the first "wow" of a new run (a big brain drop or boost, with a big counter)
+Config.FirstWow = {
+	Delay = 20, -- seconds after picking a door
+	LosePoints = 3, -- about -4% of your cells
+	GainPoints = 10, -- about +2% of your cells
+}
+
 Config.Bus = {
 	WaitSeconds = 6, -- 1.7.2 map review: the town is ~15 s across, so a 20 s wait was slower than walking anywhere
 	Cooldown = 10, -- after a trip
@@ -495,6 +502,7 @@ Config.RankGiveLimit = {
 -- 1.7: Brain-scaled UI, life systems and map (see docs/Brain scaled UI and map design.md)
 ---------------------------------------------------------------------
 Config.UI = {
+	BigDeltaShare = 0.02, -- 1.7.3: a brain change this big (share of your cells) gets the big centre counter
 	MinDeviceScale = 0.7, -- the whole HUD never shrinks below this on small phones
 	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone
 	MinPhoneText = 14, -- smallest text size on phones

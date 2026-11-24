@@ -939,6 +939,32 @@ function Hud.delta(amount: number, up: boolean)
 		TweenService:Create(topScale, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Scale = base }):Play()
 	end
 	local _ = brainIcon
+	-- 1.7.3: big changes get a big animated number in the middle of the screen
+	local cells = UI.state and UI.state.cells
+	if cells and cells > 0 and amount / (cells + (up and 0 or amount)) >= Config.UI.BigDeltaShare then
+		Hud.bigCounter(amount, up)
+	end
+end
+
+function Hud.bigCounter(amount: number, up: boolean, title: string?)
+	local big = text(UI.gui, {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.42),
+		Size = UDim2.fromOffset(520, 120),
+		TextColor3 = up and UI.Colors.good or UI.Colors.bad,
+		Text = (title and (title .. "\n") or "") .. (up and "+" or "−") .. Brain.formatNumber(amount) .. " 🧠",
+		ZIndex = 40,
+	})
+	outlined(big, 4)
+	local sc = UI.new("UIScale", { Scale = UI.reducedMotion() and UI.D or 0.3 * UI.D, Parent = big })
+	if not UI.reducedMotion() then
+		TweenService:Create(sc, TweenInfo.new(0.45, Enum.EasingStyle.Back), { Scale = UI.D }):Play()
+	end
+	task.delay(1.6, function()
+		TweenService:Create(big, TweenInfo.new(0.6), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		task.wait(0.7)
+		big:Destroy()
+	end)
 end
 
 return Hud
