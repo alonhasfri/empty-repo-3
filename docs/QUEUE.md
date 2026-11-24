@@ -14,6 +14,32 @@ Never publish without the user's OK, never change permission settings, never pri
 - [~] partly done
 - [ ] not started
 
+## PRIORITY ORDER (user, Nov 24): build in THIS order, not by item number
+Credits are low, so finish each one fully (tested, committed, pushed) before starting the next.
+
+**Tier 1: makes the game good to play right now**
+1. Item 3/16: finish and test the map, background and styles (already in progress).
+2. Item 7 (part): **real music and sounds**. The game is silent now, so this is cheap with a huge effect.
+3. Item 11: **Gain path fun.** Job minigames replace the work questions, and quizzes become fun facts (the user's biggest complaint).
+4. Item 12: **100+ dialogue lines, with no repeats.**
+
+**Tier 2: memorable moments and a fuller Lose side**
+5. Item 10: **brain animations** (the shredder, the 0-cell POOF).
+6. Item 9 (part): the **intro cutscene** only (the camera flyover to the doors), with a simple cutscene player.
+7. Items 17 and 18: **more Lose places and Lose-path systems.**
+8. Item 22: **real thumbnails and icon** (needed before going public).
+
+**Tier 3: nice to have**
+9. Item 6: admin panel redesign (only staff see it).
+10. Items 7 and 8: townspeople and smart NPCs.
+11. Item 14: the secret castle path.
+12. Item 13: Perfectly Average horror part 2.
+
+**Tier 4: later**
+13. The rest of item 9 (all other cutscenes and the Cutscene Recorder).
+14. Item 19 (the rest of the brain plan), item 20 (browser ports), item 21 (castle extras).
+15. Item 7's rest: Blender landmarks, the multiplayer test, every phone size, the lag check.
+
 ## Queue
 1. [x] **Publish** (done Nov 24, 13:35: 1.8 + styles, background, BrainTalks; private) to "brain game" (Cult of the 39) using File → Publish to Roblox As → brain game → Overwrite. Keep it private and change no settings. Take a screenshot to `docs/screens/publish.png`.
    - The user said yes on Nov 24, but the PC was locked. Do it when the user is back and the screen is unlocked.
