@@ -534,7 +534,7 @@ local toastHolder = UI.new("Frame", {
 })
 -- 1.8.1: toasts sit just under the goal line, whatever the screen size
 UI.onScale(function(d)
-	toastHolder.Position = UDim2.new(0.5, 0, 0, 14 + 160 * d)
+	toastHolder.Position = UDim2.new(0.5, 0, 0, 14 + 60 * d) -- 1.8.7: high up, under the slim goal lines (never mid-screen)
 end)
 UI.autoScale(toastHolder)
 
@@ -686,7 +686,7 @@ function UI.modal(title: string, opts)
 		ZIndex = 20,
 		Parent = backdrop,
 	}, {
-		UI.new("UISizeConstraint", { MaxSize = phone and Vector2.new(400, 820) or (opts.maxSize or Config.UI.ModalMax) }),
+		UI.new("UISizeConstraint", { MaxSize = phone and Vector2.new(720, 820) or (opts.maxSize or Config.UI.ModalMax) }), -- 1.8.7: wide enough for the landscape phone shape
 	})
 	if phone then
 		-- on a sideways phone screen a tall phone would be tiny, so it gets a wider shape there

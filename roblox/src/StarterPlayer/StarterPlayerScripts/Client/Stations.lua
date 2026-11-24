@@ -499,8 +499,9 @@ function Stations.scroller()
 			UI.new("TextLabel", {
 				BackgroundTransparency = 1,
 				AnchorPoint = Vector2.new(1, 0),
-				Position = UDim2.new(1, -8, 0.35, (i - 1) * 56),
-				Size = UDim2.fromOffset(56, 50),
+				-- 1.8.7 phone pass: placed by share of the screen, so a short landscape phone still fits all three
+				Position = UDim2.new(1, -8, 0.22 + (i - 1) * 0.2, 0),
+				Size = UDim2.new(0, 56, 0.17, 0),
 				Text = ic[1] .. "\n" .. ic[2],
 				TextScaled = true,
 				Font = Enum.Font.GothamBold,
@@ -566,12 +567,23 @@ function Stations.braintalks()
 	end
 	event("braintalks")
 	local m = UI.modal(T.Title, phoneOpts(Color3.fromRGB(60, 140, 230)))
-	UI.label(m.content, T.Intro, { TextSize = UI.textSize(13), TextColor3 = Color3.fromRGB(200, 210, 230), LayoutOrder = 1 })
+	local intro = UI.label(m.content, T.Intro, { TextSize = UI.textSize(13), TextColor3 = Color3.fromRGB(200, 210, 230), LayoutOrder = 1 })
 	local card = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(18, 24, 40), Size = UDim2.new(1, 0, 0, 230), LayoutOrder = 2, Parent = m.content })
 	UI.corner(card, 16)
-	local icon = UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 110), Position = UDim2.fromOffset(0, 14), TextScaled = true, Text = "", Parent = card })
-	local title = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.new(0, 14, 0, 130), Size = UDim2.new(1, -28, 0, 56), TextWrapped = true, TextScaled = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = card })
-	local creator = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.new(0, 14, 0, 190), Size = UDim2.new(1, -28, 0, 22), TextScaled = true, Font = Enum.Font.Gotham, TextColor3 = Color3.fromRGB(170, 185, 210), Text = "", Parent = card })
+	-- 1.8.7 phone pass: everything inside the card is placed by share, and the card shrinks to the
+	-- screen, so Skip / Watch stay visible on a landscape phone without scrolling
+	local icon = UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 0.44), Position = UDim2.fromScale(0, 0.06), TextScaled = true, Text = "", Parent = card })
+	local title = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromScale(0.06, 0.54), Size = UDim2.fromScale(0.88, 0.26), TextWrapped = true, TextScaled = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = card })
+	local creator = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromScale(0.06, 0.81), Size = UDim2.fromScale(0.88, 0.1), TextScaled = true, Font = Enum.Font.Gotham, TextColor3 = Color3.fromRGB(170, 185, 210), Text = "", Parent = card })
+	task.defer(function()
+		local h = m.content.AbsoluteSize.Y / math.max(0.1, UI.D)
+		if h < 280 then
+			-- short (landscape phone) screen: the intro goes to a toast, the card and buttons get the room
+			intro.Visible = false
+			UI.toast(T.Intro, nil, 5)
+		end
+		card.Size = UDim2.new(1, 0, 0, math.clamp(h - (intro.Visible and 150 or 100), 90, 230))
+	end)
 	local bar = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(90, 200, 255), BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -5), Size = UDim2.new(0, 0, 0, 5), Parent = card })
 	local streak = UI.label(m.content, "", { TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(255, 200, 90), LayoutOrder = 3 })
 	local row = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 56), LayoutOrder = 4, Parent = m.content }, {

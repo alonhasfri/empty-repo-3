@@ -16,6 +16,12 @@ local UI = require(script.Parent.UI)
 local Remote = require(script.Parent.Remote)
 
 local PhoneOS = {}
+-- 1.8.7 phone pass: true on a sideways phone screen (wide and short), where the in-game phone is wide too
+function PhoneOS.wide(): boolean
+	local cam = workspace.CurrentCamera
+	local v = cam and cam.ViewportSize or Vector2.new(1000, 600)
+	return UI.isPhone() and v.X > v.Y * 1.3
+end
 PhoneOS.stations = nil -- the Stations module (set by ClientMain)
 PhoneOS.classicPhone = nil -- the old phone function (set by ClientMain)
 PhoneOS.animalUI = nil -- function() for animals (set by ClientMain)
@@ -153,6 +159,9 @@ end
 ---------------------------------------------------------------------
 local function wallpaper(parent, st, tier: string, order: number)
 	local h = tier == "toy" and 90 or 110
+	if PhoneOS.wide() then
+		h = 60 -- 1.8.7 phone pass: a slim clock strip on a sideways screen, so the apps fit
+	end
 	local wall = UI.new("Frame", { BackgroundColor3 = WHITE, Size = UDim2.new(1, 0, 0, h), LayoutOrder = order, Parent = parent })
 	UI.corner(wall, 18)
 	if tier == "toy" then
@@ -173,6 +182,10 @@ local function gridHome(m, st, tier: string)
 	local cols, size, labelH, cellH = 3, 58, 18, 86
 	if tier == "toy" then
 		cols, size, labelH, cellH = 2, 84, 24, 118
+	end
+	if PhoneOS.wide() then
+		-- 1.8.7 phone pass: more, smaller columns on a sideways screen (one row instead of a long scroll)
+		cols, size, labelH, cellH = (tier == "toy" and 4 or 5), 56, 18, 82
 	end
 	local grid = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 2, Parent = m.content }, {
 		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / cols - 0.03, 0, 0, cellH), CellPadding = UDim2.new(0.03, 0, 0, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
