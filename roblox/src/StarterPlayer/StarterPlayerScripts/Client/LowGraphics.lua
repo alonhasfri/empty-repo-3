@@ -42,6 +42,10 @@ local function remember(inst, prop: string, value)
 end
 
 local function dim(inst)
+	if inst:IsA("BasePart") and CollectionService:HasTag(inst, "FarSkyline") then
+		remember(inst, "LocalTransparencyModifier", 1) -- 1.8.1: shorten the fake skyline on slow phones
+		return
+	end
 	if inst:IsA("Light") or inst:IsA("ParticleEmitter") or inst:IsA("Sparkles") or inst:IsA("Fire") or inst:IsA("Smoke") then
 		remember(inst, "Enabled", false)
 	elseif inst:IsA("BasePart") and isDecor(inst) then

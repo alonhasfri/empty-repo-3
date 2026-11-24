@@ -1211,12 +1211,76 @@ local function buildPolish()
 	end
 end
 
+-- 1.8.1 (user: "the city just ends"): a fake, unreachable city beyond the edge wall.
+-- Rings of simple houses, then a skyline of tall towers, then hills. Anchored, no collision,
+-- no shadows, no queries: cheap on phones. Low graphics hides the far rings (tag "FarSkyline").
+local function buildSkyline()
+	local CS = Config.Map.Skyline
+	local folder = Instance.new("Folder")
+	folder.Name = "Skyline"
+	local rng = Random.new(42) -- the same skyline every server
+	local edge = (940 * S + 40) / 2
+	local function block(pos: Vector3, size: Vector3, color: Color3, far: boolean)
+		local p = Instance.new("Part")
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanQuery = false
+		p.CanTouch = false
+		p.CastShadow = false
+		p.Material = Enum.Material.SmoothPlastic
+		p.Size = size
+		p.Position = pos + Vector3.new(0, size.Y / 2, 0)
+		p.Color = color
+		if far then
+			game:GetService("CollectionService"):AddTag(p, "FarSkyline")
+		end
+		p.Parent = folder
+		return p
+	end
+	-- ground under the fake city, so it never floats over the void
+	for _, s in ipairs({ -1, 1 }) do
+		block(Vector3.new(s * (edge + CS.Depth / 2), -0.5, 0), Vector3.new(CS.Depth, 1, (edge + CS.Depth) * 2), CS.Ground, false)
+		block(Vector3.new(0, -0.5, s * (edge + CS.Depth / 2)), Vector3.new(edge * 2, 1, CS.Depth), CS.Ground, false)
+	end
+	-- each ring: walk around the square at distance d and drop buildings
+	for ring, r in ipairs(CS.Rings) do
+		local d = edge + r.at
+		local step = r.spacing
+		local n = math.floor((d * 2) / step)
+		for side = 1, 4 do
+			for i = 0, n do
+				local t = -d + i * step + rng:NextNumber(-step * 0.2, step * 0.2)
+				local x, z
+				if side == 1 then
+					x, z = t, -d
+				elseif side == 2 then
+					x, z = t, d
+				elseif side == 3 then
+					x, z = -d, t
+				else
+					x, z = d, t
+				end
+				local h = rng:NextNumber(r.minH, r.maxH)
+				local w = rng:NextNumber(r.minW, r.maxW)
+				local col = r.colors[rng:NextInteger(1, #r.colors)]
+				local b = block(Vector3.new(x, 0, z), Vector3.new(w, h, w), col, ring > 1)
+				if r.roofs then
+					-- a simple dark roof slab makes rows of houses read as houses
+					block(b.Position + Vector3.new(0, h / 2, 0), Vector3.new(w + 1, 1.2, w + 1), CS.Roof, ring > 1)
+				end
+			end
+		end
+	end
+	folder.Parent = mapFolder
+end
+
 function WorldService.build()
 	buildLighting()
 	buildGround()
 	buildPlaza()
 	buildLoseSide()
 	buildGainSide()
+	pcall(buildSkyline) -- 1.8.1: the fake city beyond the edge (never stops the town from loading)
 	local ok, err = pcall(buildPolish) -- 1.7 (a problem here must never stop the town from loading)
 	if not ok then
 		warn("[WorldService] 1.7 map polish failed: " .. tostring(err))

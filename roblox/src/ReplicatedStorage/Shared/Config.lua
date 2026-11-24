@@ -687,6 +687,17 @@ Config.Map = {
 	-- these instead (soft = cute/cash-grab/cozy/nonsense, sharp = realistic/fancy/future).
 	GrassColor = Color3.fromRGB(88, 148, 60), -- 1.8.1: natural green (the brighter one looked neon under the cash-grab colour boost)
 	EdgeWallHeight = 120, -- 1.7.4: invisible walls at the edge of the ground
+	-- 1.8.1: the fake city beyond the edge (unreachable, no collision, no shadows)
+	Skyline = {
+		Depth = 700, -- how far the fake ground goes past the edge
+		Ground = Color3.fromRGB(88, 148, 60),
+		Roof = Color3.fromRGB(110, 60, 50),
+		Rings = {
+			{ at = 30, spacing = 22, minH = 10, maxH = 18, minW = 14, maxW = 20, roofs = true, colors = { Color3.fromRGB(235, 220, 195), Color3.fromRGB(205, 225, 240), Color3.fromRGB(240, 205, 200), Color3.fromRGB(215, 235, 205) } },
+			{ at = 110, spacing = 34, minH = 40, maxH = 90, minW = 20, maxW = 34, colors = { Color3.fromRGB(170, 180, 195), Color3.fromRGB(150, 165, 185), Color3.fromRGB(190, 190, 200) } },
+			{ at = 260, spacing = 60, minH = 120, maxH = 240, minW = 30, maxW = 50, colors = { Color3.fromRGB(165, 180, 205), Color3.fromRGB(180, 195, 215) } },
+		},
+	},
 	-- 1.8.1: "Realistic Clear Skies" (free Creator Store asset 11219565245): only its image IDs are used
 	Sky = {
 		Side = "rbxassetid://91458024",
