@@ -1103,6 +1103,24 @@ Content.Settings17 = {
 	Effects = "✨ Effects intensity",
 	EffectsInfo = "Shake, glitches, scrambled words and joke ads. 0% turns them off.",
 	ClassicHud = "🧩 Simple phone (same for every brain)",
+	Guide = "🧭 \"What do I do now?\" arrow",
+	LowGraphics = "🥔 Low graphics (for slow phones)",
+	LowGraphicsInfo = "Turns off street lights, sparkles, extra decorations and shadows so the game runs smoother.",
+}
+
+-- 1.7.2: "What do I do now?" (a goal line + an arrow to the next useful place). Short, picture-first lines.
+Content.Guide = {
+	PickDoor = "🚪 Pick a door: get dumber or get smarter!",
+	Animal = "🐾 Sniff your way to the 🛍 Mall stands!",
+	LoseStands = "📰 Go to the 🛍 Brainrot Mall and click some bait!",
+	LoseSchool = "🏫 The bell! Get to school!",
+	GainLibrary = "📚 Read at the School Library to get smarter!",
+	GainJob = "💼 Get a job at the Job Center!",
+	GainWork = "⏰ Go to work and clock in (📱 Shifts)!",
+	GainTask = "🛠 You're on shift: do a task!",
+	GainGate = "🚧 A Skill Gate! Go to the Exam Hall at the University.",
+	Near = "You're here! 👇",
+	Meters = "%d m",
 }
 
 -- 1.7 audit (R3): text that used to live in the services

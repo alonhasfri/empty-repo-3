@@ -29,6 +29,8 @@ end
 LoseFX.start()
 -- 1.7: animals get a wordless icon menu with a smell trail instead of the phone
 local AnimalUI = require(Client.AnimalUI)
+local Guide = require(Client.Guide)
+local LowGraphics = require(Client.LowGraphics)
 PhoneOS.animalUI = AnimalUI.open
 AnimalUI.hasPower = function()
 	return Hud.hasPower()
@@ -140,6 +142,8 @@ local function applyState(st)
 	Tutorial.onState(st)
 	Conversation.onState(st)
 	AnimalUI.onState(st)
+	Guide.onState(st)
+	LowGraphics.onState(st)
 end
 
 Remote.on("state", applyState)

@@ -159,13 +159,14 @@ function BrainService.state(player)
 	local mult, multLabel = Brain.gainMultiplier(cells)
 	local gate = BrainService.nextGate(player)
 	local glasses = BrainService.currentGlasses(player)
-	local job = nil
+	local job, jobPlace = nil, nil
 	for _, j in ipairs(Content.Jobs) do
 		if j.id == data.job then
-			job = j.name
+			job, jobPlace = j.name, j.place
 		end
 	end
 	return {
+		jobPlace = jobPlace, -- 1.7.2: the "What do I do now?" guide points at Work_<jobPlace>
 		cells = cells,
 		cellsText = Brain.formatNumber(cells),
 		path = data.path,
