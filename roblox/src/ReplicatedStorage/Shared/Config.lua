@@ -630,6 +630,8 @@ Config.UI = {
 	MinPhoneText = 12, -- smallest text size on phones (1.8.1: 14 made the UI too big)
 	MinTouch = 42, -- smallest tappable button on screen (1.8.1: 48 made the UI too big; ~44 is comfortable)
 	MaxDeviceScale = 1, -- 1.8.1: the UI stops growing on big screens (1.35 looked huge on PC)
+	HudMaxButtons = 4, -- 1.8.1 UI review: activity buttons on screen (the rest go in "☰ More")
+	HudPassButtons = false, -- 1.8.1 UI review: pass buttons only in the 🛒 Shop, not on the HUD
 	ToastSeconds = 3, -- 1.8.1: how long a notification stays
 	MaxToasts = 3, -- at most this many at once (the oldest goes)
 	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
