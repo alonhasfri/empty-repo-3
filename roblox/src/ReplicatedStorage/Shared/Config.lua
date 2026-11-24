@@ -150,6 +150,30 @@ Config.Boards = {
 
 Config.VsLobbySignPos = Vector3.new(0, 9, 34) -- 1.7.3: plaza, behind the spawn
 
+-- 1.7.3: "The Average Files" part 1 (notes + sightings). Kid-safe; Settings → Horror: Off / Spooky / Full.
+Config.Horror = {
+	Stage1After = 200, -- seconds on a path before the mystery starts
+	Stage1AfterTalk = 70, -- ...or this soon after you talked to the Perfectly Average guy
+	NotesForStage2 = 3,
+	NotesForStage3 = 5,
+	NoteGate = { 1, 1, 1, 2, 2, 3, 3, 1 }, -- the stage each note appears at
+	NoteSpots = { -- next to existing things (found by name), so they move with the town
+		{ near = "Station_library", offset = Vector3.new(3, -2.4, 3) },
+		{ near = "Station_clickbait", offset = Vector3.new(-3, -2.4, 3) },
+		{ near = "Station_coffee", offset = Vector3.new(3, -2.4, -3) },
+		{ near = "Station_jobs", offset = Vector3.new(-3, -2.4, 3) },
+		{ near = "Station_theater", offset = Vector3.new(4, -2.4, 2) },
+		{ near = "Station_gate", offset = Vector3.new(-4, -2.4, 2) },
+		{ near = "Station_steal", offset = Vector3.new(3, -2.4, 3) },
+		{ near = "FountainBase", offset = Vector3.new(0, 1, 15) },
+	},
+	SightingEvery = 90, -- seconds (plus jitter) between far-away sightings, from stage 1
+	SightingJitter = 60,
+	SightingDistance = 70, -- studs away: always far, never in your face
+	SightingSeconds = 6,
+	SightingVanishAt = 35, -- walk this close and he isn't there
+}
+
 -- 1.7.3: the first "wow" of a new run (a big brain drop or boost, with a big counter)
 Config.FirstWow = {
 	Delay = 20, -- seconds after picking a door

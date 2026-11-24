@@ -1394,6 +1394,23 @@ function Stations.settings()
 	toggle(Content.Settings17.Guide, "guide", 12)
 	toggle(Content.Settings17.LowGraphics, "lowGraphics", 13)
 	toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 15)
+	-- 1.7.3: horror setting (Off / Spooky / Full), saved on the server
+	do
+		local TH = Content.Horror
+		local order = { "off", "spooky", "full" }
+		local cur = (s.horror == "off" or s.horror == "full") and s.horror or "spooky"
+		local hb
+		hb = UI.button(m.content, string.format(TH.Setting, TH.SettingNames[cur]), function()
+			local i = table.find(order, cur) or 2
+			local nextV = order[i % 3 + 1]
+			local r = Remote.call("horror_setting", { value = nextV })
+			if r.ok then
+				cur = nextV
+				s.horror = nextV
+				hb.Text = string.format(TH.Setting, TH.SettingNames[cur])
+			end
+		end, { LayoutOrder = 16 })
+	end
 	UI.button(m.content, string.format(Content.BadgeUI.Button, Stations.badgeCount()), function()
 		Stations.badges()
 	end, { LayoutOrder = 0, BackgroundColor3 = Color3.fromRGB(200, 150, 40) })

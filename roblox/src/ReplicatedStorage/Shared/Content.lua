@@ -1152,6 +1152,31 @@ Content.VsLobby = {
 	Nobody = "Nobody waiting yet. Be the first!",
 }
 
+-- 1.7.3: "The Average Files", part 1 (ported from the browser game's notes). Slow, kid-safe dread. No gore.
+Content.Horror = {
+	ReadNote = "Read",
+	NoteObject = "📄 A beige note",
+	NoteTitle = "📄 The Average Files (%d/%d)",
+	AnimalNote = "📄 The paper smells… perfectly average. You can't read it, but your fur stands up a little. 🐾",
+	StageToast = {
+		[1] = "😐 You feel like someone perfectly ordinary is watching. Probably nothing.",
+		[2] = "😐 The town feels a little more… average today.",
+		[3] = "😐 Someone counted your steps. Exactly average. Again.",
+	},
+	Setting = "😐 Horror: %s",
+	SettingNames = { off = "Off", spooky = "Spooky (no jump scares)", full = "Full" },
+	Notes = {
+		"Day 1. A new man stands in the plaza. Height: average. Smile: average. He said 'perfectly average day' 41 times today. I counted. It's not a big number. It's not a small number.",
+		"Nobody remembers when he arrived. Everyone says 'he's always been there.' The town records say he arrived every single year.",
+		"I measured him. IQ: 100. Exactly. Not 99.9. Not 100.1. Nothing in nature is that exact. Nothing.",
+		"When I'm not looking, he's closer. When I look, he's just standing there. Averagely.",
+		"He told me: 'Add up everyone in Brainville. Divide by everyone. That's me. Everyone becomes me, eventually.'",
+		"The Mean is a place. Beige hallways. Every door opens into the same room. The clock always says 3:00.",
+		"Outliers scare him. Things that are one of a kind. If he takes you to The Mean, find three of them. Don't let him make you average.",
+		"He isn't evil. He's lonely. Nobody is actually average. So nobody is like him. Nobody.",
+	},
+}
+
 -- 1.7.3: speedrun timer
 Content.Speedrun = {
 	Timer = "⏱ %s",
