@@ -357,27 +357,15 @@ local unstuckBtn = roundButton(corner, Content.Unstuck.Button, Color3.fromRGB(20
 end)
 unstuckBtn.Name = "Unstuck"
 
-local rightCol = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, MT + 16), Size = UDim2.fromOffset(170, 2 * math.max(58, MT) + 14), BackgroundTransparency = 1, Parent = UI.gui }, {
-	UI.new("UIListLayout", { Padding = UDim.new(0, 8), HorizontalAlignment = Enum.HorizontalAlignment.Right }),
-})
-local function bigButton(label: string, sub: string, c1: Color3, c2: Color3, order: number, onClick)
-	local b = UI.new("TextButton", { Text = "", AutoButtonColor = false, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(170, math.max(58, MT)), LayoutOrder = order, Parent = rightCol })
-	UI.corner(b, 14)
-	UI.stroke(b, Color3.new(0, 0, 0), 3, 0)
+-- 1.8.5 (user: "SHOP and MAP are huge"): they are small round icons in the same top-right row now
+corner.Size = UDim2.fromOffset(5 * MT + 40, MT + 2)
+local function bigButton(label: string, _sub: string, c1: Color3, c2: Color3, order: number, onClick)
+	local icon = string.match(label, "^(%S+)") or label
+	local b = roundButton(corner, icon, Color3.new(1, 1, 1), -10 + order, onClick)
 	local g = UI.gradient(b, c1, c2, 0)
-	local t = text(b, { Position = UDim2.fromOffset(8, 4), Size = UDim2.new(1, -16, 0, 32), Text = label })
-	outlined(t, 2.5)
-	local s = text(b, { Position = UDim2.fromOffset(8, 36), Size = UDim2.new(1, -16, 0, 16), Text = sub, TextColor3 = Color3.fromRGB(255, 250, 200) })
-	outlined(s, 1.5)
-	local scale = UI.new("UIScale", { Parent = b })
-	b.Activated:Connect(function()
-		scale.Scale = 0.9
-		TweenService:Create(scale, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Scale = 1 }):Play()
-		onClick()
-	end)
 	return b, g
 end
-local shopBtn, shopGrad = bigButton("🛒 SHOP", "passes • always optional", Color3.fromRGB(255, 80, 200), Color3.fromRGB(255, 200, 40), 1, function()
+local shopBtn, shopGrad = bigButton("🛒 SHOP", "", Color3.fromRGB(255, 80, 200), Color3.fromRGB(255, 200, 40), 1, function()
 	if Hud.onStation then
 		Hud.onStation("shop")
 	end
@@ -587,6 +575,8 @@ UI.stroke(face, Color3.new(1, 1, 1), 3, 0)
 local moodBadge = text(face, { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 6, 1, 6), Size = UDim2.fromOffset(24, 24), BackgroundTransparency = 0, BackgroundColor3 = Color3.new(1, 1, 1), Text = "🎤" })
 UI.corner(moodBadge, 12)
 local nameLabel = text(bubble, { Position = UDim2.fromOffset(54, 4), Size = UDim2.new(1, -62, 0, 18), TextXAlignment = Enum.TextXAlignment.Left, Text = Narration.Name })
+nameLabel.TextStrokeTransparency = 0.35 -- 1.8.5: the speaker name was faint on light cards
+nameLabel.TextStrokeColor3 = Color3.fromRGB(20, 20, 30)
 local speech = text(bubble, { Position = UDim2.fromOffset(54, 24), Size = UDim2.new(1, -62, 1, -28), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, Font = Enum.Font.GothamMedium, Text = "" })
 UI.new("UITextSizeConstraint", { MaxTextSize = 16, Parent = speech })
 themedPart(function(T)
@@ -784,24 +774,17 @@ end
 ---------------------------------------------------------------------
 -- Device scaling: every block follows the screen size
 ---------------------------------------------------------------------
-for _, inst in ipairs({ grid, banner, tutorial, corner, rightCol, bottom, pickRow, status }) do
+for _, inst in ipairs({ grid, banner, tutorial, corner, bottom, pickRow, status }) do
 	UI.autoScale(inst)
 end
 -- 1.8 (screenshot check): the thumb-size minimum depends on the real screen size, which isn't known
 -- when the HUD is first built, so re-size the touch targets whenever the scale changes...
 UI.onScale(function()
 	local mt = UI.minTouch()
-	corner.Size = UDim2.fromOffset(3 * mt + 16, mt + 2)
+	corner.Size = UDim2.fromOffset(5 * mt + 40, mt + 2)
 	for _, b in ipairs(corner:GetChildren()) do
 		if b:IsA("TextButton") then
 			b.Size = UDim2.fromOffset(mt, mt)
-		end
-	end
-	local big = math.max(58, mt)
-	rightCol.Size = UDim2.fromOffset(170, 2 * big + 14)
-	for _, b in ipairs(rightCol:GetChildren()) do
-		if b:IsA("TextButton") then
-			b.Size = UDim2.fromOffset(170, big)
 		end
 	end
 	local cell = math.max(60, mt)
@@ -841,7 +824,6 @@ UI.onScale(function(d)
 	topScale.Scale = ((UI.settings and UI.settings.counterBig) and 1.3 or 1) * d
 	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 68 * d) or 8)
 	tutorial.Position = UDim2.new(0.5, 0, 0, 2 + 60 * d)
-	rightCol.Position = UDim2.new(1, -10, 0, 6 + 58 * d)
 	bubble.Position = UDim2.new(1, -10, 1, -(150 * d))
 	status.Position = UDim2.new(1, -10, 0, 6 + 200 * d)
 	if bubbleScale.Scale > 0 then
@@ -965,20 +947,21 @@ function Hud.update(st)
 		meterBack.Visible = true
 		halfLine.Visible = false
 		meterGrad.Color = ColorSequence.new(Color3.fromRGB(120, 220, 140), Color3.fromRGB(255, 140, 40))
-		meterLabel.Text = st.frozen and "😵 TOO STRESSED: do a habit!" or ("😰 stress" .. (st.multLabel ~= "" and ("  •  " .. st.multLabel) or ""))
+		-- 1.8.5: keep the line short (long bonus texts like "Overflow ×999 (…)" crowded the bottom)
+		local mult = st.multLabel or ""
+		if #mult > 22 then
+			mult = string.match(mult, "^(.-)%s*%(") or string.sub(mult, 1, 22)
+		end
+		meterLabel.Text = st.frozen and "😵 TOO STRESSED: do a habit!" or ("😰 stress" .. (mult ~= "" and ("  •  " .. mult) or ""))
 		meterFill.Size = UDim2.fromScale(math.clamp(st.stress / 100, 0, 1), 1)
 	else
 		meterBack.Visible = false
 		meterLabel.Text = ""
 	end
 
+	-- 1.8.5 (user: the job/glasses tag floated alone on the right): job and glasses live in the
+	-- phone and on your character now; this line only shows warnings
 	local bits = {}
-	if st.job then
-		table.insert(bits, "💼 " .. st.job)
-	end
-	if st.glasses then
-		table.insert(bits, "👓 " .. st.glasses)
-	end
 	if st.comeback then
 		table.insert(bits, "💀➡️🧠 Comeback")
 	end
@@ -991,7 +974,7 @@ function Hud.update(st)
 	pickRow.Visible = (path == nil and not st.dead) or doorsForced
 	doorDim.Visible = pickRow.Visible
 	grid.Visible = path ~= nil
-	rightCol.Visible = not st.dead
+	corner.Visible = not st.dead
 	shopBtn.Visible = path ~= nil
 	mapBtn.Visible = true
 end
