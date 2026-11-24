@@ -28,7 +28,9 @@ Never publish without the user's OK, never change permission settings, never pri
    - invisible edge walls
    - Low detail hides the far skyline
 
-   Left: a **bigger background** (skyscrapers with lit windows at night, hills, a distant highway), with screenshots in 4 directions, day and night.
+   - Code done Nov 24 (scheduled run, **NOT tested in Studio yet**): a 4th ring of tall downtown towers, window bands on the towers that glow at night (DayNight.lua), green hills at the back, a raised highway ring with lamps. All no-collision, no shadows, tagged FarSkyline so Low graphics hides them. Left: Studio test (part count and phone FPS), screenshots, maybe moving cars.
+
+   Was left: a **bigger background** (skyscrapers with lit windows at night, hills, a distant highway), with screenshots in 4 directions, day and night.
 4. [~] **Styles per brain level** (CLAUDE.md Art style):
    - Code done Nov 24 (scheduled run): `Config.Styles` is the one central table, `Style.lua` applies it (parts, signs, decor, light, toon outlines on the nearest 24 buildings, Low detail = the same style in smooth plastic with no outlines or decor). **NOT tested in Studio yet** (no place was open), no screenshots yet, Config.Version not bumped. Left: Studio test, screenshots, turning Low detail on automatically for weak phones.
    - 5 regular

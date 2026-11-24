@@ -1452,7 +1452,80 @@ local function buildSkyline()
 					-- a simple dark roof slab makes rows of houses read as houses
 					block(b.Position + Vector3.new(0, h / 2, 0), Vector3.new(w + 1, 1.2, w + 1), CS.Roof, ring > 1)
 				end
+				if r.windows then
+					-- 1.9: window bands on the side facing town (DayNight.lua lights them at night)
+					local W = CS.Windows
+					local inward = (side == 1 and Vector3.new(0, 0, 1)) or (side == 2 and Vector3.new(0, 0, -1)) or (side == 3 and Vector3.new(1, 0, 0)) or Vector3.new(-1, 0, 0)
+					local along = Vector3.new(math.abs(inward.Z), 0, math.abs(inward.X))
+					local rows = 0
+					local y = W.FirstAt
+					while y < h - 6 and rows < W.MaxRows do
+						if rng:NextNumber() > W.Skip then
+							local frac = rng:NextNumber(0.45, 0.85)
+							local shift = rng:NextNumber(-(1 - frac) / 2, (1 - frac) / 2) * w
+							local size = along * (w * frac) + Vector3.new(0, W.Height, 0) + inward * 0.4
+							size = Vector3.new(math.max(size.X, 0.4), size.Y, math.max(size.Z, 0.4))
+							local pos = Vector3.new(x, y, z) + inward * (w / 2 + 0.2) + along * shift
+							local win = block(pos, size, W.Day, true)
+							win.Material = Enum.Material.Glass
+							game:GetService("CollectionService"):AddTag(win, "SkylineWindow")
+							rows += 1
+						end
+						y += W.Gap
+					end
+				end
 			end
+		end
+	end
+	-- 1.9: green hills at the very back
+	local HL = CS.Hills
+	local hd = edge + HL.at
+	for side = 1, 4 do
+		local n = math.floor((hd * 2) / HL.spacing)
+		for i = 0, n do
+			local t = -hd + i * HL.spacing + rng:NextNumber(-HL.spacing * 0.3, HL.spacing * 0.3)
+			local x, z
+			if side == 1 then
+				x, z = t, -hd
+			elseif side == 2 then
+				x, z = t, hd
+			elseif side == 3 then
+				x, z = -hd, t
+			else
+				x, z = hd, t
+			end
+			local dia = rng:NextNumber(HL.minD, HL.maxD)
+			local top = rng:NextNumber(HL.minTop, HL.maxTop)
+			-- block() puts the bottom at pos.Y, so sink it until only "top" studs show
+			local hill = block(Vector3.new(x, top - dia, z), Vector3.new(dia, dia, dia), HL.colors[rng:NextInteger(1, #HL.colors)], true)
+			hill.Shape = Enum.PartType.Ball
+			hill.Material = Enum.Material.Grass
+		end
+	end
+	-- 1.9: a distant raised highway ring between the towers
+	local HW = CS.Highway
+	local d = edge + HW.at
+	for side = 1, 4 do
+		local horizontal = side <= 2
+		local sgn = (side == 1 or side == 3) and -1 or 1
+		local center = horizontal and Vector3.new(0, HW.y, sgn * d) or Vector3.new(sgn * d, HW.y, 0)
+		local len = d * 2 + HW.width
+		local roadSize = horizontal and Vector3.new(len, 1.5, HW.width) or Vector3.new(HW.width, 1.5, len)
+		block(center, roadSize, HW.road, true)
+		for _, e in ipairs({ -1, 1 }) do
+			local off = (HW.width / 2) * e
+			local edgePos = center + (horizontal and Vector3.new(0, 1.5, off) or Vector3.new(off, 1.5, 0))
+			block(edgePos, horizontal and Vector3.new(len, 1.6, 0.8) or Vector3.new(0.8, 1.6, len), HW.side, true)
+		end
+		for k = -math.floor(d / HW.pillarEvery), math.floor(d / HW.pillarEvery) do
+			local along = k * HW.pillarEvery
+			local base = horizontal and Vector3.new(along, 0, sgn * d) or Vector3.new(sgn * d, 0, along)
+			block(base, Vector3.new(4, HW.y, 4), HW.side, true)
+			-- a lamp on the town-facing edge (lit at night like the windows)
+			local lampPos = base + Vector3.new(0, HW.y + 1.5, 0) + (horizontal and Vector3.new(0, 0, -sgn * (HW.width / 2)) or Vector3.new(-sgn * (HW.width / 2), 0, 0))
+			block(lampPos, Vector3.new(0.4, 6, 0.4), Color3.fromRGB(60, 60, 65), true)
+			local bulb = block(lampPos + Vector3.new(0, 6, 0), Vector3.new(1.4, 0.8, 1.4), CS.Windows.Day, true)
+			game:GetService("CollectionService"):AddTag(bulb, "SkylineWindow")
 		end
 	end
 	folder.Parent = mapFolder

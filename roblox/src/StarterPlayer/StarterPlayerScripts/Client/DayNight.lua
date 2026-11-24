@@ -46,6 +46,23 @@ local function setLamps(on: boolean)
 	end
 end
 
+-- 1.9: the skyline windows and highway lamps glow at night (glass by day)
+local CollectionService = game:GetService("CollectionService")
+local windowsLit = nil
+local function setWindows(on: boolean)
+	if on == windowsLit then
+		return
+	end
+	windowsLit = on
+	local W = Config.Map.Skyline.Windows
+	for _, p in ipairs(CollectionService:GetTagged("SkylineWindow")) do
+		if p:IsA("BasePart") then
+			p.Material = on and Enum.Material.Neon or Enum.Material.Glass
+			p.Color = on and W.Night or W.Day
+		end
+	end
+end
+
 task.spawn(function()
 	while true do
 		task.wait(1)
@@ -54,12 +71,14 @@ task.spawn(function()
 			if s and s.alwaysDay then
 				Lighting.ClockTime = Lighting:GetAttribute("LookClock") or 13
 				setLamps(false)
+				setWindows(false)
 			else
 				local length = CD.DayMinutes * 60
 				local t = ((os.time() + serverOffset) % length) / length -- 0..1
 				local clock = (t * 24 + CD.StartHour) % 24
 				Lighting.ClockTime = clock
 				setLamps(isNight(clock))
+				setWindows(isNight(clock))
 				-- never pitch black at night
 				if isNight(clock) then
 					Lighting.Ambient = Lighting.Ambient:Lerp(CD.NightAmbient, 0.2)

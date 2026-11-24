@@ -749,9 +749,17 @@ Config.Map = {
 		Roof = Color3.fromRGB(110, 60, 50),
 		Rings = {
 			{ at = 30, spacing = 22, minH = 10, maxH = 18, minW = 14, maxW = 20, roofs = true, colors = { Color3.fromRGB(235, 220, 195), Color3.fromRGB(205, 225, 240), Color3.fromRGB(240, 205, 200), Color3.fromRGB(215, 235, 205) } },
-			{ at = 110, spacing = 34, minH = 40, maxH = 90, minW = 20, maxW = 34, colors = { Color3.fromRGB(170, 180, 195), Color3.fromRGB(150, 165, 185), Color3.fromRGB(190, 190, 200) } },
-			{ at = 260, spacing = 60, minH = 120, maxH = 240, minW = 30, maxW = 50, colors = { Color3.fromRGB(165, 180, 205), Color3.fromRGB(180, 195, 215) } },
+			{ at = 110, spacing = 34, minH = 40, maxH = 90, minW = 20, maxW = 34, windows = true, colors = { Color3.fromRGB(170, 180, 195), Color3.fromRGB(150, 165, 185), Color3.fromRGB(190, 190, 200) } },
+			{ at = 260, spacing = 60, minH = 120, maxH = 240, minW = 30, maxW = 50, windows = true, colors = { Color3.fromRGB(165, 180, 205), Color3.fromRGB(180, 195, 215) } },
+			-- 1.9: a taller downtown far behind (the "big city" look)
+			{ at = 420, spacing = 75, minH = 200, maxH = 380, minW = 40, maxW = 60, windows = true, colors = { Color3.fromRGB(150, 165, 190), Color3.fromRGB(175, 185, 205), Color3.fromRGB(135, 150, 175) } },
 		},
+		-- 1.9: lit windows on the towers (bands on the side facing town): glass by day, warm light at night
+		Windows = { FirstAt = 10, Gap = 14, MaxRows = 8, Skip = 0.35, Height = 3, Day = Color3.fromRGB(90, 110, 140), Night = Color3.fromRGB(255, 215, 140) },
+		-- 1.9: green hills at the very back (big half-buried balls)
+		Hills = { at = 640, spacing = 150, minD = 260, maxD = 420, minTop = 40, maxTop = 110, colors = { Color3.fromRGB(95, 150, 70), Color3.fromRGB(80, 135, 65), Color3.fromRGB(110, 160, 80) } },
+		-- 1.9: a distant raised highway ring between the towers, with lamps that glow at night
+		Highway = { at = 190, y = 24, width = 24, pillarEvery = 60, lampEvery = 60, road = Color3.fromRGB(70, 70, 75), side = Color3.fromRGB(190, 190, 185) },
 	},
 	-- 1.8.1: "Realistic Clear Skies" (free Creator Store asset 11219565245): only its image IDs are used
 	Sky = {
