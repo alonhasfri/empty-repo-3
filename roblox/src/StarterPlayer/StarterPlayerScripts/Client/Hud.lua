@@ -368,9 +368,11 @@ task.spawn(function()
 	local h = 0
 	while true do
 		task.wait(0.05)
-		if shopBtn.Visible and not UI.settings.reduceFlashing and UI.tier == "cashgrab" then
+		if shopBtn.Visible and not UI.settings.reduceFlashing and UI.tier == "cashgrab" and UI.effects() > 0 then
 			h = (h + 0.01) % 1
 			shopGrad.Color = ColorSequence.new(Color3.fromHSV(h, 0.8, 1), Color3.fromHSV((h + 0.25) % 1, 0.8, 1))
+		else
+			task.wait(1) -- idle: check rarely instead of 20 times a second
 		end
 	end
 end)

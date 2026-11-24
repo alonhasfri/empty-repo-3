@@ -91,8 +91,8 @@ local function busyNow(): boolean
 end
 
 local PLATE_LETTERS = { "B", "R", "N", "Z", "K", "Q", "T", "M" }
-local CAR_COLORS = { "🔴 red", "🔵 blue", "⚪ white", "⚫ black", "🟢 green", "🟡 yellow" }
-local CAR_MODELS = { "Brainmobile Mini", "Hoppr Comfort", "Thinkr Hatchback", "Noodle Sedan" }
+local CAR_COLORS = TL.Ride.CarColors
+local CAR_MODELS = TL.Ride.CarModels
 
 Net.on("ride_places", function(player)
 	local data = DataService.get(player)

@@ -1013,6 +1013,8 @@ Content.Life = {
 		Wait = "Hoppr is finding the next car…",
 		Free = "Walking is free. The free 🚌 Brain Bus (🗺 Maps) is slow. Hoppr is door to door, fast.",
 		Drivers = { "Dana ⭐4.9", "Omar ⭐4.8", "Kim ⭐5.0", "Leo ⭐4.7", "Maya ⭐4.9" },
+		CarColors = { "🔴 red", "🔵 blue", "⚪ white", "⚫ black", "🟢 green", "🟡 yellow" },
+		CarModels = { "Brainmobile Mini", "Hoppr Comfort", "Thinkr Hatchback", "Noodle Sedan" },
 	},
 	Shift = {
 		Title = "⏰ Shifts",
@@ -1080,7 +1082,25 @@ Content.Settings17 = {
 	ClassicHud = "🧩 Simple phone (same for every brain)",
 }
 
--- 1.7: map signs and guides
+-- 1.7 audit (R3): text that used to live in the services
+Content.SocialText = {
+	TrickQuestions = {
+	{ q = "Pick the WRONG answer: 2 + 2 = ?", options = { "4", "5" }, correct = 2 },
+	{ q = "Which is NOT not a fruit?", options = { "Apple", "Chair" }, correct = 1 },
+	{ q = "True or false: \"false\" is not true.", options = { "True", "False" }, correct = 1 },
+	{ q = "Do NOT pick the answer that isn't 7. What is 3 + 4?", options = { "7", "8" }, correct = 1 },
+	{ q = "This time the dumb answer is correct: what color is the sky?", options = { "Blue", "Banana" }, correct = 2 },
+	{ q = "Which is the SMALLEST: 0.5, 1/3 or 0.4?", options = { "0.5", "1/3", "0.4" }, correct = 2 },
+	{ q = "Pick the answer that is NOT wrong: 10 − 3 = ?", options = { "7", "13" }, correct = 1 },
+	{ q = "Reverse question: pick the LONGEST word.", options = { "Cat", "Hippopotamus" }, correct = 2 },
+	},
+	Speeches = {
+	Gain = { "I will build more libraries.", "I promise free tutoring for everyone.", "Science funding for all!" },
+	Lose = { "Free microwaves for everyone!!", "I will ban reading. Forever.", "Every day is Bonkadoo Day." },
+	},
+}
+
+-- 1.7 fix: the free map ride is a slow bus
 Content.Bus = {
 	Coming = "🚌 The free Brain Bus picks you up in %d s. Stay put! (Hoppr is faster.)",
 	Waiting = "🚌 Your bus is on its way… %d s",
@@ -1092,6 +1112,7 @@ Content.Bus = {
 	Cooldown = "🚌 The next bus comes in %d s.",
 }
 
+-- 1.7: map signs and guides
 Content.Map = {
 	Tower = "🧠 THE BRAIN TOWER",
 	Talk = "Talk",

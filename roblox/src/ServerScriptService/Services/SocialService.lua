@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage.Shared
 local Config = require(Shared.Config)
+local Content = require(Shared.Content)
 local Brain = require(Shared.Brain)
 
 local Net = require(script.Parent.Net)
@@ -57,16 +58,7 @@ end
 ---------------------------------------------------------------------
 -- Content for the activities
 ---------------------------------------------------------------------
-local TRICK_QUESTIONS = {
-	{ q = "Pick the WRONG answer: 2 + 2 = ?", options = { "4", "5" }, correct = 2 },
-	{ q = "Which is NOT not a fruit?", options = { "Apple", "Chair" }, correct = 1 },
-	{ q = "True or false: \"false\" is not true.", options = { "True", "False" }, correct = 1 },
-	{ q = "Do NOT pick the answer that isn't 7. What is 3 + 4?", options = { "7", "8" }, correct = 1 },
-	{ q = "This time the dumb answer is correct: what color is the sky?", options = { "Blue", "Banana" }, correct = 2 },
-	{ q = "Which is the SMALLEST: 0.5, 1/3 or 0.4?", options = { "0.5", "1/3", "0.4" }, correct = 2 },
-	{ q = "Pick the answer that is NOT wrong: 10 − 3 = ?", options = { "7", "13" }, correct = 1 },
-	{ q = "Reverse question: pick the LONGEST word.", options = { "Cat", "Hippopotamus" }, correct = 2 },
-}
+local TRICK_QUESTIONS = Content.SocialText.TrickQuestions
 
 local CASES = {
 	"left a banana peel in the hallway",
@@ -791,10 +783,7 @@ end)
 ---------------------------------------------------------------------
 -- The Election (server event)
 ---------------------------------------------------------------------
-local SPEECHES = {
-	Gain = { "I will build more libraries.", "I promise free tutoring for everyone.", "Science funding for all!" },
-	Lose = { "Free microwaves for everyone!!", "I will ban reading. Forever.", "Every day is Bonkadoo Day." },
-}
+local SPEECHES = Content.SocialText.Speeches
 local election = nil
 
 local function runElection()

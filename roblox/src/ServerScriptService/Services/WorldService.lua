@@ -492,7 +492,8 @@ local function buildPlaza()
 	part({ Name = "FountainBase", Shape = Enum.PartType.Cylinder, CFrame = CFrame.new(0, 1.2, 0) * CFrame.Angles(0, 0, math.rad(90)), Size = Vector3.new(2, 26, 26), Color = Color3.fromRGB(180, 180, 175), Material = Enum.Material.Marble }, "trim")
 	part({ Name = "FountainWater", Shape = Enum.PartType.Cylinder, CFrame = CFrame.new(0, 2.3, 0) * CFrame.Angles(0, 0, math.rad(90)), Size = Vector3.new(0.4, 23, 23), Color = Color3.fromRGB(80, 170, 230), Material = Enum.Material.Glass, Transparency = 0.2 })
 	local statue = part({ Name = "BrainStatue", Shape = Enum.PartType.Ball, Size = Vector3.new(7, 7, 7), Position = Vector3.new(0, 7, 0), Color = Color3.fromRGB(255, 150, 190) }, "accent")
-	sign(statue, "🧠 BRAINVILLE", 6, 300, 50)
+	-- (1.7: the Brain Tower now stands here with its own sign, so the old statue sign is gone)
+	local _ = statue
 	for _, x in ipairs({ -55, 55 }) do
 		for _, z in ipairs({ -55, 55 }) do
 			tree(Vector3.new(x, 0.6, z), 0.9)
