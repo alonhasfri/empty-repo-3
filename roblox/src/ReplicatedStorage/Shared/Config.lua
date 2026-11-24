@@ -644,6 +644,9 @@ Config.UI = {
 	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
 	ToastLowValue = { "interest", "bills paid", "bills skipped", "you already talked", "the next bus comes in", "give it " },
 	LandscapePhoneAspect = 1.05, -- the in-game phone on a sideways phone screen (portrait 0.52 is only ~146 px wide there)
+	ModalPhone = Vector2.new(0.68, 0.74), -- 1.8.5: pop-ups use at most this share of a phone screen (user: "pop-ups are way too big")
+	ModalPC = Vector2.new(0.5, 0.62), -- and of a PC screen
+	ModalMax = Vector2.new(520, 440), -- pixels, before the device scale
 }
 
 -- Which phone you get. IQ only matters on the Gain path; the Lose path always gets the toy phone.

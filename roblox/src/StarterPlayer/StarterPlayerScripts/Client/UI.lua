@@ -676,13 +676,17 @@ function UI.modal(title: string, opts)
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, phone and 0.5 or 0.52),
 		-- sized so that AFTER the device scale it still fits the screen
-		Size = phone and UDim2.fromScale(0.94 / D, 0.94 / D) or UDim2.fromScale(0.92 / D, 0.84 / D),
+		-- 1.8.5: ordinary pop-ups are capped (Config.UI.ModalPhone / ModalPC); only the phone is near full screen
+		Size = phone and UDim2.fromScale(0.94 / D, 0.94 / D) or (function()
+			local share = (opts.big and Vector2.new(0.9, 0.84)) or (UI.isPhone() and Config.UI.ModalPhone or Config.UI.ModalPC)
+			return UDim2.fromScale(share.X / D, share.Y / D)
+		end)(),
 		BackgroundColor3 = phone and Color3.fromRGB(14, 14, 18) or T.bg,
 		BackgroundTransparency = phone and 0 or T.bgT,
 		ZIndex = 20,
 		Parent = backdrop,
 	}, {
-		UI.new("UISizeConstraint", { MaxSize = phone and Vector2.new(400, 820) or (opts.maxSize or Vector2.new(580, 500)) }),
+		UI.new("UISizeConstraint", { MaxSize = phone and Vector2.new(400, 820) or (opts.maxSize or Config.UI.ModalMax) }),
 	})
 	if phone then
 		-- on a sideways phone screen a tall phone would be tiny, so it gets a wider shape there
@@ -797,6 +801,20 @@ function UI.modal(title: string, opts)
 
 	current = { frame = frame, backdrop = backdrop, content = content, onClose = opts.onClose }
 	if not opts.noClose then
+		-- 1.8.5: tap outside the pop-up to close it
+		backdrop.Active = true
+		backdrop.InputBegan:Connect(function(input)
+			if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then
+				return
+			end
+			local p, s = frame.AbsolutePosition, frame.AbsoluteSize
+			local x, y = input.Position.X, input.Position.Y
+			if x < p.X or x > p.X + s.X or y < p.Y or y > p.Y + s.Y then
+				if current and current.frame == frame then
+					UI.closeModal()
+				end
+			end
+		end)
 		ContextActionService:BindAction("BrainCloseModal", function(_, inputState)
 			if inputState == Enum.UserInputState.Begin then
 				UI.closeModal()

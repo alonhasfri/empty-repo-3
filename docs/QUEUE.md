@@ -55,6 +55,20 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
     - The job/glasses tag moves into the profile card or goes.
     - The bottom "stress • Overflow" line gets slimmer, or hides when it isn't relevant.
     - The Dr. Wrinkles card title is easier to read.
+4f. **Player feedback on a phone** (Nov 24):
+    - **"Reset my progress" in Settings:**
+      - warning text: what resets (cells, path, coins, job, items) and what stays (badges, Robux purchases)
+      - press, then hold a red button for 3 s, then an "Are you sure?" step
+      - server-side, with a 24 h cooldown and the old save kept as a backup key for 7 days
+      - returns the player to the door choice; Hebrew-ready
+    - **"UI looks janky":** one design kit everywhere (one font, 2–3 text sizes, one button style, one panel style, 8 px spacing); no cut-off text, no elements touching edges, everything on a grid, no jumpy tweens. Covers HUD, phone, shop, settings, conversations, minigames and admin.
+    - **"Pop-ups too big":**
+      - modals capped at about 65% of the screen on phones (smaller on PC); full screen only for the phone and cutscenes
+      - reward and info pop-ups become toasts
+      - no surprise pop-ups while moving; queued, one at a time
+      - always a ✕, tap-outside-to-close and back
+      - list every pop-up and shrink or convert each one
+    - Before/after phone-landscape screenshots go to docs/screens/ui-final/. Keep each publish stable.
 
 **Tier 2: memorable moments and a fuller Lose side**
 5. Item 10: **brain animations** (the shredder, the 0-cell POOF).
