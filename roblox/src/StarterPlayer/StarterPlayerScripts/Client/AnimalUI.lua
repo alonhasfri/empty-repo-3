@@ -129,20 +129,42 @@ local function sniffPicker()
 	m.focus()
 end
 
+-- 1.7 fix: animals keep a way to the four Lose stands in the Mall (icons only, a sniff trail leads there)
+local function standPicker()
+	local m = UI.modal(TA.Stands, { color = Color3.fromRGB(255, 120, 200) })
+	local grid = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 1, Parent = m.content }, {
+		UI.new("UIGridLayout", { CellSize = UDim2.new(0.47, 0, 0, 90), CellPadding = UDim2.new(0.03, 0, 0, 10), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	for i, key in ipairs(TA.StandOrder) do
+		local part = workspace:FindFirstChild("Station_" .. key, true)
+		if part and part:IsA("BasePart") then
+			bigIcon(grid, TA.StandIcons[key], i, Color3.fromRGB(255, 230, 245), function()
+				m.close()
+				AnimalUI.trail(part.Position.X, part.Position.Z)
+			end)
+		end
+	end
+	m.focus()
+end
+
 function AnimalUI.open()
 	local m = UI.modal(TA.Title, { color = Color3.fromRGB(200, 140, 80) })
 	bigIcon(m.content, TA.Sniff, 1, Color3.fromRGB(150, 220, 110), function()
 		sniffPicker()
 	end)
+	bigIcon(m.content, TA.Stands, 2, Color3.fromRGB(255, 150, 210), function()
+		m.close()
+		standPicker()
+	end)
 	if AnimalUI.hasPower and AnimalUI.hasPower() then
-		bigIcon(m.content, TA.Power, 2, Color3.fromRGB(255, 190, 60), function()
+		bigIcon(m.content, TA.Power, 3, Color3.fromRGB(255, 190, 60), function()
 			m.close()
 			if AnimalUI.onPower then
 				AnimalUI.onPower()
 			end
 		end)
 	end
-	bigIcon(m.content, TA.Home, 3, Color3.fromRGB(140, 190, 255), function()
+	bigIcon(m.content, TA.Home, 4, Color3.fromRGB(140, 190, 255), function()
 		m.close()
 		local r = Remote.call("places")
 		if r and r.ok then

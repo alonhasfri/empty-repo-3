@@ -1055,6 +1055,9 @@ Content.Life = {
 		Sniff = "👃",
 		Home = "🏠",
 		Power = "⚡",
+		Stands = "🛍", -- the four Lose stands in the Brainrot Mall (sniff trail, no reading needed)
+		StandIcons = { clickbait = "📰", steal = "🎮", comments = "💬", scroller = "📱" },
+		StandOrder = { "clickbait", "steal", "comments", "scroller" },
 	},
 	LoseFX = {
 		Warn = { "uh oh…", "wait… 🥴", "brain buffering…", "hmm?" },
