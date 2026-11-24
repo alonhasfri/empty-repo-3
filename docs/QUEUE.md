@@ -214,3 +214,11 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
    - shows only the commands the viewer's rank allows; server checks stay
    - phone landscape; Hebrew-ready
 2. **Full phone pass** of every screen (BrainTok/BrainTalks swipe feeds first): touch swipes, 44 px targets, nothing off-screen or under the thumbstick/jump button, touch-scrollable lists. Write docs/Phone check.md with ✅/❌ and screenshots in docs/screens/phone/.
+3. **Hotfix 1.8.7** (Skill Gate answers, phone fixes): pushed; publish pending (the user clicks Overwrite).
+4. **Admin panel on phones + one shared fit helper** (user: "EVERYTHING should fit mobile"):
+   - the admin panel clamps to the safe area and collapses the tab bar to an icon rail on small screens; players and actions become one column with a back button
+   - add `UI.fitPanel(frame, opts)` (safe-area clamp, phone scaling, scrollable content) and use it for every panel and pop-up
+   - fill in docs/Phone check.md with ✅/❌ and screenshots in docs/screens/phone/
+5. **More debug commands** in the 🧪 Testing tab: pass all gates, set IQ / brain band / style, life stage + Crossroads, job/promote, unlock inventions/projects, test badges, stress/coins/bank, time of day + weather, teleports (buildings, Moon, castle stages, horror spots), horror stage, play cutscene, FPS/part overlay, daily tasks, refill Quick Play, reset seen lines, become an animal. Testers on themselves only; Head Mod+ on others; all server-checked and logged.
+6. **💬 Send feedback** button (Roblox's built-in feedback prompt; check the current API before using it; pcall plus a friendly toast if unavailable).
+7. **Settings redesign** in the staff-panel style: tabs (Sound, Graphics, Controls & Screen, Notifications, Language, Gameplay, Info, Feedback, Danger zone with hold-to-confirm reset, Help), big toggles, search, remembers the last tab, phone landscape first.
