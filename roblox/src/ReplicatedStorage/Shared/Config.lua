@@ -764,4 +764,122 @@ Config.Map = {
 	SharpLight = { ShadowSoftness = 0.2, EnvironmentDiffuseScale = 1, EnvironmentSpecularScale = 1 },
 }
 
+-- 1.9: the art style per brain level (CLAUDE.md "Art style", pictures in docs/style_options/).
+-- ONE central table: Style.lua reads it for every part, sign, decor and light. Same map, only looks change.
+-- Each role: M = material (nil keeps the part's own), P = palette (picked per part so streets vary),
+-- A = how far the part's own colour moves to the palette colour (0..1).
+local MAT = Enum.Material
+local function rgb(r, g, b)
+	return Color3.fromRGB(r, g, b)
+end
+Config.Styles = {
+	-- who gets which style
+	GainTextured = 100, -- Gain IQ from here: style 2
+	GainRealistic = 135, -- Gain IQ from here: style 3 in warm colours
+	GainFuture = 200, -- Gain IQ from here: futuristic accents
+	LoseToonBelow = 84e9, -- Lose cells below this: style 4 (toon)
+	LowPolyBelow = 45e9, -- cells below this (Lose, Comeback start, animals): style 6
+	OutlineBuildings = 24, -- toon outlines on the nearest buildings (Roblox shows at most 31 Highlights)
+	OutlineEvery = 1, -- seconds between "which buildings are nearest" checks
+	List = {
+		-- 5. Cozy storybook (lobby, start, IQ ~80-100)
+		storybook = {
+			road = { M = MAT.Cobblestone, P = { rgb(150, 135, 120) }, A = 1 },
+			sidewalk = { M = MAT.Pavement, P = { rgb(205, 190, 165) }, A = 1 },
+			wall = { M = MAT.Brick, P = { rgb(185, 95, 70), rgb(235, 215, 180), rgb(200, 120, 85), rgb(240, 225, 195) }, A = 0.85, plasterEvery = 2 },
+			roof = { M = MAT.Slate, P = { rgb(175, 60, 45), rgb(160, 70, 50), rgb(190, 80, 55) }, A = 1 },
+			trim = { M = MAT.Wood, P = { rgb(95, 65, 45) }, A = 0.7 },
+			accent = { M = nil, P = { rgb(200, 70, 60), rgb(70, 120, 80), rgb(230, 180, 70) }, A = 0.6 },
+			floor = { M = nil, P = { rgb(230, 210, 175) }, A = 0.35 },
+			leaves = { M = MAT.LeafyGrass, P = { rgb(100, 160, 70), rgb(120, 175, 80) }, A = 0.6 },
+			trunk = { M = MAT.Wood, P = { rgb(110, 75, 50) }, A = 0.6 },
+			desaturate = 0,
+			sign = { font = Enum.Font.Fondamento, color = rgb(255, 245, 220), stroke = rgb(90, 50, 30), strokeT = 0.2 },
+			decor = "flowers",
+			light = { clock = 16.4, brightness = 2.9, ambient = rgb(150, 130, 110), density = 0.2, haze = 0.6, sat = 0.12, contrast = 0.06, tint = rgb(255, 238, 215), sharp = false },
+		},
+		-- 2. Semi-realistic textured (Gain, IQ ~100-135)
+		textured = {
+			road = { M = MAT.Asphalt, P = { rgb(75, 75, 78) }, A = 0.6 },
+			sidewalk = { M = MAT.Pavement, P = { rgb(185, 182, 175) }, A = 0.5 },
+			wall = { M = nil, P = { rgb(170, 110, 85), rgb(210, 200, 180), rgb(190, 170, 140), rgb(150, 95, 75) }, A = 0.3, plasterEvery = 3 },
+			roof = { M = MAT.RoofShingles, P = { rgb(90, 80, 75), rgb(110, 75, 60) }, A = 0.4 },
+			trim = { M = MAT.Concrete, P = { rgb(200, 198, 192) }, A = 0.2 },
+			accent = { M = nil, P = { rgb(120, 90, 70) }, A = 0.15 },
+			floor = { M = nil, P = { rgb(200, 195, 185) }, A = 0 },
+			leaves = { M = MAT.LeafyGrass, P = { rgb(80, 140, 60) }, A = 0.3 },
+			trunk = { M = MAT.Wood, P = { rgb(100, 70, 50) }, A = 0.3 },
+			desaturate = 0,
+			sign = { font = Enum.Font.GothamBold, color = rgb(255, 255, 255), stroke = rgb(0, 0, 0), strokeT = 0.3 },
+			decor = "planters",
+			light = { clock = 14, brightness = 2.9, ambient = rgb(130, 125, 118), density = 0.18, haze = 0.2, sat = 0.12, contrast = 0.05, tint = rgb(255, 252, 245), sharp = true },
+		},
+		-- 3. Realistic city in style 5's warm colours (Gain, IQ 135+)
+		realistic = {
+			road = { M = MAT.Asphalt, P = { rgb(60, 58, 58) }, A = 0.8 },
+			sidewalk = { M = MAT.Pavement, P = { rgb(200, 185, 165) }, A = 0.7 },
+			wall = { M = MAT.Concrete, P = { rgb(215, 180, 145), rgb(195, 150, 115), rgb(230, 205, 170), rgb(180, 120, 90) }, A = 0.7, glassEvery = 3 },
+			roof = { M = MAT.Concrete, P = { rgb(120, 95, 80) }, A = 0.8 },
+			trim = { M = MAT.Metal, P = { rgb(170, 150, 125) }, A = 0.5 },
+			accent = { M = nil, P = { rgb(150, 95, 60) }, A = 0.4 },
+			floor = { M = MAT.Marble, P = { rgb(225, 215, 200) }, A = 0.5 },
+			leaves = { M = MAT.LeafyGrass, P = { rgb(85, 140, 65) }, A = 0.3 },
+			trunk = { M = MAT.Wood, P = { rgb(100, 70, 50) }, A = 0.3 },
+			desaturate = 0,
+			sign = { font = Enum.Font.Garamond, color = rgb(250, 238, 215), stroke = rgb(60, 40, 25), strokeT = 0.6 },
+			decor = "planters",
+			light = { clock = 16.8, brightness = 3, ambient = rgb(135, 115, 100), density = 0.2, haze = 0.5, sat = 0.16, contrast = 0.1, tint = rgb(255, 240, 220), sharp = true },
+		},
+		-- 3 + futuristic accents (Gain, IQ 200+)
+		future = {
+			road = { M = MAT.Asphalt, P = { rgb(55, 55, 60) }, A = 0.8 },
+			sidewalk = { M = MAT.Pavement, P = { rgb(200, 190, 175) }, A = 0.7 },
+			wall = { M = MAT.Concrete, P = { rgb(215, 185, 150), rgb(230, 210, 180), rgb(195, 155, 120) }, A = 0.7, glassEvery = 2 },
+			roof = { M = MAT.Metal, P = { rgb(150, 140, 130) }, A = 0.8 },
+			trim = { M = MAT.Metal, P = { rgb(205, 210, 220) }, A = 0.7 },
+			accent = { M = MAT.Glass, P = { rgb(90, 220, 230) }, A = 1 },
+			floor = { M = MAT.Marble, P = { rgb(230, 222, 210) }, A = 0.5 },
+			leaves = { M = MAT.LeafyGrass, P = { rgb(85, 145, 70) }, A = 0.3 },
+			trunk = { M = MAT.Wood, P = { rgb(100, 70, 50) }, A = 0.3 },
+			desaturate = 0,
+			sign = { font = Enum.Font.Michroma, color = rgb(170, 250, 255), stroke = rgb(0, 60, 80), strokeT = 0.4 },
+			decor = "future",
+			light = { clock = 17.6, brightness = 2.9, ambient = rgb(125, 115, 120), density = 0.2, haze = 0.45, sat = 0.18, contrast = 0.12, tint = rgb(250, 242, 235), sharp = true },
+		},
+		-- 4. Toon / cel-shaded (Lose, 86B down to 45B)
+		toon = {
+			road = { M = MAT.SmoothPlastic, P = { rgb(70, 70, 90) }, A = 1 },
+			sidewalk = { M = MAT.SmoothPlastic, P = { rgb(220, 220, 230) }, A = 1 },
+			wall = { M = MAT.SmoothPlastic, P = { rgb(255, 120, 120), rgb(255, 210, 80), rgb(110, 200, 255), rgb(140, 230, 120), rgb(200, 140, 255) }, A = 1 },
+			roof = { M = MAT.SmoothPlastic, P = { rgb(230, 60, 60), rgb(60, 110, 230) }, A = 1 },
+			trim = { M = MAT.SmoothPlastic, P = { rgb(255, 255, 255) }, A = 0.8 },
+			accent = { M = MAT.SmoothPlastic, P = { rgb(255, 60, 160), rgb(255, 230, 0), rgb(0, 220, 140) }, A = 1 },
+			floor = { M = MAT.SmoothPlastic, P = { rgb(255, 240, 200) }, A = 0.6 },
+			leaves = { M = MAT.SmoothPlastic, P = { rgb(80, 210, 90) }, A = 1 },
+			trunk = { M = MAT.SmoothPlastic, P = { rgb(150, 95, 55) }, A = 1 },
+			desaturate = 0,
+			outline = true,
+			sign = { font = Enum.Font.FredokaOne, color = rgb(255, 255, 255), stroke = rgb(0, 0, 0), strokeT = 0 },
+			decor = nil,
+			light = { clock = 13, brightness = 3, ambient = rgb(165, 155, 165), density = 0.1, haze = 0, sat = 0.3, contrast = 0.12, tint = rgb(255, 255, 255), sharp = false },
+		},
+		-- 6. Clean low-poly, desaturated (Lose below 45B, animals)
+		lowpoly = {
+			road = { M = MAT.SmoothPlastic, P = { rgb(120, 120, 125) }, A = 1 },
+			sidewalk = { M = MAT.SmoothPlastic, P = { rgb(185, 185, 185) }, A = 1 },
+			wall = { M = MAT.SmoothPlastic, P = { rgb(200, 190, 185), rgb(185, 190, 200), rgb(195, 200, 185) }, A = 0.6 },
+			roof = { M = MAT.SmoothPlastic, P = { rgb(140, 120, 115) }, A = 0.8 },
+			trim = { M = MAT.SmoothPlastic, P = { rgb(200, 200, 200) }, A = 0.6 },
+			accent = { M = MAT.SmoothPlastic, P = { rgb(170, 160, 150) }, A = 0.5 },
+			floor = { M = MAT.SmoothPlastic, P = { rgb(190, 190, 185) }, A = 0.6 },
+			leaves = { M = MAT.SmoothPlastic, P = { rgb(140, 170, 130) }, A = 0.8 },
+			trunk = { M = MAT.SmoothPlastic, P = { rgb(130, 110, 95) }, A = 0.8 },
+			desaturate = 0.55,
+			sign = { font = Enum.Font.Cartoon, color = rgb(230, 230, 230), stroke = rgb(60, 60, 60), strokeT = 0.6 },
+			decor = nil,
+			light = { clock = 12, brightness = 2.2, ambient = rgb(165, 160, 170), density = 0.28, haze = 1.2, sat = -0.35, contrast = -0.05, tint = rgb(245, 240, 250), sharp = false },
+		},
+	},
+}
+
 return Config

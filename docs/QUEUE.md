@@ -29,7 +29,8 @@ Never publish without the user's OK, never change permission settings, never pri
    - Low detail hides the far skyline
 
    Left: a **bigger background** (skyscrapers with lit windows at night, hills, a distant highway), with screenshots in 4 directions, day and night.
-4. [ ] **Styles per brain level** (CLAUDE.md Art style):
+4. [~] **Styles per brain level** (CLAUDE.md Art style):
+   - Code done Nov 24 (scheduled run): `Config.Styles` is the one central table, `Style.lua` applies it (parts, signs, decor, light, toon outlines on the nearest 24 buildings, Low detail = the same style in smooth plastic with no outlines or decor). **NOT tested in Studio yet** (no place was open), no screenshots yet, Config.Version not bumped. Left: Studio test, screenshots, turning Low detail on automatically for weak phones.
    - 5 regular
    - 2 a bit smarter
    - 3 in warm colours for really smart
