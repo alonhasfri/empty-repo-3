@@ -14,11 +14,15 @@ Players do things that change their brain cells: books, jobs and inventions to g
 - **Do one feature at a time,** then test, then the next.
 - **Never say "done" without testing** (see Workflow).
 
-## Art style (updated Nov 23 by the user)
-**Semi-realistic and detailed, with real textures** (PBR SurfaceAppearance or MaterialVariants, real materials, detailed buildings with trims, windows, balconies and props), not plain coloured boxes. There's a **Low detail mode** for weak phones (detected automatically, and togglable in Settings). The brain-level looks still change the mood on top of it:
-- **Lobby and start of Lose:** cute, with cash-grab signs.
-- **Lose:** cash grab, then nonsense below 45B.
-- **Gain:** cash grab (IQ 80–95), then cozy (95–120), realistic (120–135), fancy (135–200), and futuristic (200+).
+## Art style (updated Nov 24 by the user)
+Semi-real city, paved (roads and sidewalks, grass only in yards, parks and planters), with real textures, detailed buildings and lots of street decor. The STYLE changes with brain level (see `docs/style_options/` for the pictures):
+- **Regular (lobby, start, near 86B / IQ ~80–100):** style 5, **Cozy storybook**: golden light, cobblestone, timber and brick shops with red roofs and flower boxes.
+- **A bit smarter (Gain, IQ ~100–135):** style 2, **Semi-realistic textured**: real brick, plaster, asphalt and paving in natural colours.
+- **Really smart (Gain, IQ 135+):** style 3, **Realistic city** (taller concrete and glass, a skyline) but with **style 5's warm colours**, not grey. Futuristic accents can be added at 200+.
+- **A bit dumber (Lose, 86B down to 45B):** style 4, **Toon / cel-shaded**: flat bright colours with black outlines.
+- **Really dumb (Lose, below 45B):** style 6, **Clean low-poly, desaturated** (washed-out colours).
+- **Low detail mode** for weak phones: a simplified version of the current style (fewer props, simpler textures, no outlines or decor). It's switched on automatically, and can be toggled in Settings.
+All styles share the same map skeleton and landmark positions, so only materials, colours, decor and lighting change.
 
 The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in the browser).
 
