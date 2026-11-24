@@ -21,6 +21,7 @@ local DataService = require(script.Parent.DataService)
 local BrainService = require(script.Parent.BrainService)
 local WorldService = require(script.Parent.WorldService)
 local ConversationService = require(script.Parent.ConversationService)
+local BoardService = require(script.Parent.BoardService)
 
 local LifeService = {}
 
@@ -275,6 +276,7 @@ local function clockOut(player, quiet: boolean?)
 		s.bonusWindow = sh.window
 	end
 	data.coins += bonus
+	BoardService.addPay(player, bonus)
 	BrainService.push(player)
 	return {
 		ok = true,

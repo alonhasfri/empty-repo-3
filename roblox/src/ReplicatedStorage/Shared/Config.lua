@@ -141,6 +141,13 @@ Config.MinigameMinSeconds = {
 	Astro = 4, -- each astronaut training round
 }
 
+-- 1.7.2: plaza leaderboards (OrderedDataStore; every call is pcall'd, the board just rests if the store is down)
+Config.Boards = {
+	Refresh = 60, -- seconds between saving new scores and redrawing the boards
+	WeeklyPay = { Store = "WeeklyPay", Top = 10, Pos = Vector3.new(-30, 7, 16), Facing = Vector3.new(1, 0, 0.15) }, -- left of spawn, facing it
+	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
+}
+
 Config.Bus = {
 	WaitSeconds = 20, -- the free map bus is slow on purpose; Hoppr (coins) is fast, walking is free
 	Cooldown = 10, -- after a trip

@@ -1108,6 +1108,15 @@ Content.Settings17 = {
 	LowGraphicsInfo = "Turns off street lights, sparkles, extra decorations and shadows so the game runs smoother.",
 }
 
+-- 1.7.2: plaza leaderboards (display names only)
+Content.Boards = {
+	WeeklyPayTitle = "💼 TOP EARNERS THIS WEEK\n(coins from real work)",
+	SpeedrunTitle = "⏱ FASTEST TO IQ 200",
+	Coins = "💰 %d",
+	Empty = "Nobody yet. Be the first!",
+	Resting = "📴 The board is resting. Back soon!",
+}
+
 -- 1.7.2: "What do I do now?" (a goal line + an arrow to the next useful place). Short, picture-first lines.
 Content.Guide = {
 	PickDoor = "🚪 Pick a door: get dumber or get smarter!",

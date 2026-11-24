@@ -15,6 +15,7 @@ local BrainService = require(script.Parent.BrainService)
 local WorldService = require(script.Parent.WorldService)
 local ProjectService = require(script.Parent.ProjectService)
 local ConversationService = require(script.Parent.ConversationService)
+local BoardService = require(script.Parent.BoardService)
 
 local GainService = {}
 
@@ -683,7 +684,9 @@ end
 local function finishTask(player, data, job, correct)
 	careerShift(player, data, job, correct)
 	if correct then
-		data.coins += math.floor(job.coinsPerMinute * CC.TaskPay * payMult(data.career) + 0.5)
+		local pay = math.floor(job.coinsPerMinute * CC.TaskPay * payMult(data.career) + 0.5)
+		data.coins += pay
+		BoardService.addPay(player, pay)
 		data.jobTasksDone += 1
 		BrainService.gain(player, 0.5, "job")
 		BrainService.stress(player, 4)
@@ -1010,7 +1013,9 @@ function GainService.start()
 							and WorldService.near(player, pos, Config.WorkRadius)
 					end
 					if job and working then
-						data.coins += math.floor(job.coinsPerMinute * payMult(careerOf(data)) + 0.5)
+						local pay = math.floor(job.coinsPerMinute * payMult(careerOf(data)) + 0.5)
+						data.coins += pay
+						BoardService.addPay(player, pay)
 						BrainService.push(player)
 					end
 					if data.stress > 0 then
