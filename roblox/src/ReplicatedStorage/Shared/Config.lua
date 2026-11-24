@@ -11,7 +11,7 @@ Config.Version = "1.8"
 ---------------------------------------------------------------------
 -- Put the ID of "Cult of the 39" here. Find it in the community page link:
 -- roblox.com/communities/1234567/... -> the number is the ID.
-Config.GroupId = 0
+Config.GroupId = 952453661 -- Cult of the 39
 
 -- In-game rank levels
 Config.Levels = { Player = 0, Tester = 1, Moderator = 2, HeadModerator = 3, Owner = 4 }
