@@ -74,6 +74,7 @@ local PHONE_APPS = {
 	},
 	Gain = {
 		{ key = "theater", icon = "🎬", name = "Jack B", c1 = Color3.fromRGB(230, 60, 60), c2 = Color3.fromRGB(150, 20, 30) },
+		{ key = "braintalks", icon = "🎓", name = "BrainTalks", c1 = Color3.fromRGB(70, 160, 240), c2 = Color3.fromRGB(30, 80, 170) }, -- 1.9
 		{ key = "library", icon = "📚", name = "eBooks", c1 = Color3.fromRGB(170, 120, 70), c2 = Color3.fromRGB(110, 70, 40) },
 		{ key = "jobs", icon = "💼", name = "Jobs", c1 = Color3.fromRGB(70, 180, 100), c2 = Color3.fromRGB(30, 120, 60) },
 		{ key = "work", icon = "🛠", name = "Work", c1 = Color3.fromRGB(110, 130, 160), c2 = Color3.fromRGB(60, 80, 110) },
@@ -550,6 +551,93 @@ function Stations.scroller()
 		conn:Disconnect()
 	end)
 	showVideo()
+	m.focus()
+end
+
+---------------------------------------------------------------------
+-- GAIN: BrainTalks (1.9) - the smart scroll. The server picks clips and checks every choice.
+---------------------------------------------------------------------
+function Stations.braintalks()
+	local T = Content.BrainTalks
+	local first = Remote.call("talks_next")
+	if not first or not first.ok then
+		resultToast(first)
+		return
+	end
+	event("braintalks")
+	local m = UI.modal(T.Title, phoneOpts(Color3.fromRGB(60, 140, 230)))
+	UI.label(m.content, T.Intro, { TextSize = UI.textSize(13), TextColor3 = Color3.fromRGB(200, 210, 230), LayoutOrder = 1 })
+	local card = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(18, 24, 40), Size = UDim2.new(1, 0, 0, 230), LayoutOrder = 2, Parent = m.content })
+	UI.corner(card, 16)
+	local icon = UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 110), Position = UDim2.fromOffset(0, 14), TextScaled = true, Text = "", Parent = card })
+	local title = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.new(0, 14, 0, 130), Size = UDim2.new(1, -28, 0, 56), TextWrapped = true, TextScaled = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = card })
+	local creator = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.new(0, 14, 0, 190), Size = UDim2.new(1, -28, 0, 22), TextScaled = true, Font = Enum.Font.Gotham, TextColor3 = Color3.fromRGB(170, 185, 210), Text = "", Parent = card })
+	local bar = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(90, 200, 255), BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -5), Size = UDim2.new(0, 0, 0, 5), Parent = card })
+	local streak = UI.label(m.content, "", { TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(255, 200, 90), LayoutOrder = 3 })
+	local row = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 56), LayoutOrder = 4, Parent = m.content }, {
+		UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0.04, 0), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	local clip = nil
+	local busy = false
+	local watchSeconds = first.watchSeconds or 4
+
+	local function show(c, s)
+		clip = c
+		icon.Text = c.icon or "🎬"
+		title.Text = c.title or ""
+		creator.Text = c.creator or ""
+		bar.Size = UDim2.new(0, 0, 0, 5)
+		if s then
+			streak.Text = string.format(T.Streak, s.streak or 0, s.best or 0)
+		end
+	end
+
+	local watchBtn
+	local function act(action: string)
+		if busy or not clip or not m.alive() then
+			return
+		end
+		busy = true
+		local id = clip.id
+		if action == "watch" then
+			-- really watch: the bar fills, then the server checks the time too
+			TweenService:Create(bar, TweenInfo.new(watchSeconds, Enum.EasingStyle.Linear), { Size = UDim2.new(1, 0, 0, 5) }):Play()
+			for i = watchSeconds, 1, -1 do
+				watchBtn.Text = string.format(T.Watching, i)
+				task.wait(1)
+				if not m.alive() then
+					return
+				end
+			end
+			watchBtn.Text = T.Watch
+		end
+		local r = Remote.call("talks_act", { id = id, action = action })
+		busy = false
+		if not r or not r.ok then
+			resultToast(r)
+			return
+		end
+		local good = r.kind == "learned" or r.kind == "dodged"
+		UI.toast(r.msg, good and C.good or (r.kind == "warned" and C.gold or C.bad), 3)
+		UI.sound(good and "NotificationPing" or "SadTrombone", 0.35)
+		show(r.clip, r.streak)
+	end
+	UI.button(row, T.Skip, function()
+		act("skip")
+	end, { Size = UDim2.new(0.48, 0, 1, 0), LayoutOrder = 1, BackgroundColor3 = Color3.fromRGB(70, 75, 95) })
+	watchBtn = UI.button(row, T.Watch, function()
+		act("watch")
+	end, { Size = UDim2.new(0.48, 0, 1, 0), LayoutOrder = 2, BackgroundColor3 = Color3.fromRGB(40, 140, 230) })
+	-- phones: swipe up = skip
+	local conn = UserInputService.TouchSwipe:Connect(function(dir)
+		if dir == Enum.SwipeDirection.Up and m.alive() then
+			act("skip")
+		end
+	end)
+	card.Destroying:Connect(function()
+		conn:Disconnect()
+	end)
+	show(first.clip, first.streak)
 	m.focus()
 end
 

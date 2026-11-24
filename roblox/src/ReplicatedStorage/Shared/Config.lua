@@ -508,6 +508,7 @@ Config.Features = {
 	StealA = true,
 	Comments = true,
 	Scroller = true,
+	BrainTalks = true, -- 1.9 smart scroll (Gain)
 	Zones = true,
 	Library = true,
 	Theater = true,
@@ -888,6 +889,20 @@ Config.Styles = {
 			light = { clock = 12, brightness = 2.2, ambient = rgb(165, 160, 170), density = 0.28, haze = 1.2, sat = -0.35, contrast = -0.05, tint = rgb(245, 240, 250), sharp = false },
 		},
 	},
+}
+
+-- 1.9 BrainTalks: the smart scroll for Gain players (BrainTalksService.lua checks everything)
+Config.BrainTalks = {
+	SmartChance = 0.45, -- chance the next clip is a smart talk (otherwise brainrot)
+	WatchSeconds = 4, -- you must watch this long before "Watch" counts
+	StressDrop = 12, -- stress removed by a watched talk (x streak bonus)
+	GainPoints = 0.6, -- brain-cell points for a watched talk (x streak bonus)
+	StreakBonus = 0.15, -- +15% per focus streak step
+	StreakMax = 10,
+	SkipRotCalm = 2, -- stress removed for skipping brainrot
+	RotPenaltyPoints = 0.5, -- brain-cell points lost for watching brainrot (after the first warning)
+	RotStress = 6, -- stress added for watching brainrot (after the first warning)
+	MinGap = 0.35, -- seconds between choices
 }
 
 return Config

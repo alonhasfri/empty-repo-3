@@ -41,7 +41,7 @@ Never publish without the user's OK, never change permission settings, never pri
    - Low detail mode
 
    One central style table in Style.lua. Screenshots go to `docs/screens/styles/`.
-5. [ ] **BrainTalks** smart scroll for Gain players: skip brainrot, watch smart talks for a big stress drop, plus a combo meter. Server-checked. Lose players get the normal doomscroll; animals can't use it.
+5. [~] (Code done Nov 24, **NOT tested in Studio yet**: `BrainTalksService.lua`, `Stations.braintalks`, a 🎓 BrainTalks app on the Gain phone, `Config.BrainTalks`, `Content.BrainTalks`. The first brainrot watched each session is only a warning.) **BrainTalks** smart scroll for Gain players: skip brainrot, watch smart talks for a big stress drop, plus a combo meter. Server-checked. Lose players get the normal doomscroll; animals can't use it.
 6. [ ] **Admin menu redesign:** a sleek dark panel with tabs, inspiration only. Keep the commands and rank checks. Before/after screenshots.
 7. [ ] **Features:**
    - real music and sounds
