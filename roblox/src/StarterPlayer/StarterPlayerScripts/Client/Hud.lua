@@ -49,6 +49,9 @@ local function outlined(label: TextLabel, thickness: number?)
 	return s
 end
 
+-- 1.7.2: HUD buttons stay thumb-sized on small phones (48 px AFTER the device shrink)
+local MT = UI.minTouch()
+
 local function text(parent, props)
 	local l = UI.new("TextLabel", {
 		BackgroundTransparency = 1,
@@ -74,8 +77,8 @@ outlined(cellsLabel, 2.5)
 local chipRow = UI.new("Frame", { BackgroundTransparency = 1, Position = UDim2.fromOffset(64, 36), Size = UDim2.new(1, -70, 0, 20), Parent = top }, {
 	UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 4), VerticalAlignment = Enum.VerticalAlignment.Center }),
 })
-local iqChip = UI.chip(chipRow, "IQ 100", Color3.fromRGB(255, 170, 40), { TextSize = 12, Size = UDim2.fromOffset(10, 20) })
-local coinChip = UI.chip(chipRow, "", Color3.fromRGB(230, 180, 30), { TextSize = 12, Size = UDim2.fromOffset(10, 20), Visible = false })
+local iqChip = UI.chip(chipRow, "IQ 100", Color3.fromRGB(255, 170, 40), { TextSize = UI.textSize(12), Size = UDim2.fromOffset(10, UI.textSize(12) + 6) })
+local coinChip = UI.chip(chipRow, "", Color3.fromRGB(230, 180, 30), { TextSize = UI.textSize(12), Size = UDim2.fromOffset(10, UI.textSize(12) + 6), Visible = false })
 themedPart(function(T)
 	top.BackgroundColor3 = UI.darken(T.bg, 0.35)
 	top.BackgroundTransparency = 0.25
@@ -121,7 +124,7 @@ local grid = UI.new("ScrollingFrame", {
 	Selectable = false,
 	Parent = UI.gui,
 }, {
-	UI.new("UIGridLayout", { CellSize = UDim2.fromOffset(60, 60), CellPadding = UDim2.fromOffset(6, 6), SortOrder = Enum.SortOrder.LayoutOrder }),
+	UI.new("UIGridLayout", { CellSize = UDim2.fromOffset(math.max(60, MT), math.max(60, MT)), CellPadding = UDim2.fromOffset(6, 6), SortOrder = Enum.SortOrder.LayoutOrder }),
 	UI.new("UIPadding", { PaddingTop = UDim.new(0, 4), PaddingLeft = UDim.new(0, 2) }),
 	UI.new("UISizeConstraint", { MinSize = Vector2.new(132, 140) }),
 })
@@ -134,7 +137,7 @@ local function iconButton(parent, item, order: number, onClick)
 		BackgroundColor3 = item.color,
 		LayoutOrder = order,
 		Selectable = true,
-		Size = UDim2.fromOffset(60, 60),
+		Size = UDim2.fromOffset(math.max(60, MT), math.max(60, MT)),
 		Parent = parent,
 	})
 	UI.corner(b, T.radius >= 12 and 14 or 6)
@@ -300,14 +303,14 @@ end
 ---------------------------------------------------------------------
 -- TOP-RIGHT: settings / staff; RIGHT: big SHOP and MAP buttons
 ---------------------------------------------------------------------
-local corner = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 6), Size = UDim2.fromOffset(180, 50), BackgroundTransparency = 1, Parent = UI.gui }, {
+local corner = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 6), Size = UDim2.fromOffset(3 * MT + 16, MT + 2), BackgroundTransparency = 1, Parent = UI.gui }, {
 	UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = UDim.new(0, 8) }),
 })
 local function roundButton(parent, icon: string, color: Color3, order: number, onClick)
-	local b = UI.new("TextButton", { Text = icon, TextScaled = true, BackgroundColor3 = color, Size = UDim2.fromOffset(48, 48), LayoutOrder = order, AutoButtonColor = true, Parent = parent }, {
+	local b = UI.new("TextButton", { Text = icon, TextScaled = true, BackgroundColor3 = color, Size = UDim2.fromOffset(MT, MT), LayoutOrder = order, AutoButtonColor = true, Parent = parent }, {
 		UI.new("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }),
 	})
-	UI.corner(b, 24)
+	UI.corner(b, MT / 2)
 	UI.stroke(b, Color3.new(0, 0, 0), 2, 0.3)
 	b.Activated:Connect(onClick)
 	return b
@@ -331,11 +334,11 @@ local unstuckBtn = roundButton(corner, Content.Unstuck.Button, Color3.fromRGB(20
 end)
 unstuckBtn.Name = "Unstuck"
 
-local rightCol = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 64), Size = UDim2.fromOffset(170, 130), BackgroundTransparency = 1, Parent = UI.gui }, {
+local rightCol = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, MT + 16), Size = UDim2.fromOffset(170, 2 * math.max(58, MT) + 14), BackgroundTransparency = 1, Parent = UI.gui }, {
 	UI.new("UIListLayout", { Padding = UDim.new(0, 8), HorizontalAlignment = Enum.HorizontalAlignment.Right }),
 })
 local function bigButton(label: string, sub: string, c1: Color3, c2: Color3, order: number, onClick)
-	local b = UI.new("TextButton", { Text = "", AutoButtonColor = false, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(170, 58), LayoutOrder = order, Parent = rightCol })
+	local b = UI.new("TextButton", { Text = "", AutoButtonColor = false, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(170, math.max(58, MT)), LayoutOrder = order, Parent = rightCol })
 	UI.corner(b, 14)
 	UI.stroke(b, Color3.new(0, 0, 0), 3, 0)
 	local g = UI.gradient(b, c1, c2, 0)
@@ -380,7 +383,7 @@ end)
 ---------------------------------------------------------------------
 -- BOTTOM-CENTER: brain bar, meter and pass buttons
 ---------------------------------------------------------------------
-local bottom = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -6), Size = UDim2.fromOffset(400, 112), BackgroundTransparency = 1, Parent = UI.gui })
+local bottom = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -6), Size = UDim2.fromOffset(400, 72 + math.max(40, MT)), BackgroundTransparency = 1, Parent = UI.gui })
 local meterLabel = text(bottom, { Position = UDim2.fromOffset(0, 0), Size = UDim2.new(1, 0, 0, 16), Text = "", Font = Enum.Font.GothamBold })
 outlined(meterLabel, 1.5)
 local meterBack = UI.new("Frame", { Position = UDim2.fromOffset(60, 18), Size = UDim2.new(1, -120, 0, 8), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.4, Parent = bottom })
@@ -401,7 +404,8 @@ outlined(barLeft, 2)
 local barRight = text(bar, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 3), Size = UDim2.new(0.4, 0, 1, -6), TextXAlignment = Enum.TextXAlignment.Right, Text = "" })
 outlined(barRight, 2)
 
-local passRow = UI.new("Frame", { Position = UDim2.fromOffset(0, 70), Size = UDim2.new(1, 0, 0, 40), BackgroundTransparency = 1, Parent = bottom }, {
+local PH = math.max(40, MT) -- pass button height
+local passRow = UI.new("Frame", { Position = UDim2.fromOffset(0, 70), Size = UDim2.new(1, 0, 0, PH), BackgroundTransparency = 1, Parent = bottom }, {
 	UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0, 6) }),
 })
 local PASS_BUTTONS = {
@@ -429,13 +433,13 @@ local function buildPasses(path: string?)
 	end
 	for i, p in ipairs(PASS_BUTTONS[key] or {}) do
 		local pass = Config.GamePasses[p.key]
-		local b = UI.new("TextButton", { Text = "", AutoButtonColor = true, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(122, 40), LayoutOrder = i, Parent = passRow })
+		local b = UI.new("TextButton", { Text = "", AutoButtonColor = true, BackgroundColor3 = Color3.new(1, 1, 1), Size = UDim2.fromOffset(122, PH), LayoutOrder = i, Parent = passRow })
 		UI.corner(b, 10)
 		UI.stroke(b, Color3.new(0, 0, 0), 2.5, 0)
 		UI.gradient(b, p.c1, p.c2, 90)
-		local t = text(b, { Position = UDim2.fromOffset(6, 2), Size = UDim2.new(1, -12, 0, 22), Text = p.label })
+		local t = text(b, { Position = UDim2.fromOffset(6, PH / 2 - 18), Size = UDim2.new(1, -12, 0, 22), Text = p.label })
 		outlined(t, 2)
-		local price = text(b, { Position = UDim2.fromOffset(6, 23), Size = UDim2.new(1, -12, 0, 14), Text = "R$ " .. tostring(pass and pass.price or "?"), TextColor3 = Color3.fromRGB(150, 255, 150) })
+		local price = text(b, { Position = UDim2.fromOffset(6, PH / 2 + 3), Size = UDim2.new(1, -12, 0, 14), Text = "R$ " .. tostring(pass and pass.price or "?"), TextColor3 = Color3.fromRGB(150, 255, 150) })
 		outlined(price, 1.5)
 		b.Activated:Connect(function()
 			if Hud.onBuyPass then

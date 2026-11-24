@@ -599,6 +599,7 @@ Content.Unstuck = {
 Content.ConvUI = {
 	You = "You",
 	Leave = "Leave",
+	NoTip = "(No coins this time: you already got paid for this chat recently.)",
 	Done = "Leave",
 	Objection = "OBJECTION!",
 	Fast = "⏩ Tap the text to skip",

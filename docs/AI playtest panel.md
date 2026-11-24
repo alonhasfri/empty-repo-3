@@ -70,3 +70,28 @@ All in Studio play mode, reading real results back from the game. The Studio win
 - **#17:** needs the Studio window visible to check.
 - **#18:** plan gaps (GPS lines, district NPCs, animal-only paths, hologram HUD, investing, bus timetable).
 - **Conversation + Hoppr refund:** checked in code only. Starting a conversation needs the window visible.
+
+---
+
+# Panel 2 (Nov 24): 10 players in 3 rounds
+
+The Studio window was still minimized, and screen control was declined twice, so screenshots couldn't be taken. Every player was run through the game's own remotes, and the real results were read back. Ratings are fun / looks / ease / clarity (1–5). Looks are rated from the earlier 1.7 screenshots and the code.
+
+## Round 1: everyday players and phone checks
+
+| Player | Fun | Looks | Ease | Clarity | Best moment | Worst moment |
+|---|---|---|---|---|---|---|
+| Mia, 8, phone, Lose | 4 | 4 | 3 | 3 | Wobbly cash-grab HUD and joke ads | ⚙️ 🛠 🆘 buttons were 34 px and the pass buttons 28 px on a small phone: hard to hit |
+| Leo, 13, PC, coins fast | 3 | 4 | 4 | 4 | Promotions and payslips now feel earned | Found conversation scenes paid 30–40 coins every time with a 3 s wait (~70/min, more than any job) |
+| Sam, parent | 4 | 4 | 4 | 4 | Prices on every pass button, no debt, 0.5% bank rate shown | Roblox's free-typing chat is on, which conflicts with the "preset text only" rule (see decision below) |
+| Cheap-phone player | 3 | 3 | 3 | 3 | Light map: 4,300 parts, no shadow-casting lights, every billboard has a draw distance | HUD buttons too small (same as Mia). The IQ chip text was about 8 px |
+
+**Measured:** at the smallest phone scale (0.70), 11 HUD buttons were under 44 px and 1 label was under 14 px. After the fix, 0 and 0.
+
+**Fixed in round 1:**
+- HUD buttons (⚙️ 🛠 🆘, activity icons, 🛒 SHOP / 🗺 MAP, pass buttons) and the IQ/coin chips are sized so they're still 48 px and 14 pt after the phone shrink.
+- Conversation scenes pay coins at most once per scene every 10 minutes. Brain-cell rewards are unchanged.
+
+**Decision for the user, not changed:** Roblox's own chat (free typing, filtered by Roblox) is on, and the game has an admin mute for it. CLAUDE.md says "preset text only". Turning chat off is a product decision, so it's left as is.
+
+**Players' ideas:** Mia wants a big "what do I do now?" arrow. Leo wants a weekly pay leaderboard. The cheap-phone player wants a "low graphics" toggle that turns off the street lights.

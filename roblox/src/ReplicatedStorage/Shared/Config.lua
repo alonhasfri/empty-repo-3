@@ -316,6 +316,7 @@ Config.Conversations = {
 	BadAt = 25,
 	StartRadius = 14, -- you must be this close to the spot to start
 	Cooldown = 3, -- seconds between conversations
+	CoinRewardEvery = 600, -- 1.7.2: a scene pays coins at most once per 10 min (so talking never beats working)
 	TypeSpeed = 38, -- letters per second
 	SmartTypeSpeed = 60, -- smart players (IQ >= SmartIQ) read faster
 	SmartIQ = 120,

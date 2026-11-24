@@ -148,9 +148,19 @@ local function start(player: Player, spotId: string)
 	})
 end
 
-local function giveRewards(player: Player, data, r)
+local coinPaidAt = {} -- [player][scene key] = os.clock() of the last coin reward
+local function giveRewards(player: Player, data, r, key: string?)
 	if r.coins then
-		data.coins += r.coins
+		coinPaidAt[player] = coinPaidAt[player] or {}
+		local last = key and coinPaidAt[player][key]
+		if last and os.clock() - last < CC.CoinRewardEvery then
+			BrainService.toast(player, Content.ConvUI.NoTip)
+		else
+			data.coins += r.coins
+			if key then
+				coinPaidAt[player][key] = os.clock()
+			end
+		end
 	end
 	if r.gain then
 		BrainService.gain(player, r.gain, "conversation")
@@ -213,7 +223,7 @@ Net.on("conv_pick", function(player, d)
 	else
 		s.ended = true
 		local tier = s.meter >= CC.GoodAt and "good" or (s.meter <= CC.BadAt and "bad" or "mid")
-		giveRewards(player, data, s.cfg[tier] or {})
+		giveRewards(player, data, s.cfg[tier] or {}, s.key)
 		data.convSeen = data.convSeen or {}
 		data.convSeen[s.key] = true
 		BrainService.awardBadge(player, "SmallTalk")
@@ -273,6 +283,7 @@ function ConversationService.start()
 	Players.PlayerRemoving:Connect(function(p)
 		sessions[p] = nil
 		lastEnd[p] = nil
+		coinPaidAt[p] = nil
 	end)
 	-- dying or respawning ends the conversation
 	Players.PlayerAdded:Connect(function(p)
