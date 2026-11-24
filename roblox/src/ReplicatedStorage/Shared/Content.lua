@@ -1109,6 +1109,29 @@ Content.Settings17 = {
 	SpeedrunTimer = "⏱ Speedrun timer",
 }
 
+-- 1.7.3: badge checklist (Settings → 🏅). Kid-friendly hints for locked SECRET badges (they never say exactly how).
+Content.BadgeUI = {
+	Button = "🏅 Badges (%d/%d)",
+	Title = "🏅 Badge checklist",
+	Got = "✅",
+	Locked = "🔒",
+	Secret = "Secret badge",
+	Hints = {
+		ReadTOS = "Some people never read the small print. Be different.",
+		ClickedEverything = "Curiosity clicked the cat… many, many times.",
+		WhereAmI = "How small can a brain get before you stop being an animal?",
+		PerfectlyAverage = "Someone plain and grey in the plaza wants to chat.",
+		AllInventions = "Keep working until every idea goes ding.",
+		Coffee60 = "A famous composer was very picky about his coffee.",
+		CompleteMakeover = "Hit the very bottom… then climb all the way back.",
+		RefusedPrize = "Not every prize has to be accepted.",
+		MaybeNextTime = "Some machines need a LOT of tries.",
+		WorldsSmartest = "Keep getting smarter. Like, really smart.",
+		TooMuchBrain = "Is there such a thing as too smart?",
+		LostAndFound = "A strange little house at the end of a road. Look closer.",
+	},
+}
+
 -- 1.7.3: speedrun timer
 Content.Speedrun = {
 	Timer = "⏱ %s",

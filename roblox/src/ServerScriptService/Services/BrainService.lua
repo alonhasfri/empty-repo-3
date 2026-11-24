@@ -168,6 +168,7 @@ function BrainService.state(player)
 	return {
 		jobPlace = jobPlace, -- 1.7.2: the "What do I do now?" guide points at Work_<jobPlace>
 		runStart = data.runStart, -- 1.7.3: the optional speedrun timer counts from here (server time)
+		badges = data.badges, -- 1.7.3: the badge checklist in Settings
 		serverNow = os.time(),
 		cells = cells,
 		cellsText = Brain.formatNumber(cells),

@@ -1271,6 +1271,58 @@ end
 ---------------------------------------------------------------------
 -- What's new (from Settings): the update list in Content.Updates
 ---------------------------------------------------------------------
+-- 1.7.3: badge checklist (every badge; locked ones greyed out, secret ones show a hint instead)
+local BadgeList = require(ReplicatedStorage.Shared.Badges)
+local function badgeOrder()
+	local keys = {}
+	for k in pairs(BadgeList) do
+		table.insert(keys, k)
+	end
+	table.sort(keys, function(a, b)
+		local va, vb = BadgeList[a].version, BadgeList[b].version
+		if va ~= vb then
+			return tostring(va) < tostring(vb)
+		end
+		return BadgeList[a].name < BadgeList[b].name
+	end)
+	return keys
+end
+
+function Stations.badgeCount(): (number, number)
+	local owned = (UI.state and UI.state.badges) or {}
+	local got, total = 0, 0
+	for k in pairs(BadgeList) do
+		total += 1
+		if owned[k] then
+			got += 1
+		end
+	end
+	return got, total
+end
+
+function Stations.badges()
+	local BU = Content.BadgeUI
+	local owned = (UI.state and UI.state.badges) or {}
+	local m = UI.modal(BU.Title, { color = Color3.fromRGB(200, 160, 40) })
+	for i, k in ipairs(badgeOrder()) do
+		local b = BadgeList[k]
+		local has = owned[k] == true
+		local text
+		if has then
+			text = BU.Got .. " <b>" .. b.name .. "</b>\n" .. b.desc
+		elseif b.secret then
+			text = BU.Locked .. " <b>" .. BU.Secret .. "</b>\n" .. (BU.Hints[k] or "???")
+		else
+			text = BU.Locked .. " <b>" .. b.name .. "</b>\n" .. b.desc
+		end
+		local l = UI.label(m.content, text, { LayoutOrder = i })
+		if not has then
+			l.TextTransparency = 0.45
+		end
+	end
+	m.focus()
+end
+
 function Stations.whatsNew()
 	local m = UI.modal("📋 What's new", { color = C.accent })
 	for i, u in ipairs(Content.Updates or {}) do
@@ -1342,6 +1394,9 @@ function Stations.settings()
 	toggle(Content.Settings17.Guide, "guide", 12)
 	toggle(Content.Settings17.LowGraphics, "lowGraphics", 13)
 	toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 15)
+	UI.button(m.content, string.format(Content.BadgeUI.Button, Stations.badgeCount()), function()
+		Stations.badges()
+	end, { LayoutOrder = 0, BackgroundColor3 = Color3.fromRGB(200, 150, 40) })
 	UI.label(m.content, Content.Settings17.LowGraphicsInfo, { TextColor3 = C.muted, LayoutOrder = 14 })
 	stepper("🔊 Sound effects", "sfx", 3)
 	toggle("⚡ Reduce flashing", "reduceFlashing", 5)
