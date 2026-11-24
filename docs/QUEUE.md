@@ -86,7 +86,7 @@ Never publish without the user's OK, never change permission settings, never pri
       - Unstuck works at every stage.
       - What's new gets a hint only: "Some castles are bigger on the inside…".
 15. **Needs the user:**
-    - playtester role access in the group (only if they say "set up playtesters")
-    - real pass and badge IDs
-    - the free-chat decision
-    - any CLAUDE.md edits (ask first)
+    - Playtester role: already set up by the user. Don't touch group roles.
+    - Pass and badge IDs: the user adds them after publishing.
+    - Free chat: leave as it is for now.
+    - CLAUDE.md edits: ask first.
