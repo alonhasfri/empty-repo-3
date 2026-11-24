@@ -66,8 +66,11 @@ local function commandsFor(tab: string)
 			on = name == "refreshrank" or name == "debug"
 		elseif tab == "Server" then
 			on = def.cat == "Server" and def.min >= 2
+		elseif tab == "*" then
+			on = true -- 1.8.7: searching looks through every command you may use, on every tab
 		else
-			on = def.cat == tab and not (tab == "Players" and def.min == 1)
+			-- 1.8.7 (user: "Set Brain Cells is missing"): player commands always show on the player card too
+			on = def.cat == tab
 		end
 		if on and myRank() >= def.min then
 			table.insert(list, { name = name, def = def })
@@ -265,7 +268,7 @@ function AdminPanel.open()
 		if header then
 			label(col, header, 12, { Font = Enum.Font.GothamBold, TextColor3 = K.muted, LayoutOrder = 0, ZIndex = 44 })
 		end
-		local cmds = commandsFor(tab)
+		local cmds = commandsFor(search.Text ~= "" and "*" or tab)
 		local needsValue = false
 		for _, c in ipairs(cmds) do
 			needsValue = needsValue or c.def.arg ~= nil
