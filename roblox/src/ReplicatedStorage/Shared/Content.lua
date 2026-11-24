@@ -952,6 +952,12 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.7.1", name = "Fair Play Fixes", lines = {
+		"💼 You get paid for real work: wages only while you're clocked in at work, and the on-time bonus needs a task.",
+		"🚌 The free map ride is now a slow Brain Bus. Hoppr is the fast way. Rides never pull you out of a chat or a seat.",
+		"🏦 Brain Bank pays a fair 0.5% on your lowest savings. 📱 Bigger buttons and text on phones.",
+		"🐾 Animals: a new 🛍 button sniffs the way to the Mall stands. Effects slider now calms wobble and scrambled text too.",
+	} },
 	{ v = "1.7", name = "Your Brain Runs the Game", lines = {
 		"📱 Your phone changes with your brain: a chunky toy phone, a cozy phone, or (IQ 120+) a real phone you swipe through.",
 		"🚖 Hoppr rides: see the price and time before you pay. 🏦 Brain Bank savings. ⏰ Shifts with payslips.",
