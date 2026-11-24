@@ -22,6 +22,7 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 2. Item 7 (part): **real music and sounds**. The game is silent now, so this is cheap with a huge effect.
 3. Item 11: **Gain path fun.** Job minigames replace the work questions, and quizzes become fun facts (the user's biggest complaint).
 4. Item 12: **100+ dialogue lines, with no repeats.**
+4a. **Full Hebrew support** (user, Nov 24; after the UI and map fixes): - a language choice in Settings (English / עברית) - all of Content.lua in natural, kid-friendly Hebrew, keeping the parody names - right-to-left layout: right-aligned text, mirrored phone grid and conversation choices, numbers shown correctly - fonts that render Hebrew, and no overflow on phones - saved per player: English by default, Hebrew if the player's locale is he 4b. **UI pictures:** screenshots of every screen (HUD, phone tiers, Settings, shop, conversation, animal menu, notifications) in English and Hebrew, at phone landscape and PC sizes, saved to docs/screens/ui-final/.
 
 **Tier 2: memorable moments and a fuller Lose side**
 5. Item 10: **brain animations** (the shredder, the 0-cell POOF).
