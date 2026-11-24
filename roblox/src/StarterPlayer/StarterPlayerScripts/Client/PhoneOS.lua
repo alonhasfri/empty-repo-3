@@ -123,9 +123,13 @@ end
 
 -- One app icon (icons never scramble, so the phone always still works)
 local function appIcon(parent, app, order: number, size: number, labelH: number)
-	local cell = UI.new("TextButton", { Text = "", BackgroundTransparency = 1, LayoutOrder = order, Selectable = true, Parent = parent })
-	-- the icon fills its grid cell (up to `size`), so narrow phones never get overlapping icons
-	local icon = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0), Size = UDim2.fromScale(0.9, 0.9), BackgroundColor3 = WHITE, Parent = cell }, {
+	local cell = UI.new("TextButton", { Text = "", BackgroundTransparency = 1, LayoutOrder = order, Selectable = true, Parent = parent }, {
+		-- 1.8.1 fix: icon and name stacked in ONE column, so the name always sits right under its own icon
+		-- (before, the name was pinned to the cell bottom and lined up with the next row's icon)
+		UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Vertical, HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0, 2), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	-- the icon follows the cell width (up to `size`), so narrow phones never get overlapping icons
+	local icon = UI.new("Frame", { Size = UDim2.fromScale(0.78, 1), LayoutOrder = 1, BackgroundColor3 = WHITE, Parent = cell }, { -- square: the aspect constraint makes height = width
 		UI.new("UIAspectRatioConstraint", { AspectRatio = 1, DominantAxis = Enum.DominantAxis.Width }),
 		UI.new("UISizeConstraint", { MaxSize = Vector2.new(size, size) }),
 	})
@@ -136,7 +140,7 @@ local function appIcon(parent, app, order: number, size: number, labelH: number)
 		UI.new("UIPadding", { PaddingTop = UDim.new(0, pad), PaddingBottom = UDim.new(0, pad), PaddingLeft = UDim.new(0, pad), PaddingRight = UDim.new(0, pad) }),
 	})
 	if labelH > 0 then
-		UI.new("TextLabel", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, labelH), Text = appLabel(app.name), Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = WHITE, Parent = cell })
+		UI.new("TextLabel", { BackgroundTransparency = 1, LayoutOrder = 2, Size = UDim2.new(1, 0, 0, labelH), Text = appLabel(app.name), Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = WHITE, Parent = cell })
 	end
 	cell.Activated:Connect(function()
 		openApp(app)

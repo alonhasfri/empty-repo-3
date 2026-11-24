@@ -627,8 +627,13 @@ Config.UI = {
 	BigDeltaShare = 0.02, -- 1.7.3: a brain change this big (share of your cells) gets the big centre counter
 	MinDeviceScale = 0.7, -- the whole HUD never shrinks below this on small phones
 	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone
-	MinPhoneText = 14, -- smallest text size on phones
-	MinTouch = 48, -- smallest tappable button (pixels), Google's 48dp rule
+	MinPhoneText = 12, -- smallest text size on phones (1.8.1: 14 made the UI too big)
+	MinTouch = 42, -- smallest tappable button on screen (1.8.1: 48 made the UI too big; ~44 is comfortable)
+	MaxDeviceScale = 1, -- 1.8.1: the UI stops growing on big screens (1.35 looked huge on PC)
+	ToastSeconds = 3, -- 1.8.1: how long a notification stays
+	MaxToasts = 3, -- at most this many at once (the oldest goes)
+	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
+	ToastLowValue = { "interest", "bills paid", "bills skipped", "you already talked", "the next bus comes in", "give it " },
 	LandscapePhoneAspect = 1.05, -- the in-game phone on a sideways phone screen (portrait 0.52 is only ~146 px wide there)
 }
 

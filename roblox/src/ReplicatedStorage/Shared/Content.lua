@@ -1133,6 +1133,7 @@ Content.Settings17 = {
 	LowGraphicsInfo = "Turns off street lights, sparkles, extra decorations and shadows so the game runs smoother.",
 	SpeedrunTimer = "⏱ Speedrun timer",
 	AlwaysDay = "☀️ Always day (no night)",
+	FewerToasts = "🔕 Fewer notifications",
 	EdgeOfTown = "🚧 This is the edge of Brainville! The city goes on, but your adventure is back that way. 👈",
 }
 

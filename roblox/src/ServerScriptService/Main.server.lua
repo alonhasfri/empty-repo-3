@@ -227,7 +227,7 @@ Net.on("settings", function(player, d)
 	if isNum(d.fxIntensity) then
 		s.fxIntensity = math.clamp(math.floor(d.fxIntensity * 10 + 0.5) / 10, 0, 1)
 	end
-	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud", "guide", "lowGraphics", "speedrunTimer", "lifePause", "alwaysDay" }) do
+	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud", "guide", "lowGraphics", "speedrunTimer", "lifePause", "alwaysDay", "fewerToasts" }) do
 		if typeof(d[k]) == "boolean" then
 			s[k] = d[k]
 		end
