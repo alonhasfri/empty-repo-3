@@ -587,7 +587,7 @@ local function buildLoseSide()
 	-- Brainrot Mall
 	local cf, size = building({
 		name = "BrainrotMall",
-		center = Vector3.new(-100, 0.6, -100),
+		center = Config.Map.LoseLayout.Mall, -- 1.8 River City
 		yaw = FACE_SOUTH,
 		size = Vector3.new(150, 26, 120),
 		wall = Color3.fromRGB(230, 205, 220),
@@ -609,8 +609,8 @@ local function buildLoseSide()
 	-- Microwave Diner: stand inside to lose cells slowly
 	local dcf, dsize = building({
 		name = "MicrowaveDiner",
-		center = Vector3.new(-300, 0.6, -100),
-		yaw = FACE_SOUTH,
+		center = Config.Map.LoseLayout.Diner, -- 1.8 River City
+		yaw = FACE_NORTH, -- 1.8: south of Main Street now, so it faces north
 		size = Vector3.new(80, 20, 64),
 		wall = Color3.fromRGB(240, 238, 232),
 		wallMaterial = Enum.Material.Plaster,
@@ -631,10 +631,11 @@ local function buildLoseSide()
 	WorldService.Zones.microwave = { cframe = dcf * CFrame.new(0, 0.5, 0), size = Vector3.new(76, 18, 60) }
 
 	-- Wall Alley: stare at the wall
-	local wallPart = part({ Name = "StaringWall", Size = Vector3.new(60, 24, 3), Position = Vector3.new(-300, 12, 150), Color = Color3.fromRGB(150, 150, 150), Material = Enum.Material.Brick }, "wall")
+	local WP = Config.Map.LoseLayout.Wall -- 1.8 River City
+	local wallPart = part({ Name = "StaringWall", Size = Vector3.new(60, 24, 3), Position = WP + Vector3.new(0, 12, 0), Color = Color3.fromRGB(150, 150, 150), Material = Enum.Material.Brick }, "wall")
 	sign(wallPart, "🧱 Staring Contest With a Wall", 14, 340, 40)
-	WorldService.Zones.wall = { cframe = CFrame.new(-300, 1, 128), size = Vector3.new(60, 14, 40) }
-	WorldService.Spots.wall = Vector3.new(-300, 3, 110)
+	WorldService.Zones.wall = { cframe = CFrame.new(WP + Vector3.new(0, 1, -22)), size = Vector3.new(60, 14, 40) }
+	WorldService.Spots.wall = WP + Vector3.new(0, 3, -40)
 	table.insert(WorldService.Places, { key = "wall", name = "🧱 Wall Alley", path = "Lose" })
 	-- 1.8: the free Phone Shop replaces a locked house (Life Pack plan step 1)
 	local pcf, psize = building({
@@ -673,12 +674,12 @@ local function buildLoseSide()
 		return fcf, fsize
 	end
 	WorldService.funPlace = funPlace
-	funPlace("slime", Vector3.new(-260, 0.6, 70), FACE_NORTH, Vector3.new(44, 16, 36), Color3.fromRGB(190, 255, 200), Color3.fromRGB(60, 220, 120))
+	funPlace("slime", Config.Map.LoseLayout.Slime, FACE_NORTH, Vector3.new(44, 16, 36), Color3.fromRGB(190, 255, 200), Color3.fromRGB(60, 220, 120))
 
 	-- Supermarket (cashier job)
 	local smcf, ssize = building({
 		name = "Supermarket",
-		center = Vector3.new(-100, 0.6, 100),
+		center = Config.Map.LoseLayout.Supermarket, -- 1.8 River City: a Gain job, on the Gain side
 		yaw = FACE_NORTH,
 		size = Vector3.new(120, 22, 90),
 		wall = Color3.fromRGB(235, 232, 222),
@@ -697,15 +698,17 @@ local function buildLoseSide()
 
 	-- houses
 	-- 1.8: the north-west block becomes the Trampoline Park; one house becomes the Fortune Teller
-	funPlace("trampoline", Vector3.new(-300, 0.6, -300), FACE_SOUTH, Vector3.new(120, 20, 60), Color3.fromRGB(255, 230, 120), Color3.fromRGB(255, 120, 40))
-	funPlace("fortune", Vector3.new(-140, 0.6, -300), FACE_SOUTH, Vector3.new(36, 16, 30), Color3.fromRGB(80, 50, 120), Color3.fromRGB(170, 80, 255))
-	house(Vector3.new(-60, 0.6, -300), FACE_SOUTH, "party")
-	tree(Vector3.new(-100, 0.6, -270))
-	for i, c in ipairs({ Vector3.new(-100, 0.6, 300), Vector3.new(-300, 0.6, 300) }) do
-		-- 1.8: these four plain houses hide Life Pack places (kindergarten, daycare, retirement home, toy store)
-		house(c + Vector3.new(-40, 0, 0), FACE_NORTH, i == 1 and "kindergarten" or "retirement")
-		house(c + Vector3.new(40, 0, 0), FACE_NORTH, i == 1 and "daycare" or "toystore")
-		tree(c + Vector3.new(0, 0.6, -30))
+	local LL = Config.Map.LoseLayout -- 1.8 River City: every Lose place west of the river, in rows
+	funPlace("trampoline", LL.Trampoline, FACE_SOUTH, Vector3.new(120, 20, 60), Color3.fromRGB(255, 230, 120), Color3.fromRGB(255, 120, 40))
+	funPlace("fortune", LL.Fortune, FACE_SOUTH, Vector3.new(36, 16, 30), Color3.fromRGB(80, 50, 120), Color3.fromRGB(170, 80, 255))
+	house(LL.Party, FACE_SOUTH, "party")
+	-- these plain houses hide Life Pack places (kindergarten, daycare, retirement home, toy store)
+	house(LL.Kindergarten, FACE_NORTH, "kindergarten")
+	house(LL.Daycare, FACE_NORTH, "daycare")
+	house(LL.Retirement, FACE_NORTH, "retirement")
+	house(LL.ToyStore, FACE_NORTH, "toystore")
+	for _, t in ipairs({ Vector3.new(-290, 0.6, -230), Vector3.new(-290, 0.6, 410), Vector3.new(-370, 0.6, 300) }) do
+		tree(t)
 	end
 end
 
@@ -1211,6 +1214,60 @@ local function buildPolish()
 	end
 end
 
+-- 1.8 River City: a real Terrain-water river between the Lose side (west) and the plaza (east).
+-- Main Street crosses it on a bridge (the road deck + railings); two footbridges and a couple of boats.
+local function buildRiver()
+	local R = Config.Map.River
+	local ST = Config.Map.Style
+	local terrain = workspace.Terrain
+	local edge = (940 * S + 40) / 2
+	local c = sp(Vector3.new(R.X, 0, 0))
+	local w = R.Width * S
+	-- dig the channel, then fill it with water (top a little below the street)
+	terrain:FillBlock(CFrame.new(c.X, -R.Depth / 2, 0), Vector3.new(w, R.Depth + 0.2, edge * 2), Enum.Material.Air)
+	terrain:FillBlock(CFrame.new(c.X, -R.Depth / 2 - 0.7, 0), Vector3.new(w, R.Depth - 1.2, edge * 2), Enum.Material.Water)
+	pcall(function()
+		terrain.WaterColor = ST.Water
+		terrain.WaterTransparency = 0.35
+		terrain.WaterWaveSize = 0.08
+	end)
+	local folder = Instance.new("Folder")
+	folder.Name = "River"
+	local function plank(name: string, pos: Vector3, size: Vector3, color: Color3, mat: Enum.Material?)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Anchored = true
+		p.Size = size
+		p.Position = pos
+		p.Color = color
+		p.Material = mat or Enum.Material.SmoothPlastic
+		p.Parent = folder
+		return p
+	end
+	-- Main Street bridge: a deck under the road (so it never looks like a road floating on water) + railings
+	plank("MainBridgeDeck", Vector3.new(c.X, -0.4, 0), Vector3.new(w + 4, 1, 18), ST.Bridge, ST.BridgeMaterial)
+	for _, z in ipairs({ -8.6, 8.6 }) do
+		plank("MainBridgeRail", Vector3.new(c.X, 1.6, z), Vector3.new(w + 4, 2.2, 0.5), ST.Railing)
+	end
+	-- footbridges
+	for _, bz in ipairs(R.Bridges) do
+		local z = bz * S
+		plank("FootBridge", Vector3.new(c.X, 0.4, z), Vector3.new(w + 6, 0.8, 8), ST.Bridge, ST.BridgeMaterial)
+		for _, side in ipairs({ -3.8, 3.8 }) do
+			plank("FootBridgeRail", Vector3.new(c.X, 1.9, z + side), Vector3.new(w + 6, 2.2, 0.4), ST.Railing)
+		end
+	end
+	-- a couple of little boats (decor; no collision so nobody gets stuck on them)
+	for _, bz in ipairs(R.Boats) do
+		local z = bz * S
+		local hull = plank("BoatHull", Vector3.new(c.X, -1.1, z), Vector3.new(5, 1.6, 12), ST.Boat)
+		hull.CanCollide = false
+		local trim = plank("BoatTrim", Vector3.new(c.X, -0.2, z), Vector3.new(5.2, 0.3, 12.2), ST.BoatTrim)
+		trim.CanCollide = false
+	end
+	folder.Parent = mapFolder
+end
+
 -- 1.8.1 (user: "the city just ends"): a fake, unreachable city beyond the edge wall.
 -- Rings of simple houses, then a skyline of tall towers, then hills. Anchored, no collision,
 -- no shadows, no queries: cheap on phones. Low graphics hides the far rings (tag "FarSkyline").
@@ -1280,6 +1337,10 @@ function WorldService.build()
 	buildPlaza()
 	buildLoseSide()
 	buildGainSide()
+	local okR, errR = pcall(buildRiver) -- 1.8 River City
+	if not okR then
+		warn("[WorldService] river: " .. tostring(errR))
+	end
 	pcall(buildSkyline) -- 1.8.1: the fake city beyond the edge (never stops the town from loading)
 	local ok, err = pcall(buildPolish) -- 1.7 (a problem here must never stop the town from loading)
 	if not ok then

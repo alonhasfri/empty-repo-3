@@ -227,7 +227,7 @@ Config.PhoneShop = {
 	ScamUseLose = 1.5,
 	ReportCooldown = 600, -- Gain: report the scammer once per 10 min
 	ReportGain = 4,
-	ShopPos = Vector3.new(-340, 0.6, 70), -- replaces a locked house on the empty west side
+	ShopPos = Vector3.new(-400, 0.6, 100), -- 1.8 River City: west of the river
 }
 
 Config.VsLobbySignPos = Vector3.new(22, 7, 4) -- 1.8.1: plaza, to the side (it used to block the view at spawn)
@@ -692,6 +692,32 @@ Config.Map = {
 	-- these instead (soft = cute/cash-grab/cozy/nonsense, sharp = realistic/fancy/future).
 	GrassColor = Color3.fromRGB(88, 148, 60), -- 1.8.1: natural green (the brighter one looked neon under the cash-grab colour boost)
 	EdgeWallHeight = 120, -- 1.7.4: invisible walls at the edge of the ground
+	-- 1.8 River City (design coordinates, like every other position here): a river splits Lose (west) from Gain (east)
+	River = { X = -145, Width = 60, Depth = 6, Bridges = { -250, 250 }, Boats = { -160, 150 } },
+	-- one place for the town's base colours and materials, so the chosen visual style can be swapped in quickly
+	Style = {
+		Water = Color3.fromRGB(70, 150, 210),
+		Bridge = Color3.fromRGB(150, 110, 75),
+		BridgeMaterial = Enum.Material.WoodPlanks,
+		Railing = Color3.fromRGB(235, 235, 240),
+		Boat = Color3.fromRGB(240, 240, 245),
+		BoatTrim = Color3.fromRGB(220, 60, 60),
+	},
+	-- where each Lose-side place stands now (west of the river, in clean rows)
+	LoseLayout = {
+		Mall = Vector3.new(-320, 0.6, -100),
+		Diner = Vector3.new(-260, 0.6, 100),
+		Wall = Vector3.new(-330, 0, 230),
+		Slime = Vector3.new(-250, 0.6, 300),
+		Trampoline = Vector3.new(-330, 0.6, -330),
+		Fortune = Vector3.new(-250, 0.6, -230),
+		Party = Vector3.new(-400, 0.6, -230),
+		Kindergarten = Vector3.new(-250, 0.6, 410),
+		Daycare = Vector3.new(-330, 0.6, 410),
+		Retirement = Vector3.new(-410, 0.6, 410),
+		ToyStore = Vector3.new(-410, 0.6, 300),
+		Supermarket = Vector3.new(120, 0.6, 300), -- a Gain job, so it moved to the Gain side
+	},
 	-- 1.8.1: the fake city beyond the edge (unreachable, no collision, no shadows)
 	Skyline = {
 		Depth = 700, -- how far the fake ground goes past the edge
