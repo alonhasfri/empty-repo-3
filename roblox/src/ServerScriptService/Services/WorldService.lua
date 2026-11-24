@@ -1255,6 +1255,92 @@ local function buildPavement()
 	slab("RiverBank", R.X + R.Width / 2, east, -E, E, ST.Grass, Enum.Material.Grass)
 end
 
+-- 1.8 (user: "there aren't enough buildings"): fill every free slot along the streets with closed
+-- decorative shops and houses, so blocks look full like the style pictures. Only places with a use
+-- open; these are scenery. Slots that touch roads, the river, the park, the plaza or any existing
+-- building are skipped. Low graphics leaves them (they're cheap boxes), the far skyline is what it trims.
+local function fillTown()
+	local CF = Config.Map.Fill
+	local R = Config.Map.River
+	local P = Config.Map.Park
+	local taken = {}
+	for _, m in ipairs(mapFolder:GetDescendants()) do
+		if m:IsA("Model") and m.Parent == mapFolder then
+			local ok, cf, size = pcall(function()
+				return m:GetBoundingBox()
+			end)
+			if ok and size.Magnitude < 400 then
+				table.insert(taken, { cf.X - size.X / 2, cf.X + size.X / 2, cf.Z - size.Z / 2, cf.Z + size.Z / 2 })
+			end
+		end
+	end
+	local function free(x: number, z: number, w: number, d: number): boolean
+		-- design-space rules first
+		if math.abs(x) > CF.Edge or math.abs(z) > CF.Edge then
+			return false
+		end
+		if math.abs(x - R.X) < R.Width / 2 + Config.Map.Style.RiverBank + w / 2 + 6 then
+			return false
+		end
+		if x + w / 2 > P.X1 - 6 and x - w / 2 < P.X2 + 6 and z + d / 2 > P.Z1 - 6 and z - d / 2 < P.Z2 + 6 then
+			return false
+		end
+		if math.abs(x) < CF.PlazaClear and math.abs(z) < CF.PlazaClear then
+			return false
+		end
+		for _, rx in ipairs(CF.RoadsX) do -- roads running north–south
+			if math.abs(x - rx) < CF.RoadClear + w / 2 then
+				return false
+			end
+		end
+		for _, rz in ipairs(CF.RoadsZ) do -- roads running west–east
+			if math.abs(z - rz) < CF.RoadClear + d / 2 then
+				return false
+			end
+		end
+		-- then real space against everything already built
+		local c = sp(Vector3.new(x, 0, z))
+		local hw, hd = (w / 2 + CF.Margin) * S, (d / 2 + CF.Margin) * S
+		for _, t in ipairs(taken) do
+			if c.X + hw > t[1] and c.X - hw < t[2] and c.Z + hd > t[3] and c.Z - hd < t[4] then
+				return false
+			end
+		end
+		table.insert(taken, { c.X - hw, c.X + hw, c.Z - hd, c.Z + hd })
+		return true
+	end
+	local count = 0
+	for x = -CF.Edge, CF.Edge, CF.StepX do
+		for z = -CF.Edge, CF.Edge, CF.StepZ do
+			if count < CF.Max then
+				local lose = x < R.X
+				local w, d = CF.W, CF.D
+				if free(x, z, w, d) then
+					count += 1
+					local yaw = z > 0 and FACE_NORTH or FACE_SOUTH -- face the nearest west–east street
+					local colors = lose and CF.LoseColors or CF.GainColors
+					local col = colors[(count % #colors) + 1]
+					building({
+						name = lose and "ShopFront" or "House",
+						center = Vector3.new(x, 0.6, z),
+						yaw = yaw,
+						size = Vector3.new(w, lose and 18 or 16, d),
+						wall = col,
+						wallMaterial = lose and Enum.Material.SmoothPlastic or Enum.Material.Brick,
+						floorMaterial = Enum.Material.WoodPlanks,
+						roof = lose and Color3.fromRGB(255, 90, 180) or Color3.fromRGB(150, 70, 60),
+						accent = lose and Color3.fromRGB(255, 220, 0) or Color3.fromRGB(120, 90, 70),
+						door = 8,
+						sign = lose and CF.LoseSigns[(count % #CF.LoseSigns) + 1] or "🏠",
+						closed = true,
+					})
+				end
+			end
+		end
+	end
+	return count
+end
+
 -- 1.8 River City: a real Terrain-water river between the Lose side (west) and the plaza (east).
 -- Main Street crosses it on a bridge (the road deck + railings); two footbridges and a couple of boats.
 local function buildRiver()
@@ -1379,6 +1465,10 @@ function WorldService.build()
 	buildLoseSide()
 	buildGainSide()
 	pcall(buildPavement) -- 1.8: paved town (grass only for the park and river banks)
+	local okF, filled = pcall(fillTown) -- 1.8: fill free street slots with closed shops and houses
+	if not okF then
+		warn("[WorldService] fill: " .. tostring(filled))
+	end
 	local okR, errR = pcall(buildRiver) -- 1.8 River City
 	if not okR then
 		warn("[WorldService] river: " .. tostring(errR))

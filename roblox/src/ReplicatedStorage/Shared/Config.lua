@@ -697,6 +697,23 @@ Config.Map = {
 	-- 1.8 River City (design coordinates, like every other position here): a river splits Lose (west) from Gain (east)
 	River = { X = -145, Width = 60, Depth = 6, Bridges = { -250, 250 }, Boats = { -160, 150 } },
 	Park = { X1 = 20, X2 = 180, Z1 = 220, Z2 = 380 }, -- stays green (design studs)
+	-- 1.8: decorative closed shops (Lose side) and houses (Gain side) that fill free street slots
+	Fill = {
+		Edge = 470, -- stay inside the edge wall
+		StepX = 58, -- leaves ~26-stud walkable alleys between buildings
+		StepZ = 54,
+		W = 32, -- footprint (design studs)
+		D = 28,
+		Margin = 6,
+		PlazaClear = 110,
+		RoadsX = { 0, -200, 200 }, -- north–south roads
+		RoadsZ = { 0 }, -- west–east roads
+		RoadClear = 26,
+		Max = 110,
+		LoseColors = { Color3.fromRGB(255, 200, 230), Color3.fromRGB(200, 240, 255), Color3.fromRGB(255, 240, 170), Color3.fromRGB(220, 200, 255), Color3.fromRGB(200, 255, 210) },
+		GainColors = { Color3.fromRGB(240, 220, 190), Color3.fromRGB(200, 225, 240), Color3.fromRGB(240, 200, 200), Color3.fromRGB(210, 235, 200) },
+		LoseSigns = { "🍭 CANDY", "🎈 TOYS", "🍟 SNACKS", "🕹 GAMES", "🧢 MERCH", "🍦 ICE CREAM", "📼 VIDEOS", "🎁 GIFTS" },
+	},
 	-- one place for the town's base colours and materials, so the chosen visual style can be swapped in quickly
 	Style = {
 		Water = Color3.fromRGB(70, 150, 210),
