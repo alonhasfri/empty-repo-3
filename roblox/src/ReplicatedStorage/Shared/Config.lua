@@ -694,9 +694,14 @@ Config.Map = {
 	EdgeWallHeight = 120, -- 1.7.4: invisible walls at the edge of the ground
 	-- 1.8 River City (design coordinates, like every other position here): a river splits Lose (west) from Gain (east)
 	River = { X = -145, Width = 60, Depth = 6, Bridges = { -250, 250 }, Boats = { -160, 150 } },
+	Park = { X1 = 20, X2 = 180, Z1 = 220, Z2 = 380 }, -- stays green (design studs)
 	-- one place for the town's base colours and materials, so the chosen visual style can be swapped in quickly
 	Style = {
 		Water = Color3.fromRGB(70, 150, 210),
+		Pavement = Color3.fromRGB(214, 206, 192), -- warm light concrete (neutral until a visual style is picked)
+		PavementMaterial = Enum.Material.Concrete,
+		Grass = Color3.fromRGB(96, 160, 66), -- park and river banks
+		RiverBank = 12, -- grass strip on each side of the river (design studs)
 		Bridge = Color3.fromRGB(150, 110, 75),
 		BridgeMaterial = Enum.Material.WoodPlanks,
 		Railing = Color3.fromRGB(235, 235, 240),
@@ -716,7 +721,7 @@ Config.Map = {
 		Daycare = Vector3.new(-330, 0.6, 410),
 		Retirement = Vector3.new(-410, 0.6, 410),
 		ToyStore = Vector3.new(-410, 0.6, 300),
-		Supermarket = Vector3.new(120, 0.6, 300), -- a Gain job, so it moved to the Gain side
+		Supermarket = Vector3.new(430, 0.6, 300), -- a Gain job, so it moved to the Gain side (east column; the park is at 100,300)
 	},
 	-- 1.8.1: the fake city beyond the edge (unreachable, no collision, no shadows)
 	Skyline = {

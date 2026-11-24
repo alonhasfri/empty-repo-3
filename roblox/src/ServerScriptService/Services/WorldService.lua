@@ -408,7 +408,7 @@ local function buildGround()
 		-- 1.7.3 (user feedback "the grass looks uncanny"): a natural bright green instead of the default grey-green
 		terrain:SetMaterialColor(Enum.Material.Grass, Config.Map.GrassColor)
 		pcall(function()
-			terrain.Decoration = true -- little grass blades where the engine allows it
+			terrain.Decoration = false -- 1.8: off: the blades poked up through the pavement slabs
 		end)
 		if not terrain:FindFirstChildOfClass("Clouds") then
 			local clouds = Instance.new("Clouds")
@@ -1214,6 +1214,47 @@ local function buildPolish()
 	end
 end
 
+-- 1.8 (user: "it shouldn't be grass, it should be roads"): pave the town. One thin concrete layer in a few
+-- big rectangles (design coordinates), leaving grass only for the river banks and the park.
+local function buildPavement()
+	local ST = Config.Map.Style
+	local R = Config.Map.River
+	local E = 506 -- the edge of town, in design studs
+	local bankW = R.Width / 2 + ST.RiverBank
+	local west, east = R.X - bankW, R.X + bankW
+	local P = Config.Map.Park -- { X1, X2, Z1, Z2 }: the park stays green
+	-- Terrain works in 4-stud blocks and can't sit exactly at street level, so lower it to y = -2
+	-- inside town and lay solid slabs from -2 to 0 instead (roads and sidewalks sit right on top)
+	local edgeReal = E * S + 4
+	workspace.Terrain:FillBlock(CFrame.new(0, 1, 0), Vector3.new(edgeReal * 2, 10, edgeReal * 2), Enum.Material.Air)
+	local function slab(name: string, x1: number, x2: number, z1: number, z2: number, color: Color3, mat: Enum.Material)
+		if x2 > x1 and z2 > z1 then
+			part({
+				Name = name,
+				Size = Vector3.new(x2 - x1, 4.1, z2 - z1), -- from -4 up to 0.1 (just under the roads)
+				Position = Vector3.new((x1 + x2) / 2, -1.95, (z1 + z2) / 2),
+				Color = color,
+				Material = mat,
+				CastShadow = false,
+			})
+		end
+	end
+	local paved = {
+		{ -E, west, -E, E }, -- the whole Lose side
+		{ east, E, -E, P.Z1 }, -- Gain side north of the park row
+		{ east, P.X1, P.Z1, E }, -- west of the park
+		{ P.X2, E, P.Z1, E }, -- east of the park
+		{ P.X1, P.X2, P.Z2, E }, -- south of the park
+	}
+	for _, r in ipairs(paved) do
+		slab("Pavement", r[1], r[2], r[3], r[4], ST.Pavement, ST.PavementMaterial)
+	end
+	-- green on purpose: the park and the two river banks
+	slab("ParkGrass", P.X1, P.X2, P.Z1, P.Z2, ST.Grass, Enum.Material.Grass)
+	slab("RiverBank", west, R.X - R.Width / 2, -E, E, ST.Grass, Enum.Material.Grass)
+	slab("RiverBank", R.X + R.Width / 2, east, -E, E, ST.Grass, Enum.Material.Grass)
+end
+
 -- 1.8 River City: a real Terrain-water river between the Lose side (west) and the plaza (east).
 -- Main Street crosses it on a bridge (the road deck + railings); two footbridges and a couple of boats.
 local function buildRiver()
@@ -1337,6 +1378,7 @@ function WorldService.build()
 	buildPlaza()
 	buildLoseSide()
 	buildGainSide()
+	pcall(buildPavement) -- 1.8: paved town (grass only for the park and river banks)
 	local okR, errR = pcall(buildRiver) -- 1.8 River City
 	if not okR then
 		warn("[WorldService] river: " .. tostring(errR))
