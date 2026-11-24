@@ -227,7 +227,7 @@ Config.PhoneShop = {
 	ScamUseLose = 1.5,
 	ReportCooldown = 600, -- Gain: report the scammer once per 10 min
 	ReportGain = 4,
-	ShopPos = Vector3.new(-340, 0.6, 70), -- replaces a locked house on the empty west side
+	ShopPos = Vector3.new(-400, 0.6, 100), -- 1.8 River City: west of the river
 }
 
 Config.VsLobbySignPos = Vector3.new(22, 7, 4) -- 1.8.1: plaza, to the side (it used to block the view at spawn)
@@ -627,8 +627,13 @@ Config.UI = {
 	BigDeltaShare = 0.02, -- 1.7.3: a brain change this big (share of your cells) gets the big centre counter
 	MinDeviceScale = 0.7, -- the whole HUD never shrinks below this on small phones
 	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone
-	MinPhoneText = 14, -- smallest text size on phones
-	MinTouch = 48, -- smallest tappable button (pixels), Google's 48dp rule
+	MinPhoneText = 12, -- smallest text size on phones (1.8.1: 14 made the UI too big)
+	MinTouch = 42, -- smallest tappable button on screen (1.8.1: 48 made the UI too big; ~44 is comfortable)
+	MaxDeviceScale = 1, -- 1.8.1: the UI stops growing on big screens (1.35 looked huge on PC)
+	ToastSeconds = 3, -- 1.8.1: how long a notification stays
+	MaxToasts = 3, -- at most this many at once (the oldest goes)
+	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
+	ToastLowValue = { "interest", "bills paid", "bills skipped", "you already talked", "the next bus comes in", "give it " },
 	LandscapePhoneAspect = 1.05, -- the in-game phone on a sideways phone screen (portrait 0.52 is only ~146 px wide there)
 }
 
@@ -687,6 +692,32 @@ Config.Map = {
 	-- these instead (soft = cute/cash-grab/cozy/nonsense, sharp = realistic/fancy/future).
 	GrassColor = Color3.fromRGB(88, 148, 60), -- 1.8.1: natural green (the brighter one looked neon under the cash-grab colour boost)
 	EdgeWallHeight = 120, -- 1.7.4: invisible walls at the edge of the ground
+	-- 1.8 River City (design coordinates, like every other position here): a river splits Lose (west) from Gain (east)
+	River = { X = -145, Width = 60, Depth = 6, Bridges = { -250, 250 }, Boats = { -160, 150 } },
+	-- one place for the town's base colours and materials, so the chosen visual style can be swapped in quickly
+	Style = {
+		Water = Color3.fromRGB(70, 150, 210),
+		Bridge = Color3.fromRGB(150, 110, 75),
+		BridgeMaterial = Enum.Material.WoodPlanks,
+		Railing = Color3.fromRGB(235, 235, 240),
+		Boat = Color3.fromRGB(240, 240, 245),
+		BoatTrim = Color3.fromRGB(220, 60, 60),
+	},
+	-- where each Lose-side place stands now (west of the river, in clean rows)
+	LoseLayout = {
+		Mall = Vector3.new(-320, 0.6, -100),
+		Diner = Vector3.new(-260, 0.6, 100),
+		Wall = Vector3.new(-330, 0, 230),
+		Slime = Vector3.new(-250, 0.6, 300),
+		Trampoline = Vector3.new(-330, 0.6, -330),
+		Fortune = Vector3.new(-250, 0.6, -230),
+		Party = Vector3.new(-400, 0.6, -230),
+		Kindergarten = Vector3.new(-250, 0.6, 410),
+		Daycare = Vector3.new(-330, 0.6, 410),
+		Retirement = Vector3.new(-410, 0.6, 410),
+		ToyStore = Vector3.new(-410, 0.6, 300),
+		Supermarket = Vector3.new(120, 0.6, 300), -- a Gain job, so it moved to the Gain side
+	},
 	-- 1.8.1: the fake city beyond the edge (unreachable, no collision, no shadows)
 	Skyline = {
 		Depth = 700, -- how far the fake ground goes past the edge

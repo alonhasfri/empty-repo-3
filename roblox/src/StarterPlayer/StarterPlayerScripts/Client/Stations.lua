@@ -1395,6 +1395,7 @@ function Stations.settings()
 	toggle(Content.Settings17.LowGraphics, "lowGraphics", 13)
 	toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 15)
 	toggle(Content.Settings17.AlwaysDay, "alwaysDay", 19) -- 1.8.1
+	toggle(Content.Settings17.FewerToasts, "fewerToasts", 20) -- 1.8.1
 	-- 1.8: Life Pack (only shown to owners)
 	if UI.state and UI.state.perks and UI.state.perks.LifePack then
 		UI.button(m.content, Content.LifeStages.StartLife, function()

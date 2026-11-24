@@ -30,7 +30,7 @@ local function defaultData()
 		embarrass = 0,
 		stress = 0,
 		position = nil,
-		settings = { music = 0.5, sfx = 0.8, reduceFlashing = false, largeText = false, extraTime = false, fxIntensity = 1, hardLife = false, classicHud = false, guide = true, lowGraphics = false, speedrunTimer = false, horror = "spooky", lifePause = false, alwaysDay = false },
+		settings = { music = 0.5, sfx = 0.8, reduceFlashing = false, largeText = false, extraTime = false, fxIntensity = 1, hardLife = false, classicHud = false, guide = true, lowGraphics = false, speedrunTimer = false, horror = "spooky", lifePause = false, alwaysDay = false, fewerToasts = true },
 		manualRank = 0,
 		perks = {},
 		comeback = false,

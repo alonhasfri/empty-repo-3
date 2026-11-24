@@ -182,7 +182,7 @@ local function computeScale()
 	local v = cam and cam.ViewportSize or Vector2.new(1000, 462)
 	local d = math.min(v.X / 1000, v.Y / 462)
 	-- 1.7: never shrink below 0.7, so buttons stay thumb-sized on small phones
-	d = math.clamp(d, Config.UI.MinDeviceScale, 1.35)
+	d = math.clamp(d, Config.UI.MinDeviceScale, Config.UI.MaxDeviceScale or 1)
 	if math.abs(d - UI.D) > 0.01 then
 		UI.D = d
 		for _, fn in ipairs(scaleListeners) do
@@ -523,58 +523,107 @@ local toastHolder = UI.new("Frame", {
 	Name = "Toasts",
 	BackgroundTransparency = 1,
 	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 150),
+	Position = UDim2.new(0.5, 0, 0, 170),
 	Size = UDim2.new(0.4, 0, 0, 10),
 	AutomaticSize = Enum.AutomaticSize.Y,
 	ZIndex = 50,
 	Parent = UI.gui,
 }, {
 	UI.new("UIListLayout", { Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
-	UI.new("UISizeConstraint", { MaxSize = Vector2.new(360, 600), MinSize = Vector2.new(220, 0) }),
+	UI.new("UISizeConstraint", { MaxSize = Vector2.new(300, 600), MinSize = Vector2.new(200, 0) }),
 })
+-- 1.8.1: toasts sit just under the goal line, whatever the screen size
+UI.onScale(function(d)
+	toastHolder.Position = UDim2.new(0.5, 0, 0, 14 + 160 * d)
+end)
 UI.autoScale(toastHolder)
 
 local toastOrder = 0
+-- 1.8.1 (user feedback "too many, too big, too long"): small top toasts, at most MaxToasts at once,
+-- about 3 s each, repeats merged ("×4"), and Settings → "Fewer notifications" drops routine ones.
+local liveToasts = {} -- { {text, holder, label, count, base, timer} }, oldest first
+local function isLowValue(text: string): boolean
+	for _, word in ipairs(Config.UI.ToastLowValue) do
+		if string.find(string.lower(text), word, 1, true) then
+			return true
+		end
+	end
+	return false
+end
 function UI.toast(text: string, color: Color3?, seconds: number?)
+	text = tostring(text or "")
+	if text == "" then
+		return
+	end
+	if (not UI.settings or UI.settings.fewerToasts ~= false) and isLowValue(text) then
+		return -- routine news (interest, bills…): the phone shows it instead
+	end
+	local life = seconds and math.min(seconds, Config.UI.ToastSeconds + 1) or Config.UI.ToastSeconds
+	-- the same message again: bump its counter instead of adding another card
+	for _, t in ipairs(liveToasts) do
+		if t.base == text and t.holder.Parent then
+			t.count += 1
+			t.label.Text = text .. "  ×" .. t.count
+			t.until_ = os.clock() + life
+			return
+		end
+	end
+	while #liveToasts >= Config.UI.MaxToasts do
+		local old = table.remove(liveToasts, 1)
+		if old.holder.Parent then
+			old.holder:Destroy()
+		end
+	end
 	toastOrder += 1
 	local T = UI.T
-	local holder = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = -toastOrder, ZIndex = 50, Parent = toastHolder })
+	local holder = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = toastOrder, ZIndex = 50, Parent = toastHolder })
 	local card = UI.new("Frame", {
 		BackgroundColor3 = T.bg,
-		BackgroundTransparency = T.bgT,
-		Position = UDim2.fromScale(1.2, 0),
+		BackgroundTransparency = math.max(T.bgT or 0, 0.15),
+		Position = UDim2.fromScale(0, -0.3),
 		Size = UDim2.new(1, 0, 0, 10),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		ZIndex = 50,
 		Parent = holder,
 	}, {
-		UI.new("UIPadding", { PaddingLeft = UDim.new(0, 16), PaddingRight = UDim.new(0, 12), PaddingTop = UDim.new(0, 10), PaddingBottom = UDim.new(0, 10) }),
+		UI.new("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 6) }),
 	})
-	UI.corner(card)
-	UI.stroke(card)
-	local bar = UI.new("Frame", { BackgroundColor3 = color or T.accent, Position = UDim2.new(0, -16, 0, -10), Size = UDim2.new(0, 6, 1, 20), ZIndex = 51, Parent = card })
-	UI.corner(bar, 3)
+	UI.corner(card, 10)
+	local bar = UI.new("Frame", { BackgroundColor3 = color or T.accent, Position = UDim2.new(0, -12, 0, -6), Size = UDim2.new(0, 4, 1, 12), ZIndex = 51, Parent = card })
+	UI.corner(bar, 2)
 	local l = UI.new("TextLabel", {
 		BackgroundTransparency = 1,
 		Text = text,
 		TextColor3 = T.text,
-		TextSize = UI.textSize(15),
+		TextSize = UI.textSize(13),
 		TextWrapped = true,
 		RichText = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		Size = UDim2.new(1, 0, 0, 18),
+		Size = UDim2.new(1, 0, 0, 16),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		ZIndex = 51,
 		Parent = card,
 	})
 	l:SetAttribute("Body", true)
 	UI.styleText(l)
-	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back), { Position = UDim2.fromScale(0, 0) }):Play()
-	task.delay(seconds or 4, function()
-		local t = TweenService:Create(card, TweenInfo.new(0.25), { Position = UDim2.fromScale(1.2, 0) })
-		t:Play()
-		t.Completed:Wait()
-		holder:Destroy()
+	local entry = { base = text, holder = holder, label = l, count = 1, until_ = os.clock() + life }
+	table.insert(liveToasts, entry)
+	if not UI.reducedMotion() then
+		TweenService:Create(card, TweenInfo.new(0.2, Enum.EasingStyle.Quad), { Position = UDim2.fromScale(0, 0) }):Play()
+	else
+		card.Position = UDim2.fromScale(0, 0)
+	end
+	task.spawn(function()
+		while holder.Parent and os.clock() < entry.until_ do
+			task.wait(0.25)
+		end
+		local i = table.find(liveToasts, entry)
+		if i then
+			table.remove(liveToasts, i)
+		end
+		if holder.Parent then
+			holder:Destroy()
+		end
 	end)
 end
 
