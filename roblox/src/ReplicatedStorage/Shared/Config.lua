@@ -324,6 +324,7 @@ Config.Conversations = {
 	StartRadius = 14, -- you must be this close to the spot to start
 	Cooldown = 3, -- seconds between conversations
 	CoinRewardEvery = 600, -- 1.7.2: a scene pays coins at most once per 10 min (so talking never beats working)
+	RepeatBrainFactor = 0.1, -- 1.7.3: repeating the same scene within that time gives 10% of the brain cells
 	TypeSpeed = 38, -- letters per second
 	SmartTypeSpeed = 60, -- smart players (IQ >= SmartIQ) read faster
 	SmartIQ = 120,
