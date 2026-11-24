@@ -1,6 +1,6 @@
 -- Style: makes the world look like YOUR brain (on your screen only).
--- genius = near-realistic, smart = detailed, average = regular Roblox,
--- cashgrab = bright simulator style, nonsense = falling apart.
+-- 1.9: one art style per brain level from Config.Styles (storybook, textured, realistic,
+-- future, toon, lowpoly); see the ART STYLES block below.
 -- Also: music, brain weather, dumb pets and your NPC friends.
 
 local Players = game:GetService("Players")
@@ -30,21 +30,6 @@ local CASHGRAB_COLORS = {
 	Color3.fromRGB(255, 230, 0),
 	Color3.fromRGB(0, 200, 255),
 	Color3.fromRGB(255, 120, 0),
-}
-
-local ROLE_LOOK = {
-	genius = {
-		floor = { Enum.Material.Marble, Color3.fromRGB(225, 222, 215) },
-		wall = { Enum.Material.WoodPlanks, Color3.fromRGB(110, 80, 55) },
-		trim = { Enum.Material.Metal, Color3.fromRGB(150, 155, 165) },
-		accent = { Enum.Material.Glass, nil },
-	},
-	smart = {
-		floor = { Enum.Material.WoodPlanks, Color3.fromRGB(160, 120, 85) },
-		wall = { Enum.Material.Brick, Color3.fromRGB(150, 90, 70) },
-		trim = { Enum.Material.Concrete, Color3.fromRGB(170, 170, 170) },
-		accent = { Enum.Material.Wood, nil },
-	},
 }
 
 local function remember(part: BasePart)
@@ -84,154 +69,146 @@ local function moneyTag(part: BasePart, enabled: boolean)
 	end
 end
 
--- LOOKS (town style timeline):
---   cozycash  = Adopt Me-style cute town + loud cash-grab signs (lobby, start of Lose)
---   cozy      = Adopt Me-style cute town (Gain, IQ 95-120)
---   realistic = Brookhaven-style real town (Gain, IQ 120-135)
---   fancy     = Bloxburg-style detailed town (Gain, IQ 135+)
---   cashgrab  = loud simulator look;  nonsense = falling apart
-local PASTELS = {
-	Color3.fromRGB(255, 190, 210), Color3.fromRGB(180, 235, 205), Color3.fromRGB(180, 215, 250),
-	Color3.fromRGB(255, 240, 170), Color3.fromRGB(215, 195, 250), Color3.fromRGB(255, 210, 170),
-}
-local CANDY = {
-	Color3.fromRGB(255, 110, 150), Color3.fromRGB(80, 200, 160), Color3.fromRGB(90, 160, 255),
-	Color3.fromRGB(255, 190, 60), Color3.fromRGB(170, 120, 255), Color3.fromRGB(255, 130, 90),
-}
+-- 1.9: ART STYLES per brain level, all from ONE table: Config.Styles.List (see CLAUDE.md "Art style").
+--   storybook = 5 Cozy storybook (lobby, start, IQ ~80-100)
+--   textured  = 2 Semi-real textured (Gain IQ 100-135)
+--   realistic = 3 Realistic in warm colours (Gain IQ 135+), future = + futuristic accents (200+)
+--   toon      = 4 Toon with outlines (Lose 86B-45B)
+--   lowpoly   = 6 Desaturated low-poly (below 45B, animals)
+-- The old "look" (cozycash/cashgrab/nonsense/...) still drives the cash-grab overlays,
+-- the music and the UI theme; the STYLE drives materials, colours, decor and light.
+-- Low detail (Settings → 🥔) = the current style simplified: smooth plastic, no outlines, no decor.
+local STYLES = Config.Styles.List
+local currentStyle = nil
+local lowDetail = false
+
+function Style.pick(st): string
+	local S = Config.Styles
+	local cells = st.cells or Config.AverageCells
+	if cells < S.LowPolyBelow then
+		return "lowpoly"
+	end
+	if st.path == "Gain" then
+		local iq = st.iq or 100
+		if iq >= S.GainFuture then
+			return "future"
+		elseif iq >= S.GainRealistic then
+			return "realistic"
+		elseif iq >= S.GainTextured then
+			return "textured"
+		end
+		return "storybook"
+	end
+	if st.path == "Lose" and cells < S.LoseToonBelow then
+		return "toon"
+	end
+	return "storybook"
+end
+
 local function pick(list, part: BasePart)
 	local n = #part.Name + math.floor(math.abs(part.Position.X) * 0.37 + math.abs(part.Position.Z) * 0.61)
-	return list[(n % #list) + 1]
+	return list[(n % #list) + 1], n
 end
 
-local function cozyPart(part: BasePart, role: string, orig)
-	part.Material = Enum.Material.SmoothPlastic
-	if part.Name == "Road" then
-		part.Color = Color3.fromRGB(232, 214, 186) -- roads become friendly walking paths
-	elseif part.Name == "Sidewalk" then
-		part.Color = Color3.fromRGB(245, 235, 215)
-	elseif orig[2] == Enum.Material.RoofShingles then
-		part.Color = pick(CANDY, part)
-	elseif role == "wall" then
-		part.Color = pick(PASTELS, part)
-	elseif role == "accent" or role == "cashgrab" then
-		part.Color = pick(CANDY, part)
-	elseif role == "nature" then
-		part.Color = (part.Shape == Enum.PartType.Ball) and Color3.fromRGB(120, 210, 110) or Color3.fromRGB(160, 110, 70)
-	elseif role == "floor" then
-		part.Color = orig[1]:Lerp(Color3.fromRGB(255, 245, 230), 0.5)
-	elseif role == "prop" then
-		part.Material = orig[2]
-		part.Color = orig[1]
-	else
-		part.Color = orig[1]:Lerp(Color3.fromRGB(255, 255, 255), 0.25)
-	end
-end
-
-local FANCY_MATERIAL = {
-	[Enum.Material.Plaster] = Enum.Material.Marble,
-	[Enum.Material.Concrete] = Enum.Material.Limestone,
-	[Enum.Material.CeramicTiles] = Enum.Material.WoodPlanks,
-	[Enum.Material.RoofShingles] = Enum.Material.Slate,
-	[Enum.Material.SmoothPlastic] = Enum.Material.SmoothPlastic,
-}
-local function fancyPart(part: BasePart, role: string, orig)
-	part.Material = orig[2]
-	part.Color = orig[1]
-	if part.Name == "Road" or part.Name == "Sidewalk" then
-		return
-	end
-	local m = FANCY_MATERIAL[orig[2]]
-	if m and role ~= "prop" and role ~= "nature" then
-		part.Material = m
-		if orig[2] == Enum.Material.CeramicTiles then
-			part.Color = Color3.fromRGB(150, 105, 70)
-		elseif orig[2] == Enum.Material.RoofShingles then
-			part.Color = Color3.fromRGB(55, 60, 70)
-		elseif orig[2] == Enum.Material.Plaster or orig[2] == Enum.Material.Concrete then
-			part.Color = orig[1]:Lerp(Color3.fromRGB(240, 236, 228), 0.4)
+-- the colour a wall gets is picked per BUILDING (its model), so one house is one colour
+local function anchorFor(part: BasePart): BasePart
+	local m = part.Parent
+	if m and m:IsA("Model") and m ~= workspace then
+		local pp = m.PrimaryPart or m:FindFirstChildWhichIsA("BasePart")
+		if pp then
+			return pp
 		end
 	end
-	if role == "accent" and orig[2] == Enum.Material.Fabric then
-		part.Color = orig[1]:Lerp(Color3.fromRGB(30, 30, 40), 0.35) -- classy dark awnings
-	end
+	return part
 end
 
-local function stylePart(part: BasePart, look: string)
+local function desaturate(c: Color3, amount: number): Color3
+	if amount <= 0 then
+		return c
+	end
+	local grey = c.R * 0.3 + c.G * 0.59 + c.B * 0.11
+	return c:Lerp(Color3.new(grey, grey, grey), amount)
+end
+
+local function slotFor(part: BasePart, role: string, orig): string?
+	if part.Name == "Road" then
+		return "road"
+	elseif part.Name == "Sidewalk" or part.Name == "ParkPath" then
+		return "sidewalk"
+	elseif role == "nature" then
+		return part.Shape == Enum.PartType.Ball and "leaves" or "trunk"
+	elseif role == "prop" then
+		return nil
+	elseif orig[2] == Enum.Material.RoofShingles then
+		return "roof"
+	elseif role == "wall" then
+		return "wall"
+	elseif role == "floor" then
+		return part.Name == "Grass" and nil or "floor"
+	elseif role == "trim" then
+		return "trim"
+	end
+	return "accent" -- accent + cashgrab
+end
+
+local function stylePart(part: BasePart, look: string, styleName: string)
 	remember(part)
 	local role = part:GetAttribute("Role") or "accent"
 	local orig = originals[part]
-	if look == "cashgrab" then
-		if role == "accent" or role == "cashgrab" then
-			part.Material = Enum.Material.SmoothPlastic
-			part.Color = hashColor(part)
-		elseif role == "wall" then
-			part.Material = orig[2]
-			part.Color = orig[1]:Lerp(hashColor(part), 0.45)
-		else
-			part.Material = orig[2]
-			part.Color = orig[1]
+	local s = STYLES[styleName] or STYLES.storybook
+	local slot = slotFor(part, role, orig)
+	local mat, color = orig[2], orig[1]
+	local rule = slot and s[slot]
+	if rule then
+		local target, n = pick(rule.P, slot == "wall" and anchorFor(part) or part)
+		color = orig[1]:Lerp(target, rule.A or 0)
+		mat = rule.M or orig[2]
+		if slot == "wall" then
+			-- storybook/textured: every Nth house is plaster instead of brick; realistic: every Nth is glass-fronted
+			if rule.plasterEvery and n % rule.plasterEvery == 0 then
+				mat = Enum.Material.Plaster
+			elseif rule.glassEvery and n % rule.glassEvery == 0 and part.Size.Y > 10 then
+				mat = Enum.Material.Glass
+				color = color:Lerp(Color3.fromRGB(140, 170, 190), 0.4)
+			end
 		end
-	elseif look == "nonsense" then
-		part.Material = Enum.Material.SmoothPlastic
-		part.Color = Color3.fromRGB(163, 162, 165)
-	elseif look == "cozy" or look == "cozycash" then
-		cozyPart(part, role, orig)
-	elseif look == "fancy" then
-		fancyPart(part, role, orig)
-	elseif look == "future" then
-		-- 200+ IQ (1.4): Bloxburg-fancy plus futuristic touches (glass + teal, no glowing cubes)
-		fancyPart(part, role, orig)
-		if role == "accent" or role == "cashgrab" then
-			part.Material = Enum.Material.Glass
-			part.Color = Color3.fromRGB(90, 220, 230)
-		elseif role == "trim" and part.Name ~= "Road" and part.Name ~= "Sidewalk" then
-			part.Material = Enum.Material.Metal
-			part.Color = Color3.fromRGB(200, 210, 220)
-		end
-	else -- realistic
-		part.Material = orig[2]
-		part.Color = orig[1]
 	end
+	if slot then
+		color = desaturate(color, s.desaturate or 0)
+	end
+	if lowDetail and role ~= "prop" then
+		mat = Enum.Material.SmoothPlastic
+	end
+	-- cash-grab overlay (Lose 45-86B and the lobby): loud accents on top of the style
+	if (look == "cashgrab" or look == "cozycash") and (role == "accent" or role == "cashgrab") then
+		mat = Enum.Material.SmoothPlastic
+		color = hashColor(part)
+	end
+	part.Material = mat
+	part.Color = color
 	local money = (look == "cashgrab" or look == "cozycash") and role == "accent" and math.random() < 0.35
-	moneyTag(part, money)
+	moneyTag(part, money and not lowDetail)
 end
 
-local function styleSign(label: TextLabel, look: string)
+local function styleSign(label: TextLabel, look: string, styleName: string)
 	local base = label:GetAttribute("BaseText") or label.Text
 	local text = Brain.degradeText(base, currentCells, UI.effects())
+	local sg = (STYLES[styleName] or STYLES.storybook).sign
+	label.Font = sg.font
+	label.TextColor3 = sg.color
+	label.TextStrokeColor3 = sg.stroke
+	label.TextStrokeTransparency = sg.strokeT
 	if look == "cashgrab" or look == "cozycash" then
 		label.Font = Enum.Font.FredokaOne
 		label.TextColor3 = Color3.fromRGB(255, 235, 60)
+		label.TextStrokeColor3 = Color3.new(0, 0, 0)
 		label.TextStrokeTransparency = 0
 		text = "🔥 " .. text .. " 🔥"
-	elseif look == "nonsense" then
-		label.Font = Enum.Font.Cartoon
-		label.TextColor3 = Color3.fromRGB(230, 230, 230)
-		label.TextStrokeTransparency = 0.6
-	elseif look == "future" then
-		label.Font = Enum.Font.Michroma
-		label.TextColor3 = Color3.fromRGB(170, 250, 255)
-		label.TextStrokeColor3 = Color3.fromRGB(0, 60, 80)
-		label.TextStrokeTransparency = 0.4
-	elseif look == "fancy" then
-		label.Font = Enum.Font.Garamond
-		label.TextColor3 = Color3.fromRGB(245, 235, 210)
-		label.TextStrokeTransparency = 0.7
-	elseif look == "cozy" then
-		label.Font = Enum.Font.FredokaOne
-		label.TextColor3 = Color3.new(1, 1, 1)
-		label.TextStrokeColor3 = Color3.fromRGB(200, 80, 140)
-		label.TextStrokeTransparency = 0
-	else
-		label.Font = Enum.Font.GothamBold
-		label.TextColor3 = Color3.new(1, 1, 1)
-		label.TextStrokeColor3 = Color3.new(0, 0, 0)
-		label.TextStrokeTransparency = 0.3
 	end
 	label.Text = text
 end
 
-local function applyLighting(look: string)
+local function applyLighting(styleName: string)
 	local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
 	if not atmosphere then
 		atmosphere = Instance.new("Atmosphere")
@@ -243,19 +220,18 @@ local function applyLighting(look: string)
 		cc.Name = "BrainCC"
 		cc.Parent = Lighting
 	end
-	Lighting.GlobalShadows = look ~= "nonsense"
-	cc.TintColor = Color3.new(1, 1, 1)
-	-- 1.7.3 (user feedback "too dark and grey"): clear sky-blue air instead of grey fog, warm daylight, a little exposure
+	local L = (STYLES[styleName] or STYLES.storybook).light
+	-- (shadows on/off belong to LowGraphics.lua, which remembers and restores them)
+	-- 1.7.3 (user feedback "too dark and grey"): clear sky-blue air instead of grey fog
 	atmosphere.Color = Color3.fromRGB(200, 222, 245)
 	atmosphere.Decay = Color3.fromRGB(120, 150, 190)
 	atmosphere.Glare = 0
 	Lighting.OutdoorAmbient = Color3.fromRGB(150, 145, 135)
 	Lighting.ExposureCompensation = 0.15
 	cc.Brightness = 0.03
-	-- 1.7: soft light for cute/cash-grab/cozy/nonsense, sharp light for the smart looks.
-	-- (Game scripts can't change Lighting.LightingStyle, so this uses settings they can change.)
-	local real = look == "realistic" or look == "fancy" or look == "future"
-	for prop, value in pairs(real and Config.Map.SharpLight or Config.Map.SoftLight) do
+	-- soft light for storybook/toon/low-poly, sharp light for the smart styles
+	-- (game scripts can't change Lighting.LightingStyle, so this uses settings they can change)
+	for prop, value in pairs(L.sharp and Config.Map.SharpLight or Config.Map.SoftLight) do
 		local ok, err = pcall(function()
 			Lighting[prop] = value
 		end)
@@ -263,64 +239,15 @@ local function applyLighting(look: string)
 			warn("[Style] lighting " .. prop .. ": " .. tostring(err))
 		end
 	end
-	if look == "future" then
-		-- dusk with a cool sci-fi tint
-		Lighting.ClockTime = 18.2
-		Lighting.Brightness = 2.8
-		Lighting.Ambient = Color3.fromRGB(105, 115, 140)
-		atmosphere.Density = 0.22
-		atmosphere.Haze = 0.5
-		cc.Saturation = 0.18
-		cc.Contrast = 0.12
-		cc.TintColor = Color3.fromRGB(225, 245, 255)
-	elseif look == "fancy" then
-		-- golden hour, soft and expensive-looking
-		Lighting.ClockTime = 16.6
-		Lighting.Brightness = 3
-		Lighting.Ambient = Color3.fromRGB(125, 115, 110)
-		atmosphere.Density = 0.2
-		atmosphere.Haze = 0.5
-		cc.Saturation = 0.18
-		cc.Contrast = 0.1
-		cc.TintColor = Color3.fromRGB(255, 244, 228)
-	elseif look == "realistic" then
-		Lighting.ClockTime = 14
-		Lighting.Brightness = 2.9
-		Lighting.Ambient = Color3.fromRGB(130, 125, 118)
-		atmosphere.Density = 0.18
-		atmosphere.Haze = 0.2
-		cc.Saturation = 0.14
-		cc.Contrast = 0.04
-	elseif look == "cozy" or look == "cozycash" then
-		-- bright, warm, toy-town sunshine
-		Lighting.ClockTime = 13
-		Lighting.Brightness = 2.8
-		Lighting.Ambient = Color3.fromRGB(150, 140, 155)
-		atmosphere.Density = 0.15
-		atmosphere.Haze = 0
-		cc.Saturation = look == "cozycash" and 0.25 or 0.15
-		cc.Contrast = 0.05
-		cc.TintColor = Color3.fromRGB(255, 250, 245)
-	elseif look == "cashgrab" then
-		Lighting.ClockTime = 13
-		Lighting.Brightness = 3
-		Lighting.Ambient = Color3.fromRGB(160, 140, 170)
-		atmosphere.Density = 0.1
-		atmosphere.Haze = 0
-		cc.Saturation = 0.25
-		cc.Contrast = 0.15
-	elseif look == "nonsense" then
-		Lighting.ClockTime = 12
-		-- still strange and washed-out (it's the nonsense look), but never dark or dull
-		Lighting.Brightness = 2
-		Lighting.Ambient = Color3.fromRGB(165, 155, 175)
-		atmosphere.Density = 0.3
-		atmosphere.Haze = 1.4
-		cc.Saturation = -0.35
-		cc.Contrast = -0.05
-		cc.TintColor = Color3.fromRGB(250, 235, 255)
-	end
-	Lighting:SetAttribute("LookClock", Lighting.ClockTime) -- 1.8.1: "Always day" goes back to the look's own time
+	Lighting.ClockTime = L.clock
+	Lighting.Brightness = L.brightness
+	Lighting.Ambient = L.ambient
+	atmosphere.Density = L.density
+	atmosphere.Haze = L.haze
+	cc.Saturation = L.sat
+	cc.Contrast = L.contrast
+	cc.TintColor = L.tint
+	Lighting:SetAttribute("LookClock", Lighting.ClockTime) -- 1.8.1: "Always day" goes back to the style's own time
 end
 
 local function applyCashGrabParts(look: string)
@@ -352,24 +279,105 @@ local function applyCashGrabParts(look: string)
 	end
 end
 
+-- Toon outlines: a black outline Highlight on the nearest buildings (Roblox draws at most 31 at once)
+local outlineFolder = Instance.new("Folder")
+outlineFolder.Name = "ToonOutlines"
+local outlineModels = nil -- list of building models (found once)
+local outlineOn = false
+
+local function buildingModels()
+	if outlineModels then
+		return outlineModels
+	end
+	local seen, list = {}, {}
+	for _, p in ipairs(CollectionService:GetTagged("Styled")) do
+		if p:IsA("BasePart") and p:GetAttribute("Role") == "wall" then
+			local m = p.Parent
+			if m and m:IsA("Model") and not seen[m] then
+				seen[m] = true
+				table.insert(list, m)
+			end
+		end
+	end
+	if #list > 0 then
+		outlineModels = list -- found once the town exists
+	end
+	return list
+end
+
+local function refreshOutlines()
+	if not outlineOn then
+		outlineFolder:ClearAllChildren()
+		return
+	end
+	local cam = workspace.CurrentCamera
+	if not cam then
+		return
+	end
+	local here = cam.CFrame.Position
+	local list = {}
+	for _, m in ipairs(buildingModels()) do
+		if m.Parent then
+			local ok, pivot = pcall(m.GetPivot, m)
+			if ok then
+				table.insert(list, { m = m, d = (pivot.Position - here).Magnitude })
+			end
+		end
+	end
+	table.sort(list, function(a, b)
+		return a.d < b.d
+	end)
+	local want = {}
+	for i = 1, math.min(Config.Styles.OutlineBuildings, #list) do
+		want[list[i].m] = true
+	end
+	for _, h in ipairs(outlineFolder:GetChildren()) do
+		if not want[h.Adornee] then
+			h:Destroy()
+		else
+			want[h.Adornee] = nil
+		end
+	end
+	for m in pairs(want) do
+		local h = Instance.new("Highlight")
+		h.Adornee = m
+		h.FillTransparency = 1
+		h.OutlineColor = Color3.new(0, 0, 0)
+		h.OutlineTransparency = 0
+		h.DepthMode = Enum.HighlightDepthMode.Occluded
+		h.Parent = outlineFolder
+	end
+end
+
+task.spawn(function()
+	outlineFolder.Parent = workspace
+	while true do
+		task.wait(Config.Styles.OutlineEvery)
+		refreshOutlines()
+	end
+end)
+
 -- Little decorations outside every building, only on your screen:
--- cozy = flower bushes, fancy = planters with topiary + lamps
+-- storybook = flower boxes and bushes, textured/realistic = planters with topiary + lamps, future = + cyan lamps
 local decorFolder = nil
-local function applyDecor(look: string)
+local function applyDecor(styleName: string)
 	if decorFolder then
 		decorFolder:Destroy()
 		decorFolder = nil
 	end
-	if look ~= "cozy" and look ~= "cozycash" and look ~= "fancy" and look ~= "future" then
+	local kind = (STYLES[styleName] or {}).decor
+	if not kind or lowDetail then
 		return
 	end
 	decorFolder = Instance.new("Folder")
 	decorFolder.Name = "LocalDecor"
 	local function p(cf, size, color, material, shape)
 		local d = Instance.new("Part")
+		d.Name = "Decor"
 		d.Anchored = true
 		d.CanCollide = false
 		d.CanQuery = false
+		d.CastShadow = false
 		d.CFrame = cf
 		d.Size = size
 		d.Color = color
@@ -379,6 +387,7 @@ local function applyDecor(look: string)
 		end
 		d.Parent = decorFolder
 	end
+	local FLOWERS = { Color3.fromRGB(230, 70, 80), Color3.fromRGB(255, 200, 60), Color3.fromRGB(240, 130, 180), Color3.fromRGB(250, 250, 245) }
 	for _, label in ipairs(CollectionService:GetTagged("Sign")) do
 		local gui = label.Parent
 		local board = gui and gui:IsA("SurfaceGui") and gui.Parent
@@ -386,17 +395,18 @@ local function applyDecor(look: string)
 			for _, side in ipairs({ -1, 1 }) do
 				local base = board.CFrame * CFrame.new(side * (board.Size.X / 2 + 1.5), 0, -2.5)
 				local ground = CFrame.new(base.Position.X, 1.2, base.Position.Z) * board.CFrame.Rotation
-				if look == "fancy" or look == "future" then
+				if kind == "planters" or kind == "future" then
 					p(ground * CFrame.new(0, 0.9, 0), Vector3.new(2.4, 1.8, 2.4), Color3.fromRGB(70, 50, 35), Enum.Material.WoodPlanks)
 					p(ground * CFrame.new(0, 3, 0), Vector3.new(2.6, 2.6, 2.6), Color3.fromRGB(50, 110, 55), Enum.Material.LeafyGrass, Enum.PartType.Ball)
 					p(ground * CFrame.new(side * 2.2, 3.5, 0), Vector3.new(0.3, 7, 0.3), Color3.fromRGB(30, 30, 35), Enum.Material.Metal)
-					p(ground * CFrame.new(side * 2.2, 7.2, 0), Vector3.new(0.8, 0.8, 0.8), look == "future" and Color3.fromRGB(150, 240, 255) or Color3.fromRGB(255, 225, 160), Enum.Material.Neon)
-				else
-					p(ground * CFrame.new(0, 1, 0), Vector3.new(2.6, 2.2, 2.6), Color3.fromRGB(110, 200, 100), Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+					p(ground * CFrame.new(side * 2.2, 7.2, 0), Vector3.new(0.8, 0.8, 0.8), kind == "future" and Color3.fromRGB(150, 240, 255) or Color3.fromRGB(255, 225, 160), Enum.Material.Neon)
+				else -- storybook flower box under the sign + a round bush
+					p(board.CFrame * CFrame.new(side * (board.Size.X / 4), -board.Size.Y / 2 - 0.6, -0.8), Vector3.new(board.Size.X / 2.4, 0.8, 1.2), Color3.fromRGB(120, 75, 45), Enum.Material.Wood)
 					for i = 1, 4 do
-						local a = i * math.pi / 2
-						p(ground * CFrame.new(math.cos(a) * 1, 1.9, math.sin(a) * 1), Vector3.new(0.6, 0.6, 0.6), CANDY[(i % #CANDY) + 1], Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+						local x = side * (board.Size.X / 4) + (i - 2.5) * (board.Size.X / 12)
+						p(board.CFrame * CFrame.new(x, -board.Size.Y / 2 - 0.05, -0.8), Vector3.new(0.7, 0.7, 0.7), FLOWERS[(i % #FLOWERS) + 1], Enum.Material.SmoothPlastic, Enum.PartType.Ball)
 					end
+					p(ground * CFrame.new(0, 1, 0), Vector3.new(2.6, 2.2, 2.6), Color3.fromRGB(95, 150, 70), Enum.Material.LeafyGrass, Enum.PartType.Ball)
 				end
 			end
 		end
@@ -445,36 +455,49 @@ end
 function Style.apply(state)
 	currentCells = state.cells
 	local tier = state.look or state.tier
-	local changed = tier ~= currentTier
+	local styleName = state.style or Style.pick(state)
+	local low = state.settings ~= nil and state.settings.lowGraphics == true
+	local changed = tier ~= currentTier or styleName ~= currentStyle or low ~= lowDetail
+	local styleChanged = styleName ~= currentStyle or low ~= lowDetail
 	currentTier = tier
+	currentStyle = styleName
+	lowDetail = low
 	if changed then
 		for _, p in ipairs(CollectionService:GetTagged("Styled")) do
 			if p:IsA("BasePart") then
-				stylePart(p, tier)
+				stylePart(p, tier, styleName)
 			end
 		end
-		applyLighting(tier)
+		if styleChanged then
+			applyLighting(styleName)
+			task.defer(applyDecor, styleName)
+		end
 		applyCashGrabParts(tier)
-		task.defer(applyDecor, tier)
+		outlineOn = (STYLES[styleName] or {}).outline == true and not lowDetail
+		refreshOutlines()
 	end
 	for _, l in ipairs(CollectionService:GetTagged("Sign")) do
 		if l:IsA("TextLabel") then
-			styleSign(l, tier)
+			styleSign(l, tier, styleName)
 		end
 	end
 	updateMusic()
 end
 
+function Style.current(): (string?, boolean)
+	return currentStyle, lowDetail
+end
+
 CollectionService:GetInstanceAddedSignal("Styled"):Connect(function(p)
 	if currentTier and p:IsA("BasePart") then
-		stylePart(p, currentTier)
+		stylePart(p, currentTier, currentStyle)
 	end
 end)
 CollectionService:GetInstanceAddedSignal("Sign"):Connect(function(l)
 	if currentTier and l:IsA("TextLabel") then
-		styleSign(l, currentTier)
+		styleSign(l, currentTier, currentStyle)
 		l:GetAttributeChangedSignal("BaseText"):Connect(function()
-			styleSign(l, currentTier)
+			styleSign(l, currentTier, currentStyle)
 		end)
 	end
 end)
@@ -482,7 +505,7 @@ for _, l in ipairs(CollectionService:GetTagged("Sign")) do
 	if l:IsA("TextLabel") then
 		l:GetAttributeChangedSignal("BaseText"):Connect(function()
 			if currentTier then
-				styleSign(l, currentTier)
+				styleSign(l, currentTier, currentStyle)
 			end
 		end)
 	end
@@ -905,8 +928,8 @@ local function applyZone(z: string?)
 		if atmosphere then
 			atmosphere.Color = Color3.fromRGB(199, 199, 199)
 		end
-		if currentTier then
-			applyLighting(currentTier)
+		if currentStyle then
+			applyLighting(currentStyle)
 		end
 	end
 end
