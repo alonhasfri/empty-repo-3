@@ -1017,6 +1017,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+{ v = "1.8.3", name = "Tidier screen", lines = { "🔢 Huge brain counts are short now (1.2T, 9.9Qa …) instead of 25 squeezed digits.", "🔤 One clean font everywhere, even at genius level.", "📌 Goals sit in a slim line at the top instead of a big banner in the middle.", "➕ The More button has its icon back.", } },
 	{ v = "1.8.2", name = "Busy Streets", lines = {
 		"🏘 Every street is busier: globe lamps, planters, benches and trees along the sidewalks, and bunting over Main Street.",
 		"🏠 Houses got pitched roofs and flower boxes; shops got striped awnings.",

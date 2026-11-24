@@ -27,6 +27,27 @@ function Brain.formatNumber(n: number): string
 	return (negative and "-" or "") .. out
 end
 
+-- 1.8.3: short form for huge numbers (the counter showed 25 squeezed digits). Up to
+-- Config.ShortNumberFrom it keeps the full "86,000,000,000"; above, 1.2T, 9.9Qa ... then "∞".
+function Brain.shortNumber(n: number): string
+	if n ~= n then
+		return "0"
+	end
+	if math.abs(n) < Config.ShortNumberFrom then
+		return Brain.formatNumber(n)
+	end
+	local suffixes = Config.NumberSuffixes
+	local v, i = math.abs(n), 0
+	while v >= 1000 and i < #suffixes do
+		v /= 1000
+		i += 1
+	end
+	if v >= 1000 or v == math.huge then
+		return "∞"
+	end
+	return (n < 0 and "-" or "") .. string.format("%.1f", v) .. suffixes[i]
+end
+
 ---------------------------------------------------------------------
 -- IQ (every 8 billion cells = 15 IQ points; overflow above ~200)
 ---------------------------------------------------------------------

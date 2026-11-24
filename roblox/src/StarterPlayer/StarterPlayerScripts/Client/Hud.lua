@@ -202,7 +202,7 @@ local function buildGrid(path: string?)
 		end)
 	end
 	if #all > shown then
-		local more = iconButton(grid, { key = "more", icon = "☰", name = Content.HudMore.Button, color = Color3.fromRGB(70, 70, 90) }, shown + 1, function()
+		local more = iconButton(grid, { key = "more", icon = "➕", name = Content.HudMore.Button, color = Color3.fromRGB(70, 70, 90) }, shown + 1, function()
 			local m = UI.modal(Content.HudMore.Title, { color = Color3.fromRGB(70, 70, 90) })
 			for i, item in ipairs(all) do
 				UI.button(m.content, item.icon .. "  " .. item.name, function()
@@ -599,7 +599,7 @@ end)
 
 local MOOD = {
 	host = { emoji = "🎤", font = Enum.Font.FredokaOne, color = Color3.fromRGB(255, 205, 60), title = "Dr. Wrinkles • Game Show Host" },
-	librarian = { emoji = "📚", font = Enum.Font.Garamond, color = Color3.fromRGB(190, 210, 255), title = "Dr. Wrinkles • Librarian" },
+	librarian = { emoji = "📚", font = Enum.Font.GothamMedium, color = Color3.fromRGB(190, 210, 255), title = "Dr. Wrinkles • Librarian" },
 	brainrot = { emoji = "📱", font = Enum.Font.Cartoon, color = Color3.fromRGB(255, 90, 200), title = "dr wrinkles 💀" },
 	caveman = { emoji = "🦴", font = Enum.Font.Fantasy, color = Color3.fromRGB(200, 150, 100), title = "WRINKL" },
 }
@@ -610,10 +610,10 @@ local sayToken = 0
 local objectiveLabel = UI.new("TextLabel", {
 	Name = "Objective",
 	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 62),
-	Size = UDim2.fromOffset(340, 30),
+	Position = UDim2.new(0.5, 0, 0, 10), -- 1.8.3: a slim line at the very top, not a banner in the middle
+	Size = UDim2.fromOffset(300, 22),
 	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
-	BackgroundTransparency = 0.2,
+	BackgroundTransparency = 0.5,
 	TextColor3 = Color3.fromRGB(255, 225, 120),
 	Font = Enum.Font.FredokaOne,
 	TextScaled = true,

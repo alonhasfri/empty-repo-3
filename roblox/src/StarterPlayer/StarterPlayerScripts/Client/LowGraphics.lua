@@ -98,6 +98,11 @@ LowGraphics.onAuto = nil -- set by ClientMain: re-applies the style and shows a 
 
 local function probe()
 	probed = true
+	-- 1.8.3: phones and tablets only (a PC with the window in the background also drops frames)
+	local UIS = game:GetService("UserInputService")
+	if not UIS.TouchEnabled or UIS.KeyboardEnabled then
+		return
+	end
 	task.delay(Config.UI.AutoLowDelay, function()
 		local frames, t0 = 0, os.clock()
 		local c = RunService.RenderStepped:Connect(function()

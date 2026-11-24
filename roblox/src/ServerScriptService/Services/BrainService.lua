@@ -172,7 +172,7 @@ function BrainService.state(player)
 		life = BrainService.hooks.lifeInfo and BrainService.hooks.lifeInfo(data) or nil, -- 1.8: Life Pack age/stage
 		serverNow = os.time(),
 		cells = cells,
-		cellsText = Brain.formatNumber(cells),
+		cellsText = Brain.shortNumber(cells),
 		path = data.path,
 		iq = Brain.iq(cells),
 		iqText = Brain.iqText(cells, data.path),

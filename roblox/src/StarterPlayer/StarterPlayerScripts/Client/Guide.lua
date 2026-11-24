@@ -26,13 +26,13 @@ line = UI.new("TextLabel", {
 	Name = "GuideLine",
 	AnchorPoint = Vector2.new(0.5, 0),
 	Position = UDim2.new(0.5, 0, 0, 74),
-	Size = UDim2.fromOffset(520, UI.textSize(16) + 14),
+	Size = UDim2.fromOffset(420, UI.textSize(14) + 10), -- 1.8.3: a slim top line, not a big centre banner
 	AutomaticSize = Enum.AutomaticSize.Y, -- long goals wrap instead of being cut off
 	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
-	BackgroundTransparency = 0.25,
+	BackgroundTransparency = 0.5,
 	TextColor3 = Color3.new(1, 1, 1),
 	Font = Enum.Font.FredokaOne,
-	TextSize = UI.textSize(16),
+	TextSize = UI.textSize(14),
 	TextWrapped = true,
 	Visible = false,
 	Parent = UI.gui,
@@ -42,7 +42,7 @@ UI.autoScale(line)
 UI.new("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4), Parent = line })
 -- 1.8 (screenshot check): sit under the title banner, not on top of it
 UI.onScale(function(d)
-	line.Position = UDim2.new(0.5, 0, 0, 8 + 112 * d)
+		line.Position = UDim2.new(0.5, 0, 0, 10 + 26 * d) -- 1.8.3: just under the slim objective line at the top
 end)
 
 local function makeArrow()
