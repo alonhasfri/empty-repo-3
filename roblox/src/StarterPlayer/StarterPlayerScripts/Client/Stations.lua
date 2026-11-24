@@ -917,7 +917,13 @@ function Stations.gate()
 				return
 			end
 			submitted = true
-			local res = Remote.call("gate_submit", { answers = answers })
+			-- 1.8.7 fix: always send a full list (1..n, 0 = skipped). A list with gaps arrives at the
+			-- server with text keys ("2") and the answers were read as missing = wrong.
+			local out = {}
+			for i = 1, #r.questions do
+				out[i] = answers[i] or 0
+			end
+			local res = Remote.call("gate_submit", { answers = out })
 			m.close()
 			if res.passed then
 				UI.toast("🎉 GATE PASSED! Your brain can grow again.", C.good, 6)

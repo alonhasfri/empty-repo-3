@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.8.6"
+Config.Version = "1.8.7"
 -- 1.8.3: the brain counter shortens numbers from here on (1.2T, 9.9Qa ...)
 Config.ShortNumberFrom = 1e12
 Config.NumberSuffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" }

@@ -1017,6 +1017,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.8.7", name = "Phone Fixes", lines = { "🛠 Fixed: Skill Gates marked right answers wrong.", "📱 The in-game phone fits sideways phones: wider, more apps per row, BrainTalks buttons always visible.", "🔔 Little notes now pop up at the top, not in the middle." } },
 	{ v = "1.8.6", name = "New Staff Panel", lines = { "🛠 Staff get a brand-new BrainAdmin panel: tabs, search, player cards with rank badges, and an \"Are you sure?\" step before kicks and bans." } },
 	{ v = "1.8.5", name = "Cleaner Screen + Quick Play", lines = { "⚡ New Quick Play button next to your Phone: 3 fast questions, points for right answers (on the Lose path the dumbest answer wins!).", "🪟 Pop-ups are smaller, and you can tap outside one to close it.", "🛒 SHOP and 🗺 MAP are small round buttons now; the floating job tag is gone." } },
 	{ v = "1.8.4", name = "Warm Genius Town", lines = { "🏙 Smart players (IQ 135+) now see a warm brick and sandstone town with terracotta roofs, not grey boxes.", "✨ At IQ 200+ the cyan future touches stay on top." } },
