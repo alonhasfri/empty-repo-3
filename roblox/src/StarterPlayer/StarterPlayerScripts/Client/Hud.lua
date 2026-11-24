@@ -167,7 +167,7 @@ local function iconButton(parent, item, order: number, onClick)
 		UI.sound("CartoonBoing", 0.25)
 		onClick()
 	end)
-	if T.wobble then
+	if T.wobble and UI.effects() > 0 and not UI.reducedMotion() then
 		b.Rotation = math.random(-6, 6)
 	end
 	return b

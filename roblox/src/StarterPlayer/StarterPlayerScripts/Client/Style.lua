@@ -198,7 +198,7 @@ end
 
 local function styleSign(label: TextLabel, look: string)
 	local base = label:GetAttribute("BaseText") or label.Text
-	local text = Brain.degradeText(base, currentCells)
+	local text = Brain.degradeText(base, currentCells, UI.effects())
 	if look == "cashgrab" or look == "cozycash" then
 		label.Font = Enum.Font.FredokaOne
 		label.TextColor3 = Color3.fromRGB(255, 235, 60)

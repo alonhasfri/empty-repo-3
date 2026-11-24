@@ -382,7 +382,7 @@ function UI.button(parent, text: string, onClick, props)
 	if T.shine then
 		UI.gradient(b, Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 170), 90)
 	end
-	if T.wobble then
+	if T.wobble and UI.effects() > 0 and not UI.reducedMotion() then
 		b.Rotation = math.random(-3, 3)
 	end
 	local function tweenScale(s: number)
@@ -650,7 +650,7 @@ function UI.modal(title: string, opts)
 	else
 		UI.corner(frame, T.radius + 4)
 		UI.stroke(frame, T.textStroke and Color3.new(0, 0, 0) or accent, T.strokeW + 1, 0)
-		if T.wobble then
+		if T.wobble and UI.effects() > 0 and not UI.reducedMotion() then
 			frame.Rotation = math.random(-2, 2)
 		end
 	end

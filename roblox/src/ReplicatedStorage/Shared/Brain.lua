@@ -199,8 +199,12 @@ function Brain.decayLevel(cells: number): number
 	return 3
 end
 
-function Brain.degradeText(text: string, cells: number): string
+-- fx (0..1) is the player's Effects slider: 0 = never scramble, 1 = full scramble
+function Brain.degradeText(text: string, cells: number, fx: number?): string
 	local level = Brain.decayLevel(cells)
+	if fx ~= nil then
+		level = math.floor(level * math.clamp(fx, 0, 1) + 0.5)
+	end
 	if level == 0 then
 		return text
 	end

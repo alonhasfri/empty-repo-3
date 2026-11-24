@@ -101,7 +101,7 @@ local function sendReading(player)
 	sess.reading = { id = id, issued = os.clock(), tos = isTOS }
 	Net.send(player, "reading", {
 		id = id,
-		text = isTOS and text or Brain.degradeText(text, data.cells),
+		text = isTOS and text or Brain.degradeText(text, data.cells, data.settings and tonumber(data.settings.fxIntensity) or 1),
 		tos = isTOS,
 		tier = tierFor(data.cells),
 	})

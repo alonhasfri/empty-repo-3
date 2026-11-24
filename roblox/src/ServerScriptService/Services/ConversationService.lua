@@ -46,7 +46,7 @@ local function choiceText(data, opt, i: number): string
 	if typeof(t) == "table" then
 		t = t[data.path] or t.Gain
 	end
-	return Brain.degradeText(t, data.cells)
+	return Brain.degradeText(t, data.cells, data.settings and tonumber(data.settings.fxIntensity) or 1)
 end
 
 local function nodePayload(data, s)
