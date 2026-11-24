@@ -204,3 +204,12 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 - Nov 24, 13:35: 1.8 + styles, background, BrainTalks (private)
 - Nov 24, 14:28: 1.8.3 (1.8.2 Busy Streets + 1.8.3 Tidier screen), private. Save check: only new field settings.lowGraphicsChosen (nil for old saves); no keys renamed or removed.
 - Nov 24, 14:40: 1.8.4 Warm Genius Town, private (the user clicked Overwrite; confirmed "Successfully published!"). No save changes.
+- Nov 24, 17:20: 1.8.5 Cleaner Screen + Quick Play (the user clicked Overwrite; confirmed by the API). No save changes. Note: brain game became Public at 17:02 (not by Claude), audience "Ages 16+ and trusted friends". Content rating resubmitted (Social Hangout and Free-form set to No; preview Minimal).
+
+## Next (user order, Nov 24)
+1. **Admin menu redesign** (item 6) to docs/admin_panel_mockup.png:
+   - dark panel with left tabs, search, player cards with rank badges, quick actions, sliders/toggles
+   - red confirms for dangerous actions
+   - shows only the commands the viewer's rank allows; server checks stay
+   - phone landscape; Hebrew-ready
+2. **Full phone pass** of every screen (BrainTok/BrainTalks swipe feeds first): touch swipes, 44 px targets, nothing off-screen or under the thumbstick/jump button, touch-scrollable lists. Write docs/Phone check.md with ✅/❌ and screenshots in docs/screens/phone/.
