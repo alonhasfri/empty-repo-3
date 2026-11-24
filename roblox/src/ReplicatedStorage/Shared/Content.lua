@@ -1106,6 +1106,12 @@ Content.Settings17 = {
 	Guide = "🧭 \"What do I do now?\" arrow",
 	LowGraphics = "🥔 Low graphics (for slow phones)",
 	LowGraphicsInfo = "Turns off street lights, sparkles, extra decorations and shadows so the game runs smoother.",
+	SpeedrunTimer = "⏱ Speedrun timer",
+}
+
+-- 1.7.3: speedrun timer
+Content.Speedrun = {
+	Timer = "⏱ %s",
 }
 
 -- 1.7.2: plaza leaderboards (display names only)

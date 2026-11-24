@@ -1341,6 +1341,7 @@ function Stations.settings()
 	-- 1.7.2: the "What do I do now?" guide and Low graphics for cheap phones
 	toggle(Content.Settings17.Guide, "guide", 12)
 	toggle(Content.Settings17.LowGraphics, "lowGraphics", 13)
+	toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 15)
 	UI.label(m.content, Content.Settings17.LowGraphicsInfo, { TextColor3 = C.muted, LayoutOrder = 14 })
 	stepper("🔊 Sound effects", "sfx", 3)
 	toggle("⚡ Reduce flashing", "reduceFlashing", 5)

@@ -31,6 +31,7 @@ LoseFX.start()
 local AnimalUI = require(Client.AnimalUI)
 local Guide = require(Client.Guide)
 local LowGraphics = require(Client.LowGraphics)
+local SpeedrunTimer = require(Client.SpeedrunTimer)
 PhoneOS.animalUI = AnimalUI.open
 AnimalUI.hasPower = function()
 	return Hud.hasPower()
@@ -144,6 +145,7 @@ local function applyState(st)
 	AnimalUI.onState(st)
 	Guide.onState(st)
 	LowGraphics.onState(st)
+	SpeedrunTimer.onState(st)
 end
 
 Remote.on("state", applyState)
