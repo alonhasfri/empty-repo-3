@@ -218,9 +218,15 @@ Net.on("gate_submit", function(player, d)
 	local data = DataService.get(player)
 	local inTime = os.clock() - g.started <= g.seconds + 3
 	local correctCount = 0
-	if typeof(d.answers) == "table" then
+	if typeof(d) == "table" and typeof(d.answers) == "table" then
 		for i, qi in ipairs(g.questions) do
-			if tonumber(d.answers[i]) == Content.GateQuestions[qi].answer then
+			-- A table answered out of order (or with gaps) crosses the remote as a
+			-- dictionary with STRING keys ("1", "2"...), so read both forms.
+			local a = d.answers[i]
+			if a == nil then
+				a = d.answers[tostring(i)]
+			end
+			if tonumber(a) == Content.GateQuestions[qi].answer then
 				correctCount += 1
 			end
 		end
