@@ -22,7 +22,27 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 2. Item 7 (part): **real music and sounds**. The game is silent now, so this is cheap with a huge effect.
 3. Item 11: **Gain path fun.** Job minigames replace the work questions, and quizzes become fun facts (the user's biggest complaint).
 4. Item 12: **100+ dialogue lines, with no repeats.**
-4a. **Full Hebrew support** (user, Nov 24; after the UI and map fixes): - a language choice in Settings (English / עברית) - all of Content.lua in natural, kid-friendly Hebrew, keeping the parody names - right-to-left layout: right-aligned text, mirrored phone grid and conversation choices, numbers shown correctly - fonts that render Hebrew, and no overflow on phones - saved per player: English by default, Hebrew if the player's locale is he 4b. **UI pictures:** screenshots of every screen (HUD, phone tiers, Settings, shop, conversation, animal menu, notifications) in English and Hebrew, at phone landscape and PC sizes, saved to docs/screens/ui-final/.
+4a. **Full Hebrew support** (user, Nov 24; after the UI and map fixes):
+    - a language choice in Settings (English / עברית)
+    - all of Content.lua in natural, kid-friendly Hebrew, keeping the parody names
+    - right-to-left layout: right-aligned text, mirrored phone grid and conversation choices, numbers shown correctly
+    - fonts that render Hebrew, and no overflow on phones
+    - saved per player: English by default, Hebrew if the player's locale is he
+4b. **UI pictures:** screenshots of every screen (HUD, phone tiers, Settings, shop, conversation, animal menu, notifications) in English and Hebrew, at phone landscape and PC sizes, saved to docs/screens/ui-final/.
+4c. **Tester feedback: more interactive, clear goals** (Nov 24). The tester wants a button right next to Phone and Library that gives multiple-choice questions and points, and a clear sense of what you're achieving.
+    - **⚡ Quick Play button** in the main button block:
+      - one tap starts 3–5 multiple-choice questions with big tappable answers, a timer bar, instant ✅/❌ feedback with a short fun fact, then points
+      - Gain path: points become brain cells
+      - Lose path: the "dumb" answer wins
+      - animals: an icon-only version (pick the right picture)
+      - optional, and it doesn't replace the fun-facts/minigames plan
+      - server-checked, with shuffle bags so questions don't repeat, and Hebrew-ready
+    - **Clear progress:**
+      - a small always-visible goal line with a progress bar ("Next: IQ 120 → new city look 🏙️", "3/5 to promotion")
+      - a streak / daily goals panel (3 simple daily tasks with rewards)
+      - a sound and a number pop on every reward
+      - no centre banners
+    - **Test:** a new player on a phone knows what to press and gets their first points within 30 s. Screenshots go to docs/screens/ui-final/.
 
 **Tier 2: memorable moments and a fuller Lose side**
 5. Item 10: **brain animations** (the shredder, the 0-cell POOF).
