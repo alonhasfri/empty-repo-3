@@ -25,6 +25,7 @@ local BoardService = require(Services.BoardService) -- 1.7.2: plaza leaderboards
 local HorrorService = require(Services.HorrorService) -- 1.7.3: The Average Files (part 1)
 local PhoneShopService = require(Services.PhoneShopService) -- 1.8: Phone Shop, case maker, scam stall
 local FunService = require(Services.FunService) -- 1.8: Slime Shop, Trampoline Park, Fortune Teller
+local QuickPlayService = require(Services.QuickPlayService) -- 1.8.5: ⚡ Quick Play quiz button (tester feedback)
 local LifeStageService = require(Services.LifeStageService) -- 1.8: Life Pack life stages
 WorldService.doorGuard = LifeStageService.doorBlocked
 local _BrainTalksService = require(Services.BrainTalksService) -- 1.9: smart scroll (listens on its own)
@@ -355,6 +356,7 @@ BoardService.start()
 HorrorService.start()
 PhoneShopService.start()
 FunService.start()
+QuickPlayService.start()
 LifeStageService.start()
 PetFriendService.start()
 

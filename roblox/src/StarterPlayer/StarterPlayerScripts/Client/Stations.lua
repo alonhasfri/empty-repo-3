@@ -747,6 +747,89 @@ local function readAndAnswer(title: string, getAction: string, answerAction: str
 	m.focus()
 end
 
+---------------------------------------------------------------------
+-- 1.8.5: ⚡ Quick Play: a quick multiple-choice round (both paths; server checks everything)
+---------------------------------------------------------------------
+function Stations.quickplay()
+	local QT = Content.QuickPlay
+	local r = Remote.call("qp_start")
+	if not r.ok then
+		return resultToast(r)
+	end
+	local color = Color3.fromRGB(250, 190, 40)
+	local m = UI.modal(QT.Title, { color = color })
+	UI.label(m.content, string.format(r.lose and QT.IntroLose or QT.IntroGain, r.total), { LayoutOrder = 1, TextColor3 = C.muted })
+	local progress = UI.label(m.content, "", { LayoutOrder = 2, TextColor3 = C.gold })
+	local barBack = UI.new("Frame", { Size = UDim2.new(1, 0, 0, 8), BackgroundColor3 = C.panel2, LayoutOrder = 3, Parent = m.content })
+	UI.corner(barBack, 4)
+	local bar = UI.new("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = color, Parent = barBack })
+	UI.corner(bar, 4)
+	local qLabel = UI.label(m.content, "", { Font = Enum.Font.GothamBold, TextSize = UI.textSize(18), LayoutOrder = 4 })
+	local holder = UI.new("Frame", { Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 5, Parent = m.content }, {
+		-- 2 x 2 big answer buttons, so all four fit in the small pop-up without scrolling
+		UI.new("UIGridLayout", { CellSize = UDim2.new(0.5, -4, 0, 46), CellPadding = UDim2.fromOffset(8, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	local factLabel = UI.label(m.content, "", { LayoutOrder = 6, TextColor3 = C.muted })
+	local index, busy, token = 1, false, 0
+
+	local function show(q)
+		token += 1
+		local my = token
+		busy = false
+		progress.Text = string.format(QT.Progress, index, r.total)
+		qLabel.Text = q.q
+		for _, c in ipairs(holder:GetChildren()) do
+			if c:IsA("GuiObject") then
+				c:Destroy()
+			end
+		end
+		local buttons
+		buttons = optionButtons(holder, q.options, function(i)
+			if busy then
+				return
+			end
+			busy = true
+			local res = Remote.call("qp_answer", { choice = i })
+			if not res.ok then
+				busy = false
+				return resultToast(res)
+			end
+			for bi, b in ipairs(buttons) do
+				b.BackgroundColor3 = bi == res.answer and C.good or (bi == i and (res.win and C.good or C.bad) or C.panel2)
+			end
+			UI.sound(res.win and "LevelUp" or "NotificationPing", 0.5)
+			factLabel.Text = (res.timeUp and QT.TimeUp or (res.win and QT.Win or QT.Miss)) .. (res.fact and ("  " .. res.fact) or "")
+			task.wait(1.6)
+			if not m.alive() then
+				return
+			end
+			factLabel.Text = ""
+			if res.done then
+				m.close()
+				UI.toast(res.score > 0 and string.format(QT.Done, res.score, res.total) or string.format(QT.DoneZero, res.total), res.score > 0 and C.good or C.muted)
+				event("quickplay")
+				return
+			end
+			index += 1
+			show(res.question)
+		end)
+		-- timer bar
+		local start = os.clock()
+		task.spawn(function()
+			while m.alive() and token == my do
+				local left = 1 - (os.clock() - start) / r.seconds
+				bar.Size = UDim2.fromScale(math.clamp(left, 0, 1), 1)
+				if left <= 0 then
+					break
+				end
+				task.wait(0.05)
+			end
+		end)
+	end
+	show(r.question)
+	m.focus()
+end
+
 function Stations.library()
 	readAndAnswer("📚 The Library", "library_get", "library_answer", Color3.fromRGB(160, 120, 80))
 end

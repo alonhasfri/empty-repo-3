@@ -48,7 +48,7 @@ end
 Hud.onMenu = Stations.settings
 Hud.onAdmin = AdminPanel.open
 Hud.onStation = function(key)
-	if key == "map" or key == "gadgets" or key == "together" or key == "phone" or key == "space" then
+	if key == "map" or key == "gadgets" or key == "together" or key == "phone" or key == "space" or key == "quickplay" then
 		Stations.open(key)
 		return
 	end

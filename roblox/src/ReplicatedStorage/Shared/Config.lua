@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.8.4"
+Config.Version = "1.8.5"
 -- 1.8.3: the brain counter shortens numbers from here on (1.2T, 9.9Qa ...)
 Config.ShortNumberFrom = 1e12
 Config.NumberSuffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" }
@@ -194,6 +194,15 @@ Config.LifeStages = {
 }
 
 -- 1.8: free new places on the west (Lose) side. Free to use; the fortune odds are shown on screen.
+-- 1.8.5: ⚡ Quick Play: a quick optional quiz round from the HUD (tester: "a button that gives questions and points")
+Config.QuickPlay = {
+	Questions = 3, -- per round
+	SecondsPerQuestion = 15, -- the timer bar
+	MinAnswerSeconds = 1, -- faster than this is ignored (no auto-clickers)
+	PointsPerWin = 2, -- like a Library book, per right answer (Lose: per dumb answer)
+	Cooldown = 20, -- seconds between rounds
+}
+
 Config.Fun = {
 	Radius = 30, -- studs from the counter
 	slime = { Cooldown = 20, Lose = 1.2, Gain = 0.6 },

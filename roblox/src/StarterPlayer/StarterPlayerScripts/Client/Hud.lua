@@ -96,11 +96,13 @@ local ACTIVITIES = {
 	none = {},
 	Lose = {
 		{ key = "phone", icon = "📱", name = "Phone", color = Color3.fromRGB(150, 80, 250) },
+		{ key = "quickplay", icon = "⚡", name = "Quick Play", color = Color3.fromRGB(240, 170, 20) }, -- 1.8.5 tester feedback
 		{ key = "together", icon = "🎭", name = "Vs Mode", color = Color3.fromRGB(250, 110, 60) },
 		{ key = "map", icon = "🗺", name = "Map", color = Color3.fromRGB(70, 190, 110) },
 	},
 	Gain = {
 		{ key = "phone", icon = "📱", name = "Phone", color = Color3.fromRGB(150, 80, 250) },
+		{ key = "quickplay", icon = "⚡", name = "Quick Play", color = Color3.fromRGB(240, 170, 20) }, -- 1.8.5 tester feedback
 		{ key = "work", icon = "🛠", name = "Work", color = Color3.fromRGB(90, 110, 140) },
 		{ key = "library", icon = "📚", name = "Library", color = Color3.fromRGB(150, 100, 60) },
 		{ key = "gate", icon = "🚧", name = "Gate", color = Color3.fromRGB(240, 190, 40) },

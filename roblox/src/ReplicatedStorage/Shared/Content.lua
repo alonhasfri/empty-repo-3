@@ -1017,6 +1017,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.8.5", name = "Cleaner Screen + Quick Play", lines = { "⚡ New Quick Play button next to your Phone: 3 fast questions, points for right answers (on the Lose path the dumbest answer wins!).", "🪟 Pop-ups are smaller, and you can tap outside one to close it.", "🛒 SHOP and 🗺 MAP are small round buttons now; the floating job tag is gone." } },
 	{ v = "1.8.4", name = "Warm Genius Town", lines = { "🏙 Smart players (IQ 135+) now see a warm brick and sandstone town with terracotta roofs, not grey boxes.", "✨ At IQ 200+ the cyan future touches stay on top." } },
 { v = "1.8.3", name = "Tidier screen", lines = { "🔢 Huge brain counts are short now (1.2T, 9.9Qa …) instead of 25 squeezed digits.", "🔤 One clean font everywhere, even at genius level.", "📌 Goals sit in a slim line at the top instead of a big banner in the middle.", "➕ The More button has its icon back.", } },
 	{ v = "1.8.2", name = "Busy Streets", lines = {
@@ -1322,6 +1323,25 @@ Content.LifeStages = {
 }
 
 -- 1.8: free new places on the west side (Slime Shop, Trampoline Park, Fortune Teller)
+-- 1.8.5: ⚡ Quick Play quiz
+Content.QuickPlay = {
+	Button = "Quick Play",
+	Title = "⚡ Quick Play",
+	IntroGain = "Answer %d quick questions. Every right answer = more brain cells! 🧠",
+	IntroLose = "Answer %d quick questions. Pick the DUMBEST answer to lose brain cells! 🤪",
+	Progress = "Question %d of %d",
+	Win = "✅ Nice!",
+	Miss = "❌ Not that one.",
+	TimeUp = "⏰ Too slow!",
+	Done = "🎉 %d of %d! Brain cells changed.",
+	DoneZero = "😅 0 of %d this time. Try again soon!",
+	Again = "⚡ Play again",
+	PickDoor = "Pick a door first! 🚪",
+	Animal = "🐾 Animals can't read questions… yet.",
+	Cooldown = "⏳ Next Quick Play in %d s.",
+	TooFast = "Read the question first! 👀",
+}
+
 Content.Fun = {
 	PickPath = "Pick a door first: Lose or Gain.",
 	GoThere = "Walk up to the counter first.",
