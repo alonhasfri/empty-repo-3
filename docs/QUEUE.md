@@ -88,6 +88,36 @@ Never publish without the user's OK, never change permission settings, never pri
       - Rewards are given once and checked by the server.
       - Unstuck works at every stage.
       - What's new gets a hint only: "Some castles are bigger on the inside…".
+
+## Added Nov 24 (cloud chat): everything else the user asked for that isn't built yet
+16. [ ] **Finish and test what's marked [~]:** the map background (item 3), the styles (item 4, plus screenshots and automatic Low detail), and BrainTalks (item 5). Test each in Studio and take screenshots.
+17. [ ] **More free Lose-side places** from `docs/Life Pack and Phone Shop plan.md`. Only 3 of 9 exist so far. Still to build:
+    - Fidget Store
+    - Brainrot Café (rainbow mystery drinks)
+    - Prank Shop
+    - Influencer Studio (record dumb videos for "views")
+    - Drive-thru
+    - Claw Machine Arcade (in-game coins only, exact odds)
+18. [ ] **The Lose path's share of the brain-scaled systems** (panel round 1, open item #10):
+    - joke jobs
+    - a piggy-bank toy bank
+    - a wobbly-GPS bus
+    - more dumb-only shortcuts
+19. [ ] **The rest of the brain-scaled plan** (`docs/Brain scaled UI and map design.md`):
+    - a cozy-tier bus timetable
+    - investing at fixed, shown rates at the fancy tier (never casino-like)
+    - a hologram HUD at IQ 200+
+    - a guide NPC per district
+20. [ ] **Port the rest of the browser-only features:**
+    - the interactive world (`web/src/interact.js`)
+    - glasses bought with coins at the Optician
+    - any browser job minigames not covered by item 11
+21. [ ] **Castle extras from the memory file:**
+    - the mirror room
+    - the Perfectly Average lobby copy
+    - The working time-machine room stays ON HOLD with time travel.
+22. [ ] **Real Roblox thumbnails and icon from the game:** after the map and styles are tested, photo-mode shots (day, sunset, both sides) in Roblox sizes, saved to `marketing/`.
+
 ## ON HOLD (user)
 - **Time travel:** ON HOLD. Don't build the time travel update or expand the Time Machine secret project; the user will design it later. Leave the always-failing "⏳ Time Machine" secret project (the "Maybe Next Time" badge) and the "Pocket Time Machine" rewind gadget as they are.
 
