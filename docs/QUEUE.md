@@ -15,7 +15,7 @@ Never publish without the user's OK, never change permission settings, never pri
 - [ ] not started
 
 ## Queue
-1. [ ] **Publish** to "brain game" (Cult of the 39) using File → Publish to Roblox As → brain game → Overwrite. Keep it private and change no settings. Take a screenshot to `docs/screens/publish.png`.
+1. [x] **Publish** (done Nov 24, 13:35: 1.8 + styles, background, BrainTalks; private) to "brain game" (Cult of the 39) using File → Publish to Roblox As → brain game → Overwrite. Keep it private and change no settings. Take a screenshot to `docs/screens/publish.png`.
    - The user said yes on Nov 24, but the PC was locked. Do it when the user is back and the screen is unlocked.
 2. [x] **UI fixes:** phone app labels, UI size, tidy buttons (`docs/UI review.md`), small merged toasts, and the "Fewer notifications" setting.
 3. [~] **Map.** Done:
@@ -31,7 +31,7 @@ Never publish without the user's OK, never change permission settings, never pri
    - Code done Nov 24 (scheduled run, **NOT tested in Studio yet**): a 4th ring of tall downtown towers, window bands on the towers that glow at night (DayNight.lua), green hills at the back, a raised highway ring with lamps. All no-collision, no shadows, tagged FarSkyline so Low graphics hides them. Left: Studio test (part count and phone FPS), screenshots, maybe moving cars.
 
    Was left: a **bigger background** (skyscrapers with lit windows at night, hills, a distant highway), with screenshots in 4 directions, day and night.
-4. [~] **Styles per brain level** (CLAUDE.md Art style):
+4. [x] **Styles per brain level** (CLAUDE.md Art style):
    - Code done Nov 24 (scheduled run): `Config.Styles` is the one central table, `Style.lua` applies it (parts, signs, decor, light, toon outlines on the nearest 24 buildings, Low detail = the same style in smooth plastic with no outlines or decor). **NOT tested in Studio yet** (no place was open), no screenshots yet, Config.Version not bumped. Left: Studio test, screenshots, turning Low detail on automatically for weak phones.
    - 5 regular
    - 2 a bit smarter
