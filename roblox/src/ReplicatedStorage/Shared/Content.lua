@@ -1172,8 +1172,8 @@ Content.Map = {
 	},
 	Ends = {
 		{ x = -430, z = 0, name = "🌅 West Lookout" },
-		{ x = 430, z = 0, name = "🌄 East Lookout" },
-		{ x = 0, z = -430, name = "🏔 North Lookout" },
+		{ x = 430, z = 60, name = "🌄 East Lookout" }, -- 1.7.2: beside the road end, off the rocket pad
+		{ x = -60, z = -430, name = "🏔 North Lookout" }, -- 1.7.2: beside the odd house, not on top of it
 		{ x = 0, z = 430, name = "🌊 South Lookout" },
 	},
 	Hole = "🕳 dumb shortcut",

@@ -494,10 +494,9 @@ local function buildPlaza()
 	local statue = part({ Name = "BrainStatue", Shape = Enum.PartType.Ball, Size = Vector3.new(7, 7, 7), Position = Vector3.new(0, 7, 0), Color = Color3.fromRGB(255, 150, 190) }, "accent")
 	-- (1.7: the Brain Tower now stands here with its own sign, so the old statue sign is gone)
 	local _ = statue
-	for _, x in ipairs({ -55, 55 }) do
-		for _, z in ipairs({ -55, 55 }) do
-			tree(Vector3.new(x, 0.6, z), 0.9)
-		end
+	-- 1.7.2: plaza trees on open ground (the old ±55 corners were inside the Mall, School and Supermarket)
+	for _, xz in ipairs({ { -33, -22 }, { 33, -22 }, { -30, 51 }, { 40, 51 } }) do
+		tree(Vector3.new(xz[1], 0.6, xz[2]), 0.9)
 	end
 	bench(CFrame.new(-25, 0.6, 40))
 	bench(CFrame.new(25, 0.6, 40))

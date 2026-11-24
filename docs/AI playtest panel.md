@@ -192,3 +192,55 @@ The Studio window was still minimized, and screen control was declined twice, so
 - The friends/desync test.
 - The 1.7 Lose-path features.
 - The plan gaps.
+
+---
+
+# Round 1 ideas built (1.7.3 work)
+
+- **"What do I do now?" guide:** a goal line at the top plus a glowing arrow over your head pointing to the next useful place. It covers each path, IQ, job, shift and animal stage. Settings → 🧭 to hide it.
+  - Tested: Gain → Library or work, Lose → Mall stands, dog → Mall stands, OFF hides both.
+- **Low graphics (Settings → 🥔):** turns off 119 lights, global shadows and 216 non-solid decor parts (lamp heads, leaves), and restores them exactly.
+  - Solid lamp poles stay visible, so there are no invisible walls.
+- **Weekly pay board** (left of spawn): coins from real work (wages, task pay, shift bonus). A new OrderedDataStore key each week. Display names only. Shows "resting" if the store is down.
+  - Tested: a 2-minute shift showed up on the board within 2 minutes.
+
+# Map feedback (all players)
+
+Sources: the cloud chat's measured analysis (`docs/Why the map feels off.md`) plus each player's run. Overlaps were confirmed live in Studio.
+
+| Player | Likes (why) | Dislikes (why) | Suggestion |
+|---|---|---|---|
+| Mia (8, phone) | The Brain Tower: you can see it from anywhere | "Where do I go?" Every corner looks the same | Arrows (now built) |
+| Leo | The Job Center and workplaces are close to spawn | Walking is faster than the 20 s bus | A shorter bus wait (done: 6 s) |
+| Sam (parent) | The plaza is calm and readable | Trees poking through shop walls looked broken | Clean the plaza (done) |
+| Cheap phone | The town is small, so it loads fast | 119 street lights | Low graphics (done) |
+| Speedrunner | Short routes (15 s across) | Nothing to route around: flat grid | Shortcuts that need skill (steps, rooftops) |
+| Hacker | Closed houses are really closed (solid doors) | Lookouts overlapped the rocket pad and the castle house | Fix the overlaps (done) |
+| Completionist | The lookouts at street ends | Side ring roads dead-end in grass | Join the ring roads into a loop |
+| Brainrot YouTuber | The plaza boards and tower make a good thumbnail backdrop | Tall skinny buildings with slot doors look odd on camera | Undo the sideways squash |
+| Horror fan | The odd house alone at the end of a road | The lookout was built on top of it, which killed the mood | Give the odd house its own lonely path and a lamp |
+| Casual player | Bright colours, quick to walk anywhere | The Lose half is mostly locked houses | Turn some houses into Lose places (arcade, TV shop) |
+
+**Ranked map problems** (from the analysis and the players):
+1. The Lose half is mostly locked houses (both paths should matter equally). **Open.** Feature work: new Lose places.
+2. Widths shrunk to 55% but heights not (skinny buildings, 4.4-stud doors, thin roads). **Open.** Big rebuild: `S` for positions only.
+3. Mirror grid, so every street looks the same. **Open.** Landmark shapes per district.
+4. Plaza trees inside the Mall, School and Supermarket. **Fixed.** Trees are on open ground, checked in Studio.
+5. Lookout on the rocket pad and on the castle house. **Fixed.** Moved beside the road ends, checked clear in Studio.
+6. A 20 s bus in a 15-second town. **Fixed.** `Config.Bus.WaitSeconds = 6`.
+7. Café and Job Center 2.8 studs into the sidewalk. **Open** (small).
+8. Doors facing grass, and ring roads that dead-end. **Open.**
+
+# Round 3 addition: the Casual player
+
+A kid who stumbles on the game and just wants fun. Simulated through the game's code: the first stretch played step by step, then admin jumps to sample a two-hour session (Lose 86B → 60B → dog; Gain 70B → job → shifts). No screenshots, because the window was minimized.
+
+| Fun | Looks | Ease | Clarity |
+|---|---|---|---|
+| 3 | 3 | 4 | 3 |
+
+- **First 15 minutes:** the door choice is instantly fun. Before 1.7.3 there was a lot of reading before the first big moment. The new arrow tells them where to go, which is the biggest help.
+- **30–60 minutes:** turning into a dog is the high point. The 🛍 sniff trail keeps them going.
+- **Gain side:** the job → clock in → task → payslip loop is clear, but it feels like real work for a casual kid.
+- **Keep playing or leave?** They'd keep playing for about 45 minutes. They'd leave on the Gain side after the second payslip if nothing new unlocks, because the next IQ step is a Skill Gate they don't want to study for.
+- **To keep them:** more silly Lose places on the empty west side, and a surprise every 10 minutes (a random event in the plaza).

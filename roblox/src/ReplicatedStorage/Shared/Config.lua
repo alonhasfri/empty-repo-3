@@ -149,7 +149,7 @@ Config.Boards = {
 }
 
 Config.Bus = {
-	WaitSeconds = 20, -- the free map bus is slow on purpose; Hoppr (coins) is fast, walking is free
+	WaitSeconds = 6, -- 1.7.2 map review: the town is ~15 s across, so a 20 s wait was slower than walking anywhere
 	Cooldown = 10, -- after a trip
 }
 Config.ElectionMinutes = 20 -- an election starts this often (update 1.2)
