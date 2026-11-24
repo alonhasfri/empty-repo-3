@@ -964,7 +964,8 @@ Net.on("admin_players", function(player)
 			name = p.Name,
 			display = p.DisplayName,
 			rank = rankOf(p),
-			cells = data and Brain.formatNumber(data.cells) or "?",
+			cells = data and Brain.shortNumber(data.cells) or "?",
+			iq = data and math.floor(Brain.iq(data.cells)) or nil,
 			path = data and data.path or "Lobby",
 		})
 	end

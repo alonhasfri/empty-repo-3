@@ -1017,6 +1017,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.8.6", name = "New Staff Panel", lines = { "🛠 Staff get a brand-new BrainAdmin panel: tabs, search, player cards with rank badges, and an \"Are you sure?\" step before kicks and bans." } },
 	{ v = "1.8.5", name = "Cleaner Screen + Quick Play", lines = { "⚡ New Quick Play button next to your Phone: 3 fast questions, points for right answers (on the Lose path the dumbest answer wins!).", "🪟 Pop-ups are smaller, and you can tap outside one to close it.", "🛒 SHOP and 🗺 MAP are small round buttons now; the floating job tag is gone." } },
 	{ v = "1.8.4", name = "Warm Genius Town", lines = { "🏙 Smart players (IQ 135+) now see a warm brick and sandstone town with terracotta roofs, not grey boxes.", "✨ At IQ 200+ the cyan future touches stay on top." } },
 { v = "1.8.3", name = "Tidier screen", lines = { "🔢 Huge brain counts are short now (1.2T, 9.9Qa …) instead of 25 squeezed digits.", "🔤 One clean font everywhere, even at genius level.", "📌 Goals sit in a slim line at the top instead of a big banner in the middle.", "➕ The More button has its icon back.", } },
@@ -1323,6 +1324,29 @@ Content.LifeStages = {
 }
 
 -- 1.8: free new places on the west side (Slime Shop, Trampoline Park, Fortune Teller)
+-- 1.8.6: the redesigned staff panel (docs/admin_panel_mockup.png)
+Content.AdminUI = {
+	Brand = "🧠 Brain",
+	BrandAccent = "Admin",
+	Tabs = { Players = "👥 Players", Server = "🖥 Server", Game = "🎮 Game", Fun = "🎉 Fun", Testing = "🧪 Testing", Logs = "📜 Logs", Settings = "⚙️ Settings" },
+	Search = "🔎 Search players or commands…",
+	QuickActions = "%s · QUICK ACTIONS",
+	PickPlayer = "Tap a player on the left",
+	Nobody = "Nobody",
+	Value = "Value (number, reason, text…)",
+	You = "You",
+	PlayersHere = "%d players here",
+	ConfirmTitle = "%s %s?",
+	ConfirmBody = "Are you sure? This affects real players.",
+	Cancel = "Cancel",
+	Confirm = "Yes, do it",
+	NoLogs = "No staff actions yet.",
+	LogsLocked = "Head Moderator or Owner only.",
+	Version = "Game version %s",
+	StaffOnly = "Staff only.",
+	Empty = "Nothing here for your rank.",
+}
+
 -- 1.8.5: ⚡ Quick Play quiz
 Content.QuickPlay = {
 	Button = "Quick Play",
