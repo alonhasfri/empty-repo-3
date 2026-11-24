@@ -524,6 +524,7 @@ Config.Life = {
 		SavingsRatePercent = 0.5, -- fixed and shown: +0.5% of the LOWEST savings balance since the last tick...
 		InterestEverySeconds = 600, -- ...every 10 minutes you're online
 		MaxInterestPerTick = 25, -- so saving never beats working (best job pays 20/min)
+		MaxMove = 1e9, -- biggest single save or take (anything bigger is refused)
 		Bill = 10, -- "harder life" only (opt-in): a small bill every interest tick, never goes below 0
 	},
 }

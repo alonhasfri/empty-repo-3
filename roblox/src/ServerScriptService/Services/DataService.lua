@@ -125,6 +125,21 @@ function DataService.load(player: Player)
 	end
 
 	reconcile(loaded, defaultData())
+	-- 1.7.2: repair money broken by an old exploit (NaN or infinity can't be spent or saved sanely)
+	local function finite(v)
+		return typeof(v) == "number" and v == v and math.abs(v) < 1e15
+	end
+	if not finite(loaded.coins) then
+		loaded.coins = 0
+	end
+	if typeof(loaded.bank) == "table" then
+		if not finite(loaded.bank.savings) then
+			loaded.bank.savings = 0
+		end
+		if not finite(loaded.bank.minSince) then
+			loaded.bank.minSince = loaded.bank.savings
+		end
+	end
 	profiles[player] = loaded
 	return loaded, true
 end

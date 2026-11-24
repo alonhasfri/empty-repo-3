@@ -167,32 +167,37 @@ BrainService.hooks.onPathReset = function(player)
 	GainService.reset(player)
 end
 
+-- a real, finite number (NaN and infinity from a cheating client are refused)
+local function isNum(v): boolean
+	return typeof(v) == "number" and v == v and math.abs(v) < math.huge
+end
+
 Net.on("settings", function(player, d)
 	local data = DataService.get(player)
 	if not data then
 		return { ok = false }
 	end
 	local s = data.settings
-	if typeof(d.music) == "number" then
+	if isNum(d.music) then
 		s.music = math.clamp(d.music, 0, 1)
 	end
-	if typeof(d.sfx) == "number" then
+	if isNum(d.sfx) then
 		s.sfx = math.clamp(d.sfx, 0, 1)
 	end
 	if d.counterPos == "topleft" or d.counterPos == "topcenter" or d.counterPos == "topright" or d.counterPos == "bottomright" or d.counterPos == "custom" then
 		s.counterPos = d.counterPos
 	end
-	if typeof(d.counterX) == "number" and typeof(d.counterY) == "number" then
+	if isNum(d.counterX) and isNum(d.counterY) then
 		s.counterX = math.clamp(d.counterX, 0, 0.95)
 		s.counterY = math.clamp(d.counterY, 0, 0.95)
 	end
 	for _, k in ipairs({ "tutLose", "tutGain", "tutLose2", "tutGain2" }) do
-		if typeof(d[k]) == "number" then
+		if isNum(d[k]) then
 			s[k] = math.clamp(math.floor(d[k]), 1, 30)
 		end
 	end
 	-- guided tutorial (1.4): which notes you've seen (bit mask) + finished flags
-	if typeof(d.tutNotes) == "number" then
+	if isNum(d.tutNotes) then
 		s.tutNotes = math.clamp(math.floor(d.tutNotes), 0, 2 ^ 30)
 	end
 	for _, k in ipairs({ "tutLose2Done", "tutGain2Done" }) do
@@ -201,7 +206,7 @@ Net.on("settings", function(player, d)
 		end
 	end
 	-- 1.7: Effects intensity (0..1) and the optional "harder life" bills
-	if typeof(d.fxIntensity) == "number" then
+	if isNum(d.fxIntensity) then
 		s.fxIntensity = math.clamp(math.floor(d.fxIntensity * 10 + 0.5) / 10, 0, 1)
 	end
 	for _, k in ipairs({ "reduceFlashing", "largeText", "extraTime", "counterBig", "hardLife", "classicHud" }) do

@@ -95,3 +95,26 @@ The Studio window was still minimized, and screen control was declined twice, so
 **Decision for the user, not changed:** Roblox's own chat (free typing, filtered by Roblox) is on, and the game has an admin mute for it. CLAUDE.md says "preset text only". Turning chat off is a product decision, so it's left as is.
 
 **Players' ideas:** Mia wants a big "what do I do now?" arrow. Leo wants a weekly pay leaderboard. The cheap-phone player wants a "low graphics" toggle that turns off the street lights.
+
+## Round 2: the breakers
+
+| Player | Fun | Looks | Ease | Clarity | Best moment | Worst moment |
+|---|---|---|---|---|---|---|
+| Speedrunner | 3 | 4 | 3 | 3 | Skill Gates stop runaway gains, so there's no cheap IQ 200 skip | The fastest route is repeating the same conversation scene for brain cells (3 s wait). Coins are capped now, cells are not |
+| Hacker | 2 | 4 | 3 | 3 | Every remote is rate-limited (25/s), wrapped in pcall, and non-table args are thrown away; 254 quiz spams gave +0 cells | **Infinite money:** `bank_move` with NaN, then 1e308, gave NaN coins and 1e308 savings |
+| Completionist | 4 | 4 | 3 | 3 | All 23 badges have code that awards them (Gate1–4 included) | Badge IDs are still 0, so nothing shows on the Roblox badge page yet |
+
+**Hacker run (live):** 68 remotes were each hit with 6 bad payloads: nil, a string, a number, negative and huge values, NaN with a 5,000-letter key, and 1e308. Results:
+- No server errors.
+- Brain cells unchanged.
+- Only the bank broke.
+
+**Fixed in round 2:**
+- The bank refuses NaN, infinity and amounts over 1e9 (`Config.Life.Bank.MaxMove`).
+- Settings refuse NaN and infinity (an `isNum` check in `Main.server.lua`).
+- Saves already broken by this exploit are repaired on load (NaN or huge coins and savings become 0). The test account was repaired from NaN coins to 0.
+- Retested: 12 bank attacks (NaN, 1e308, -5, infinity, "9e999", 1e10, each save and take) were all refused. Coins and savings stayed 0.
+
+**Still open:** conversation scenes still give brain cells on every repeat (the speedrunner route). It's a design choice: cells for talking is learning, but a 10-minute limit like the coins one would stop the loop.
+
+**Players' ideas:** the speedrunner wants an in-game speedrun timer with a "Speedrun" badge leaderboard. The completionist wants a badge checklist in Settings that shows locked badges with hints.

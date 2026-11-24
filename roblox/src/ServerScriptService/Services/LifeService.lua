@@ -323,7 +323,8 @@ Net.on("bank_move", function(player, d)
 	end
 	local b = bank(data)
 	local amount = math.floor(tonumber(d.amount) or 0)
-	if amount <= 0 then
+	-- refuse NaN, infinity and silly sizes from a cheating client (1.7.2 playtest: NaN + 1e308 = infinite money)
+	if amount ~= amount or amount <= 0 or amount > CL.Bank.MaxMove then
 		return { ok = false, msg = TL.Bank.Amount }
 	end
 	if d.dir == "save" then
