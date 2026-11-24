@@ -101,9 +101,9 @@ local ACTIVITIES = {
 	},
 	Gain = {
 		{ key = "phone", icon = "📱", name = "Phone", color = Color3.fromRGB(150, 80, 250) },
+		{ key = "work", icon = "🛠", name = "Work", color = Color3.fromRGB(90, 110, 140) },
 		{ key = "library", icon = "📚", name = "Library", color = Color3.fromRGB(150, 100, 60) },
 		{ key = "gate", icon = "🚧", name = "Gate", color = Color3.fromRGB(240, 190, 40) },
-		{ key = "work", icon = "🛠", name = "Work", color = Color3.fromRGB(90, 110, 140) },
 		{ key = "lab", icon = "🔬", name = "Projects", color = Color3.fromRGB(40, 170, 200) },
 		{ key = "gadgets", icon = "🎒", name = "Gadgets", color = Color3.fromRGB(60, 190, 190) },
 		{ key = "coffee", icon = "☕", name = "Coffee", color = Color3.fromRGB(130, 85, 50) },
@@ -189,12 +189,35 @@ local function buildGrid(path: string?)
 		end
 	end
 	Hud.targets = {}
-	for i, item in ipairs(ACTIVITIES[key] or {}) do
+	-- 1.8.1 UI review: one tidy column with at most Config.UI.HudMaxButtons; the rest go in "☰ More"
+	local all = ACTIVITIES[key] or {}
+	local maxB = Config.UI.HudMaxButtons
+	local shown = #all > maxB and maxB - 1 or #all
+	for i = 1, shown do
+		local item = all[i]
 		Hud.targets[item.key] = iconButton(grid, item, i, function()
 			if Hud.onStation then
 				Hud.onStation(item.key)
 			end
 		end)
+	end
+	if #all > shown then
+		local more = iconButton(grid, { key = "more", icon = "☰", name = Content.HudMore.Button, color = Color3.fromRGB(70, 70, 90) }, shown + 1, function()
+			local m = UI.modal(Content.HudMore.Title, { color = Color3.fromRGB(70, 70, 90) })
+			for i, item in ipairs(all) do
+				UI.button(m.content, item.icon .. "  " .. item.name, function()
+					m.close()
+					if Hud.onStation then
+						Hud.onStation(item.key)
+					end
+				end, { LayoutOrder = i, BackgroundColor3 = item.color })
+			end
+			m.focus()
+		end)
+		-- the tutorial points at a hidden activity's button: point it at "More" instead
+		for i = shown + 1, #all do
+			Hud.targets[all[i].key] = more
+		end
 	end
 end
 UI.onTheme(function()
@@ -786,8 +809,9 @@ UI.onScale(function()
 	if gl then
 		gl.CellSize = UDim2.fromOffset(cell, cell)
 	end
+	grid.Size = UDim2.new(0, cell + 10, 1, -250) -- 1.8.1 UI review: ONE tidy column
 	local ph = math.max(40, mt)
-	bottom.Size = UDim2.fromOffset(400, 72 + ph)
+	bottom.Size = UDim2.fromOffset(400, passRow.Visible and (72 + ph) or 68)
 	passRow.Size = UDim2.new(1, 0, 0, ph)
 	for _, b in ipairs(passRow:GetChildren()) do
 		if b:IsA("TextButton") then
@@ -909,7 +933,8 @@ function Hud.update(st)
 	local path = (not st.dead) and st.path or nil
 	buildGrid(path)
 	buildPasses(st.tier == "cashgrab" and path or nil)
-	passRow.Visible = st.tier == "cashgrab" and path ~= nil
+	-- 1.8.1 UI review: passes live in the 🛒 Shop only (Config.UI.HudPassButtons), not on the HUD
+	passRow.Visible = Config.UI.HudPassButtons == true and st.tier == "cashgrab" and path ~= nil
 	bottom.Size = UDim2.fromOffset(400, passRow.Visible and 112 or 68)
 
 	cellsLabel.Text = st.cellsText
@@ -919,6 +944,7 @@ function Hud.update(st)
 	local b = BANNERS[path or "none"]
 	bannerTitle.Text = b[1]
 	bannerSub.Text = b[2]
+	banner.Visible = path == nil -- 1.8.1 UI review: the big title only in the lobby ("pick a path")
 
 	-- brain bar
 	local p, right = progress(st)

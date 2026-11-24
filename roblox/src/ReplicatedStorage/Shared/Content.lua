@@ -1408,6 +1408,12 @@ Content.PhoneShop = {
 	ReportGainOnly = "Only smart players spot this scam.",
 }
 
+-- 1.8.1 UI review: the "More" button that holds the extra activities
+Content.HudMore = {
+	Button = "More",
+	Title = "☰ All activities",
+}
+
 -- 1.7.3: speedrun timer
 Content.Speedrun = {
 	Timer = "⏱ %s",

@@ -630,6 +630,8 @@ Config.UI = {
 	MinPhoneText = 12, -- smallest text size on phones (1.8.1: 14 made the UI too big)
 	MinTouch = 42, -- smallest tappable button on screen (1.8.1: 48 made the UI too big; ~44 is comfortable)
 	MaxDeviceScale = 1, -- 1.8.1: the UI stops growing on big screens (1.35 looked huge on PC)
+	HudMaxButtons = 4, -- 1.8.1 UI review: activity buttons on screen (the rest go in "☰ More")
+	HudPassButtons = false, -- 1.8.1 UI review: pass buttons only in the 🛒 Shop, not on the HUD
 	ToastSeconds = 3, -- 1.8.1: how long a notification stays
 	MaxToasts = 3, -- at most this many at once (the oldest goes)
 	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
@@ -694,9 +696,31 @@ Config.Map = {
 	EdgeWallHeight = 120, -- 1.7.4: invisible walls at the edge of the ground
 	-- 1.8 River City (design coordinates, like every other position here): a river splits Lose (west) from Gain (east)
 	River = { X = -145, Width = 60, Depth = 6, Bridges = { -250, 250 }, Boats = { -160, 150 } },
+	Park = { X1 = 20, X2 = 180, Z1 = 220, Z2 = 380 }, -- stays green (design studs)
+	-- 1.8: decorative closed shops (Lose side) and houses (Gain side) that fill free street slots
+	Fill = {
+		Edge = 470, -- stay inside the edge wall
+		StepX = 58, -- leaves ~26-stud walkable alleys between buildings
+		StepZ = 54,
+		W = 32, -- footprint (design studs)
+		D = 28,
+		Margin = 6,
+		PlazaClear = 110,
+		RoadsX = { 0, -200, 200 }, -- north–south roads
+		RoadsZ = { 0 }, -- west–east roads
+		RoadClear = 26,
+		Max = 110,
+		LoseColors = { Color3.fromRGB(255, 200, 230), Color3.fromRGB(200, 240, 255), Color3.fromRGB(255, 240, 170), Color3.fromRGB(220, 200, 255), Color3.fromRGB(200, 255, 210) },
+		GainColors = { Color3.fromRGB(240, 220, 190), Color3.fromRGB(200, 225, 240), Color3.fromRGB(240, 200, 200), Color3.fromRGB(210, 235, 200) },
+		LoseSigns = { "🍭 CANDY", "🎈 TOYS", "🍟 SNACKS", "🕹 GAMES", "🧢 MERCH", "🍦 ICE CREAM", "📼 VIDEOS", "🎁 GIFTS" },
+	},
 	-- one place for the town's base colours and materials, so the chosen visual style can be swapped in quickly
 	Style = {
 		Water = Color3.fromRGB(70, 150, 210),
+		Pavement = Color3.fromRGB(214, 206, 192), -- warm light concrete (neutral until a visual style is picked)
+		PavementMaterial = Enum.Material.Concrete,
+		Grass = Color3.fromRGB(96, 160, 66), -- park and river banks
+		RiverBank = 12, -- grass strip on each side of the river (design studs)
 		Bridge = Color3.fromRGB(150, 110, 75),
 		BridgeMaterial = Enum.Material.WoodPlanks,
 		Railing = Color3.fromRGB(235, 235, 240),
@@ -716,7 +740,7 @@ Config.Map = {
 		Daycare = Vector3.new(-330, 0.6, 410),
 		Retirement = Vector3.new(-410, 0.6, 410),
 		ToyStore = Vector3.new(-410, 0.6, 300),
-		Supermarket = Vector3.new(120, 0.6, 300), -- a Gain job, so it moved to the Gain side
+		Supermarket = Vector3.new(430, 0.6, 300), -- a Gain job, so it moved to the Gain side (east column; the park is at 100,300)
 	},
 	-- 1.8.1: the fake city beyond the edge (unreachable, no collision, no shadows)
 	Skyline = {
