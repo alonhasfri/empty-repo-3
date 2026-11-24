@@ -88,6 +88,9 @@ Never publish without the user's OK, never change permission settings, never pri
       - Rewards are given once and checked by the server.
       - Unstuck works at every stage.
       - What's new gets a hint only: "Some castles are bigger on the inside…".
+## ON HOLD (user)
+- **Time travel:** ON HOLD. Don't build the time travel update or expand the Time Machine secret project; the user will design it later. Leave the always-failing "⏳ Time Machine" secret project (the "Maybe Next Time" badge) and the "Pocket Time Machine" rewind gadget as they are.
+
 15. **Needs the user:**
     - Playtester role: already set up by the user. Don't touch group roles.
     - Pass and badge IDs: the user adds them after publishing.
