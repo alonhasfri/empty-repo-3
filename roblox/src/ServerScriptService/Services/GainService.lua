@@ -940,10 +940,17 @@ function GainService.cashGrab(player, btn)
 	end
 end
 
+local averageVisits = {} -- [player] = how many times they talked to him this session
 function GainService.averageGuy(player)
 	BrainService.awardBadge(player, "PerfectlyAverage")
-	BrainService.toast(player, "\"I have exactly 86,000,000,000 brain cells. Not one more. Not one less.\"", "NotificationPing")
+	local n = (averageVisits[player] or 0) + 1
+	averageVisits[player] = n
+	local lines = Content.AverageGuy
+	BrainService.toast(player, lines[math.min(n, #lines)], "NotificationPing")
 end
+Players.PlayerRemoving:Connect(function(p)
+	averageVisits[p] = nil
+end)
 
 ---------------------------------------------------------------------
 -- Loops

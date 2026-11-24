@@ -118,3 +118,77 @@ The Studio window was still minimized, and screen control was declined twice, so
 **Still open:** conversation scenes still give brain cells on every repeat (the speedrunner route). It's a design choice: cells for talking is learning, but a 10-minute limit like the coins one would stop the loop.
 
 **Players' ideas:** the speedrunner wants an in-game speedrun timer with a "Speedrun" badge leaderboard. The completionist wants a badge checklist in Settings that shows locked badges with hints.
+
+## Round 3: content and social
+
+(The "YouTuber playthrough" player was dropped at the user's request. The Brainrot YouTuber also answers its two questions.)
+
+| Player | Fun | Looks | Ease | Clarity | Best moment | Worst moment |
+|---|---|---|---|---|---|---|
+| Brainrot YouTuber ("I SPENT 10,000 ROBUX TO BECOME A GENIUS!") | 3 | 4 | 4 | 4 | Every pass shows "R$ price for: effect" before the purchase prompt. Passes are jokes or small boosts and never help with Skill Gates | There's nothing to spend 10,000 Robux on: every pass ID is still 0, so the video can't happen. Not pay-to-win, which is good |
+| Horror fan | 2 | 3 | 3 | 2 | The Perfectly Average guy's "exactly 86,000,000,000" line | The whole "Average Files" story is still browser-only. In Roblox he was one line under a big name sign that spoiled the secret |
+| Friends (2–3 players) | – | – | – | – | Not run | Studio's multi-player test (Clients and Servers) can't be started from the tools, and the window is minimized |
+
+**Brainrot YouTuber:**
+- **Rating for keeping viewers in the first 10 minutes:** 3/5.
+- **"Wow" and clip moments:**
+  - The door choice (smart vs dumb).
+  - Turning into a dog and seeing the world from dog height.
+  - The loud death ending at 0 cells.
+  - The rocket launch to the Moon.
+  - A 🛍 smell trail as a dog.
+  - Getting PROMOTED!
+- **Thumbnail:** the player half human, half dog in front of the Brain Tower, with "I LOST 86 BILLION BRAIN CELLS".
+- **What would keep viewers:** a faster first "wow" (the first 2 minutes are mostly reading), and a visible brain-cell counter that drops in big jumps.
+
+**Horror fan:**
+- **Creepiness:** 1/5 before, 2/5 now.
+- **Kid-safety:** 5/5. Nothing gory, no jump scares.
+
+**Friends:** checked in code only.
+- Hoppr is one rider per car (no group rides).
+- Vs Mode and activities use preset choices only.
+- The real multi-player desync test still needs the user to press Test → Clients and Servers with the window open.
+
+**Fixed in round 3:**
+- The Perfectly Average guy has no name sign any more: he's a plain grey "Someone".
+- Each visit he says the next of six slowly creepier lines (`Content.AverageGuy`, kid-safe).
+- Tested: the prompt exists, no spoiler sign is left, no errors. The lines themselves need the window visible to trigger the prompt.
+
+**Players' ideas:**
+- The YouTuber wants a "first 60 seconds" hook (an instant mini brain-drop or brain-boost on spawn) and a big on-screen counter during drops.
+- The horror fan wants the browser's "Average Files" side plot ported next.
+- The friends want group Hoppr rides and a two-player Vs Mode lobby sign.
+
+## Panel 2 summary
+
+**Ratings (fun / looks / ease / clarity):**
+
+| Player | Fun | Looks | Ease | Clarity |
+|---|---|---|---|---|
+| Mia | 4 | 4 | 3 | 3 |
+| Leo | 3 | 4 | 4 | 4 |
+| Sam | 4 | 4 | 4 | 4 |
+| Cheap phone | 3 | 3 | 3 | 3 |
+| Speedrunner | 3 | 4 | 3 | 3 |
+| Hacker | 2 | 4 | 3 | 3 |
+| Completionist | 4 | 4 | 3 | 3 |
+| Brainrot YouTuber | 3 | 4 | 4 | 4 |
+| Horror fan | 2 | 3 | 3 | 2 |
+| Friends | not run | | | |
+
+**Fixed (1.7.2):**
+- Thumb-sized HUD on small phones.
+- Conversation coins once per 10 minutes.
+- The NaN/infinity bank exploit, plus repair of broken saves.
+- NaN-proof settings.
+- The secret Perfectly Average guy.
+
+**Left:**
+- Free chat vs the "preset text only" rule (the user's decision).
+- Conversation brain-cell repeats.
+- Badge and pass IDs are still 0.
+- Port the horror side plot.
+- The friends/desync test.
+- The 1.7 Lose-path features.
+- The plan gaps.

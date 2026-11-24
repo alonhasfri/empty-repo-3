@@ -590,6 +590,16 @@ Content.Rooms = {
 -- in the same order as the choices here.
 ---------------------------------------------------------------------
 -- A way out if you get stuck (1.5)
+-- The Perfectly Average guy (secret). Each visit he says the next line; kid-safe creepy, never scary.
+Content.AverageGuy = {
+	"\"I have exactly 86,000,000,000 brain cells. Not one more. Not one less.\"",
+	"\"You came back. Most people only visit once. That's… above average.\"",
+	"\"Have you noticed nobody else in town has exactly 86 billion? Just me. I counted.\"",
+	"\"Sometimes at night the numbers on the Brain Tower stop. Then they start again. Perfectly normal.\"",
+	"\"I'm not watching you. I'm watching the average. You just keep standing in it.\"",
+	"…he just smiles. Perfectly average smile. 🙂",
+}
+
 Content.Unstuck = {
 	Button = "🆘",
 	Done = "🆘 Unstuck! You're back outside.",
@@ -953,6 +963,12 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.7.2", name = "Bigger Buttons, Safer Bank", lines = {
+		"📱 Every HUD button and label stays thumb-sized and readable, even on the smallest phones.",
+		"🏦 Fixed a bank trick that could break your coins (broken saves are repaired automatically).",
+		"💬 Chat scenes pay coins once every 10 minutes, so working is still the best way to earn.",
+		"🙂 Someone plain and grey in the plaza has more to say if you keep visiting…",
+	} },
 	{ v = "1.7.1", name = "Fair Play Fixes", lines = {
 		"💼 You get paid for real work: wages only while you're clocked in at work, and the on-time bonus needs a task.",
 		"🚌 The free map ride is now a slow Brain Bus. Hoppr is the fast way. Rides never pull you out of a chat or a seat.",

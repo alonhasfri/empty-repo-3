@@ -537,8 +537,8 @@ local function buildPlaza()
 	if not guy then
 		guy = part({ Name = "PerfectlyAverageGuy", Size = Vector3.new(2, 5, 1.5), Position = Vector3.new(30, 3.1, -35), Color = Color3.fromRGB(150, 150, 150) }, "accent")
 	end
-	sign(guy, "Perfectly Average Guy", 4, 220, 30)
-	prompt(guy, "Talk", "Perfectly Average Guy").Triggered:Connect(function(player)
+	-- (no name sign: he's a secret. Just a plain grey person you might walk past.)
+	prompt(guy, "Talk", "Someone").Triggered:Connect(function(player)
 		if WorldService.onAverageGuy then
 			WorldService.onAverageGuy(player)
 		end

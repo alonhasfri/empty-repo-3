@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.7.1"
+Config.Version = "1.7.2"
 
 ---------------------------------------------------------------------
 -- COMMUNITY (GROUP) RANKS -> IN-GAME RANKS
