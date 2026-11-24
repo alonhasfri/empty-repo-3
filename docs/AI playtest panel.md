@@ -244,3 +244,28 @@ A kid who stumbles on the game and just wants fun. Simulated through the game's 
 - **Gain side:** the job → clock in → task → payslip loop is clear, but it feels like real work for a casual kid.
 - **Keep playing or leave?** They'd keep playing for about 45 minutes. They'd leave on the Gain side after the second payslip if nothing new unlocks, because the next IQ step is a Skill Gate they don't want to study for.
 - **To keep them:** more silly Lose places on the empty west side, and a surprise every 10 minutes (a random event in the plaza).
+
+---
+
+# 1.7.3: "Fix everyone's problem" (built and tested Nov 24)
+
+Each item was tested in Studio play mode through the game's code. There were no screenshots: Studio stayed minimized, and screen control was declined.
+
+| Player / idea | What was built | How it was tested |
+|---|---|---|
+| Speedrunner: chat repeat loop | The same scene again within 10 min gives no coins and 10% of the brain cells ("You already talked about this") | Code-checked. Starting a chat needs the window visible |
+| Speedrunner: timer + board | ⏱ Settings toggle. A server-timed "fastest to IQ 200" plaza board. Admin-set brains never count | The timer showed 9:11. The board showed the run, then the test entry was removed |
+| Completionist: checklist | 🏅 Badges (got/total) in Settings. Locked ones are greyed, secret ones show a kid-friendly hint | 25 rows, 22 greyed for the test save |
+| YouTuber: faster first wow | 20 s into a new run: 💥 BRAIN DROP (−4%) or ✨ BRAIN BOOST. Any brain change of 2% or more shows a big animated number | −3.6B drop, big counter and title seen |
+| Friends: group Hoppr | Up to 3 nearby friends get an invite with the fare. Each pays their own. Refunded if busy at arrival | Solo checks only (own or bogus invite refused, solo booking OK). **The two-player test needs Test → Clients and Servers with the window open** |
+| Friends: Vs lobby sign | A sign behind spawn shows who's waiting in Vs Mode, for which side | The sign renders "Nobody waiting yet" |
+| Horror fan: Average Files part 1 | 8 beige notes (browser text), stages 0–3, far-away silent sightings, Settings → 😐 Horror Off/Spooky/Full. Animals get a "smells average" note | Stage 1 after 3.5 min. Exactly notes 1, 2, 3 and 8 show up. Off hides all of them |
+| User: map, too dark | Clear sky-blue air instead of grey fog, warmer and brighter in every look, more saturation. "Nonsense" stays strange but not dark | Values checked live (cashgrab: brightness 3, haze 0, saturation 0.25). **Not checked by eye** |
+| User: uncanny grass | Terrain grass is now a natural bright green (104, 178, 70), with grass blades where allowed | Value checked. **Not checked by eye** |
+| User: uncanny interiors | Warm ceiling lamps (soft SurfaceLights) in a grid in every furnished room (51 lamps) | Count checked. **Not checked by eye**. Materials, baseboards and windows are still to do |
+
+**Still open:**
+- **Horror part 2:** the phone call, The Mean, the final talk and 3 endings.
+- **Interior materials:** baseboards, windows and room sizes.
+- **Bigger map layout:** waiting for the user to pick a layout option.
+- **For the user:** the free chat decision, real pass and badge IDs, and the friends desync test.

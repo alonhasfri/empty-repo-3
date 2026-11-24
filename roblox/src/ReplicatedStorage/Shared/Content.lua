@@ -963,6 +963,12 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.7.3", name = "Everyone's Ideas", lines = {
+		"🧭 A \"What do I do now?\" arrow, 🥔 Low graphics, ⏱ a speedrun timer and 🏅 a badge checklist (all in Settings).",
+		"🏆 Plaza boards: top earners this week and fastest to IQ 200. 🚗 Ride Hoppr with up to 3 friends. 🎭 Vs Mode lobby sign.",
+		"💥 A big brain moment right after you pick a door. ☀️ Brighter town, greener grass, warm lamps indoors.",
+		"📄 Something about the Perfectly Average guy isn't right. Look for beige notes… (Settings → 😐 Horror)",
+	} },
 	{ v = "1.7.2", name = "Bigger Buttons, Safer Bank", lines = {
 		"📱 Every HUD button and label stays thumb-sized and readable, even on the smallest phones.",
 		"🏦 Fixed a bank trick that could break your coins (broken saves are repaired automatically).",
