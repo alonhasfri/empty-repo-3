@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.8.3"
+Config.Version = "1.8.4"
 -- 1.8.3: the brain counter shortens numbers from here on (1.2T, 9.9Qa ...)
 Config.ShortNumberFrom = 1e12
 Config.NumberSuffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" }
@@ -850,8 +850,8 @@ Config.Styles = {
 		realistic = {
 			road = { M = MAT.Asphalt, P = { rgb(60, 58, 58) }, A = 0.8 },
 			sidewalk = { M = MAT.Pavement, P = { rgb(200, 185, 165) }, A = 0.7 },
-			wall = { M = MAT.Concrete, P = { rgb(215, 180, 145), rgb(195, 150, 115), rgb(230, 205, 170), rgb(180, 120, 90) }, A = 0.7, glassEvery = 3 },
-			roof = { M = MAT.Concrete, P = { rgb(120, 95, 80) }, A = 0.8 },
+			wall = { M = MAT.Brick, P = { rgb(190, 125, 90), rgb(170, 105, 75), rgb(210, 160, 115), rgb(160, 95, 70) }, A = 1, glassEvery = 3 }, -- 1.8.3: warm brick, fully replaced
+			roof = { M = MAT.Slate, P = { rgb(150, 75, 55), rgb(120, 65, 50) }, A = 1 },
 			trim = { M = MAT.Metal, P = { rgb(170, 150, 125) }, A = 0.5 },
 			accent = { M = nil, P = { rgb(150, 95, 60) }, A = 0.4 },
 			floor = { M = MAT.Marble, P = { rgb(225, 215, 200) }, A = 0.5 },
@@ -866,9 +866,9 @@ Config.Styles = {
 		future = {
 			road = { M = MAT.Asphalt, P = { rgb(55, 55, 60) }, A = 0.8 },
 			sidewalk = { M = MAT.Pavement, P = { rgb(200, 190, 175) }, A = 0.7 },
-			wall = { M = MAT.Concrete, P = { rgb(215, 185, 150), rgb(230, 210, 180), rgb(195, 155, 120) }, A = 0.7, glassEvery = 2 },
-			roof = { M = MAT.Metal, P = { rgb(150, 140, 130) }, A = 0.8 },
-			trim = { M = MAT.Metal, P = { rgb(205, 210, 220) }, A = 0.7 },
+			wall = { M = MAT.Sandstone, P = { rgb(200, 150, 105), rgb(215, 170, 120), rgb(180, 120, 85), rgb(225, 190, 140) }, A = 1, glassEvery = 2 }, -- 1.8.3: warm, fully replaced (was a pale blend that looked white)
+			roof = { M = MAT.Slate, P = { rgb(160, 80, 55), rgb(135, 70, 50) }, A = 1 },
+			trim = { M = MAT.Metal, P = { rgb(185, 150, 110) }, A = 0.8 },
 			accent = { M = MAT.Glass, P = { rgb(90, 220, 230) }, A = 1 },
 			floor = { M = MAT.Marble, P = { rgb(230, 222, 210) }, A = 0.5 },
 			leaves = { M = MAT.LeafyGrass, P = { rgb(85, 145, 70) }, A = 0.3 },
