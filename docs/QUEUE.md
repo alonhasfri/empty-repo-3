@@ -254,3 +254,12 @@ Before publishing: bump Config.Version to 1.8.9 and add a What's new line ("Skil
    3. Cut the HUD to the essentials: brain count, 3–4 buttons and the goal line. Everything else goes in the phone or a menu.
    4. Map: replace the code-made buildings, cars and trees with real 3D models from the Creator Store (scripts stripped), keeping the street layout.
    5. Have the fresh UI judge compare before/after screenshots against the reference game until it says the gap is gone.
+   6. **Phone = the main menu** (target look: docs/reference/phone_target.jpg, a life-sim style phone):
+      - a tall phone on the right side of the screen, glossy picture icons with a label under every one, a dock at the bottom, a status bar
+      - apps: Items (inventory, where ALL gadgets and secret inventions go), Jobs/Shifts, Map/Hoppr, Shop, Settings, BrainTalks/BrainTok, Bank, Badges, Help
+      - only a few contextual buttons stay on the screen (things that can't live in the phone, like Unstuck or Quick Play)
+      - icons are real images (see "How real art gets in" below), not emoji
+
+### How real art gets in
+- **UI icons and panels:** PNG images. The user (or an AI image tool) makes them, and the Creator Store has free licensed UI kits. Claude uploads them with the Open Cloud key (it has asset write access) and wires them in as ImageLabels/ImageButtons. Panels use 9-slice images that stretch to any size.
+- **3D models:** Claude searches the Creator Store from Studio (search_asset/insert_asset), strips any scripts, and the town builder places them (houses, shops, cars, trees, lamps) instead of code-made blocks. Blender is optional (needs the user's OK to install).
