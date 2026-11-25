@@ -235,3 +235,9 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
    - crowded edges
    - toasts and goal lines competing for the top
    Plan: one calm design kit (like the new admin panel) for the HUD, pop-ups, phone and Settings, with bigger touch targets and text, then before/after screenshots.
+
+## Coded but NOT tested yet (test all of these together after the usage reset, then publish)
+- 1.8.9 easy fun-fact Skill Gates (40 facts in Content.GateFacts; gate UI shows the fact above each question; 5-minute timer)
+- Phone fit: pop-ups 80% x 88% on phones; staff panel icon rail on phones, rank in the title
+- Test commands: Pass ALL Skill Gates, Set IQ
+Before publishing: bump Config.Version to 1.8.9 and add a What's new line ("Skill Gates are now fun-fact gates, easy and fun!").
