@@ -207,6 +207,7 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 - Nov 24, 17:20: 1.8.5 Cleaner Screen + Quick Play (the user clicked Overwrite; confirmed by the API). No save changes. Note: brain game became Public at 17:02 (not by Claude), audience "Ages 16+ and trusted friends". Content rating resubmitted (Social Hangout and Free-form set to No; preview Minimal).
 - Nov 24, 17:27: 1.8.6 New Staff Panel (public game, Ages 16+). No save changes.
 - Nov 24, 17:36: 1.8.7 Phone Fixes (Skill Gate answers, landscape phone, Set Brain Cells back in admin). The user clicked Overwrite; confirmed by the API. No save changes.
+- Nov 25, 16:08: 1.8.8 Bigger Town + Unstuck (the user clicked Overwrite; API updateTime 14:08:29Z, before any 1.8.9 edits). No save changes.
 
 ## Next (user order, Nov 24)
 1. [x] **Admin menu redesign** (item 6, done in 1.8.6) to docs/admin_panel_mockup.png:
