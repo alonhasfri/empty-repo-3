@@ -1066,6 +1066,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.8.9", name = "Calm New Look", lines = { "🎨 A calmer, cleaner look: dark panels, matching buttons, no more rainbow gradients.", "🚧 Skill Gates are now fun-fact gates: read a fun fact, answer an easy question about it.", "⚠️ New: Settings → Reset my progress (hold to confirm, once a day).", "💥 When your brain runs out it now swells, wobbles… and goes POOF!" } },
 	{ v = "1.8.8", name = "Bigger Town + Unstuck", lines = { "🦶 Fixed: sometimes you got stuck and couldn't move. Stress now only slows you for a few seconds.", "🚧 Skill Gates no longer stress you out, and you can retry right away.", "🏙 The whole town is bigger: wider roads, bigger buildings, and parked cars no longer crash into each other." } },
 	{ v = "1.8.7", name = "Phone Fixes", lines = { "🛠 Fixed: Skill Gates marked right answers wrong.", "📱 The in-game phone fits sideways phones: wider, more apps per row, BrainTalks buttons always visible.", "🔔 Little notes now pop up at the top, not in the middle." } },
 	{ v = "1.8.6", name = "New Staff Panel", lines = { "🛠 Staff get a brand-new BrainAdmin panel: tabs, search, player cards with rank badges, and an \"Are you sure?\" step before kicks and bans." } },
