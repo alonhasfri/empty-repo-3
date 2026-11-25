@@ -557,6 +557,340 @@ function GAMES.dash(area, ctx)
 end
 
 ---------------------------------------------------------------------
+-- 1.9 Genius signature minigames (Content.Genius)
+---------------------------------------------------------------------
+local TG = Content.Genius
+
+-- Math genius: what comes next in the pattern? (shapes, never sums)
+function GAMES.pattern(area, ctx)
+	local seqRow = UI.new("Frame", { BackgroundColor3 = UI.T.panel, Size = UDim2.fromScale(1, 0.3), Parent = area }, {
+		UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 4) }),
+	})
+	UI.corner(seqRow, 12)
+	label(area, TG.WhatNext, { Position = UDim2.fromScale(0, 0.33), Size = UDim2.fromScale(1, 0.12), Font = UI.T.body })
+	local answers = row(area, 0.5, 0.4, 3)
+	local want = ""
+	local buttons = {}
+	local RULES = { { 1, 2 }, { 1, 2, 3 }, { 1, 1, 2 }, { 1, 2, 2 }, { 1, 2, 3, 2 } }
+	local function newPattern()
+		local shapes = table.clone(TG.Shapes)
+		for i = #shapes, 2, -1 do
+			local j = ctx.rng:NextInteger(1, i)
+			shapes[i], shapes[j] = shapes[j], shapes[i]
+		end
+		local rule = RULES[ctx.rng:NextInteger(1, math.min(#RULES, 2 + ctx.level))]
+		local len = 5 + math.min(2, ctx.level - 1)
+		for _, c in ipairs(seqRow:GetChildren()) do
+			if c:IsA("TextLabel") then
+				c:Destroy()
+			end
+		end
+		for i = 1, len do
+			label(seqRow, shapes[rule[(i - 1) % #rule + 1]], { Size = UDim2.new(0, 40, 0.8, 0) })
+		end
+		label(seqRow, "❓", { Size = UDim2.new(0, 40, 0.8, 0) })
+		want = shapes[rule[len % #rule + 1]]
+		local options = { want }
+		for _, s in ipairs(shapes) do
+			if #options < 3 and s ~= want then
+				table.insert(options, s)
+			end
+		end
+		for i = #options, 2, -1 do
+			local j = ctx.rng:NextInteger(1, i)
+			options[i], options[j] = options[j], options[i]
+		end
+		for i, b in ipairs(buttons) do
+			b.Text = options[i]
+		end
+	end
+	for i = 1, 3 do
+		buttons[i] = tapButton(answers, "", { LayoutOrder = i }, function()
+			if not ctx.alive() then
+				return
+			end
+			local ok = buttons[i].Text == want
+			ctx.feedback(ok)
+			if ok then
+				ctx.add(1)
+			end
+			newPattern()
+		end)
+	end
+	newPattern()
+end
+
+-- Physics genius: angle and power (range = power² × sin 2θ)
+function GAMES.launch(area, ctx)
+	local field = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(60, 120, 70), Size = UDim2.fromScale(1, 0.3), Parent = area })
+	UI.corner(field, 10)
+	local target = label(field, "🎯", { AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(36, 36), Position = UDim2.fromScale(0.5, 0.5) })
+	local landed = label(field, "💥", { AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(30, 30), Position = UDim2.fromScale(0, 0.5), Visible = false })
+	label(field, "🚀", { Size = UDim2.fromOffset(30, 30), Position = UDim2.fromScale(0, 0.3) })
+	local angle, power = 45, 3
+	local goal = 0.5
+	local controls = row(area, 0.36, 0.25, 4)
+	local angleL, powerL
+	local function refresh()
+		angleL.Text = string.format(TG.Angle, angle)
+		powerL.Text = string.format(TG.Power, power)
+	end
+	tapButton(controls, "➖", { LayoutOrder = 1 }, function()
+		angle = math.max(15, angle - 15)
+		refresh()
+	end)
+	angleL = label(controls, "", { LayoutOrder = 2, Font = UI.T.body })
+	tapButton(controls, "➕", { LayoutOrder = 3 }, function()
+		angle = math.min(75, angle + 15)
+		refresh()
+	end)
+	local controls2 = row(area, 0.63, 0.15, 3)
+	tapButton(controls2, "➖", { LayoutOrder = 1 }, function()
+		power = math.max(1, power - 1)
+		refresh()
+	end)
+	powerL = label(controls2, "", { LayoutOrder = 2, Font = UI.T.body })
+	tapButton(controls2, "➕", { LayoutOrder = 3 }, function()
+		power = math.min(5, power + 1)
+		refresh()
+	end)
+	local function newTarget()
+		-- a target you can really hit: pick a real angle/power and aim there
+		local a = ({ 15, 30, 45, 60, 75 })[ctx.rng:NextInteger(1, 5)]
+		local p = ctx.rng:NextInteger(2, 5)
+		goal = math.clamp((p * p * math.sin(math.rad(2 * a))) / 25, 0.08, 0.98)
+		target.Position = UDim2.fromScale(goal, 0.5)
+		landed.Visible = false
+	end
+	local controls3 = row(area, 0.82, 0.17, 1)
+	tapButton(controls3, TG.Launch, { BackgroundColor3 = UI.Colors.good }, function()
+		if not ctx.alive() then
+			return
+		end
+		local dist = math.clamp((power * power * math.sin(math.rad(2 * angle))) / 25, 0, 1)
+		landed.Visible = true
+		landed.Position = UDim2.fromScale(dist, 0.5)
+		local ok = math.abs(dist - goal) <= 0.05
+		ctx.feedback(ok)
+		if ok then
+			ctx.add(1)
+			task.delay(0.5, newTarget)
+		end
+	end)
+	refresh()
+	newTarget()
+end
+
+-- Coding genius: tap arrow blocks to build a program, RUN moves the robot
+function GAMES.robot(area, ctx)
+	local n = 5
+	local grid = UI.new("Frame", { Position = UDim2.fromScale(0.01, 0), Size = UDim2.fromScale(0.5, 0.75), BackgroundColor3 = Color3.fromRGB(30, 34, 46), Parent = area }, {
+		UI.new("UIAspectRatioConstraint", { AspectRatio = 1 }),
+		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / n - 0.01, 0, 1 / n - 0.01, 0), CellPadding = UDim2.fromScale(0.01, 0.01), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	UI.corner(grid, 10)
+	local cells = {}
+	for i = 1, n * n do
+		cells[i] = label(grid, "", { BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(50, 56, 74), LayoutOrder = i })
+	end
+	local programL = label(area, "", { Position = UDim2.fromScale(0.55, 0), Size = UDim2.fromScale(0.44, 0.2), TextXAlignment = Enum.TextXAlignment.Left })
+	local pad = UI.new("Frame", { BackgroundTransparency = 1, Position = UDim2.fromScale(0.55, 0.22), Size = UDim2.fromScale(0.44, 0.5), Parent = area })
+	local bottom = row(area, 0.8, 0.18, 2)
+	local start, flag, walls, program = { 1, 1 }, { 5, 5 }, {}, {}
+	local busy = false
+	local function idx(p)
+		return (p[2] - 1) * n + p[1]
+	end
+	local function draw(bot)
+		for i, c in ipairs(cells) do
+			c.Text = walls[i] and TG.Wall or ""
+		end
+		cells[idx(flag)].Text = TG.Flag
+		cells[idx(bot)].Text = TG.Robot
+		local arrows = {}
+		for _, step in ipairs(program) do
+			table.insert(arrows, step[3])
+		end
+		programL.Text = table.concat(arrows, "")
+	end
+	local function newLevel()
+		walls = {}
+		start = { 1, ctx.rng:NextInteger(1, n) }
+		flag = { n, ctx.rng:NextInteger(1, n) }
+		local count = math.min(4, 1 + ctx.level)
+		for _ = 1, count do
+			local w = { ctx.rng:NextInteger(2, n - 1), ctx.rng:NextInteger(1, n) }
+			walls[idx(w)] = true
+		end
+		program = {}
+		draw(start)
+	end
+	local function add(dx, dy, icon)
+		if not busy and #program < 10 then
+			table.insert(program, { dx, dy, icon })
+			draw(start)
+		end
+	end
+	local function arrow(text, x, y, dx, dy)
+		tapButton(pad, text, { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(x, y), Size = UDim2.fromScale(0.32, 0.3) }, function()
+			add(dx, dy, text)
+		end)
+	end
+	arrow(MG.Up, 0.5, 0.17, 0, -1)
+	arrow(MG.Left, 0.17, 0.5, -1, 0)
+	arrow(MG.Right2, 0.83, 0.5, 1, 0)
+	arrow(MG.Down, 0.5, 0.83, 0, 1)
+	tapButton(bottom, TG.Clear, { LayoutOrder = 1 }, function()
+		if not busy then
+			program = {}
+			draw(start)
+		end
+	end)
+	tapButton(bottom, TG.Run, { LayoutOrder = 2, BackgroundColor3 = UI.Colors.good }, function()
+		if busy or not ctx.alive() then
+			return
+		end
+		busy = true
+		local bot = { start[1], start[2] }
+		local ok = false
+		for _, step in ipairs(program) do
+			local nx, ny = bot[1] + step[1], bot[2] + step[2]
+			if nx < 1 or nx > n or ny < 1 or ny > n or walls[idx({ nx, ny })] then
+				break -- bonk
+			end
+			bot = { nx, ny }
+			draw(bot)
+			task.wait(0.25)
+			if bot[1] == flag[1] and bot[2] == flag[2] then
+				ok = true
+				break
+			end
+		end
+		busy = false
+		if not ctx.alive() then
+			return
+		end
+		ctx.feedback(ok)
+		if ok then
+			ctx.add(1)
+			newLevel()
+		else
+			draw(start)
+		end
+	end)
+	newLevel()
+end
+
+-- Business genius: lemonade stand (weather × price × cups → profit; no sums for the player)
+function GAMES.lemonade(area, ctx)
+	local weatherL = label(area, "", { Size = UDim2.fromScale(1, 0.16) })
+	local resultL = label(area, "", { Position = UDim2.fromScale(0, 0.17), Size = UDim2.fromScale(1, 0.12), Font = UI.T.body, TextColor3 = UI.T.muted })
+	local priceRow = row(area, 0.32, 0.18, 3)
+	local cupsRow = row(area, 0.54, 0.18, 3)
+	local openRow = row(area, 0.78, 0.2, 1)
+	local weather, price, cups = 1, 2, 2
+	local priceB, cupsB = {}, {}
+	local function refresh()
+		weatherL.Text = TG.Weather[weather]
+		for i, b in ipairs(priceB) do
+			b.BackgroundColor3 = i == price and UI.T.accent or UI.T.panel2
+		end
+		for i, b in ipairs(cupsB) do
+			b.BackgroundColor3 = i == cups and UI.T.accent or UI.T.panel2
+		end
+	end
+	for i, name in ipairs(TG.Prices) do
+		priceB[i] = tapButton(priceRow, name, { LayoutOrder = i }, function()
+			price = i
+			refresh()
+		end)
+	end
+	for i, c in ipairs(TG.Cups) do
+		cupsB[i] = tapButton(cupsRow, string.format(TG.CupsLabel, c), { LayoutOrder = i }, function()
+			cups = i
+			refresh()
+		end)
+	end
+	tapButton(openRow, TG.OpenStand, { BackgroundColor3 = UI.Colors.good }, function()
+		if not ctx.alive() then
+			return
+		end
+		-- sunny = lots of thirsty people; fancy prices scare some away
+		local demand = ({ 32, 20, 9 })[weather] * ({ 1.2, 1, 0.6 })[price]
+		local made = TG.Cups[cups]
+		local sold = math.floor(math.min(made, demand))
+		local profit = sold * ({ 1, 2, 3 })[price] - made
+		resultL.Text = string.format(TG.DayResult, sold, profit)
+		local good = profit >= 15
+		ctx.feedback(good)
+		if good then
+			ctx.add(1)
+		end
+		weather = ctx.rng:NextInteger(1, 3)
+		refresh()
+	end)
+	weather = ctx.rng:NextInteger(1, 3)
+	refresh()
+end
+
+-- Chess genius: mate in one (white to move). Pieces are letters in circles (no missing glyphs).
+function GAMES.mate(area, ctx)
+	label(area, TG.ChessHint, { Size = UDim2.fromScale(1, 0.1), Font = UI.T.body })
+	local board = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.12), Size = UDim2.fromScale(1, 0.88), BackgroundTransparency = 1, Parent = area }, {
+		UI.new("UIAspectRatioConstraint", { AspectRatio = 1 }),
+		UI.new("UIGridLayout", { CellSize = UDim2.fromScale(0.125, 0.125), CellPadding = UDim2.new(), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	local squares = {}
+	local puzzle, chosen = nil, nil
+	local function sq(file: number, rank: number): string
+		return string.sub("abcdefgh", file, file) .. rank
+	end
+	local function draw()
+		for name, b in pairs(squares) do
+			local p = puzzle.pieces[name]
+			b.Text = p and string.upper(p) or ""
+			b.TextColor3 = (p and p == string.upper(p)) and Color3.new(1, 1, 1) or Color3.new(0.08, 0.08, 0.1)
+			b.BackgroundColor3 = b:GetAttribute("Light") and Color3.fromRGB(235, 220, 190) or Color3.fromRGB(150, 110, 80)
+			if name == chosen then
+				b.BackgroundColor3 = UI.T.accent
+			end
+			b.TextStrokeTransparency = p and 0.2 or 1
+			b.TextStrokeColor3 = (p and p == string.upper(p)) and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
+		end
+	end
+	local order = 0
+	for rank = 8, 1, -1 do
+		for file = 1, 8 do
+			order += 1
+			local name = sq(file, rank)
+			local b = UI.new("TextButton", { Text = "", TextScaled = true, Font = UI.T.title, AutoButtonColor = false, BorderSizePixel = 0, LayoutOrder = order, Parent = board })
+			b:SetAttribute("Light", (file + rank) % 2 == 1)
+			squares[name] = b
+			b.Activated:Connect(function()
+				if not ctx.alive() or not puzzle then
+					return
+				end
+				local p = puzzle.pieces[name]
+				if p and p == string.upper(p) then
+					chosen = name
+				elseif chosen then
+					local ok = chosen == puzzle.solution[1] and name == puzzle.solution[2]
+					ctx.feedback(ok)
+					chosen = nil
+					if ok then
+						ctx.add(1)
+						puzzle = TG.ChessPuzzles[ctx.rng:NextInteger(1, #TG.ChessPuzzles)]
+					end
+				end
+				draw()
+			end)
+		end
+	end
+	puzzle = TG.ChessPuzzles[ctx.rng:NextInteger(1, #TG.ChessPuzzles)]
+	draw()
+end
+
+---------------------------------------------------------------------
 -- The framework: start screen, timer, score, server check, result
 ---------------------------------------------------------------------
 -- info: what MinigameService.begin returned. opts.onAgain() = play another; opts.onResult(result)

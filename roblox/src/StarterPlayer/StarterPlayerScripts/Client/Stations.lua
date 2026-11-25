@@ -2688,6 +2688,86 @@ function Stations.events()
 	m.focus()
 end
 
+---------------------------------------------------------------------
+-- 1.9 Genius Crossroads (🌟 Genius app): pick a branch, work genius jobs, play the 3-chapter story
+---------------------------------------------------------------------
+local TG = Content.Genius
+local function geniusCrossroads(r)
+	local m = UI.modal(TG.Title, { color = C.gold, big = true })
+	UI.label(m.content, TG.Intro, { LayoutOrder = 1 })
+	for i, key in ipairs(Config.Genius.Branches) do
+		local b = TG.Branches[key]
+		UI.button(m.content, b.icon .. "  " .. string.format(TG.Pick, b.name) .. "\n" .. b.blurb .. (r.genius == key and "  ✅" or ""), function()
+			local res = Remote.call("genius_pick", { branch = key })
+			resultToast(res)
+			if res and res.ok then
+				m.close()
+				Stations.genius()
+			end
+		end, { LayoutOrder = 10 + i, Size = UDim2.new(1, 0, 0, 72) })
+	end
+	m.focus()
+end
+
+local function geniusPlay(kind: string, job: number?)
+	local info = Remote.call("genius_play", { kind = kind, job = job })
+	if not info or not info.ok then
+		resultToast(info)
+		return
+	end
+	Minigames.play(info, {
+		onAgain = kind == "job" and function()
+			geniusPlay(kind, job)
+		end or nil,
+		onResult = function(res)
+			if res and res.storyDone then
+				UI.sound("GameShowJingle", 0.7)
+			end
+		end,
+	})
+end
+
+function Stations.genius()
+	local r = Remote.call("genius_get")
+	if not r or not r.ok then
+		resultToast(r)
+		return
+	end
+	if not r.open then
+		UI.toast(string.format(TG.Locked, r.openIQ or 140))
+		return
+	end
+	if not r.genius then
+		geniusCrossroads(r)
+		return
+	end
+	local b = TG.Branches[r.genius]
+	local m = UI.modal(b.icon .. " " .. b.name, Stations.phoneOpts(C.gold))
+	local white = Color3.new(1, 1, 1)
+	UI.label(m.content, TG.Story, { LayoutOrder = 1, Font = UI.T.font, TextColor3 = white })
+	if r.chapter >= r.chapters then
+		UI.label(m.content, TG.AllDone, { LayoutOrder = 2, TextColor3 = white })
+	else
+		UI.label(m.content, string.format(TG.Chapter, r.chapter + 1, r.chapters), { LayoutOrder = 2, TextColor3 = C.muted })
+		UI.label(m.content, b.story[r.chapter + 1], { LayoutOrder = 3, TextColor3 = white })
+		UI.button(m.content, TG.Play, function()
+			m.close()
+			geniusPlay("story")
+		end, { LayoutOrder = 4, BackgroundColor3 = C.good })
+	end
+	UI.label(m.content, TG.Jobs, { LayoutOrder = 10, Font = UI.T.font, TextColor3 = white })
+	for i, job in ipairs(b.jobs) do
+		UI.button(m.content, string.format(TG.Work, job), function()
+			m.close()
+			geniusPlay("job", i)
+		end, { LayoutOrder = 10 + i })
+	end
+	UI.button(m.content, TG.Switch, function()
+		geniusCrossroads(r)
+	end, { LayoutOrder = 30 })
+	m.focus()
+end
+
 function Stations.open(key: string)
 	local fn = Stations[key]
 	if fn and key ~= "open" then

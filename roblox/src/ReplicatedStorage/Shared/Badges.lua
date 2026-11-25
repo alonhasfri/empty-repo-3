@@ -36,6 +36,12 @@ local Badges = {
 	LostAndFound = { id = 0, version = "1.4", secret = true, name = "Lost and Found", desc = "Solve the Endless Castle." },
 	SmallTalk = { id = 0, version = "1.5", secret = false, name = "Small Talk", desc = "Finish a conversation scene." },
 	FooledYou ={ id = 0, version = "event", secret = false, name = "Fooled You", desc = "Find the April Fools rubber chicken." },
+	-- 1.9 Genius Crossroads: finish a genius storyline
+	GeniusMath = { id = 0, version = "1.9", secret = false, name = "Vault Cracker", desc = "Finish the Math genius story." },
+	GeniusPhysics = { id = 0, version = "1.9", secret = false, name = "Moonshot", desc = "Finish the Physics genius story." },
+	GeniusCoding = { id = 0, version = "1.9", secret = false, name = "Bug Squasher", desc = "Finish the Coding genius story." },
+	GeniusBusiness = { id = 0, version = "1.9", secret = false, name = "Lemonade Tycoon", desc = "Finish the Business genius story." },
+	GeniusChess = { id = 0, version = "1.9", secret = false, name = "Grand Brain Champion", desc = "Finish the Chess genius story." },
 }
 
 return Badges

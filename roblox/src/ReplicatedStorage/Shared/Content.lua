@@ -1801,6 +1801,111 @@ Content.LifeEvents = {
 	},
 }
 
+-- 1.9 Genius Crossroads: five genius branches, each with jobs, a signature minigame and a 3-chapter story
+Content.Genius = {
+	Title = "🌟 Genius Crossroads",
+	Intro = "You've reached the top! Now choose what kind of genius you want to become. (You can switch later and keep your brain cells.)",
+	Locked = "🔒 The Crossroads opens at the top of a career ladder, or at IQ %d.",
+	Pick = "Become a %s",
+	Picked = "🌟 You are now a %s! Open 🌟 Genius in your phone.",
+	Switch = "🔀 Switch genius branch",
+	Jobs = "💼 Genius jobs",
+	Work = "Work as %s",
+	Story = "📖 Story",
+	Chapter = "Chapter %d of %d",
+	Play = "▶ Play this chapter",
+	ChapterDone = "📖 Chapter done! +brain cells",
+	StoryDone = "🏆 You finished the %s story! +%d coins",
+	AllDone = "🏆 Story complete! You can still work your genius jobs.",
+	NotGain = "Genius branches are for the Gain path.",
+	Branches = {
+		math = {
+			icon = "🔢", name = "Math genius", jobs = { "Codebreaker", "Bank analyst" },
+			blurb = "Patterns everywhere. Crack the town vault!",
+			story = {
+				"The town vault is stuck, and the code is hidden in a pattern on the door. Can you spot it?",
+				"The vault has a second lock: a moving pattern of lights. Keep your eyes sharp!",
+				"The last lock! Crack it and the town's lost treasure (a giant golden calculator) is free.",
+			},
+		},
+		physics = {
+			icon = "⚛️", name = "Physics genius", jobs = { "Rocket engineer", "Inventor" },
+			blurb = "Angles, power, liftoff. Build the Moon rocket!",
+			story = {
+				"Test launch! Hit the targets to prove your rocket math is right.",
+				"Windy day at the launch pad. Find the perfect angle and power.",
+				"Launch day! Land the rocket's practice capsule on the target and the Moon trip is GO.",
+			},
+		},
+		coding = {
+			icon = "💻", name = "Coding genius", jobs = { "Game dev", "Robot builder" },
+			blurb = "Code blocks and robots. Fix the town's buggy AI!",
+			story = {
+				"The town's helper robot got a bug and keeps walking into walls. Guide it home!",
+				"The bug spread to the delivery bots. Write their routes, block by block.",
+				"The main AI is confused. Fix its last robot and the whole town runs smoothly again.",
+			},
+		},
+		business = {
+			icon = "💼", name = "Business genius", jobs = { "Shop owner", "CEO" },
+			blurb = "Price, stock and weather. Turn a lemonade stand into a chain!",
+			story = {
+				"Your first lemonade stand! Watch the weather and price it right.",
+				"A second stand opens across town. Can you keep both busy?",
+				"Investors are watching. Have a great week and your stand becomes a chain!",
+			},
+		},
+		chess = {
+			icon = "♟️", name = "Chess genius", jobs = { "Chess coach", "Strategist" },
+			blurb = "Mate in one! Win the Grand Brain Tournament.",
+			story = {
+				"Round 1 of the Grand Brain Tournament. Find the winning move!",
+				"The semi-final. Your opponent is sneaky, but checkmate is checkmate.",
+				"THE FINAL. The whole town is watching. One move to become champion!",
+			},
+		},
+	},
+	-- chess puzzles (mate in 1, white to move). Squares are "a1".."h8".
+	-- pieces: K Q R B N P = white, k q r b n p = black. solution = { from, to }.
+	ChessPuzzles = {
+		{ pieces = { g1 = "K", a1 = "R", g8 = "k", f7 = "p", g7 = "p", h7 = "p" }, solution = { "a1", "a8" } },
+		{ pieces = { g1 = "K", d1 = "Q", h8 = "k", g7 = "p", h7 = "p" }, solution = { "d1", "d8" } },
+		{ pieces = { e1 = "K", h1 = "R", e8 = "k", d7 = "p", e7 = "p", f7 = "p" }, solution = { "h1", "h8" } },
+		{ pieces = { e1 = "K", c1 = "R", a8 = "k", a7 = "p", b7 = "p" }, solution = { "c1", "c8" } },
+		{ pieces = { g1 = "K", e5 = "N", h8 = "k", g8 = "r", g7 = "p", h7 = "p" }, solution = { "e5", "f7" } },
+		{ pieces = { g1 = "K", e4 = "Q", h8 = "k", g7 = "p", h7 = "p" }, solution = { "e4", "e8" } },
+	},
+	PieceNames = { K = "K", Q = "Q", R = "R", B = "B", N = "N", P = "P" },
+	ChessHint = "White to move. Tap a white piece, then the square for checkmate!",
+	-- math patterns (shapes, no sums)
+	Shapes = { "🔴", "🔵", "🟢", "🟡", "🟣", "⭐" },
+	WhatNext = "What comes next?",
+	-- physics launch
+	Angle = "📐 Angle: %d°",
+	Power = "💪 Power: %d",
+	Launch = "🚀 LAUNCH",
+	TargetAt = "🎯 Target",
+	Landed = "Landed here",
+	-- coding robot
+	Run = "▶ RUN",
+	Clear = "🗑 Clear",
+	Robot = "🤖",
+	Flag = "🏁",
+	Wall = "🧱",
+	-- lemonade
+	Weather = { "☀️ Sunny", "⛅ Cloudy", "🌧 Rainy" },
+	Prices = { "Cheap", "Fair", "Fancy" },
+	Cups = { 10, 20, 30 },
+	CupsLabel = "%d cups",
+	OpenStand = "🍋 Open the stand",
+	DayResult = "Sold %d cups, profit %d",
+}
+Content.Minigames.Games.pattern = { title = "🔢 Pattern lock", how = "Look at the pattern and tap what comes next. No sums, just eyes!" }
+Content.Minigames.Games.launch = { title = "🚀 Launch!", how = "Pick an angle and power, then launch. Land on the target!" }
+Content.Minigames.Games.robot = { title = "🤖 Code the robot", how = "Tap arrow blocks to build a program, then RUN it. Reach the flag, avoid the walls!" }
+Content.Minigames.Games.lemonade = { title = "🍋 Lemonade stand", how = "Check the weather, pick a price and how many cups to make. Have a good day!" }
+Content.Minigames.Games.mate = { title = "♟️ Mate in one", how = "White to move: find the checkmate!" }
+
 -- 1.9: the progress path strip under the counter (Gain path)
 Content.PathStrip = {
 	Steps = { "Job", "Shift", "Promotion", "Next job" },

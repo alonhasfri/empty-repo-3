@@ -206,6 +206,29 @@ Config.Events = {
 	DoneCoins = 25, -- coins for finishing an event
 }
 
+-- 1.9 Genius Crossroads (GeniusService): at the top of a career ladder, or at OpenIQ, pick a genius branch
+Config.Genius = {
+	OpenIQ = 140, -- the Crossroads also opens at this IQ (or at career level 4)
+	Branches = { "math", "physics", "coding", "business", "chess" },
+	Games = { math = "pattern", physics = "launch", coding = "robot", business = "lemonade", chess = "mate" },
+	Badges = { math = "GeniusMath", physics = "GeniusPhysics", coding = "GeniusCoding", business = "GeniusBusiness", chess = "GeniusChess" },
+	Chapters = 3,
+	JobPayPerPoint = 6, -- coins per minigame point when you work a genius job
+	JobPoints = 1, -- brain points for a good genius shift
+	ChapterPoints = 4, -- brain points for finishing a story chapter
+	FinalCoins = 500, -- coins for finishing the whole story
+}
+-- the signature minigames use the same framework as the job minigames
+for key, def in pairs({
+	pattern = { seconds = 40, pass = 5, maxPerSecond = 0.8 }, -- math: what comes next? (no sums)
+	launch = { seconds = 45, pass = 3, maxPerSecond = 0.4 }, -- physics: angle and power
+	robot = { seconds = 50, pass = 2, maxPerSecond = 0.3 }, -- coding: code blocks move a robot
+	lemonade = { seconds = 45, pass = 4, maxPerSecond = 0.6 }, -- business: price and stock vs the weather
+	mate = { seconds = 60, pass = 2, maxPerSecond = 0.3 }, -- chess: mate in 1
+}) do
+	Config.Minigames.Games[key] = def
+end
+
 -- 1.9: the progress path strip (Job → Shift → Promotion → Next job)
 Config.PathStrip = {
 	StressBreakAt = 70, -- stress this high: the strip suggests a break first
