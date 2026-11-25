@@ -667,7 +667,7 @@ Config.UI = {
 	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
 	ToastLowValue = { "interest", "bills paid", "bills skipped", "you already talked", "the next bus comes in", "give it " },
 	LandscapePhoneAspect = 1.6, -- 1.8.7 phone pass: the in-game phone is wide on a sideways phone screen, so apps and buttons fit without scrolling
-	ModalPhone = Vector2.new(0.68, 0.74), -- 1.8.5: pop-ups use at most this share of a phone screen (user: "pop-ups are way too big")
+	ModalPhone = Vector2.new(0.8, 0.88), -- 1.8.9 (user: menus did not fit phones): pop-ups use this share of a phone screen (0.68 x 0.74 squeezed their content)
 	ModalPC = Vector2.new(0.5, 0.62), -- and of a PC screen
 	ModalMax = Vector2.new(520, 440), -- pixels, before the device scale
 }

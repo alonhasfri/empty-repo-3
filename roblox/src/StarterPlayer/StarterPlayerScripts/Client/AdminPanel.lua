@@ -188,11 +188,14 @@ function AdminPanel.open()
 	UI.stroke(panel, K.line, 1, 0)
 
 	-- sidebar
-	local sideW = phone and 0.24 or 0.2
+	local sideW = phone and 0.11 or 0.2 -- 1.8.9: an icon rail on phones, so the content gets the room
 	local side = new("Frame", { Size = UDim2.new(sideW, 0, 1, 0), BackgroundColor3 = K.side, ZIndex = 42, Parent = panel })
 	corner(side, 14)
 	new("UIPadding", { PaddingTop = UDim.new(0, 12), PaddingBottom = UDim.new(0, 12), PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), Parent = side })
-	label(side, A.Brand .. A.BrandAccent, phone and 16 or 20, { Font = Enum.Font.GothamBlack, RichText = true, Text = A.Brand .. '<font color="#FF5C96">' .. A.BrandAccent .. "</font>", ZIndex = 43 })
+	local brand = 	label(side, A.Brand .. A.BrandAccent, phone and 16 or 20, { Font = Enum.Font.GothamBlack, RichText = true, Text = A.Brand .. '<font color="#FF5C96">' .. A.BrandAccent .. "</font>", ZIndex = 43 })
+	if phone then
+		brand.Text = "🧠" -- 1.8.9: the icon rail is too narrow for the name
+	end
 	local tabList = scroller(side, { Position = UDim2.fromOffset(0, 34), Size = UDim2.new(1, 0, 1, -110), ZIndex = 43 })
 	list(tabList, 4)
 	local youCard = new("Frame", { AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 66), BackgroundColor3 = K.card, ZIndex = 43, Parent = side })
@@ -205,6 +208,9 @@ function AdminPanel.open()
 	})
 	corner(badge, 9)
 	label(youCard, string.format(A.PlayersHere, #Players:GetPlayers()), 12, { Position = UDim2.fromOffset(0, 42), TextColor3 = K.muted, ZIndex = 44 })
+	if phone then
+		youCard.Visible = false -- 1.8.9: no room on the phone icon rail (the rank shows on the title bar instead)
+	end
 
 	-- main area: title, search, close
 	local main = new("Frame", { Position = UDim2.new(sideW, 12, 0, 0), Size = UDim2.new(1 - sideW, -24, 1, 0), BackgroundTransparency = 1, ZIndex = 42, Parent = panel })
@@ -306,7 +312,7 @@ function AdminPanel.open()
 
 	showTab = function(tab: string)
 		currentTab = tab
-		titleL.Text = string.gsub(A.Tabs[tab] or tab, "^%S+%s", "")
+		titleL.Text = (string.gsub(A.Tabs[tab] or tab, "^%S+%s", "")) .. (phone and ("  ·  " .. (Config.RankNames[myRank()] or "")) or "")
 		for t, b in pairs(tabButtons) do
 			b.BackgroundColor3 = t == tab and K.cardHi or K.side
 			b.TextColor3 = t == tab and K.text or K.muted
@@ -373,7 +379,11 @@ function AdminPanel.open()
 	end
 
 	for i, tab in ipairs(TABS) do
-		tabButtons[tab] = button(tabList, A.Tabs[tab] or tab, K.side, function()
+		local tabText = A.Tabs[tab] or tab
+		if phone then
+			tabText = string.match(tabText, "^(%S+)") or tabText -- icon only on phones
+		end
+		tabButtons[tab] = button(tabList, tabText, K.side, function()
 			showTab(tab)
 		end, { LayoutOrder = i, TextSize = phone and K.small or K.body, Size = UDim2.new(1, 0, 0, phone and math.max(36, UI.minTouch()) or 36), ZIndex = 44 })
 	end
