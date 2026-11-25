@@ -80,10 +80,11 @@ local chipRow = UI.new("Frame", { BackgroundTransparency = 1, Position = UDim2.f
 local iqChip = UI.chip(chipRow, "IQ 100", Color3.fromRGB(255, 170, 40), { TextSize = UI.textSize(12), Size = UDim2.fromOffset(10, UI.textSize(12) + 6) })
 local coinChip = UI.chip(chipRow, "", Color3.fromRGB(230, 180, 30), { TextSize = UI.textSize(12), Size = UDim2.fromOffset(10, UI.textSize(12) + 6), Visible = false })
 themedPart(function(T)
-	top.BackgroundColor3 = UI.darken(T.bg, 0.35)
-	top.BackgroundTransparency = 0.25
-	UI.corner(top, 14)
-	UI.stroke(top, Color3.new(0, 0, 0), 2, 0.4)
+	-- 1.9 kit: the counter card is a calm panel with a thin light outline (was darkened theme + black stroke)
+	top.BackgroundColor3 = T.bg
+	top.BackgroundTransparency = 0.12
+	UI.corner(top, 12)
+	UI.stroke(top, Color3.new(1, 1, 1), 2, 0.88)
 	cellsLabel.Font = T.title
 	iqChip.Font = T.font
 	coinChip.Font = T.font
