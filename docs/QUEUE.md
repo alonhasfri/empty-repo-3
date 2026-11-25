@@ -248,3 +248,9 @@ Before publishing: bump Config.Version to 1.8.9 and add a What's new line ("Skil
    - "Choose your genius" branches (math, physics, coding, business, chess), each with its own jobs, minigame and storyline
    - random story events from shuffle bags
    This comes right after the UI overhaul.
+0. **TOP PRIORITY: real visual quality** (user, Nov 25: "the concept is very good, but the gameplay, map and UI feel really bad"). Root cause: everything is code-built (emoji icons, flat boxes, code-made buildings), with no real art assets.
+   1. Pick ONE reference game (Grow a Garden or Pet Simulator 99, for inspiration only) and copy its HUD structure: a currency card top-left, 3–4 big round side buttons, one panel style, big chunky numbers.
+   2. Real UI art: one consistent icon pack (a free licensed Creator Store kit, or icons generated with Studio's AI tools), one panel image that stretches to any size, a custom display font.
+   3. Cut the HUD to the essentials: brain count, 3–4 buttons and the goal line. Everything else goes in the phone or a menu.
+   4. Map: replace the code-made buildings, cars and trees with real 3D models from the Creator Store (scripts stripped), keeping the street layout.
+   5. Have the fresh UI judge compare before/after screenshots against the reference game until it says the gap is gone.
