@@ -143,6 +143,11 @@ Net.on("gate_status", function(player)
 	}
 end)
 
+-- 1.8.9 (user: "Skill Gates must be VERY easy, basically fun facts"): the gate reads a short fact and asks
+-- an easy question about it. Config.GateUseFacts switches back to the old hard questions.
+local function gateBank()
+	return (Config.GateUseFacts and Content.GateFacts) or Content.GateQuestions
+end
 Net.on("gate_start", function(player)
 	local bad = guard(player, "Gates")
 	if bad then
@@ -160,7 +165,7 @@ Net.on("gate_start", function(player)
 		return { ok = false, msg = "Cool down for " .. math.ceil(sess.gateCooldown - os.clock()) .. " more seconds." }
 	end
 	local pool = {}
-	for i, q in ipairs(Content.GateQuestions) do
+	for i, q in ipairs(gateBank()) do
 		if q.tier == gate.tier then
 			table.insert(pool, i)
 		end
@@ -181,8 +186,8 @@ Net.on("gate_start", function(player)
 	BrainService.stress(player, Config.GateStartStress) -- 1.8.8: 0 (gates are friendly now; stress here helped freeze players)
 	local out = {}
 	for i, qi in ipairs(chosen) do
-		local q = Content.GateQuestions[qi]
-		out[i] = { q = q.q, options = q.options }
+		local q = gateBank()[qi]
+		out[i] = { q = q.q, options = q.options, fact = q.fact, icon = q.icon }
 	end
 	return { ok = true, name = gate.name, questions = out, seconds = seconds, hints = hints }
 end)
@@ -196,7 +201,7 @@ Net.on("gate_hint", function(player, d)
 	if not qi then
 		return { ok = false }
 	end
-	local q = Content.GateQuestions[qi]
+	local q = gateBank()[qi]
 	local wrong = {}
 	for i = 1, #q.options do
 		if i ~= q.answer then
@@ -226,7 +231,7 @@ Net.on("gate_submit", function(player, d)
 			if a == nil then
 				a = d.answers[tostring(i)]
 			end
-			if tonumber(a) == Content.GateQuestions[qi].answer then
+			if tonumber(a) == gateBank()[qi].answer then
 				correctCount += 1
 			end
 		end

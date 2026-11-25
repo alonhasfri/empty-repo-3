@@ -81,7 +81,8 @@ Config.Gates = {
 	{ id = "gate4", iq = 145, tier = 4, name = "The Genius Gate" },
 }
 Config.GateQuestionCount = 3
-Config.GateSeconds = 60
+Config.GateUseFacts = true -- 1.8.9: gates are easy fun-fact gates (Content.GateFacts); false = the old hard trivia
+Config.GateSeconds = 300 -- 1.8.9: no time pressure (was 60)
 Config.GateExtraTimeMultiplier = 1.5 -- accessibility setting
 Config.GateFailCooldown = 0 -- 1.8.8 (user: gates must be easy): retry right away
 Config.GateStartStress = 0 -- stress added when a gate starts (was 10)

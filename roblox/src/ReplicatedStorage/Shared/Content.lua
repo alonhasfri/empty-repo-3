@@ -140,6 +140,55 @@ Content.Theater = {
 ---------------------------------------------------------------------
 -- GAIN PATH: Skill Gate questions (tier 1 easy ... tier 4 hard)
 ---------------------------------------------------------------------
+-- 1.8.9: FUN-FACT GATES (user: "Skill Gates must be VERY easy, basically fun facts").
+-- Read the fact, then answer an easy question about it. The answer is always in the fact.
+-- tier 1 = body and brain, 2 = space and coding, 3 = animals and inventions, 4 = myths and wonders
+Content.GateFacts = {
+	{ tier = 1, icon = "🧠", fact = "Your brain uses about 20% of your body's energy, even though it's small!", q = "How much of your energy does your brain use?", options = { "About 20%", "Almost none" }, answer = 1 },
+	{ tier = 1, icon = "💤", fact = "When you sleep, your brain sorts out what you learned that day.", q = "What does your brain do while you sleep?", options = { "Sorts what you learned", "Turns off completely" }, answer = 1 },
+	{ tier = 1, icon = "🦴", fact = "Babies have about 300 bones, but grown-ups have 206, because some bones join together.", q = "Who has MORE bones?", options = { "Babies", "Grown-ups" }, answer = 1 },
+	{ tier = 1, icon = "👃", fact = "Your nose can remember about 50,000 different smells!", q = "How many smells can your nose remember?", options = { "About 50,000", "Only 3" }, answer = 1 },
+	{ tier = 1, icon = "❤️", fact = "Your heart beats about 100,000 times every day.", q = "How often does your heart beat in a day?", options = { "About 100,000 times", "Once" }, answer = 1 },
+	{ tier = 1, icon = "😁", fact = "Tooth enamel is the hardest thing in your whole body.", q = "What is the hardest thing in your body?", options = { "Tooth enamel", "Your hair", "Your ears" }, answer = 1 },
+	{ tier = 1, icon = "👀", fact = "You blink around 15 to 20 times every minute to keep your eyes wet.", q = "Why do you blink?", options = { "To keep your eyes wet", "To say hello" }, answer = 1 },
+	{ tier = 1, icon = "🧠", fact = "Learning something new makes new connections between your brain cells.", q = "What happens when you learn something new?", options = { "New brain connections", "Your brain shrinks" }, answer = 1 },
+	{ tier = 1, icon = "💧", fact = "Drinking water helps your brain think more clearly.", q = "What helps your brain think clearly?", options = { "Drinking water", "Eating sand" }, answer = 1 },
+	{ tier = 1, icon = "🤧", fact = "A sneeze can shoot out of your nose faster than a car on a city street!", q = "How fast can a sneeze be?", options = { "Faster than a city car", "Slower than a snail" }, answer = 1 },
+
+	{ tier = 2, icon = "🌙", fact = "The Moon has no wind, so astronauts' footprints can stay there for millions of years.", q = "Why do footprints stay on the Moon?", options = { "There's no wind", "Robots guard them" }, answer = 1 },
+	{ tier = 2, icon = "☀️", fact = "The Sun is a star, and it's so big that about a million Earths could fit inside it.", q = "What is the Sun?", options = { "A star", "A planet", "A big lamp" }, answer = 1 },
+	{ tier = 2, icon = "🪐", fact = "Saturn is so light for its size that it could float in a giant bathtub!", q = "What could Saturn do in a giant bathtub?", options = { "Float", "Sink like a rock" }, answer = 1 },
+	{ tier = 2, icon = "🔴", fact = "Mars looks red because its ground is full of rusty dust.", q = "Why does Mars look red?", options = { "Rusty dust", "It's embarrassed" }, answer = 1 },
+	{ tier = 2, icon = "🌍", fact = "Earth is the only planet we know of with liquid water oceans on its surface.", q = "What does Earth have on its surface?", options = { "Liquid water oceans", "Chocolate rivers" }, answer = 1 },
+	{ tier = 2, icon = "💻", fact = "Computers only understand two numbers: 0 and 1. Everything is built from them!", q = "Which two numbers do computers use?", options = { "0 and 1", "7 and 9" }, answer = 1 },
+	{ tier = 2, icon = "🐛", fact = "A mistake in code is called a 'bug'. Once, a real moth got stuck in an old computer!", q = "What is a mistake in code called?", options = { "A bug", "A sandwich" }, answer = 1 },
+	{ tier = 2, icon = "🔁", fact = "A 'loop' in code repeats the same steps again and again, so you don't have to write them many times.", q = "What does a loop do?", options = { "Repeats steps", "Deletes the game" }, answer = 1 },
+	{ tier = 2, icon = "🛰", fact = "Satellites fly around Earth and help phones find where you are on a map.", q = "What helps your phone's map find you?", options = { "Satellites", "Pigeons" }, answer = 1 },
+	{ tier = 2, icon = "🚀", fact = "Rockets push hot gas down so they can go up, like a balloon letting air out.", q = "How do rockets go up?", options = { "They push gas down", "They flap wings" }, answer = 1 },
+
+	{ tier = 3, icon = "🐙", fact = "An octopus has three hearts and blue blood!", q = "How many hearts does an octopus have?", options = { "Three", "One" }, answer = 1 },
+	{ tier = 3, icon = "🐘", fact = "Elephants can recognise themselves in a mirror, which is a sign of a clever brain.", q = "What can elephants recognise in a mirror?", options = { "Themselves", "Nothing at all" }, answer = 1 },
+	{ tier = 3, icon = "🐝", fact = "Bees dance to tell other bees where to find flowers.", q = "How do bees share where flowers are?", options = { "They dance", "They send emails" }, answer = 1 },
+	{ tier = 3, icon = "🦒", fact = "A giraffe's tongue is so long it can clean its own ears!", q = "What can a giraffe clean with its tongue?", options = { "Its ears", "The car" }, answer = 1 },
+	{ tier = 3, icon = "🐧", fact = "Penguins can't fly in the air, but they 'fly' through water by swimming super fast.", q = "Where do penguins 'fly'?", options = { "Through water", "Over mountains" }, answer = 1 },
+	{ tier = 3, icon = "💡", fact = "Light bulbs were improved by many inventors who kept trying after lots of failures.", q = "What did the light bulb inventors do after failing?", options = { "Kept trying", "Gave up forever" }, answer = 1 },
+	{ tier = 3, icon = "🖨", fact = "The printing press let people copy books quickly, so many more people could read.", q = "What did the printing press help copy?", options = { "Books", "Cats" }, answer = 1 },
+	{ tier = 3, icon = "🚲", fact = "Bicycles are one of the most energy-saving ways for a person to travel.", q = "What is a very energy-saving way to travel?", options = { "A bicycle", "A rocket to the shop" }, answer = 1 },
+	{ tier = 3, icon = "🧲", fact = "A compass works because its needle is a magnet that points north.", q = "Why does a compass point north?", options = { "Its needle is a magnet", "It's scared of the south" }, answer = 1 },
+	{ tier = 3, icon = "📞", fact = "The first phones had no screens at all. You could only talk!", q = "What did the first phones NOT have?", options = { "Screens", "A way to talk" }, answer = 1 },
+
+	{ tier = 4, icon = "🐠", fact = "Myth: goldfish remember only 3 seconds. Truth: they can remember things for months!", q = "How long can goldfish really remember?", options = { "Months", "3 seconds" }, answer = 1 },
+	{ tier = 4, icon = "⚡", fact = "Myth: lightning never strikes the same place twice. Truth: tall towers get hit many times a year!", q = "Can lightning strike the same place twice?", options = { "Yes", "Never" }, answer = 1 },
+	{ tier = 4, icon = "🦇", fact = "Myth: bats are blind. Truth: bats can see, and many also use echoes to find their way.", q = "Are bats really blind?", options = { "No, they can see", "Yes, totally blind" }, answer = 1 },
+	{ tier = 4, icon = "🧠", fact = "Myth: we only use 10% of our brain. Truth: we use all of it, just different parts for different jobs.", q = "How much of your brain do you use?", options = { "All of it", "Only 10%" }, answer = 1 },
+	{ tier = 4, icon = "🐂", fact = "Myth: red makes bulls angry. Truth: bulls can't see red well; it's the waving cape that gets their attention.", q = "What gets a bull's attention?", options = { "The waving cape", "The colour red" }, answer = 1 },
+	{ tier = 4, icon = "🌊", fact = "More than half of all the oxygen we breathe comes from tiny plants in the ocean.", q = "Where does much of our oxygen come from?", options = { "Tiny ocean plants", "Video games" }, answer = 1 },
+	{ tier = 4, icon = "🏔", fact = "Mount Everest grows a tiny bit taller every year as the ground pushes it up.", q = "What happens to Mount Everest each year?", options = { "It grows a tiny bit", "It melts away" }, answer = 1 },
+	{ tier = 4, icon = "🍯", fact = "Honey never goes bad. People have found honey thousands of years old that was still fine!", q = "What is special about honey?", options = { "It never goes bad", "It turns into juice" }, answer = 1 },
+	{ tier = 4, icon = "🌈", fact = "A rainbow happens when sunlight shines through raindrops and splits into colours.", q = "What makes a rainbow?", options = { "Sunlight through raindrops", "Paint in the sky" }, answer = 1 },
+	{ tier = 4, icon = "🐌", fact = "Some snails can sleep for up to three years when the weather is too dry!", q = "How long can some snails sleep?", options = { "Up to three years", "One second" }, answer = 1 },
+}
+
 Content.GateQuestions = {
 	-- tier 1: math and facts
 	{ tier = 1, q = "What is 12 × 12?", options = { "124", "144", "132", "122" }, answer = 2 },

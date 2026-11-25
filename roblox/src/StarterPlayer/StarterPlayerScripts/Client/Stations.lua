@@ -884,6 +884,11 @@ function Stations.gate()
 		local submitted = false
 		for qi, q in ipairs(r.questions) do
 			order += 1
+			-- 1.8.9: fun-fact gates show the fact first; the easy question is about that fact
+			if q.fact then
+				UI.label(m.content, (q.icon or "💡") .. "  " .. q.fact, { TextSize = UI.textSize(16), LayoutOrder = order })
+				order += 1
+			end
 			UI.label(m.content, qi .. ". " .. q.q, { Font = Enum.Font.GothamBold, LayoutOrder = order })
 			local buttons = {}
 			for oi, opt in ipairs(q.options) do
