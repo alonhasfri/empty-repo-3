@@ -65,7 +65,7 @@ UI.Themes = {
 		bg = Color3.fromRGB(246, 242, 232),
 		panel = Color3.fromRGB(236, 230, 216),
 		panel2 = Color3.fromRGB(222, 214, 196),
-		accent = Color3.fromRGB(28, 40, 70),
+		accent = Color3.fromRGB(255, 200, 61), -- 1.9: gold (the old navy vanished on the dark kit panels)
 		accent2 = Color3.fromRGB(120, 95, 50),
 		text = Color3.fromRGB(28, 30, 38),
 		muted = Color3.fromRGB(110, 105, 95),
@@ -133,6 +133,34 @@ UI.Themes = {
 		wobble = true,
 	},
 }
+-- 1.9 UI overhaul (a fresh "harsh judge" review: docs/UI judge review.md): the root cause of the
+-- "UI feels bad" complaint was that every look had its own panels, corners, outlines, gradients and
+-- fonts. Now every look shares ONE calm design kit; only the accent colour (and the world style)
+-- still changes with your brain level.
+local KIT = {
+	bg = Color3.fromRGB(27, 32, 48), -- #1B2030 panels
+	panel = Color3.fromRGB(34, 40, 58),
+	panel2 = Color3.fromRGB(42, 49, 71), -- #2A3147 buttons
+	text = Color3.fromRGB(245, 246, 250),
+	muted = Color3.fromRGB(160, 168, 190),
+	stroke = Color3.new(1, 1, 1),
+	strokeT = 0.88, -- 2 px white at 12%
+	strokeW = 2,
+	radius = 12,
+	bgT = 0.08,
+	font = Enum.Font.GothamBold,
+	title = Enum.Font.GothamBlack,
+	body = Enum.Font.GothamMedium,
+	textStroke = false,
+	shine = false,
+	wobble = false,
+}
+for _, theme in pairs(UI.Themes) do
+	for k, v in pairs(KIT) do
+		theme[k] = v
+	end
+	theme.accent2 = theme.accent2 or theme.accent
+end
 UI.tier = "average"
 UI.T = UI.Themes.average
 

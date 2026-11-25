@@ -136,18 +136,23 @@ local function iconButton(parent, item, order: number, onClick)
 	local b = UI.new("TextButton", {
 		Text = "",
 		AutoButtonColor = false,
-		BackgroundColor3 = item.color,
+		-- 1.9 UI overhaul: ONE neutral tile colour (the judge: "every button a different saturated colour");
+		-- the activity's own colour is only a thin stripe at the top, so tiles stay recognisable
+		BackgroundColor3 = T.bg,
+		BackgroundTransparency = 0.15,
 		LayoutOrder = order,
 		Selectable = true,
 		Size = UDim2.fromOffset(math.max(60, MT), math.max(60, MT)),
 		Parent = parent,
 	})
-	UI.corner(b, T.radius >= 12 and 14 or 6)
-	UI.stroke(b, Color3.new(0, 0, 0), T.textStroke and 3 or 1.5, T.textStroke and 0 or 0.5)
-	UI.gradient(b, Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 180), 90)
-	text(b, { Position = UDim2.fromOffset(6, 2), Size = UDim2.new(1, -12, 0, 36), Text = item.icon })
-	local name = text(b, { Position = UDim2.new(0, 0, 1, -22), Size = UDim2.new(1, 0, 0, 20), Text = item.name, Font = T.font })
-	outlined(name, 1.6)
+	UI.corner(b, 12)
+	UI.stroke(b, Color3.new(1, 1, 1), 2, 0.88)
+	local stripe = UI.new("Frame", { Position = UDim2.new(0.2, 0, 0, 0), Size = UDim2.new(0.6, 0, 0, 3), BackgroundColor3 = item.color, BorderSizePixel = 0, Parent = b })
+	UI.corner(stripe, 2)
+	text(b, { Position = UDim2.new(0.2, 0, 0, 6), Size = UDim2.new(0.6, 0, 0.5, 0), Text = item.icon })
+	-- labels: a fixed 13 px white bold label (never auto-scaled, so "Quick Play" matches its neighbours)
+	local name = text(b, { Position = UDim2.new(0, 2, 1, -20), Size = UDim2.new(1, -4, 0, 16), Text = item.name, Font = Enum.Font.GothamBold, TextScaled = false, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd })
+	local _ = name
 	local scale = UI.new("UIScale", { Parent = b })
 	local function s(v)
 		TweenService:Create(scale, TweenInfo.new(0.12, Enum.EasingStyle.Back), { Scale = v }):Play()
