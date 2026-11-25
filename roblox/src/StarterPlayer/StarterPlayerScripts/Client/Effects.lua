@@ -184,12 +184,41 @@ function Effects.banCutscene(d)
 		Parent = o,
 	})
 	UI.corner(machine, 20)
+	UI.gradient(machine, Color3.fromRGB(110, 110, 135), Color3.fromRGB(40, 40, 55), 90) -- metal shading
+	-- 1.8.9 upgrade: spinning gears, a row of teeth and blinking lights on the machine
+	local calm = UI.reducedMotion()
+	local gears = {}
+	for gi, gx in ipairs({ 0.08, 0.92 }) do
+		gears[gi] = UI.new("TextLabel", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(gx, 0.15), Size = UDim2.fromOffset(56, 56), BackgroundTransparency = 1, Text = "⚙️", TextScaled = true, ZIndex = 83, Parent = machine })
+	end
+	UI.new("TextLabel", { AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1), Size = UDim2.new(0.9, 0, 0, 26), BackgroundTransparency = 1, Text = "▼▼▼▼▼▼▼▼▼▼", Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.fromRGB(220, 220, 235), ZIndex = 83, Parent = machine })
+	local lights = {}
+	for li = 1, 3 do
+		local l = UI.new("Frame", { Position = UDim2.new(0.3 + li * 0.1, 0, 0, 8), Size = UDim2.fromOffset(12, 12), BackgroundColor3 = Color3.fromRGB(255, 60, 60), ZIndex = 83, Parent = machine })
+		UI.corner(l, 6)
+		lights[li] = l
+	end
+	task.spawn(function()
+		local t = 0
+		while machine.Parent do
+			t += 1
+			if not calm then
+				for gi, g in ipairs(gears) do
+					g.Rotation += (gi == 1 and 12 or -12)
+				end
+			end
+			for li, l in ipairs(lights) do
+				l.BackgroundColor3 = ((t + li) % 3 == 0) and Color3.fromRGB(255, 230, 60) or Color3.fromRGB(255, 60, 60)
+			end
+			task.wait(0.05)
+		end
+	end)
 	local you = UI.new("TextLabel", {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.15, 0.2),
 		Size = UDim2.fromOffset(80, 80),
 		BackgroundTransparency = 1,
-		Text = "🧍",
+		Text = "🧠",
 		TextScaled = true,
 		ZIndex = 82,
 		Parent = o,
@@ -214,6 +243,28 @@ function Effects.banCutscene(d)
 		task.wait(0.08)
 	end
 	machine.Rotation = 0
+	-- 1.8.9 upgrade: paper strips and confetti pour out of the bottom (kid-safe, cartoon)
+	for i = 1, calm and 8 or 22 do
+		local strip = i % 3 ~= 0
+		local p = UI.new(strip and "Frame" or "TextLabel", {
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.new(0.5, math.random(-110, 110), 0.55, 90),
+			Size = strip and UDim2.fromOffset(8, math.random(28, 46)) or UDim2.fromOffset(30, 30),
+			BackgroundColor3 = Color3.fromRGB(245, 245, 240),
+			BackgroundTransparency = strip and 0 or 1,
+			ZIndex = 84,
+			Parent = o,
+		})
+		if not strip then
+			p.Text = (i % 2 == 0) and "🎊" or "🎉"
+			p.TextScaled = true
+		end
+		TweenService:Create(p, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+			Position = UDim2.new(0.5, math.random(-220, 220), 1.1, 0),
+			Rotation = calm and 0 or math.random(-200, 200),
+		}):Play()
+		task.wait(0.03)
+	end
 	local stamp = UI.new("TextLabel", {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
