@@ -77,14 +77,57 @@ function Effects.death(d, onDone)
 	end
 	local o = overlay(Color3.new(0, 0, 0), 1)
 	local label = bigText(o, "")
-	for _, n in ipairs({ "3", "2", "1" }) do
-		label.Text = n
-		UI.sound("NotificationPing")
-		task.wait(0.9)
+	-- 1.8.9 (user: "do the animations"): the brain swells, wobbles and squeaks... then a cartoon POOF
+	-- (confetti, stars, smoke puffs; never gory). Reduced Motion: no wobble, a smaller burst.
+	local calm = UI.reducedMotion()
+	local big = UI.new("TextLabel", {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.45),
+		Size = UDim2.fromOffset(80, 80),
+		BackgroundTransparency = 1,
+		Text = "🧠",
+		TextScaled = true,
+		ZIndex = 63,
+		Parent = UI.gui,
+	})
+	TweenService:Create(big, TweenInfo.new(2.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = UDim2.fromOffset(280, 280) }):Play()
+	for i = 1, 11 do
+		if not calm then
+			big.Rotation = (i % 2 == 0) and 9 or -9
+		end
+		if i % 3 == 0 then
+			UI.sound("CartoonBoing", 0.4) -- squeak
+		end
+		task.wait(0.2)
 	end
-	-- half a second of silence
+	big:Destroy()
+	-- POOF: pieces fly out from the middle and fade
+	local pieces = { "🎉", "✨", "⭐", "💨", "🎊", "🌟" }
+	for i = 1, calm and 10 or 26 do
+		local a = math.rad(i * (360 / (calm and 10 or 26)) + math.random(-8, 8))
+		local dist = math.random(25, 45) / 100
+		local p = UI.new("TextLabel", {
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.45),
+			Size = UDim2.fromOffset(46, 46),
+			BackgroundTransparency = 1,
+			Text = pieces[(i % #pieces) + 1],
+			TextScaled = true,
+			ZIndex = 64,
+			Parent = UI.gui,
+		})
+		TweenService:Create(p, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Position = UDim2.fromScale(0.5 + math.cos(a) * dist, 0.45 + math.sin(a) * dist),
+			Rotation = calm and 0 or math.random(-180, 180),
+			TextTransparency = 1,
+		}):Play()
+		task.delay(1.2, function()
+			p:Destroy()
+		end)
+	end
+	label.Text = "POOF!"
+	task.wait(0.6)
 	label.Text = ""
-	task.wait(0.5)
 	-- EVERYTHING AT ONCE
 	for _, s in ipairs({ "AirHorn", "RecordScratch", "DeathBoom", "KazooTune", "SadTrombone", "CartoonBoing" }) do
 		UI.sound(s, d.loud and 1.5 or 1)
