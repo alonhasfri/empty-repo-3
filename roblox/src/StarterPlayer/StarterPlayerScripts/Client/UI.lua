@@ -730,7 +730,7 @@ function UI.modal(title: string, opts)
 		UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(18, 6), Size = UDim2.new(1, -36, 0, 18), Text = os.date("%H:%M") .. string.rep(" ", 40) .. "📶 🔋", TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.new(1, 1, 1), ZIndex = 29, Parent = frame })
 	else
 		UI.corner(frame, T.radius + 4)
-		UI.stroke(frame, T.textStroke and Color3.new(0, 0, 0) or accent, T.strokeW + 1, 0)
+		UI.stroke(frame, Color3.new(1, 1, 1), 2, 0.88) -- 1.9 kit: thin light border (was a thick accent border)
 		if T.wobble and UI.effects() > 0 and not UI.reducedMotion() then
 			frame.Rotation = math.random(-2, 2)
 		end
@@ -749,10 +749,11 @@ function UI.modal(title: string, opts)
 		Parent = frame,
 	})
 	UI.corner(header, phone and 0 or (T.radius + 4))
-	UI.gradient(header, accent, T.accent2, 0)
+	-- 1.9 kit (UI judge: "remove all gradients"): a calm solid header with one thin accent line
+	header.BackgroundColor3 = T.panel
 	-- square off the header's bottom corners
-	local cover = UI.new("Frame", { BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -14), Size = UDim2.new(1, 0, 0, 14), ZIndex = 21, Parent = header })
-	UI.gradient(cover, accent, T.accent2, 0)
+	UI.new("Frame", { BackgroundColor3 = T.panel, BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -14), Size = UDim2.new(1, 0, 0, 14), ZIndex = 21, Parent = header })
+	UI.new("Frame", { BackgroundColor3 = accent, BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -2), Size = UDim2.new(1, 0, 0, 2), ZIndex = 22, Parent = header })
 	local titleLabel = UI.new("TextLabel", {
 		Text = title,
 		TextSize = UI.textSize(24),

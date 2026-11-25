@@ -152,7 +152,8 @@ local function iconButton(parent, item, order: number, onClick)
 	UI.corner(stripe, 2)
 	text(b, { Position = UDim2.new(0.2, 0, 0, 6), Size = UDim2.new(0.6, 0, 0.5, 0), Text = item.icon })
 	-- labels: a fixed 13 px white bold label (never auto-scaled, so "Quick Play" matches its neighbours)
-	local name = text(b, { Position = UDim2.new(0, 2, 1, -20), Size = UDim2.new(1, -4, 0, 16), Text = item.name, Font = Enum.Font.GothamBold, TextScaled = false, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd })
+	local name = text(b, { Position = UDim2.new(0, 2, 1, -20), Size = UDim2.new(1, -4, 0, 16), Text = item.name, Font = Enum.Font.GothamBold, TextScaled = true })
+	UI.new("UITextSizeConstraint", { MaxTextSize = 13, MinTextSize = 9, Parent = name }) -- shrinks long names like "Quick Play" to fit instead of cutting them
 	local _ = name
 	local scale = UI.new("UIScale", { Parent = b })
 	local function s(v)
@@ -413,6 +414,7 @@ local meterGrad = UI.gradient(meterFill, Color3.fromRGB(255, 200, 80), Color3.fr
 local halfLine = UI.new("Frame", { Position = UDim2.fromScale(0.5, 0), Size = UDim2.new(0, 2, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), Parent = meterBack })
 
 local bar = UI.new("Frame", { Position = UDim2.fromOffset(0, 30), Size = UDim2.new(1, 0, 0, 34), BackgroundColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0.15, Parent = bottom })
+bar.Visible = false -- 1.9 (UI judge): IQ already shows on the counter card; this bar duplicated it
 UI.corner(bar, 10)
 UI.stroke(bar, Color3.new(0, 0, 0), 2.5, 0)
 local barFill = UI.new("Frame", { Position = UDim2.fromOffset(3, 3), Size = UDim2.new(0.5, -6, 1, -6), BackgroundColor3 = Color3.new(1, 1, 1), Parent = bar })
@@ -942,7 +944,7 @@ function Hud.update(st)
 	barLeft.Text = (st.stage ~= "human" and (st.stageEmoji .. " " .. st.stageName .. "  •  ") or "") .. st.iqText
 	barRight.Text = right
 	barGrad.Color = st.path == "Lose" and ColorSequence.new(Color3.fromRGB(255, 90, 180), Color3.fromRGB(200, 40, 140)) or ColorSequence.new(Color3.fromRGB(80, 150, 255), Color3.fromRGB(40, 90, 230))
-	bar.Visible = path ~= nil
+	bar.Visible = false -- 1.9: hidden for good (IQ is on the counter card)
 
 	-- meter
 	if st.path == "Lose" and not st.dead then
