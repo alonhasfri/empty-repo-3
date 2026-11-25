@@ -240,4 +240,5 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 - 1.8.9 easy fun-fact Skill Gates (40 facts in Content.GateFacts; gate UI shows the fact above each question; 5-minute timer)
 - Phone fit: pop-ups 80% x 88% on phones; staff panel icon rail on phones, rank in the title
 - Test commands: Pass ALL Skill Gates, Set IQ
+- Delete Player Data fix (no leave-save after the wipe) and Settings → Reset my progress (hold 3 s, once a day, 7-day backup)- POOF animation before the 0-cell ending; Brain Shredder upgrade (gears, teeth, lights, paper strips and confetti)
 Before publishing: bump Config.Version to 1.8.9 and add a What's new line ("Skill Gates are now fun-fact gates, easy and fun!").
