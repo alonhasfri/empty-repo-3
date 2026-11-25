@@ -283,3 +283,11 @@ Test each in Studio on PC and phone size (iPhone in the device simulator), fix r
 - The user is installing **Blender** plus the **Blender MCP** add-on. After restarting the Claude app, Claude can control Blender for custom models (Brain Tower, Shredder, castle).
 - App icons: the user makes them with a free image AI (Copilot/Designer, Bing Image Creator or ChatGPT) and drops PNGs in art/icons/ (see art/icons/README.md). Until then use a free Creator Store icon pack, not code-drawn icons.
 - Order of preference: Creator Store assets (polished, free) → the user's image AI icons → Studio's AI generators (textures, meshes) → Blender custom models → Claude's SVG icons (last resort, flat).
+
+### Tonight's partial test (Nov 25, 21:45), for the 7:45 run
+- ✅ The game starts with no errors (MinigameService, EventService, GeniusService load fine).
+- ✅ New HUD: the progress strip (Job › Shift › Promotion, XP bar, GO), the career chip, and only Phone + Quick Play on screen.
+- ✅ The new phone opens on the right in the reference style (icons with labels, clock card).
+- ❌ BUG: Work app when not at work: the message shows twice (a toast on top of the pop-up title duplicates the pop-up text). Remove the toast when the pop-up shows the same text.
+- ❓ CHECK: "Bus to work" didn't seem to move the player (still at the plaza, 0,5,20, after 4 s). Verify the bus/teleport.
+- Not reached yet: the job minigames, life events, Genius Crossroads, intro cutscene, new test commands, feedback button, Settings tabs, Items app.
