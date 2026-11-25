@@ -242,3 +242,9 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 - Test commands: Pass ALL Skill Gates, Set IQ
 - Delete Player Data fix (no leave-save after the wipe) and Settings → Reset my progress (hold 3 s, once a day, 7-day backup)- POOF animation before the 0-cell ending; Brain Shredder upgrade (gears, teeth, lights, paper strips and confetti)
 Before publishing: bump Config.Version to 1.8.9 and add a What's new line ("Skill Gates are now fun-fact gates, easy and fun!").
+9. **Gain path redesign** (user idea, Nov 25), full plan in docs/Gain path redesign.md:
+   - a clear progress path strip
+   - a different real minigame for every job (no maths)
+   - "Choose your genius" branches (math, physics, coding, business, chess), each with its own jobs, minigame and storyline
+   - random story events from shuffle bags
+   This comes right after the UI overhaul.
