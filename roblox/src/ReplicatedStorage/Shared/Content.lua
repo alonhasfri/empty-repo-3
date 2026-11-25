@@ -1906,6 +1906,16 @@ Content.Minigames.Games.robot = { title = "🤖 Code the robot", how = "Tap arro
 Content.Minigames.Games.lemonade = { title = "🍋 Lemonade stand", how = "Check the weather, pick a price and how many cups to make. Have a good day!" }
 Content.Minigames.Games.mate = { title = "♟️ Mate in one", how = "White to move: find the checkmate!" }
 
+-- 1.9 Cutscenes
+Content.Cutscenes = {
+	Skip = "Skip ⏭",
+	Intro = {
+		"Welcome to Brainville… 🧠",
+		"A town that changes with your brain.",
+		"Two doors. One choice. Get smarter… or get dumber?",
+	},
+}
+
 -- 1.9: the progress path strip under the counter (Gain path)
 Content.PathStrip = {
 	Steps = { "Job", "Shift", "Promotion", "Next job" },

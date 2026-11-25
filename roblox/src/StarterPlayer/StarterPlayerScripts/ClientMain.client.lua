@@ -14,6 +14,7 @@ local AdminPanel = require(Client.AdminPanel)
 local Tutorial = require(Client.Tutorial)
 local Conversation = require(Client.Conversation)
 local PhoneOS = require(Client.PhoneOS) -- 1.7: the phone changes with your brain
+local Cutscene = require(Client.Cutscene) -- 1.9: cutscene player (intro flyover)
 
 -- 1.7: the brain-tiered phone replaces the old one (kept as the "Simple phone" setting)
 PhoneOS.stations = Stations
@@ -35,7 +36,7 @@ local Watchdog = require(Client.Watchdog) -- 1.8.8: frees you if something left 
 -- locks that are on purpose: the watchdog leaves these alone
 Watchdog.isLocked = function(): boolean
 	local lp = game:GetService("Players").LocalPlayer
-	return Conversation.isOpen() or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
+	return Conversation.isOpen() or Cutscene.isPlaying() or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
 end
 local SpeedrunTimer = require(Client.SpeedrunTimer)
 local DayNight = require(Client.DayNight)
@@ -111,6 +112,7 @@ Tutorial.save = Hud.onSaveSettings
 ---------------------------------------------------------------------
 -- Server -> client events
 ---------------------------------------------------------------------
+local introChecked = false
 local function applyState(st)
 	if not st then
 		return
@@ -157,6 +159,15 @@ local function applyState(st)
 	LowGraphics.onState(st)
 	SpeedrunTimer.onState(st)
 	DayNight.onState(st)
+	-- 1.9: the first time you join (no path yet), a short skippable flyover to the two doors
+	if not introChecked and st.settings then
+		introChecked = true
+		if st.path == nil and not st.dead and not st.settings.introSeen then
+			Cutscene.intro(function()
+				Hud.onSaveSettings({ introSeen = true })
+			end)
+		end
+	end
 end
 
 Remote.on("state", applyState)

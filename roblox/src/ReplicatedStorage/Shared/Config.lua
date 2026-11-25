@@ -229,6 +229,19 @@ for key, def in pairs({
 	Config.Minigames.Games[key] = def
 end
 
+-- 1.9 Cutscenes (Client/Cutscene.lua): camera keyframes + letterbox + fade, always skippable.
+-- Shots are relative to your character: pos = camera position offset, look = where it looks (offset).
+Config.Cutscenes = {
+	Letterbox = 0.11, -- bar height (share of the screen)
+	Fade = 0.5, -- seconds of fade in/out
+	Intro = { -- the first-join flyover: high over the town, swooping down to you and the two doors
+		{ pos = Vector3.new(-260, 220, 260), look = Vector3.new(0, 0, 0), t = 0, text = 1 },
+		{ pos = Vector3.new(180, 140, 200), look = Vector3.new(0, 10, 0), t = 4, text = 2 },
+		{ pos = Vector3.new(60, 40, 70), look = Vector3.new(0, 4, 0), t = 3.5, text = 3 },
+		{ pos = Vector3.new(0, 8, 18), look = Vector3.new(0, 3, 0), t = 2.5 },
+	},
+}
+
 -- 1.9: the progress path strip (Job → Shift → Promotion → Next job)
 Config.PathStrip = {
 	StressBreakAt = 70, -- stress this high: the strip suggests a break first
