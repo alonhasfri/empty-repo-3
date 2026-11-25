@@ -106,7 +106,7 @@ local function updateChips(st)
 		table.insert(chips, { st.stageEmoji .. " " .. tostring(st.stageName or ""), UI.T.accent })
 	end
 	if st.job and st.path == "Gain" then
-		table.insert(chips, { string.format(P19.ChipJob, tostring(st.careerTitle or st.job)), Color3.fromRGB(70, 160, 110) })
+		table.insert(chips, { string.format(P19.ChipJob, tostring((st.career and st.career.title) or st.job)), Color3.fromRGB(70, 160, 110) })
 	end
 	if st.frozen then
 		table.insert(chips, { P19.ChipStress, UI.Colors.bad })
@@ -124,6 +124,67 @@ local function updateChips(st)
 		UI.chip(infoRow, c[1], c[2], { LayoutOrder = i, TextSize = UI.textSize(12), Size = UDim2.fromOffset(10, UI.textSize(12) + 8) })
 	end
 	infoRow.Visible = #chips > 0 and not st.dead
+end
+
+-- 1.9 Gain path redesign: the progress path strip (Job → Shift → Promotion → Next job), under the chips
+local PS = Content.PathStrip
+local stackH = 96 -- how tall the counter + chips (+ strip) column is; the activity buttons sit under it
+local strip = UI.new("Frame", { Name = "PathStrip", Position = UDim2.new(0, 0, 1, 30), Size = UDim2.new(1, 0, 0, 48), Visible = false, Parent = top })
+UI.corner(strip, 12)
+UI.stroke(strip, Color3.new(1, 1, 1), 2, 0.88)
+local stepsRow = UI.new("Frame", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 3), Size = UDim2.new(1, -64, 0, 16), Parent = strip }, {
+	UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }),
+})
+local stepLabels = {}
+for i, name in ipairs(PS.Steps) do
+	stepLabels[i] = UI.new("TextLabel", { BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromOffset(0, 16), Font = Enum.Font.GothamBold, TextSize = 11, Text = (i > 1 and "› " or "") .. name, LayoutOrder = i, Parent = stepsRow })
+end
+local stripText = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 19), Size = UDim2.new(1, -64, 0, 14), Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = strip })
+local stripBar = UI.new("Frame", { Position = UDim2.fromOffset(8, 36), Size = UDim2.new(1, -64, 0, 6), BackgroundColor3 = Color3.fromRGB(60, 66, 90), Parent = strip })
+UI.corner(stripBar, 3)
+local stripFill = UI.new("Frame", { Size = UDim2.fromScale(0, 1), Parent = stripBar })
+UI.corner(stripFill, 3)
+local stripGo = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -6, 0.5, 0), Size = UDim2.fromOffset(48, 36), Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = Color3.new(1, 1, 1), Text = PS.Go, Parent = strip })
+UI.corner(stripGo, 10)
+local stripTarget = nil
+stripGo.Activated:Connect(function()
+	if stripTarget and Hud.onStation then
+		Hud.onStation(stripTarget)
+	end
+end)
+local function updateStrip(st)
+	local human = st.stage == "human" or st.stage == "barelyhuman" or st.stage == nil
+	local show = st.path == "Gain" and not st.dead and human
+	strip.Visible = show
+	stackH = show and 150 or 96
+	if not show then
+		return
+	end
+	local T = UI.T
+	strip.BackgroundColor3 = T.bg
+	strip.BackgroundTransparency = 0.12
+	stripFill.BackgroundColor3 = T.accent
+	stripGo.BackgroundColor3 = T.accent
+	local c = st.career
+	local step, msg, share, go = 1, PS.PickJob, 0, "jobs"
+	if (st.stress or 0) >= Config.PathStrip.StressBreakAt then
+		step, msg, share, go = c and 2 or 1, PS.Break, (st.stress or 0) / 100, "coffee"
+	elseif not c then
+		step, msg, share, go = 1, PS.PickJob, 0, "jobs"
+	elseif c.level >= 4 then
+		step, msg, share = 4, st.geniusOpen and PS.Genius or PS.Top, 1
+		go = st.geniusOpen and "genius" or "jobs"
+	elseif c.nextXP and c.xp >= c.nextXP then
+		step, msg, share, go = 3, string.format(PS.PromoIQ, c.nextIQ or 0), 1, "library"
+	else
+		step, msg, share, go = 2, string.format(PS.Promo, c.xp or 0, c.nextXP or 1), (c.xp or 0) / math.max(1, c.nextXP or 1), "work"
+	end
+	for i, l in ipairs(stepLabels) do
+		l.TextColor3 = i == step and T.accent or (i < step and Color3.fromRGB(200, 205, 215) or Color3.fromRGB(120, 126, 145))
+	end
+	stripText.Text = msg
+	stripFill.Size = UDim2.fromScale(math.clamp(share, 0.02, 1), 1)
+	stripTarget = go
 end
 
 ---------------------------------------------------------------------
@@ -763,7 +824,7 @@ function Hud.layoutCounter(s)
 		top.Position = UDim2.new(0, 10, 0, 6)
 	end
 	counterTopLeft = (where == "topleft" or where == nil)
-	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 96 * UI.D) or 8) -- 1.9: room for the chip row
+	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + stackH * UI.D) or 8) -- 1.9: room for the chip row
 end
 
 function Hud.dragCounter(onDone)
@@ -856,7 +917,7 @@ UI.onScale(fitBottom)
 UI.gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitBottom)
 UI.onScale(function(d)
 	topScale.Scale = ((UI.settings and UI.settings.counterBig) and 1.3 or 1) * d
-	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 96 * d) or 8)
+	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + stackH * d) or 8)
 	tutorial.Position = UDim2.new(0.5, 0, 0, 2 + 60 * d)
 	bubble.Position = UDim2.new(1, -10, 1, -(150 * d))
 	status.Position = UDim2.new(1, -10, 0, 6 + 200 * d)
@@ -1002,6 +1063,8 @@ function Hud.update(st)
 	mapBtn.Visible = false
 	settingsBtn.Visible = path == nil
 	updateChips(st)
+	updateStrip(st)
+	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + stackH * UI.D) or 8)
 end
 
 function Hud.delta(amount: number, up: boolean)

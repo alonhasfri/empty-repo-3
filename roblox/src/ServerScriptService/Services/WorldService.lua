@@ -815,6 +815,7 @@ local function buildGainSide()
 	})
 	addPlace("cafe", "☕ Beethoven's Café", kcf, ksize, "Gain")
 	station("coffee", "Gain", "☕ Count 60 Beans", "Exactly 60. Not 59.", kcf * CFrame.new(0, 0.5, 8), Color3.fromRGB(110, 70, 40))
+	workplace("cafe", "Café Kitchen", kcf * CFrame.new(0, 0.5, -10)) -- 1.9: the Chef job
 
 	-- Hospital: doctor job
 	local hcf, hsize = building({

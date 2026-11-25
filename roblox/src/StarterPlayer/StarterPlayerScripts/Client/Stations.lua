@@ -14,6 +14,7 @@ local Content = require(ReplicatedStorage.Shared.Content)
 
 local UI = require(script.Parent.UI)
 local Remote = require(script.Parent.Remote)
+local Minigames = require(script.Parent.Minigames) -- 1.9 job minigames
 
 local player = Players.LocalPlayer
 local C = UI.Colors
@@ -1053,6 +1054,16 @@ function Stations.work()
 			end, { LayoutOrder = 2, BackgroundColor3 = Color3.fromRGB(240, 190, 30), TextColor3 = Color3.new(0, 0, 0) })
 			m.focus()
 		end
+		return
+	end
+	-- 1.9 Gain path redesign: most jobs are a real minigame now (no maths)
+	if t.minigame then
+		Minigames.play(t, {
+			onAgain = Stations.work,
+			onResult = function()
+				event("work")
+			end,
+		})
 		return
 	end
 	local m = UI.modal(t.title, { color = C.good })

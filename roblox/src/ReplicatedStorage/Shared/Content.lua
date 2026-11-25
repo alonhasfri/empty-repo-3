@@ -249,6 +249,10 @@ Content.Jobs = {
 	{ id = "doctor", name = "Doctor", place = "hospital", placeName = "the Hospital", minIQ = 120, coinsPerMinute = 14, task = "doctor" },
 	{ id = "lawyer", name = "Lawyer", place = "courthouse", placeName = "the Courthouse", minIQ = 125, coinsPerMinute = 15, task = "lawyer" },
 	{ id = "scientist", name = "Scientist", place = "lab", placeName = "the Science Lab", minIQ = 135, coinsPerMinute = 20, task = "scientist" },
+	-- 1.9 Gain path redesign: new jobs with their own minigames
+	{ id = "courier", name = "Courier", place = "street", placeName = "Main Street", minIQ = 80, coinsPerMinute = 5, task = "courier" },
+	{ id = "chef", name = "Chef", place = "cafe", placeName = "Beethoven's Café", minIQ = 95, coinsPerMinute = 8, task = "chef" },
+	{ id = "engineer", name = "Engineer", place = "office", placeName = "the Office Tower", minIQ = 118, coinsPerMinute = 13, task = "engineer" },
 }
 
 -- 1.6: ANIMAL FORMS. When your brain shrinks enough you physically become the animal.
@@ -297,6 +301,9 @@ Content.Careers = {
 		scientist = { "Lab Assistant", "Researcher", "Scientist", "Lead Scientist" },
 		janitor = { "Janitor", "Head Janitor", "Facilities Boss", "Janitor Legend" },
 		sweeper = { "Street Sweeper", "Senior Sweeper", "Road Boss", "Street Legend" },
+		courier = { "Bike Courier", "Courier", "Route Boss", "Delivery Legend" }, -- 1.9
+		chef = { "Dishwasher", "Line Cook", "Chef", "Head Chef" },
+		engineer = { "Apprentice", "Engineer", "Senior Engineer", "Chief Engineer" },
 	},
 	Taken = "💼 You're now a %s! Go to %s and clock in (📱 Shifts) to get paid. 🚕",
 	EarnedWait = "📈 You've earned a promotion! Reach IQ %d to get it.",
@@ -1646,6 +1653,88 @@ Content.SettingsTabs = {
 	Feedback = "💬 Send feedback",
 	FeedbackThanks = "💬 Thanks! Your feedback window is open.",
 	FeedbackFallback = "💬 Feedback isn't available here right now. Tell us in the group page instead. Thank you!",
+}
+
+-- 1.9 Gain path redesign: job minigames (no maths, phone-friendly)
+Content.Minigames = {
+	Start = "START",
+	Time = "⏱ %ds",
+	Score = "⭐ %d",
+	Goal = "Goal: %d",
+	ResultGood = "✅ Great shift! ⭐ %d",
+	ResultMeh = "😅 Not quite. ⭐ %d (goal %d)",
+	Pay = "💰 +%d coins",
+	Again = "🔁 Another shift",
+	Break = "Take a break",
+	TooFast = "⛔ That shift didn't count (timing looked off).",
+	Games = {
+		scan = { title = "🛒 Scan & bag", how = "Tap the item to scan it, then pick the right bag. Fragile things go in the soft bag!" },
+		colors = { title = "🔬 Mix the colour", how = "Pour red, yellow and blue to match the target colour, then tap DONE." },
+		pipes = { title = "🔧 Pipe puzzle", how = "Tap pipes to turn them so the water reaches the town on the right." },
+		files = { title = "🗂 File sorting", how = "Put each file in the folder with the same colour. Quick!" },
+		grade = { title = "📝 Grade papers", how = "Is the answer right or silly? Tap ✅ or ❌ (or swipe)." },
+		xray = { title = "🩻 X-ray spot", how = "Find the thing that shouldn't be in the X-ray!" },
+		order = { title = "🍔 Order up", how = "Build the burger on the ticket, from the bottom up." },
+		dash = { title = "🚐 Hoppr dash", how = "Drive to the parcel, pick it up, then drop it at the house." },
+	},
+	-- scan & bag
+	Fragile = { "🥚", "🍞", "🍓", "🍌", "🧁" },
+	Heavy = { "🥫", "🍉", "🥛", "🥔", "🧃" },
+	SoftBag = "🧺 Soft bag",
+	StrongBag = "🛍 Strong bag",
+	TapToScan = "Tap to scan!",
+	-- colours
+	Red = "🔴 Red",
+	Yellow = "🟡 Yellow",
+	Blue = "🔵 Blue",
+	Done = "✅ DONE",
+	Empty = "🗑 Empty",
+	Target = "Target",
+	YourMix = "Your mix",
+	-- files
+	FileColors = { "Red", "Blue", "Green", "Yellow" },
+	FileNames = { "Invoices", "Lunch menu", "Cat photos", "Memos", "Reports", "Plans", "Receipts", "Letters" },
+	-- grade (right or silly? kid-safe, no maths)
+	GradeRight = {
+		"Fish live in water.", "The sun is very hot.", "Cats say meow.", "Ice is frozen water.", "Bees make honey.",
+		"A week has seven days.", "Plants need light.", "Snow is cold.", "Birds have feathers.", "The Moon goes around the Earth.",
+		"Frogs can jump.", "Rain falls from clouds.",
+	},
+	GradeSilly = {
+		"Fish climb trees for fun.", "The Moon is made of cheese.", "Cows say quack.", "Snow is hot.", "Penguins live in the desert.",
+		"Bananas grow on cars.", "Spiders have two legs.", "The sun comes out at midnight.", "Clouds are made of cotton candy.", "Dogs lay eggs.",
+		"Trees walk at night.", "Rain falls upwards.",
+	},
+	Right = "✅ Right",
+	Silly = "❌ Silly",
+	-- x-ray
+	Bone = "🦴",
+	Odd = { "🧸", "🔑", "🧩", "🎲", "⚽", "🖍" },
+	-- order up
+	Ingredients = { "🍞", "🥩", "🧀", "🥬", "🍅" },
+	Ticket = "Ticket:",
+	Plate = "Plate:",
+	-- dash
+	Van = "🚐",
+	Parcel = "📦",
+	House = "🏠",
+	Up = "⬆️",
+	Down = "⬇️",
+	Left = "⬅️",
+	Right2 = "➡️",
+}
+
+-- 1.9: the progress path strip under the counter (Gain path)
+Content.PathStrip = {
+	Steps = { "Job", "Shift", "Promotion", "Next job" },
+	PickJob = "💼 Pick a job",
+	Work = "🛠 Work a shift",
+	Promo = "⭐ %d/%d XP to promotion",
+	PromoIQ = "🧠 Reach IQ %d to get promoted",
+	Top = "🏆 Top of the ladder!",
+	Break = "☕ Take a break first",
+	Genius = "🌟 Choose your genius",
+	Go = "GO",
 }
 
 Content.HudMore = {

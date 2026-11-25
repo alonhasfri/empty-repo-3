@@ -170,6 +170,7 @@ function BrainService.state(player)
 		runStart = data.runStart, -- 1.7.3: the optional speedrun timer counts from here (server time)
 		badges = data.badges, -- 1.7.3: the badge checklist in Settings
 		life = BrainService.hooks.lifeInfo and BrainService.hooks.lifeInfo(data) or nil, -- 1.8: Life Pack age/stage
+		career = BrainService.hooks.careerInfo and BrainService.hooks.careerInfo(data) or nil, -- 1.9: the progress path strip
 		serverNow = os.time(),
 		cells = cells,
 		cellsText = Brain.shortNumber(cells),

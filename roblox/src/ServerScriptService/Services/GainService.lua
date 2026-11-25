@@ -17,6 +17,7 @@ local ProjectService = require(script.Parent.ProjectService)
 local ConversationService = require(script.Parent.ConversationService)
 local BoardService = require(script.Parent.BoardService)
 local HorrorService = require(script.Parent.HorrorService)
+local MinigameService = require(script.Parent.MinigameService) -- 1.9
 
 local GainService = {}
 
@@ -519,34 +520,10 @@ Net.on("places", function(player)
 	return { ok = true, places = list, extent = extent, me = me }
 end)
 
-local function shuffledOptions(correctText, wrongTexts)
-	local options = { correctText }
-	for _, w in ipairs(wrongTexts) do
-		table.insert(options, w)
-	end
-	local answer = 1
-	for i = #options, 2, -1 do
-		local j = math.random(1, i)
-		options[i], options[j] = options[j], options[i]
-		if answer == i then
-			answer = j
-		elseif answer == j then
-			answer = i
-		end
-	end
-	return options, answer
-end
-
 local function makeTask(job)
+	-- 1.9: the cashier's maths question is gone (cashiers play Scan & bag now: Config.Minigames.ByJob)
 	local t = { kind = job.task }
-	if job.task == "cashier" then
-		local price = math.random(3, 18)
-		local paid = 20
-		local change = paid - price
-		t.title = "🛒 Cashier"
-		t.prompt = "The item costs $" .. price .. ". The customer pays $" .. paid .. ". How much change?"
-		t.options, t.answer = shuffledOptions("$" .. change, { "$" .. (change + 1), "$" .. (change - 1), "$" .. (change + 2) })
-	elseif job.task == "office" then
+	if job.task == "office" then
 		local words = { "Banana", "Apple", "Cherry", "Mango", "Kiwi", "Grape", "Lemon", "Peach" }
 		local chosen = {}
 		for i = 1, 4 do
@@ -610,6 +587,13 @@ Net.on("job_task", function(player)
 	if not atWork(player, job) then
 		Net.send(player, "workMarker", { pos = WorldService.Workplaces[job.place], name = job.placeName })
 		return { ok = false, msg = "You're not at work! Go to " .. job.placeName .. " (Hoppr or the 🚌 bus can take you).", notAtWork = true }
+	end
+	-- 1.9 Gain path redesign: most jobs are a real minigame now (no maths questions)
+	local game = Config.Minigames.ByJob[job.id]
+	if game then
+		s(player).job = nil
+		local c = careerOf(data)
+		return MinigameService.begin(player, game, "job", c and c.level or 1, { jobId = job.id })
 	end
 	local t = makeTask(job)
 	s(player).job = t
@@ -728,6 +712,40 @@ Net.on("job_answer", function(player, d)
 	finishTask(player, data, job, correct)
 	return { ok = true, correct = correct, answer = t.answer, idea = data.ideaMeter, ideaMax = Config.EurekaTasks }
 end)
+
+-- 1.9: a finished job minigame counts as one task (a good score = done right), plus bonus coins
+MinigameService.handlers.job = function(player, round, score, passed)
+	local data = DataService.get(player)
+	local job = data and jobById(data.job)
+	if not job or job.id ~= (round.extra and round.extra.jobId) then
+		return {}
+	end
+	local before = data.coins
+	finishTask(player, data, job, passed)
+	if passed then
+		local bonus = (score - round.pass) * Config.Minigames.BonusCoinsPerPoint
+		if bonus > 0 then
+			data.coins += bonus
+			BrainService.push(player)
+		end
+	end
+	return { coins = data.coins - before, idea = data.ideaMeter, ideaMax = Config.EurekaTasks }
+end
+
+-- 1.9: the progress path strip reads this (BrainService.state → career)
+BrainService.hooks.careerInfo = function(data)
+	local job = jobById(data.job)
+	if not job or data.path ~= "Gain" then
+		return nil
+	end
+	local c = careerOf(data)
+	local info = { title = titleOf(job, c), level = c.level, xp = c.xp }
+	if c.level < 4 then
+		info.nextXP = CC.XPNeed[c.level + 1]
+		info.nextIQ = levelIQ(job, c.level + 1)
+	end
+	return info
+end
 
 -- Re-offer a Eureka choice if the player left during the cutscene
 Net.on("eureka_pending", function(player)

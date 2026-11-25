@@ -155,8 +155,50 @@ Config.Careers = {
 		scientist = Color3.fromRGB(230, 251, 255),
 		janitor = Color3.fromRGB(90, 122, 154),
 		sweeper = Color3.fromRGB(240, 138, 36),
+		engineer = Color3.fromRGB(250, 200, 40), -- 1.9
+		chef = Color3.fromRGB(250, 250, 250),
+		courier = Color3.fromRGB(60, 140, 230),
 	},
 }
+-- 1.9 Gain path redesign: job minigames (no maths). Every minigame: start screen, timer, score,
+-- then pay and XP. The server checks the time and that the score is possible.
+--   seconds: round length at career level 1 (each promotion takes LevelFaster seconds off, never under MinRound)
+--   pass: score needed for a good shift (+1 per career level above 1)
+--   maxPerSecond: the fastest score a human could get (anything above is rejected)
+Config.Minigames = {
+	LevelFaster = 4,
+	MinRound = 20,
+	Grace = 6, -- extra seconds allowed for lag before a result is too late
+	MinShare = 0.5, -- a round must last at least this share of its time (no instant finishes)
+	BonusCoinsPerPoint = 1, -- extra coins for every point over the pass mark
+	Games = {
+		scan = { seconds = 40, pass = 6, maxPerSecond = 1.2 }, -- cashier: scan & bag
+		colors = { seconds = 45, pass = 3, maxPerSecond = 0.5 }, -- scientist: mix colours
+		pipes = { seconds = 50, pass = 2, maxPerSecond = 0.3 }, -- engineer: pipe puzzle
+		files = { seconds = 35, pass = 10, maxPerSecond = 2 }, -- office: file sorting
+		grade = { seconds = 35, pass = 8, maxPerSecond = 2 }, -- teacher: swipe grading
+		xray = { seconds = 35, pass = 6, maxPerSecond = 1.5 }, -- doctor: X-ray spot
+		order = { seconds = 45, pass = 3, maxPerSecond = 0.6 }, -- chef: order up
+		dash = { seconds = 45, pass = 3, maxPerSecond = 0.5 }, -- courier: Hoppr dash
+	},
+	-- which minigame each job plays (jobs not listed keep their old non-maths task)
+	ByJob = {
+		cashier = "scan",
+		office = "files",
+		teacher = "grade",
+		professor = "grade",
+		doctor = "xray",
+		scientist = "colors",
+		engineer = "pipes",
+		chef = "order",
+		courier = "dash",
+	},
+}
+-- 1.9: the progress path strip (Job → Shift → Promotion → Next job)
+Config.PathStrip = {
+	StressBreakAt = 70, -- stress this high: the strip suggests a break first
+}
+
 Config.TaxiCooldown = 8 -- (old instant taxi; now only teleport pads and the Castle Map are instant)
 -- 1.7 audit (E1, E2): minigames the server can time, so a script can't skip them
 Config.MinigameMinSeconds = {
