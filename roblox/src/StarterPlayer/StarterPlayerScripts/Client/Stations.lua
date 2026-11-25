@@ -1580,7 +1580,16 @@ local function holdToReset()
 	rm.focus()
 end
 
-Stations.sendFeedback = nil -- set by item "Send feedback" (1.9), see below
+-- 1.9 💬 Send feedback (Settings → Info): Roblox's built-in feedback window
+-- (SocialService:PromptFeedbackSubmissionAsync, checked against the docs Nov 2026: one feedback per player
+-- per day, never shown to the place owner, and the options table isn't reliable yet, so we pass none).
+-- It can fail (old client, owner, daily limit), so it's wrapped in pcall with a friendly toast.
+function Stations.sendFeedback()
+	local ok = pcall(function()
+		game:GetService("SocialService"):PromptFeedbackSubmissionAsync()
+	end)
+	UI.toast(ok and Content.SettingsTabs.FeedbackThanks or Content.SettingsTabs.FeedbackFallback)
+end
 
 function Stations.settings()
 	local s = UI.settings
