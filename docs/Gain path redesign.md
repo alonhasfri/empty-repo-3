@@ -43,12 +43,34 @@ When you reach the top of your first career (or a set IQ), the **Genius Crossroa
 - Each branch has its own job ladder, its own short storyline (3–5 chapters, told through conversations and small cutscenes) and a badge at the end.
 - Saved as `data.genius = "math" | …` (new field, nil for old saves). You can change branch later at the Crossroads (keeping your cells).
 
-## 4. Random story events (both paths)
-- Every few minutes there's a small chance of a short event, drawn from a shuffle bag so a run never repeats one.
-- **Gain examples:** a pigeon steals your homework, a surprise inspection at work, a science fair, a power cut (light candles in a minigame), a famous scientist visits, the library flood.
-- **Lose examples:** a brainrot trend storm, a fake giveaway, a meme contest, the "touch grass" challenge.
-- Each event has a choice with a reward or a cost, and a clear banner (not mid-screen) that you can ignore.
-- Branch-specific events appear only for that genius (e.g. a chess challenger in the park).
+## 4. Big life events (both paths), user update Nov 25: "big things that happen in real life, like a friend's wedding"
+These aren't tiny pop-ups. Each is a real life moment and a mini-story (2–5 minutes):
+- a short intro cutscene
+- a special place or decor set up in town
+- 2–3 choices or minigames
+- a lasting result (a photo in your phone gallery, a badge, friends, money, stress, a new place)
+
+A run gets a few of them, drawn from a shuffle bag so no two runs are the same. Kid-safe: weddings are a FRIEND's or relative's party; the player never dates or marries.
+
+| Event | What happens | Choices / minigames |
+|---|---|---|
+| 💒 A friend's wedding | The park turns into a wedding party | Pick a gift (card shop), give a speech (pick funny or kind lines), the dance-floor rhythm minigame, catch the bouquet (a silly physics catch) |
+| 🎂 Grandma's 80th birthday | The family house is decorated | Bake the cake (Chef minigame), choose a present, family photo pose |
+| 🎓 Graduation day | A ceremony at the school or university | Walk the stage, throw the cap, give your speech; the Lose path skips it to go viral |
+| 🏠 Moving house | You pack and move to a new house in another district | Packing Tetris minigame, a moving-truck drive, decorate your new room |
+| 👶 A new baby cousin | A visit to the hospital | Help choose a name, rock-the-baby rhythm game, "your first babysitting shift" |
+| 🐶 Your pet runs away | Posters around town | Follow clues and smell trails around the map, then a reunion cutscene |
+| 🏆 The big school or sports final | The stadium fills up | A penalty-kick or relay minigame; the crowd cheers your name |
+| ✈️ Family holiday | A short trip to the beach town (a separate small area) | Sandcastle contest, souvenir shop, sunburn joke |
+| 💼 Big job interview in the city | A downtown tower | Dress-up, pick answers, a handshake timing game; can unlock a better job |
+| 🌩 City-wide blackout | The whole town goes dark at night | Bring torches and help neighbours (good choices = brain cells); the Lose path gets scared of shadows |
+| 🎤 Talent show | A stage in the plaza | Pick an act (magic, comedy, piano rhythm game), and the crowd votes |
+| 🏥 A friend breaks their leg | A hospital visit | Bring a get-well gift, sign the cast with a drawing (stickers), cheer them up |
+
+- **Genius branches** add their own big events: a chess world championship, a startup pitch to investors, the rocket launch day, a hackathon, a math olympiad.
+- **Lose path** versions are silly twists of the same life moments (you turn up to the wedding in pyjamas, you live-stream the graduation and fall off the stage).
+- **Frequency:** the first event after about 10 minutes of play, then one every 15–25 minutes. You get an invite in your phone ("You're invited! 💌") and can accept now or later; nothing is forced mid-task.
+- **Saved:** `data.eventsDone` (a list of ids, nil for old saves) and the event's results (gallery photos, badges).
 
 ## Build order
 1. The progress path strip, plus removing maths from jobs.
