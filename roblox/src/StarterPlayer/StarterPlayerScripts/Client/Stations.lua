@@ -2607,6 +2607,87 @@ function Stations.startLife()
 	m.focus()
 end
 
+---------------------------------------------------------------------
+-- 1.9 Big life events (💌 Invites app): accept an invite, then 3 parts (choices or a minigame)
+---------------------------------------------------------------------
+local TE = Content.LifeEvents
+local function eventStep(v)
+	if not v or not v.ok then
+		if v and v.msg then
+			UI.toast(v.msg)
+		end
+		return
+	end
+	if v.done then
+		local m = UI.modal(TE.AppTitle, { color = Color3.fromRGB(255, 120, 160) })
+		UI.label(m.content, v.outro or "", { LayoutOrder = 1 })
+		UI.label(m.content, v.msg or "", { LayoutOrder = 2, TextColor3 = C.gold })
+		UI.button(m.content, "OK", function()
+			m.close()
+		end, { LayoutOrder = 3 })
+		UI.sound("LevelUp", 0.6)
+		m.focus()
+		return
+	end
+	if v.minigame then
+		if v.intro then
+			UI.toast(v.icon .. " " .. v.intro, nil, 5)
+		end
+		Minigames.play(v.minigame, {
+			onResult = function(r)
+				if r and r.event then
+					task.delay(1.2, function()
+						eventStep(r.event)
+					end)
+				end
+			end,
+		})
+		return
+	end
+	local m = UI.modal(v.icon .. " " .. v.name, { color = Color3.fromRGB(255, 120, 160) })
+	if v.intro then
+		UI.label(m.content, v.intro, { LayoutOrder = 1 })
+	end
+	UI.label(m.content, string.format(TE.Step, v.step, v.total), { LayoutOrder = 2, TextColor3 = C.muted })
+	UI.label(m.content, v.text, { LayoutOrder = 3, Font = UI.T.font })
+	for i, text in ipairs(v.options or {}) do
+		UI.button(m.content, text, function()
+			m.close()
+			eventStep(Remote.call("event_choose", { choice = i }))
+		end, { LayoutOrder = 10 + i })
+	end
+	m.focus()
+end
+
+function Stations.events()
+	local r = Remote.call("event_get")
+	if not r or not r.ok then
+		return
+	end
+	local m = UI.modal(TE.AppTitle, Stations.phoneOpts(Color3.fromRGB(255, 120, 160)))
+	if r.invite or r.inEvent then
+		local name = r.invite and (r.invite.icon .. " " .. r.invite.name) or "💌"
+		UI.label(m.content, name, { LayoutOrder = 1, Font = UI.T.title, TextColor3 = Color3.new(1, 1, 1) })
+		UI.button(m.content, r.inEvent and TE.Continue or TE.Accept, function()
+			m.close()
+			eventStep(Remote.call("event_accept"))
+		end, { LayoutOrder = 2, BackgroundColor3 = C.good })
+		UI.button(m.content, TE.Later, function()
+			m.close()
+		end, { LayoutOrder = 3 })
+	else
+		UI.label(m.content, TE.NoInvite, { LayoutOrder = 1, TextColor3 = Color3.new(1, 1, 1) })
+	end
+	UI.label(m.content, TE.Album, { LayoutOrder = 10, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
+	if #r.album == 0 then
+		UI.label(m.content, TE.AlbumEmpty, { LayoutOrder = 11, TextColor3 = C.muted })
+	end
+	for i, line in ipairs(r.album) do
+		UI.label(m.content, "📸 " .. line, { LayoutOrder = 11 + i, TextColor3 = Color3.new(1, 1, 1) })
+	end
+	m.focus()
+end
+
 function Stations.open(key: string)
 	local fn = Stations[key]
 	if fn and key ~= "open" then

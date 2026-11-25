@@ -1724,6 +1724,83 @@ Content.Minigames = {
 	Right2 = "➡️",
 }
 
+-- 1.9 Big life events. Kid-safe: weddings are a FRIEND's party; the player never dates or marries.
+-- Each choice has smart = true/false: smart choices help on the Gain path, silly ones on the Lose path.
+Content.LifeEvents = {
+	Invite = "💌 You're invited: %s! Open 📱 Invites when you're ready.",
+	AppTitle = "💌 Invites",
+	NoInvite = "No invites right now. Big life moments arrive every so often!",
+	Album = "📸 Photo album",
+	AlbumEmpty = "No photos yet.",
+	Accept = "✅ Go now",
+	Later = "Later",
+	Step = "Part %d of %d",
+	Done = "📸 %s: a photo was added to your album! +%d coins",
+	Continue = "▶ Continue",
+	Events = {
+		wedding = {
+			name = "a friend's wedding", icon = "💒",
+			intro = { Gain = "Your friend Sam is getting married in the park! There are flowers everywhere. 💐", Lose = "Your friend Sam's wedding is today. You put on pyjamas. On purpose. 🩳" },
+			steps = {
+				{ text = "Pick a gift for Sam:", options = { { "📚 A book of jokes", true }, { "🍳 A shiny toaster", true }, { "🦆 A rubber duck in a tiny suit", false } } },
+				{ text = "Time for your speech!", options = { { "💛 \"Sam is the kindest person I know.\"", true }, { "😂 \"Sam once ate soup with a fork. Legend.\"", false } } },
+				{ text = "Here comes the bouquet!", options = { { "🙌 Jump and catch it", true }, { "🤸 Do a cartwheel instead", false } } },
+			},
+			outro = { Gain = "What a lovely day. Sam hugs you: \"Best speech ever!\" 🥹", Lose = "Everyone is still talking about your pyjamas. Iconic. 🩳" },
+		},
+		grandma = {
+			name = "Grandma's 80th birthday", icon = "🎂",
+			intro = { Gain = "Grandma turns 80! The family house is full of balloons. 🎈", Lose = "Grandma turns 80! You brought a balloon. It's a fish. 🐟" },
+			steps = {
+				{ text = "Help build the birthday treat, just like the ticket!", game = "order" },
+				{ text = "Choose a present:", options = { { "🧣 A cozy scarf you picked yourself", true }, { "🖼 A frame with a family photo", true }, { "📱 A phone with 400 apps", false } } },
+				{ text = "Family photo! Strike a pose:", options = { { "😊 Big smile", true }, { "🤪 Silly face", false } } },
+			},
+			outro = { Gain = "Grandma: \"Best birthday in 80 years!\" 🎂", Lose = "Grandma laughed so hard at your face she snorted. Win. 🤪" },
+		},
+		graduation = {
+			name = "Graduation day", icon = "🎓",
+			intro = { Gain = "Graduation day! Your name is on the list. 🎓", Lose = "Graduation day! You plan to live-stream the whole thing. 📱" },
+			steps = {
+				{ text = "Your name is called. Walk the stage:", options = { { "🚶 Walk proudly and shake hands", true }, { "📱 Film yourself walking (and trip)", false } } },
+				{ text = "Caps in the air!", options = { { "🎓 Throw it high!", true }, { "🧢 Throw it at the stage lights", false } } },
+				{ text = "Say a few words:", options = { { "🌟 \"Never stop learning!\"", true }, { "💤 \"Uhh… thanks for the snacks.\"", false } } },
+			},
+			outro = { Gain = "You did it! The crowd cheers your name. 🎉", Lose = "Your stream got 3 views. One was Grandma. 📱" },
+		},
+		moving = {
+			name = "moving house", icon = "🏠",
+			intro = { Gain = "You're moving to a new house! Boxes everywhere. 📦", Lose = "You're moving! You packed the fridge. Still plugged in. 🔌" },
+			steps = {
+				{ text = "Pack the boxes: match the colours!", game = "files" },
+				{ text = "The moving truck is ready:", options = { { "🚚 Drive carefully", true }, { "🏎 Race it down the hill", false } } },
+				{ text = "Decorate your new room:", options = { { "🪴 Plants and a bookshelf", true }, { "🍕 Pizza boxes as furniture", false } } },
+			},
+			outro = { Gain = "Your new room looks amazing. Home sweet home. 🏠", Lose = "Your room is 90% pizza boxes. You love it. 🍕" },
+		},
+		pet = {
+			name = "a runaway pet", icon = "🐶",
+			intro = { Gain = "Oh no! Your pet ran away! Posters are up all over town. 🐾", Lose = "Your pet ran away. Honestly? Fair. Let's find it anyway. 🐾" },
+			steps = {
+				{ text = "Follow the clues around town!", game = "dash" },
+				{ text = "You hear barking behind the bakery:", options = { { "🦴 Shake the treat bag", true }, { "📢 Yell \"COME BACK, POTATO!\"", false } } },
+				{ text = "Found them!", options = { { "🤗 Big hug", true }, { "🤳 Selfie first, hug later", false } } },
+			},
+			outro = { Gain = "Your pet wags all the way home. 🐶💛", Lose = "Your pet is home. It still judges you. 🐶" },
+		},
+		blackout = {
+			name = "a city-wide blackout", icon = "🌩",
+			intro = { Gain = "The whole town went dark! Neighbours need help. 🔦", Lose = "The whole town went dark! Your phone is at 2%. 😱" },
+			steps = {
+				{ text = "What do you do first?", options = { { "🔦 Bring torches to the neighbours", true }, { "🛋 Hide under a blanket", false } } },
+				{ text = "Help fix the power lines!", game = "pipes" },
+				{ text = "Waiting for the lights:", options = { { "🕯 Tell stories by candlelight", true }, { "👻 Get scared of your own shadow", false } } },
+			},
+			outro = { Gain = "The lights come back on and the street cheers for you! 💡", Lose = "The lights are back. The shadow was a coat. 👻" },
+		},
+	},
+}
+
 -- 1.9: the progress path strip under the counter (Gain path)
 Content.PathStrip = {
 	Steps = { "Job", "Shift", "Promotion", "Next job" },

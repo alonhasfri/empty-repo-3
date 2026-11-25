@@ -171,6 +171,8 @@ function BrainService.state(player)
 		badges = data.badges, -- 1.7.3: the badge checklist in Settings
 		life = BrainService.hooks.lifeInfo and BrainService.hooks.lifeInfo(data) or nil, -- 1.8: Life Pack age/stage
 		career = BrainService.hooks.careerInfo and BrainService.hooks.careerInfo(data) or nil, -- 1.9: the progress path strip
+		eventInvite = data.eventInvite, -- 1.9 big life events (nil for old saves)
+		eventsDone = (typeof(data.eventsDone) == "table" and #data.eventsDone > 0) and #data.eventsDone or nil,
 		serverNow = os.time(),
 		cells = cells,
 		cellsText = Brain.shortNumber(cells),

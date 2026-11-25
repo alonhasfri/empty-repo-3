@@ -194,6 +194,18 @@ Config.Minigames = {
 		courier = "dash",
 	},
 }
+-- 1.9 Big life events (EventService): invites arrive in the phone from a shuffle bag
+Config.Events = {
+	FirstAfter = 600, -- seconds of play before the first invite (~10 minutes)
+	GapMin = 900, -- then one every 15-25 minutes
+	GapMax = 1500,
+	Ids = { "wedding", "grandma", "graduation", "moving", "pet", "blackout" },
+	ChoicePoints = 1, -- brain points for a choice that fits your path (smart on Gain, silly on Lose)
+	OtherPoints = 0.3, -- the other choice still counts a little
+	MinigamePoints = 2, -- a good minigame inside an event
+	DoneCoins = 25, -- coins for finishing an event
+}
+
 -- 1.9: the progress path strip (Job → Shift → Promotion → Next job)
 Config.PathStrip = {
 	StressBreakAt = 70, -- stress this high: the strip suggests a break first
