@@ -689,11 +689,14 @@ function UI.modal(title: string, opts)
 	local T = UI.T
 	local accent = opts.color or T.accent
 
+	-- 1.9: a FULL-screen dim (it also covers the top bar inset, so it is never a partial rectangle)
+	local inset = GuiService:GetGuiInset()
 	local backdrop = UI.new("Frame", {
 		Name = "ModalBackdrop",
-		Size = UDim2.fromScale(1, 1),
+		Position = UDim2.fromOffset(0, -inset.Y),
+		Size = UDim2.new(1, 0, 1, inset.Y),
 		BackgroundColor3 = Color3.new(0, 0, 0),
-		BackgroundTransparency = 0.45,
+		BackgroundTransparency = opts.phone and Config.UI.PhoneDim or Config.UI.ModalDim,
 		ZIndex = 19,
 		Parent = UI.gui,
 	})
@@ -701,11 +704,12 @@ function UI.modal(title: string, opts)
 	local phone = opts.phone == true
 	local frame = UI.new("Frame", {
 		Name = phone and "Phone" or "Modal",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, phone and 0.5 or 0.52),
+		-- 1.9: the phone (main menu) stands tall on the RIGHT of the screen; pop-ups stay centred
+		AnchorPoint = phone and Vector2.new(1, 0.5) or Vector2.new(0.5, 0.5),
+		Position = phone and UDim2.new(1, -12, 0.5, inset.Y / 2) or UDim2.fromScale(0.5, 0.52),
 		-- sized so that AFTER the device scale it still fits the screen
 		-- 1.8.5: ordinary pop-ups are capped (Config.UI.ModalPhone / ModalPC); only the phone is near full screen
-		Size = phone and UDim2.fromScale(0.94 / D, 0.94 / D) or (function()
+		Size = phone and UDim2.fromScale(Config.UI.PhoneHeight / D, Config.UI.PhoneHeight / D) or (function()
 			local share = (opts.big and Vector2.new(0.9, 0.84)) or (UI.isPhone() and Config.UI.ModalPhone or Config.UI.ModalPC)
 			return UDim2.fromScale(share.X / D, share.Y / D)
 		end)(),
@@ -717,10 +721,8 @@ function UI.modal(title: string, opts)
 		UI.new("UISizeConstraint", { MaxSize = phone and Vector2.new(720, 820) or (opts.maxSize or Config.UI.ModalMax) }), -- 1.8.7: wide enough for the landscape phone shape
 	})
 	if phone then
-		-- on a sideways phone screen a tall phone would be tiny, so it gets a wider shape there
-		local v = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1000, 462)
-		local aspect = (UI.isPhone() and v.X > v.Y) and Config.UI.LandscapePhoneAspect or 0.52
-		UI.new("UIAspectRatioConstraint", { AspectRatio = aspect, DominantAxis = Enum.DominantAxis.Height, Parent = frame })
+		-- 1.9: always a tall phone (target: docs/reference/phone_target.jpg), also on sideways phones
+		UI.new("UIAspectRatioConstraint", { AspectRatio = Config.UI.PhoneAspect, DominantAxis = Enum.DominantAxis.Height, Parent = frame })
 		UI.corner(frame, 34)
 		UI.stroke(frame, Color3.fromRGB(10, 10, 12), 8, 0)
 		-- notch
@@ -751,9 +753,13 @@ function UI.modal(title: string, opts)
 	UI.corner(header, phone and 0 or (T.radius + 4))
 	-- 1.9 kit (UI judge: "remove all gradients"): a calm solid header with one thin accent line
 	header.BackgroundColor3 = T.panel
-	-- square off the header's bottom corners
-	UI.new("Frame", { BackgroundColor3 = T.panel, BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -14), Size = UDim2.new(1, 0, 0, 14), ZIndex = 21, Parent = header })
-	UI.new("Frame", { BackgroundColor3 = accent, BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -2), Size = UDim2.new(1, 0, 0, 2), ZIndex = 22, Parent = header })
+	if phone then
+		header.BackgroundTransparency = 1 -- 1.9: the phone has no title bar, only its close button
+	else
+		-- square off the header's bottom corners
+		UI.new("Frame", { BackgroundColor3 = T.panel, BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -14), Size = UDim2.new(1, 0, 0, 14), ZIndex = 21, Parent = header })
+		UI.new("Frame", { BackgroundColor3 = accent, BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -2), Size = UDim2.new(1, 0, 0, 2), ZIndex = 22, Parent = header })
+	end
 	local titleLabel = UI.new("TextLabel", {
 		Text = title,
 		TextSize = UI.textSize(24),
@@ -884,6 +890,96 @@ function UI.modal(title: string, opts)
 		end
 	end
 	return handle
+end
+
+-- 1.9: a kit slider (Settings volume). value 0..1; onChange(value) fires when you let go.
+function UI.slider(parent, label: string, value: number, onChange, props)
+	local T = UI.T
+	local row = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 64), Parent = parent })
+	for k, v in pairs(props or {}) do
+		row[k] = v
+	end
+	local title = UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 22), Font = T.body, TextSize = UI.textSize(14), TextColor3 = T.text, TextXAlignment = Enum.TextXAlignment.Left, Text = "", Parent = row })
+	local track = UI.new("TextButton", { Text = "", AutoButtonColor = false, Position = UDim2.fromOffset(12, 30), Size = UDim2.new(1, -24, 0, 28), BackgroundTransparency = 1, Selectable = true, Parent = row })
+	local bar = UI.new("Frame", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromScale(0, 0.5), Size = UDim2.new(1, 0, 0, 8), BackgroundColor3 = T.panel2, Parent = track })
+	UI.corner(bar, 4)
+	local fill = UI.new("Frame", { Size = UDim2.fromScale(value, 1), BackgroundColor3 = T.accent, Parent = bar })
+	UI.corner(fill, 4)
+	local knob = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(value, 0.5), Size = UDim2.fromOffset(26, 26), BackgroundColor3 = T.text, Parent = track })
+	UI.corner(knob, 13)
+	local function show(v)
+		value = math.clamp(v, 0, 1)
+		fill.Size = UDim2.fromScale(value, 1)
+		knob.Position = UDim2.fromScale(value, 0.5)
+		title.Text = label .. ": " .. math.floor(value * 100 + 0.5) .. "%"
+	end
+	show(value)
+	local dragging = false
+	local function at(x: number)
+		local p, s = track.AbsolutePosition.X, math.max(1, track.AbsoluteSize.X)
+		show(math.floor(((x - p) / s) * 20 + 0.5) / 20) -- steps of 5%
+	end
+	local conns = {}
+	track.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			at(input.Position.X)
+		end
+	end)
+	table.insert(conns, UserInputService.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			at(input.Position.X)
+		end
+	end))
+	table.insert(conns, UserInputService.InputEnded:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+			dragging = false
+			onChange(value)
+		end
+	end))
+	row.Destroying:Connect(function()
+		for _, c in ipairs(conns) do
+			c:Disconnect()
+		end
+	end)
+	-- controllers: pressing A on the selected track steps it up by 10% (wraps to 0)
+	track.Activated:Connect(function()
+		if GuiService.SelectedObject == track then
+			show(value >= 1 and 0 or value + 0.1)
+			onChange(value)
+		end
+	end)
+	return row
+end
+
+-- 1.9: a row of tabs (Settings). tabs = { {key = , name = } }; onPick(key). Returns setActive(key).
+function UI.tabs(parent, tabs, active: string, onPick, props)
+	local T = UI.T
+	local bar = UI.new("ScrollingFrame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 52), CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.X, ScrollingDirection = Enum.ScrollingDirection.X, ScrollBarThickness = 3, BorderSizePixel = 0, Parent = parent }, {
+		UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }),
+	})
+	for k, v in pairs(props or {}) do
+		bar[k] = v
+	end
+	local buttons = {}
+	local function setActive(key)
+		for k, b in pairs(buttons) do
+			b.BackgroundColor3 = k == key and T.accent or T.panel2
+		end
+	end
+	for i, t in ipairs(tabs) do
+		local b = UI.new("TextButton", { Text = t.name, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromOffset(0, 44), Font = T.font, TextSize = UI.textSize(14), TextColor3 = T.text, BackgroundColor3 = T.panel2, LayoutOrder = i, Parent = bar }, {
+			UI.new("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }),
+		})
+		UI.corner(b, 12)
+		buttons[t.key] = b
+		b.Activated:Connect(function()
+			setActive(t.key)
+			onPick(t.key)
+		end)
+	end
+	setActive(active)
+	return setActive
 end
 
 function UI.isGamepad(): boolean

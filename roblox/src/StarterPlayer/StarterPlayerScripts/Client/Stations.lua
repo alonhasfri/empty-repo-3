@@ -1536,106 +1536,127 @@ end
 ---------------------------------------------------------------------
 -- Settings menu
 ---------------------------------------------------------------------
+-- 1.9 Settings redesign (staff-panel style): tabs along the top, a volume slider, and the
+-- reset in its own Danger zone. The last tab you opened is remembered (settings.settingsTab).
+local function holdToReset()
+	local RP = Content.ResetProgress
+	local rm = UI.modal(RP.Title, { color = C.bad })
+	UI.label(rm.content, RP.Warning, { LayoutOrder = 1 })
+	local hold = UI.button(rm.content, string.format(RP.Hold, Config.Reset.HoldSeconds), function() end, { LayoutOrder = 2, BackgroundColor3 = C.bad, Size = UDim2.new(1, 0, 0, math.max(56, UI.minTouch())) })
+	local token = 0
+	hold.MouseButton1Down:Connect(function()
+		token += 1
+		local my = token
+		for i = Config.Reset.HoldSeconds, 1, -1 do
+			hold.Text = string.format(RP.Holding, i)
+			task.wait(1)
+			if token ~= my or not rm.alive() then
+				return
+			end
+		end
+		local r = Remote.call("reset_progress")
+		if r and not r.ok and r.msg then
+			UI.toast(r.msg, C.bad)
+			rm.close()
+		end
+	end)
+	local function letGo()
+		token += 1
+		hold.Text = string.format(RP.Hold, Config.Reset.HoldSeconds)
+	end
+	hold.MouseButton1Up:Connect(letGo)
+	hold.MouseLeave:Connect(letGo)
+	rm.focus()
+end
+
+Stations.sendFeedback = nil -- set by item "Send feedback" (1.9), see below
+
 function Stations.settings()
 	local s = UI.settings
-	local m = UI.modal("⚙️ Settings", { color = C.accent })
+	local ST = Content.SettingsTabs
+	local m = UI.modal(ST.Title, { color = C.accent, big = true })
 	local function save()
 		Remote.call("settings", s)
 	end
-	local function stepper(label: string, key: string, order: number)
-		local l = UI.label(m.content, "", { LayoutOrder = order })
-		local function refresh()
-			l.Text = label .. ": " .. math.floor(s[key] * 100 + 0.5) .. "%"
-		end
-		refresh()
-		local row = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 44), LayoutOrder = order + 1, Parent = m.content }, {
-			UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8) }),
-		})
-		UI.button(row, "➖", function()
-			s[key] = math.max(0, s[key] - 0.1)
-			refresh()
-			save()
-		end, { Size = UDim2.new(0.48, 0, 1, 0) })
-		UI.button(row, "➕", function()
-			s[key] = math.min(1, s[key] + 0.1)
-			refresh()
-			save()
-		end, { Size = UDim2.new(0.48, 0, 1, 0) })
-	end
+	local body = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 2, Parent = m.content }, {
+		UI.new("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
+		UI.new("UIPadding", { PaddingBottom = UDim.new(0, 16) }), -- UI judge: nothing cut in half at the bottom
+	})
 	local function toggle(label: string, key: string, order: number)
 		local b
-		b = UI.button(m.content, "", function()
+		b = UI.button(body, "", function()
 			s[key] = not s[key]
 			b.Text = label .. ": " .. (s[key] and "ON" or "OFF")
 			save()
 		end, { LayoutOrder = order })
 		b.Text = label .. ": " .. (s[key] and "ON" or "OFF")
+		return b
 	end
-	-- which update you're on, and what's new
-	UI.label(m.content, "🆕 You're on update " .. tostring(Config.Version), { LayoutOrder = -2 })
-	UI.button(m.content, "📋 What's new in " .. tostring(Config.Version), function()
-		Stations.whatsNew()
-	end, { LayoutOrder = -1, BackgroundColor3 = Color3.fromRGB(40, 170, 110) })
-	stepper("🎵 Music volume", "music", 1)
-	-- 1.7: Effects intensity (shake, glitches, scrambled words, joke ads) and the simple phone
-	if typeof(s.fxIntensity) ~= "number" then
-		s.fxIntensity = 1
-	end
-	stepper(Content.Settings17.Effects, "fxIntensity", 8)
-	UI.label(m.content, Content.Settings17.EffectsInfo, { TextColor3 = C.muted, LayoutOrder = 10 })
-	toggle(Content.Settings17.ClassicHud, "classicHud", 11)
-	-- 1.7.2: the "What do I do now?" guide and Low graphics for cheap phones
-	toggle(Content.Settings17.Guide, "guide", 12)
-	toggle(Content.Settings17.LowGraphics, "lowGraphics", 13)
-	toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 15)
-	toggle(Content.Settings17.AlwaysDay, "alwaysDay", 19) -- 1.8.1
-	toggle(Content.Settings17.FewerToasts, "fewerToasts", 20) -- 1.8.1
-	-- 1.8.9: Reset my progress (warning, then HOLD a red button; the server does the reset and the backup)
-	UI.button(m.content, Content.ResetProgress.Button, function()
-		local RP = Content.ResetProgress
-		local rm = UI.modal(RP.Title, { color = C.bad })
-		UI.label(rm.content, RP.Warning, { LayoutOrder = 1 })
-		local hold = UI.button(rm.content, string.format(RP.Hold, Config.Reset.HoldSeconds), function() end, { LayoutOrder = 2, BackgroundColor3 = C.bad, Size = UDim2.new(1, 0, 0, math.max(56, UI.minTouch())) })
-		local token = 0
-		hold.MouseButton1Down:Connect(function()
-			token += 1
-			local my = token
-			for i = Config.Reset.HoldSeconds, 1, -1 do
-				hold.Text = string.format(RP.Holding, i)
-				task.wait(1)
-				if token ~= my or not rm.alive() then
-					return
-				end
-			end
-			local r = Remote.call("reset_progress")
-			if r and not r.ok and r.msg then
-				UI.toast(r.msg, C.bad)
-				rm.close()
-			end
-		end)
-		local function letGo()
-			token += 1
-			hold.Text = string.format(RP.Hold, Config.Reset.HoldSeconds)
+	local function slider(label: string, key: string, order: number)
+		if typeof(s[key]) ~= "number" then
+			s[key] = 1
 		end
-		hold.MouseButton1Up:Connect(letGo)
-		hold.MouseLeave:Connect(letGo)
-		rm.focus()
-	end, { LayoutOrder = 90, BackgroundColor3 = Color3.fromRGB(120, 30, 40) })
-	-- 1.8: Life Pack (only shown to owners)
-	if UI.state and UI.state.perks and UI.state.perks.LifePack then
-		UI.button(m.content, Content.LifeStages.StartLife, function()
-			m.close()
-			Stations.startLife()
-		end, { LayoutOrder = 17, BackgroundColor3 = Color3.fromRGB(255, 170, 200) })
-		toggle(Content.LifeStages.Pause, "lifePause", 18)
+		UI.slider(body, label, s[key], function(v)
+			s[key] = v
+			save()
+		end, { LayoutOrder = order })
 	end
-	-- 1.7.3: horror setting (Off / Spooky / Full), saved on the server
-	do
+	local function info(text: string, order: number)
+		UI.label(body, text, { TextColor3 = C.muted, LayoutOrder = order })
+	end
+
+	local BUILD = {}
+	function BUILD.sound()
+		slider(ST.Music, "music", 1)
+		slider(ST.Sfx, "sfx", 2)
+	end
+	function BUILD.graphics()
+		toggle(Content.Settings17.LowGraphics, "lowGraphics", 1)
+		info(Content.Settings17.LowGraphicsInfo, 2)
+		slider(Content.Settings17.Effects, "fxIntensity", 3)
+		info(Content.Settings17.EffectsInfo, 4)
+		toggle("⚡ Reduce flashing", "reduceFlashing", 5)
+		toggle(Content.Settings17.AlwaysDay, "alwaysDay", 6)
+	end
+	function BUILD.controls()
+		toggle("🔠 Large text", "largeText", 1)
+		toggle(Content.Settings17.ClassicHud, "classicHud", 2)
+		local where = s.counterPos or "topleft"
+		local posBtn
+		local ORDER = { "topleft", "topcenter", "topright", "bottomright" }
+		local NAMES = { topleft = "Top-left", topcenter = "Top-center", topright = "Top-right", bottomright = "Bottom-right", custom = "Custom (dragged)" }
+		posBtn = UI.button(body, "🧠 Counter position: " .. NAMES[where], function()
+			local i = table.find(ORDER, s.counterPos or "topleft") or 0
+			s.counterPos = ORDER[(i % #ORDER) + 1]
+			posBtn.Text = "🧠 Counter position: " .. NAMES[s.counterPos]
+			save()
+		end, { LayoutOrder = 3 })
+		UI.button(body, "✋ Drag the counter anywhere", function()
+			m.close()
+			if Stations.dragCounter then
+				Stations.dragCounter(function(x, y)
+					s.counterPos = "custom"
+					s.counterX, s.counterY = x, y
+					save()
+				end)
+			end
+		end, { LayoutOrder = 4 })
+		toggle("🔍 Bigger counter", "counterBig", 5)
+		info(ST.ControlsInfo, 6)
+	end
+	function BUILD.notifications()
+		toggle(Content.Settings17.FewerToasts, "fewerToasts", 1)
+		toggle(Content.Settings17.Guide, "guide", 2)
+	end
+	function BUILD.gameplay()
+		toggle("⏱ Extra time on Skill Gates", "extraTime", 1)
+		toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 2)
+		-- horror setting (Off / Spooky / Full), saved on the server
 		local TH = Content.Horror
 		local order = { "off", "spooky", "full" }
 		local cur = (s.horror == "off" or s.horror == "full") and s.horror or "spooky"
 		local hb
-		hb = UI.button(m.content, string.format(TH.Setting, TH.SettingNames[cur]), function()
+		hb = UI.button(body, string.format(TH.Setting, TH.SettingNames[cur]), function()
 			local i = table.find(order, cur) or 2
 			local nextV = order[i % 3 + 1]
 			local r = Remote.call("horror_setting", { value = nextV })
@@ -1644,55 +1665,79 @@ function Stations.settings()
 				s.horror = nextV
 				hb.Text = string.format(TH.Setting, TH.SettingNames[cur])
 			end
-		end, { LayoutOrder = 16 })
+		end, { LayoutOrder = 3 })
+		if UI.state and UI.state.perks and UI.state.perks.LifePack then
+			UI.button(body, Content.LifeStages.StartLife, function()
+				m.close()
+				Stations.startLife()
+			end, { LayoutOrder = 4, BackgroundColor3 = Color3.fromRGB(255, 170, 200) })
+			toggle(Content.LifeStages.Pause, "lifePause", 5)
+		end
+		UI.button(body, "🚪 Switch path (pick a door again)", function()
+			m.close()
+			if Stations.openDoors then
+				Stations.openDoors()
+			end
+		end, { LayoutOrder = 6 })
 	end
-	UI.button(m.content, string.format(Content.BadgeUI.Button, Stations.badgeCount()), function()
-		Stations.badges()
-	end, { LayoutOrder = 0, BackgroundColor3 = Color3.fromRGB(200, 150, 40) })
-	UI.label(m.content, Content.Settings17.LowGraphicsInfo, { TextColor3 = C.muted, LayoutOrder = 14 })
-	stepper("🔊 Sound effects", "sfx", 3)
-	toggle("⚡ Reduce flashing", "reduceFlashing", 5)
-	toggle("🔠 Large text", "largeText", 6)
-	toggle("⏱ Extra time on Skill Gates", "extraTime", 7)
-	-- brain counter position
-	local where = s.counterPos or "topleft"
-	local posBtn
-	local ORDER = { "topleft", "topcenter", "topright", "bottomright" }
-	local NAMES = { topleft = "Top-left", topcenter = "Top-center", topright = "Top-right", bottomright = "Bottom-right", custom = "Custom (dragged)" }
-	posBtn = UI.button(m.content, "🧠 Counter position: " .. NAMES[where], function()
-		local i = table.find(ORDER, s.counterPos or "topleft") or 0
-		s.counterPos = ORDER[(i % #ORDER) + 1]
-		posBtn.Text = "🧠 Counter position: " .. NAMES[s.counterPos]
+	function BUILD.info()
+		UI.label(body, "🆕 You're on update " .. tostring(Config.Version), { LayoutOrder = 1 })
+		UI.button(body, "📋 What's new in " .. tostring(Config.Version), function()
+			Stations.whatsNew()
+		end, { LayoutOrder = 2 })
+		UI.button(body, string.format(Content.BadgeUI.Button, Stations.badgeCount()), function()
+			Stations.badges()
+		end, { LayoutOrder = 3 })
+		UI.button(body, ST.Feedback, function()
+			if Stations.sendFeedback then
+				Stations.sendFeedback()
+			else
+				UI.toast(ST.FeedbackFallback)
+			end
+		end, { LayoutOrder = 4 })
+		UI.button(body, "🔄 Refresh my staff rank", function()
+			local r = Remote.call("admin", { cmd = "refreshrank" })
+			resultToast(r)
+		end, { LayoutOrder = 5 })
+	end
+	function BUILD.help()
+		for i, line in ipairs(Content.Phone19.HelpLines) do
+			UI.label(body, line, { LayoutOrder = i })
+		end
+		UI.button(body, "📖 Replay the tutorial", function()
+			m.close()
+			if Stations.onReplayTutorial then
+				Stations.onReplayTutorial()
+			end
+		end, { LayoutOrder = 20 })
+	end
+	function BUILD.danger()
+		info(ST.DangerInfo, 1)
+		UI.button(body, Content.ResetProgress.Button, holdToReset, { LayoutOrder = 2, BackgroundColor3 = Color3.fromRGB(120, 30, 40) })
+	end
+
+	local tabs = {}
+	for _, key in ipairs(Config.UI.SettingsTabs) do
+		table.insert(tabs, { key = key, name = ST.Names[key] or key })
+	end
+	local function show(key)
+		for _, c in ipairs(body:GetChildren()) do
+			if not c:IsA("UIListLayout") and not c:IsA("UIPadding") then
+				c:Destroy()
+			end
+		end
+		if BUILD[key] then
+			BUILD[key]()
+		end
+		m.content.CanvasPosition = Vector2.new()
+	end
+	local first = (s.settingsTab and BUILD[s.settingsTab]) and s.settingsTab or "sound"
+	UI.tabs(m.content, tabs, first, function(key)
+		s.settingsTab = key
 		save()
-	end, { LayoutOrder = 71 })
-	UI.button(m.content, "✋ Drag the counter anywhere", function()
-		m.close()
-		if Stations.dragCounter then
-			Stations.dragCounter(function(x, y)
-				s.counterPos = "custom"
-				s.counterX, s.counterY = x, y
-				save()
-			end)
-		end
-	end, { LayoutOrder = 72 })
-	toggle("🔍 Bigger counter", "counterBig", 73)
-	UI.button(m.content, "🚪 Switch path (pick a door again)", function()
-		m.close()
-		if Stations.openDoors then
-			Stations.openDoors()
-		end
-	end, { LayoutOrder = 75, BackgroundColor3 = Color3.fromRGB(150, 70, 200) })
-	UI.button(m.content, "📖 Replay the tutorial", function()
-		m.close()
-		if Stations.onReplayTutorial then
-			Stations.onReplayTutorial()
-		end
-	end, { LayoutOrder = 76, BackgroundColor3 = Color3.fromRGB(60, 120, 230) })
-	UI.button(m.content, "🔄 Refresh my staff rank", function()
-		local r = Remote.call("admin", { cmd = "refreshrank" })
-		resultToast(r)
-	end, { LayoutOrder = 80 })
-	UI.label(m.content, "Controller: Ⓨ menu, Select button = admin panel, Ⓑ close, Ⓧ use prompts. Keyboard: M menu, P admin panel, E use prompts.", { TextColor3 = C.muted, LayoutOrder = 90 })
+		show(key)
+	end, { LayoutOrder = 1 })
+	show(first)
 	m.focus()
 end
 

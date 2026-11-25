@@ -678,6 +678,15 @@ Config.UI = {
 	ModalPhone = Vector2.new(0.8, 0.88), -- 1.8.9 (user: menus did not fit phones): pop-ups use this share of a phone screen (0.68 x 0.74 squeezed their content)
 	ModalPC = Vector2.new(0.5, 0.62), -- and of a PC screen
 	ModalMax = Vector2.new(520, 440), -- pixels, before the device scale
+	-- 1.9 phone = main menu (docs/reference/phone_target.jpg): a tall phone on the right of the screen
+	PhoneAspect = 0.5, -- width / height of the in-game phone (always tall now, also on sideways phones)
+	PhoneHeight = 0.92, -- share of the screen height
+	PhoneColumns = 3, -- app icons per row (a label under every icon)
+	PhoneDock = { "items", "map", "settings" }, -- apps in the dock at the bottom (in this order)
+	PhoneDim = 0.75, -- the phone dims the world only lightly (pop-ups use ModalDim)
+	ModalDim = 0.45, -- full-screen dim behind every pop-up (covers the top bar too)
+	BubbleSeconds = 6, -- the NPC speech bubble hides itself after this many seconds
+	SettingsTabs = { "sound", "graphics", "controls", "notifications", "gameplay", "info", "help", "danger" },
 }
 
 -- Which phone you get. IQ only matters on the Gain path; the Lose path always gets the toy phone.

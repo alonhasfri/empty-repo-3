@@ -90,28 +90,56 @@ themedPart(function(T)
 	coinChip.Font = T.font
 end)
 
+-- 1.9 (UI judge): ONE chip row under the counter card for status and career (no floating status lines)
+local P19 = Content.Phone19
+local infoRow = UI.new("Frame", { Name = "Chips", BackgroundTransparency = 1, Position = UDim2.new(0, 0, 1, 4), Size = UDim2.new(1, 60, 0, 22), Parent = top }, {
+	UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 4), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
+})
+local function updateChips(st)
+	for _, c in ipairs(infoRow:GetChildren()) do
+		if not c:IsA("UIListLayout") then
+			c:Destroy()
+		end
+	end
+	local chips = {}
+	if st.stage and st.stage ~= "human" and st.stageEmoji then
+		table.insert(chips, { st.stageEmoji .. " " .. tostring(st.stageName or ""), UI.T.accent })
+	end
+	if st.job and st.path == "Gain" then
+		table.insert(chips, { string.format(P19.ChipJob, tostring(st.careerTitle or st.job)), Color3.fromRGB(70, 160, 110) })
+	end
+	if st.frozen then
+		table.insert(chips, { P19.ChipStress, UI.Colors.bad })
+	end
+	if st.comeback then
+		table.insert(chips, { P19.ChipComeback, Color3.fromRGB(150, 90, 200) })
+	end
+	if st.canSave == false then
+		table.insert(chips, { P19.ChipNoSave, UI.Colors.bad })
+	end
+	for i, c in ipairs(chips) do
+		if i > 3 then
+			break -- never more than one tidy row
+		end
+		UI.chip(infoRow, c[1], c[2], { LayoutOrder = i, TextSize = UI.textSize(12), Size = UDim2.fromOffset(10, UI.textSize(12) + 8) })
+	end
+	infoRow.Visible = #chips > 0 and not st.dead
+end
+
 ---------------------------------------------------------------------
 -- LEFT: activity grid
 ---------------------------------------------------------------------
 local ACTIVITIES = {
 	none = {},
+	-- 1.9 phone = main menu: only the Phone and Quick Play stay on the screen (plus 🆘 Unstuck top right);
+	-- every other activity is an app in the phone now
 	Lose = {
 		{ key = "phone", icon = "📱", name = "Phone", color = Color3.fromRGB(150, 80, 250) },
 		{ key = "quickplay", icon = "⚡", name = "Quick Play", color = Color3.fromRGB(240, 170, 20) }, -- 1.8.5 tester feedback
-		{ key = "together", icon = "🎭", name = "Vs Mode", color = Color3.fromRGB(250, 110, 60) },
-		{ key = "map", icon = "🗺", name = "Map", color = Color3.fromRGB(70, 190, 110) },
 	},
 	Gain = {
 		{ key = "phone", icon = "📱", name = "Phone", color = Color3.fromRGB(150, 80, 250) },
 		{ key = "quickplay", icon = "⚡", name = "Quick Play", color = Color3.fromRGB(240, 170, 20) }, -- 1.8.5 tester feedback
-		{ key = "work", icon = "🛠", name = "Work", color = Color3.fromRGB(90, 110, 140) },
-		{ key = "library", icon = "📚", name = "Library", color = Color3.fromRGB(150, 100, 60) },
-		{ key = "gate", icon = "🚧", name = "Gate", color = Color3.fromRGB(240, 190, 40) },
-		{ key = "lab", icon = "🔬", name = "Projects", color = Color3.fromRGB(40, 170, 200) },
-		{ key = "gadgets", icon = "🎒", name = "Gadgets", color = Color3.fromRGB(60, 190, 190) },
-		{ key = "coffee", icon = "☕", name = "Coffee", color = Color3.fromRGB(130, 85, 50) },
-		{ key = "nap", icon = "😴", name = "Nap", color = Color3.fromRGB(100, 100, 190) },
-		{ key = "pigeons", icon = "🐦", name = "Pigeons", color = Color3.fromRGB(140, 140, 150) },
 	},
 }
 
@@ -302,12 +330,8 @@ end)
 Hud.targets = {}
 -- Where the tutorial arrow should point
 function Hud.target(key: string)
-	if key == "shop" then
-		return Hud.shopButton
-	elseif key == "mapbig" then
-		return Hud.mapButton
-	end
-	return Hud.targets[key]
+	-- 1.9: everything but Quick Play lives in the phone, so the tutorial arrow points at the Phone button
+	return Hud.targets[key] or Hud.targets.phone
 end
 
 function Hud.tutorialEvent(event: string)
@@ -347,7 +371,7 @@ local function roundButton(parent, icon: string, color: Color3, order: number, o
 	b.Activated:Connect(onClick)
 	return b
 end
-roundButton(corner, "⚙️", Color3.fromRGB(30, 30, 40), 2, function()
+local settingsBtn = roundButton(corner, "⚙️", Color3.fromRGB(30, 30, 40), 2, function()
 	if Hud.onMenu then
 		Hud.onMenu()
 	end
@@ -593,7 +617,7 @@ themedPart(function(T)
 	bubble.BackgroundColor3 = T.bg
 	bubble.BackgroundTransparency = math.min(0.2, T.bgT + 0.05)
 	UI.corner(bubble, 16)
-	UI.stroke(bubble, Color3.new(0, 0, 0), 2, 0.3)
+	UI.stroke(bubble, Color3.new(1, 1, 1), 2, 0.88) -- 1.9 kit: calm panel, thin light border
 	speech.TextColor3 = T.text
 end)
 
@@ -633,10 +657,10 @@ end
 function Hud.say(msg: string, mood: string?)
 	local look = MOOD[mood or "host"] or MOOD.host
 	nameLabel.Text = look.title
-	nameLabel.TextColor3 = look.color
-	nameLabel.Font = look.font
+	nameLabel.TextColor3 = UI.T.accent -- 1.9 kit: the name in the accent colour
+	nameLabel.Font = UI.T.font
 	moodBadge.Text = look.emoji
-	speech.Font = look.font
+	speech.Font = UI.T.body -- 1.9 kit: one font (moods only change the badge and title)
 	sayToken += 1
 	local my = sayToken
 	speech.Text = ""
@@ -652,7 +676,7 @@ function Hud.say(msg: string, mood: string?)
 			end
 		end
 		speech.Text = msg
-		task.wait(6)
+		task.wait(Config.UI.BubbleSeconds) -- 1.9: auto-hides
 		if my == sayToken then
 			TweenService:Create(bubbleScale, TweenInfo.new(0.2), { Scale = 0 }):Play()
 		end
@@ -739,7 +763,7 @@ function Hud.layoutCounter(s)
 		top.Position = UDim2.new(0, 10, 0, 6)
 	end
 	counterTopLeft = (where == "topleft" or where == nil)
-	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 68 * UI.D) or 8)
+	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 96 * UI.D) or 8) -- 1.9: room for the chip row
 end
 
 function Hud.dragCounter(onDone)
@@ -832,7 +856,7 @@ UI.onScale(fitBottom)
 UI.gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitBottom)
 UI.onScale(function(d)
 	topScale.Scale = ((UI.settings and UI.settings.counterBig) and 1.3 or 1) * d
-	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 68 * d) or 8)
+	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + 96 * d) or 8)
 	tutorial.Position = UDim2.new(0.5, 0, 0, 2 + 60 * d)
 	bubble.Position = UDim2.new(1, -10, 1, -(150 * d))
 	status.Position = UDim2.new(1, -10, 0, 6 + 200 * d)
@@ -957,42 +981,33 @@ function Hud.update(st)
 		meterBack.Visible = true
 		halfLine.Visible = false
 		meterGrad.Color = ColorSequence.new(Color3.fromRGB(120, 220, 140), Color3.fromRGB(255, 140, 40))
-		-- 1.8.5: keep the line short (long bonus texts like "Overflow ×999 (…)" crowded the bottom)
-		local mult = st.multLabel or ""
-		if #mult > 22 then
-			mult = string.match(mult, "^(.-)%s*%(") or string.sub(mult, 1, 22)
-		end
-		meterLabel.Text = st.frozen and "😵 TOO STRESSED: do a habit!" or ("😰 stress" .. (mult ~= "" and ("  •  " .. mult) or ""))
+		-- 1.9 (UI judge): no more "Overflow ×999 (…)" joke text here, just the stress bar
+		meterLabel.Text = st.frozen and "😵 TOO STRESSED: take a break!" or "😰 stress"
 		meterFill.Size = UDim2.fromScale(math.clamp(st.stress / 100, 0, 1), 1)
 	else
 		meterBack.Visible = false
 		meterLabel.Text = ""
 	end
 
-	-- 1.8.5 (user: the job/glasses tag floated alone on the right): job and glasses live in the
-	-- phone and on your character now; this line only shows warnings
-	local bits = {}
-	if st.comeback then
-		table.insert(bits, "💀➡️🧠 Comeback")
-	end
-	if not st.canSave then
-		table.insert(bits, "⚠️ not saving")
-	end
-	status.Text = table.concat(bits, "  •  ")
+	-- 1.9: status and career moved to the chip row under the counter (updateChips)
+	status.Text = ""
 
 	adminBtn.Visible = (st.rank or 0) >= 1
 	pickRow.Visible = (path == nil and not st.dead) or doorsForced
 	doorDim.Visible = pickRow.Visible
 	grid.Visible = path ~= nil
 	corner.Visible = not st.dead
-	shopBtn.Visible = path ~= nil
-	mapBtn.Visible = true
+	-- 1.9: Shop, Map and Settings are phone apps now; ⚙️ only stays in the lobby (no phone apps yet)
+	shopBtn.Visible = false
+	mapBtn.Visible = false
+	settingsBtn.Visible = path == nil
+	updateChips(st)
 end
 
 function Hud.delta(amount: number, up: boolean)
 	local t = text(top, {
 		AnchorPoint = Vector2.new(0, 0),
-		Position = UDim2.new(0, 64, 1, 2),
+		Position = UDim2.new(0, 64, 1, 28), -- 1.9: under the chip row
 		Size = UDim2.fromOffset(200, 22),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextColor3 = up and UI.Colors.good or UI.Colors.bad,

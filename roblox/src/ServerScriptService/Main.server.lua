@@ -247,6 +247,10 @@ Net.on("settings", function(player, d)
 			s[k] = d[k]
 		end
 	end
+	-- 1.9: the last Settings tab you opened (nil for old saves: the Sound tab opens)
+	if typeof(d.settingsTab) == "string" and table.find(Config.UI.SettingsTabs, d.settingsTab) then
+		s.settingsTab = d.settingsTab
+	end
 	-- 1.8.2: once a player flips Low graphics themselves, the automatic slow-device check leaves it alone
 	if typeof(d.lowGraphics) == "boolean" then
 		s.lowGraphicsChosen = true

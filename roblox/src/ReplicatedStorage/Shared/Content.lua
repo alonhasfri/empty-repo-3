@@ -1590,6 +1590,64 @@ Content.PhoneShop = {
 }
 
 -- 1.8.1 UI review: the "More" button that holds the extra activities
+-- 1.9: the phone is the main menu (Items app, Help app, chips under the counter, Settings tabs)
+Content.Phone19 = {
+	Apps = {
+		items = { icon = "🎒", name = "Items" },
+		badges = { icon = "🏅", name = "Badges" },
+		help = { icon = "❓", name = "Help" },
+		gate = { icon = "🚧", name = "Gate" },
+		coffee = { icon = "☕", name = "Coffee" },
+		nap = { icon = "😴", name = "Nap" },
+		pigeons = { icon = "🐦", name = "Pigeons" },
+		events = { icon = "💌", name = "Invites" },
+		genius = { icon = "🌟", name = "Genius" },
+	},
+	ItemsTitle = "🎒 Items",
+	ItemsGadgets = "Gadgets & secret inventions",
+	ItemsStuff = "Your stuff",
+	ItemsLocked = "Still to invent",
+	ItemsEmpty = "Nothing here yet! Gadgets and secret inventions you get will show up here.",
+	ItemsLose = "Your pockets: 1 sticky sweet, 0 thoughts. (Gadgets are for the Gain path.)",
+	ItemsPhone = "📱 Phone: %s",
+	ItemsCoins = "💰 Coins: %d",
+	ItemsPerk = "⭐ %s",
+	HelpTitle = "❓ Help",
+	HelpLines = {
+		"📱 The phone is your main menu: every app lives here.",
+		"⚡ Quick Play gives fast points any time.",
+		"🆘 Stuck? Tap the SOS button on the screen.",
+		"🧠 The top-left card shows your brain cells, IQ and job.",
+	},
+	HelpTutorial = "📖 Replay the tutorial",
+	HelpWhatsNew = "📋 What's new",
+	ChipComeback = "💀➡️🧠 Comeback",
+	ChipNoSave = "⚠️ Not saving",
+	ChipJob = "💼 %s",
+	ChipStress = "😰 Stressed!",
+}
+
+Content.SettingsTabs = {
+	Title = "⚙️ Settings",
+	Names = {
+		sound = "🔊 Sound",
+		graphics = "🎨 Graphics",
+		controls = "🎮 Controls & Screen",
+		notifications = "🔔 Notifications",
+		gameplay = "🧩 Gameplay",
+		info = "ℹ️ Info",
+		help = "❓ Help",
+		danger = "⚠️ Danger zone",
+	},
+	Music = "🎵 Music volume",
+	Sfx = "🔊 Sound effects",
+	DangerInfo = "Careful: these can't be undone easily.",
+	ControlsInfo = "Controller: Y menu, Select = staff panel, B close, X use prompts. Keyboard: M menu, P staff panel, E use prompts.",
+	Feedback = "💬 Send feedback",
+	FeedbackThanks = "💬 Thanks! Your feedback window is open.",
+	FeedbackFallback = "💬 Feedback isn't available here right now. Tell us in the group page instead. Thank you!",
+}
+
 Content.HudMore = {
 	Button = "More",
 	Title = "☰ All activities",

@@ -17,10 +17,9 @@ local Remote = require(script.Parent.Remote)
 
 local PhoneOS = {}
 -- 1.8.7 phone pass: true on a sideways phone screen (wide and short), where the in-game phone is wide too
+-- 1.9: the phone is always tall now (main menu on the right), so it is never "wide"
 function PhoneOS.wide(): boolean
-	local cam = workspace.CurrentCamera
-	local v = cam and cam.ViewportSize or Vector2.new(1000, 600)
-	return UI.isPhone() and v.X > v.Y * 1.3
+	return false
 end
 PhoneOS.stations = nil -- the Stations module (set by ClientMain)
 PhoneOS.classicPhone = nil -- the old phone function (set by ClientMain)
@@ -42,6 +41,26 @@ for key, a in pairs(EXTRA) do
 	a.icon = TL.Apps[key].icon
 	a.name = TL.Apps[key].name
 end
+-- 1.9 phone = main menu: everything that used to be a HUD button is an app now
+local P19 = Content.Phone19
+local MORE = {
+	items = { c1 = Color3.fromRGB(70, 200, 190), c2 = Color3.fromRGB(20, 120, 130) },
+	badges = { c1 = Color3.fromRGB(240, 190, 60), c2 = Color3.fromRGB(190, 120, 20) },
+	help = { c1 = Color3.fromRGB(60, 64, 80), c2 = Color3.fromRGB(30, 32, 40) },
+	gate = { c1 = Color3.fromRGB(250, 200, 60), c2 = Color3.fromRGB(220, 130, 30) },
+	coffee = { c1 = Color3.fromRGB(150, 100, 60), c2 = Color3.fromRGB(90, 55, 30) },
+	nap = { c1 = Color3.fromRGB(110, 110, 210), c2 = Color3.fromRGB(60, 60, 150) },
+	pigeons = { c1 = Color3.fromRGB(160, 160, 170), c2 = Color3.fromRGB(100, 100, 115) },
+	events = { c1 = Color3.fromRGB(255, 120, 160), c2 = Color3.fromRGB(200, 60, 110) },
+	genius = { c1 = Color3.fromRGB(255, 215, 80), c2 = Color3.fromRGB(200, 140, 30) },
+}
+for key, a in pairs(MORE) do
+	a.key = key
+	a.icon = P19.Apps[key].icon
+	a.name = P19.Apps[key].name
+	EXTRA[key] = a
+end
+PhoneOS.EXTRA = EXTRA
 
 local function isAnimal(st): boolean
 	return st.stage ~= nil and st.stage ~= "human" and st.stage ~= "barelyhuman"
@@ -89,6 +108,31 @@ local function appsFor(st, tier: string)
 	elseif tier == "cozy" then
 		addBefore(EXTRA.bank)
 	end
+	if #list == 0 then
+		return list -- no path yet: no apps
+	end
+	-- 1.9: the old HUD activity buttons live in the phone now
+	if st.path == "Gain" then
+		addBefore(EXTRA.gate)
+		addBefore(EXTRA.coffee)
+		addBefore(EXTRA.nap)
+		addBefore(EXTRA.pigeons)
+		if st.geniusOpen then
+			addBefore(EXTRA.genius) -- 1.9 Genius Crossroads (server sets geniusOpen)
+		end
+	end
+	if st.eventInvite or st.eventsDone then
+		addBefore(EXTRA.events) -- 1.9 big life events
+	end
+	addBefore(EXTRA.badges)
+	addBefore(EXTRA.help)
+	table.insert(list, 1, EXTRA.items)
+	-- the old Gadgets app is the Items app now
+	for i = #list, 1, -1 do
+		if list[i].key == "gadgets" then
+			table.remove(list, i)
+		end
+	end
 	return list
 end
 
@@ -109,6 +153,14 @@ local function openApp(app)
 			PhoneOS.bank()
 		elseif app.key == "shifts" then
 			PhoneOS.shifts()
+		elseif app.key == "items" then
+			PhoneOS.items()
+		elseif app.key == "help" then
+			PhoneOS.help()
+		elseif app.key == "badges" then
+			PhoneOS.stations.badges()
+		elseif (app.key == "events" or app.key == "genius") and PhoneOS.stations[app.key] then
+			PhoneOS.stations[app.key]()
 		elseif PhoneOS.stations.route then
 			PhoneOS.stations.route(app.key)
 		end
@@ -157,11 +209,9 @@ end
 ---------------------------------------------------------------------
 -- Home screens
 ---------------------------------------------------------------------
+-- 1.9: a slim clock + brain strip (the phone frame draws the status bar above it)
 local function wallpaper(parent, st, tier: string, order: number)
-	local h = tier == "toy" and 90 or 110
-	if PhoneOS.wide() then
-		h = 60 -- 1.8.7 phone pass: a slim clock strip on a sideways screen, so the apps fit
-	end
+	local h = 64
 	local wall = UI.new("Frame", { BackgroundColor3 = WHITE, Size = UDim2.new(1, 0, 0, h), LayoutOrder = order, Parent = parent })
 	UI.corner(wall, 18)
 	if tier == "toy" then
@@ -171,106 +221,47 @@ local function wallpaper(parent, st, tier: string, order: number)
 	else
 		UI.gradient(wall, Color3.fromRGB(30, 50, 90), Color3.fromRGB(70, 110, 160), 90)
 	end
-	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, h * 0.55), Position = UDim2.fromOffset(0, 8), Text = os.date("%H:%M"), Font = tier == "real" and Enum.Font.GothamMedium or Enum.Font.FredokaOne, TextScaled = true, TextColor3 = WHITE, Parent = wall })
-	local sub = tier == "toy" and ("🧠 " .. tostring(st.cellsText or "") .. " 🔥🔥") or ("🧠 " .. tostring(st.cellsText or "") .. " brain cells")
-	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -26), Text = sub, Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = Color3.fromRGB(255, 245, 255), Parent = wall })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 34), Position = UDim2.fromOffset(0, 4), Text = os.date("%H:%M"), Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = WHITE, Parent = wall })
+	local sub = "🧠 " .. tostring(st.cellsText or "") .. ((st.iq and st.path == "Gain") and ("  •  IQ " .. math.floor(st.iq)) or "")
+	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, -12, 0, 18), Position = UDim2.new(0, 6, 1, -22), Text = sub, Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = Color3.fromRGB(255, 245, 255), Parent = wall })
 end
 
-local function gridHome(m, st, tier: string)
+-- 1.9 phone = main menu (docs/reference/phone_target.jpg): ONE home for every brain tier:
+-- 3 labelled icons per row, and a dock at the bottom with Items, Maps and Settings.
+local function home(m, st, tier: string)
 	local apps = appsFor(st, tier)
 	wallpaper(m.content, st, tier, 1)
-	local cols, size, labelH, cellH = 3, 58, 18, 86
-	if tier == "toy" then
-		cols, size, labelH, cellH = 2, 84, 24, 118
+	local dockKeys = Config.UI.PhoneDock
+	local dockApps, gridApps = {}, {}
+	for _, app in ipairs(apps) do
+		local slot = table.find(dockKeys, app.key)
+		if slot then
+			dockApps[slot] = app
+		else
+			table.insert(gridApps, app)
+		end
 	end
-	if PhoneOS.wide() then
-		-- 1.8.7 phone pass: more, smaller columns on a sideways screen (one row instead of a long scroll)
-		cols, size, labelH, cellH = (tier == "toy" and 4 or 5), 56, 18, 82
-	end
+	local cols = Config.UI.PhoneColumns
 	local grid = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 2, Parent = m.content }, {
-		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / cols - 0.03, 0, 0, cellH), CellPadding = UDim2.new(0.03, 0, 0, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
+		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / cols - 0.03, 0, 0, 84), CellPadding = UDim2.new(0.03, 0, 0, 6), SortOrder = Enum.SortOrder.LayoutOrder }),
 	})
-	for i, app in ipairs(apps) do
-		appIcon(grid, app, i, size, labelH)
+	for i, app in ipairs(gridApps) do
+		appIcon(grid, app, i, 58, 18)
 	end
 	if #apps == 0 then
-		UI.label(m.content, "Pick a path first (bottom of the screen) to unlock your apps.", { TextColor3 = WHITE, LayoutOrder = 3 })
+		UI.label(m.content, "Pick a path first to unlock your apps.", { TextColor3 = WHITE, LayoutOrder = 3 })
+		return
 	end
-end
-
--- The real-feeling phone OS: status bar, swipe pages, page dots, dock
-local function realHome(m, st)
-	local apps = appsFor(st, "real")
-	-- (the phone frame already draws the status bar; a second one here showed the time twice)
-	-- widget
-	local widget = UI.new("Frame", { BackgroundColor3 = WHITE, Size = UDim2.new(1, 0, 0, 74), LayoutOrder = 2, Parent = m.content })
-	UI.corner(widget, 18)
-	UI.gradient(widget, Color3.fromRGB(30, 50, 90), Color3.fromRGB(70, 110, 160), 90)
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(14, 6), Size = UDim2.new(1, -28, 0, 36), Text = os.date("%A %H:%M"), Font = Enum.Font.GothamMedium, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = WHITE, Parent = widget })
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(14, 44), Size = UDim2.new(1, -28, 0, 20), Text = "IQ " .. (st.iq and tostring(math.floor(st.iq)) or "?") .. (st.job and ("  •  💼 " .. st.job) or "") .. "  •  💰 " .. tostring(st.coins or 0), Font = Enum.Font.Gotham, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = SOFT, Parent = widget })
-
-	-- swipe pages: 4 columns x 3 rows per page; the last 4 apps sit in the dock
-	local perPage = 12
-	local dockCount = math.min(4, #apps)
-	local pageApps = {}
-	for i = 1, #apps - dockCount do
-		table.insert(pageApps, apps[i])
-	end
-	local pagesHolder = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 300), ClipsDescendants = true, LayoutOrder = 3, Parent = m.content })
-	local layout = UI.new("UIPageLayout", {
-		FillDirection = Enum.FillDirection.Horizontal,
-		SortOrder = Enum.SortOrder.LayoutOrder,
-		EasingStyle = Enum.EasingStyle.Quad,
-		TweenTime = UI.reducedMotion() and 0 or 0.25,
-		TouchInputEnabled = true,
-		GamepadInputEnabled = true,
-		ScrollWheelInputEnabled = true,
-		Circular = false,
-		Parent = pagesHolder,
-	})
-	local pageCount = math.max(1, math.ceil(#pageApps / perPage))
-	for p = 1, pageCount do
-		local page = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), LayoutOrder = p, Parent = pagesHolder }, {
-			UI.new("UIGridLayout", { CellSize = UDim2.new(0.23, 0, 0, 92), CellPadding = UDim2.new(0.026, 0, 0, 6), SortOrder = Enum.SortOrder.LayoutOrder }),
-		})
-		for i = (p - 1) * perPage + 1, math.min(#pageApps, p * perPage) do
-			appIcon(page, pageApps[i], i, 56, 18)
-		end
-	end
-	-- page dots + arrows (arrows for mouse and controller players)
-	local dotsRow = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 48), LayoutOrder = 4, Parent = m.content }, {
-		UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }),
-	})
-	local dots = {}
-	local prev = UI.new("TextButton", { Text = "‹", Font = Enum.Font.GothamBold, TextSize = 26, TextColor3 = WHITE, BackgroundTransparency = 1, Size = UDim2.fromOffset(48, 48), LayoutOrder = 0, Parent = dotsRow })
-	for p = 1, pageCount do
-		local dot = UI.new("Frame", { Size = UDim2.fromOffset(8, 8), BackgroundColor3 = WHITE, BackgroundTransparency = p == 1 and 0 or 0.6, LayoutOrder = p, Parent = dotsRow })
-		UI.corner(dot, 4)
-		dots[p] = dot
-	end
-	local nextB = UI.new("TextButton", { Text = "›", Font = Enum.Font.GothamBold, TextSize = 26, TextColor3 = WHITE, BackgroundTransparency = 1, Size = UDim2.fromOffset(48, 48), LayoutOrder = pageCount + 1, Parent = dotsRow })
-	prev.Visible = pageCount > 1
-	nextB.Visible = pageCount > 1
-	prev.Activated:Connect(function()
-		layout:Previous()
-	end)
-	nextB.Activated:Connect(function()
-		layout:Next()
-	end)
-	layout:GetPropertyChangedSignal("CurrentPage"):Connect(function()
-		local cur = layout.CurrentPage
-		for p, dot in ipairs(dots) do
-			dot.BackgroundTransparency = (cur and cur.LayoutOrder == p) and 0 or 0.6
-		end
-	end)
-	-- dock
-	local dock = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(60, 64, 76), BackgroundTransparency = 0.2, Size = UDim2.new(1, 0, 0, 84), LayoutOrder = 5, Parent = m.content }, {
-		UI.new("UIGridLayout", { CellSize = UDim2.new(0.23, 0, 0, 70), CellPadding = UDim2.new(0.026, 0, 0, 0), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
+	-- dock: the last row of the phone
+	local dock = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(60, 64, 76), BackgroundTransparency = 0.25, Size = UDim2.new(1, 0, 0, 78), LayoutOrder = 9, Parent = m.content }, {
+		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / cols - 0.03, 0, 0, 62), CellPadding = UDim2.new(0.03, 0, 0, 0), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
 		UI.new("UIPadding", { PaddingTop = UDim.new(0, 8) }),
 	})
 	UI.corner(dock, 22)
-	for i = #apps - dockCount + 1, #apps do
-		appIcon(dock, apps[i], i, 56, 0)
+	for slot = 1, #dockKeys do
+		if dockApps[slot] then
+			appIcon(dock, dockApps[slot], slot, 56, 0)
+		end
 	end
 end
 
@@ -288,16 +279,117 @@ function PhoneOS.open()
 	if PhoneOS.stations and PhoneOS.stations.onEvent then
 		pcall(PhoneOS.stations.onEvent, "phone")
 	end
-	local title = tier == "real" and "" or (tier == "cozy" and "📱 Phone" or "📱 BRAIN PHONE!!")
 	local color = tier == "real" and Color3.fromRGB(40, 44, 56) or (tier == "cozy" and Color3.fromRGB(180, 120, 90) or Color3.fromRGB(255, 60, 180))
-	local m = UI.modal(title, { phone = true, color = color })
-	if tier == "real" then
-		realHome(m, st)
-	else
-		gridHome(m, st, tier)
+	local m = UI.modal("", { phone = true, color = color })
+	home(m, st, tier)
+	m.focus()
+end
+
+---------------------------------------------------------------------
+-- 1.9 Items: every gadget and secret invention in one place
+---------------------------------------------------------------------
+local function itemRow(parent, order: number, icon: string, name: string, desc: string, dim: boolean)
+	local card = UI.new("Frame", { BackgroundColor3 = UI.T.panel, BackgroundTransparency = dim and 0.5 or 0, Size = UDim2.new(1, 0, 0, 64), LayoutOrder = order, Parent = parent })
+	UI.corner(card, 12)
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 8), Size = UDim2.fromOffset(48, 48), TextScaled = true, Text = icon, Parent = card })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 6), Size = UDim2.new(1, -150, 0, 22), TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, Font = UI.T.font, TextColor3 = UI.T.text, Text = name, Parent = card })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 30), Size = UDim2.new(1, -150, 0, 28), TextScaled = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, Font = UI.T.body, TextColor3 = UI.T.muted, Text = desc, Parent = card })
+	return card
+end
+
+local function plainLabel(parent, text: string, order: number)
+	return UI.label(parent, text, { TextColor3 = WHITE, LayoutOrder = order })
+end
+
+function PhoneOS.items()
+	local st = UI.state or {}
+	local m = UI.modal(P19.ItemsTitle, phoneOpts(Color3.fromRGB(40, 44, 56)))
+	local order = 1
+	local function header(text: string)
+		order += 1
+		UI.label(m.content, text, { TextColor3 = WHITE, Font = Enum.Font.GothamBold, LayoutOrder = order })
+	end
+	header(P19.ItemsStuff)
+	order += 1
+	itemRow(m.content, order, "💰", string.format(P19.ItemsCoins, math.floor(st.coins or 0)), "", false)
+	if st.phoneModel then
+		order += 1
+		itemRow(m.content, order, "📱", string.format(P19.ItemsPhone, tostring(st.phoneModel)), "", false)
+	end
+	for perk, on in pairs(st.perks or {}) do
+		if on then
+			order += 1
+			itemRow(m.content, order, "⭐", string.format(P19.ItemsPerk, tostring(perk)), "", false)
+		end
+	end
+	if st.path ~= "Gain" then
+		order += 1
+		plainLabel(m.content, P19.ItemsLose, order)
+		m.focus()
+		return
+	end
+	local r = Remote.call("inventions_list")
+	header(P19.ItemsGadgets)
+	if not (r and r.ok) then
+		order += 1
+		plainLabel(m.content, P19.ItemsEmpty, order)
+		m.focus()
+		return
+	end
+	local owned, locked = {}, {}
+	for _, inv in ipairs(r.inventions or {}) do
+		table.insert(inv.owned and owned or locked, inv)
+	end
+	if #owned == 0 then
+		order += 1
+		plainLabel(m.content, P19.ItemsEmpty, order)
+	end
+	for _, inv in ipairs(owned) do
+		order += 1
+		local card = itemRow(m.content, order, inv.icon, inv.name, inv.desc, false)
+		UI.button(card, (inv.cooldown or 0) > 0 and ("⏳ " .. inv.cooldown .. "s") or "USE", function()
+			if inv.key == "remote" then
+				-- the TV remote needs a place: the old Gadgets screen asks for it
+				PhoneOS.stations.gadgets()
+				return
+			end
+			local res = Remote.call("invention_use", { key = inv.key })
+			if res and res.msg then
+				UI.toast(res.msg, res.ok and UI.Colors.good or UI.Colors.bad)
+			end
+			m.close()
+		end, { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Size = UDim2.fromOffset(76, 44), BackgroundColor3 = UI.Colors.good })
+	end
+	if #locked > 0 then
+		header(P19.ItemsLocked)
+		for _, inv in ipairs(locked) do
+			order += 1
+			itemRow(m.content, order, "❔", inv.name, inv.desc, true)
+		end
 	end
 	m.focus()
 end
+
+---------------------------------------------------------------------
+-- 1.9 Help
+---------------------------------------------------------------------
+function PhoneOS.help()
+	local m = UI.modal(P19.HelpTitle, phoneOpts(Color3.fromRGB(40, 44, 56)))
+	for i, line in ipairs(P19.HelpLines) do
+		plainLabel(m.content, line, i)
+	end
+	UI.button(m.content, P19.HelpTutorial, function()
+		m.close()
+		if PhoneOS.stations.onReplayTutorial then
+			PhoneOS.stations.onReplayTutorial()
+		end
+	end, { LayoutOrder = 20 })
+	UI.button(m.content, P19.HelpWhatsNew, function()
+		PhoneOS.stations.whatsNew()
+	end, { LayoutOrder = 21 })
+	m.focus()
+end
+
 
 ---------------------------------------------------------------------
 -- Hoppr: ride-hail
