@@ -735,6 +735,93 @@ H.setiq = function(actor, target, arg)
 	BrainService.setCells(target, cells)
 	return target.Name .. " now has IQ " .. iq .. " (" .. Brain.formatNumber(cells) .. " brain cells)."
 end
+-- 1.9 test commands (Testing tab). Testers may use these on themselves only (selfBelow = 3).
+H.lifestage = function(actor, target, arg)
+	local key = string.lower(arg or "")
+	for _, s in ipairs(Config.LifeStages.Stages) do
+		if s.key == key then
+			local data = DataService.get(target)
+			if typeof(data.life) ~= "table" then
+				data.life = { on = true, seconds = 0, gen = 0 }
+			end
+			data.life.on = true
+			data.life.seconds = s.from * Config.LifeStages.SecondsPerYear
+			data.adminTouched = true
+			BrainService.push(target)
+			return target.Name .. " is now a " .. s.emoji .. " " .. s.key .. "."
+		end
+	end
+	return "Type baby / kinder / kid / teen / adult / grandparent"
+end
+H.promote = function(actor, target)
+	local data = DataService.get(target)
+	if typeof(data.career) ~= "table" or not data.job then
+		return target.Name .. " has no job yet."
+	end
+	data.career.level = math.min(4, (data.career.level or 1) + 1)
+	data.career.xp = math.max(data.career.xp or 0, Config.Careers.XPNeed[data.career.level])
+	data.adminTouched = true
+	local GainService = require(script.Parent.GainService)
+	GainService.applyUniform(target)
+	Net.send(target, "promoted", { title = "Level " .. data.career.level, cells = data.cells, payPercent = math.floor(Config.Careers.PayPerLevel * 100 + 0.5) })
+	BrainService.push(target)
+	return target.Name .. " is now career level " .. data.career.level .. "."
+end
+H.unlockinventions = function(actor, target)
+	local data = DataService.get(target)
+	for _, inv in ipairs(require(ReplicatedStorage.Shared.Content).Inventions) do
+		data.inventions[inv.key] = true
+	end
+	data.adminTouched = true
+	BrainService.push(target)
+	return target.Name .. " has every secret invention."
+end
+H.timeofday = function(actor, target, arg)
+	local hour = tonumber(arg or "")
+	Net.send(target, "timeOfDay", { hour = hour and math.clamp(hour, 0, 24) or nil })
+	return hour and ("Time set to " .. hour .. ":00 for " .. target.Name .. " (only on their screen).") or "Time back to normal."
+end
+H.testweather = function(actor, target, arg)
+	local kind = string.lower(arg or "rain")
+	Net.send(target, "weather", { kind = kind, seconds = 60 })
+	return "Weather " .. kind .. " for 60 s on " .. target.Name .. "'s screen."
+end
+H.teleportto = function(actor, target, arg)
+	local where = string.lower(arg or "")
+	if not WorldService.Spots[where] then
+		local names = {}
+		for k in pairs(WorldService.Spots) do
+			table.insert(names, k)
+		end
+		table.sort(names)
+		return "Places: " .. table.concat(names, ", ")
+	end
+	WorldService.teleport(target, where)
+	return target.Name .. " teleported to " .. where .. "."
+end
+H.fps = function(actor, target)
+	Net.send(target, "debug", {})
+	return "FPS overlay toggled for " .. target.Name .. "."
+end
+H.becomeanimal = function(actor, target, arg)
+	local cells = Config.TestAnimals[string.lower(arg or "")]
+	if not cells then
+		return "Type dog / octopus / mouse / bee / fly / worm / human"
+	end
+	DataService.get(target).adminTouched = true
+	BrainService.setCells(target, cells)
+	return target.Name .. " is now: " .. string.lower(arg) .. "."
+end
+H.eventinvite = function(actor, target, arg)
+	local EventService = require(script.Parent.EventService)
+	local id = arg and string.lower(arg) or nil
+	return EventService.invite(target, id ~= "" and id or nil) and ("Sent a life event invite to " .. target.Name .. ".") or "Can't invite right now (no path?)."
+end
+H.crossroads = function(actor, target)
+	local GeniusService = require(script.Parent.GeniusService)
+	GeniusService.forceOpen(target)
+	return "Opened the Genius Crossroads for " .. target.Name .. "."
+end
 H.resettutorial = function(actor, target)
 	local s = DataService.get(target).settings
 	s.tutLose, s.tutGain = 1, 1

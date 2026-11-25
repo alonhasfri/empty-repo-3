@@ -237,6 +237,10 @@ Remote.on("weather", function(d)
 	Style.weather(d.kind, d.seconds or 60)
 end)
 Remote.on("debug", Hud.toggleDebug)
+-- 1.9 test command: set the time of day on this screen (nil = back to the normal cycle)
+Remote.on("timeOfDay", function(d)
+	game:GetService("Lighting"):SetAttribute("TestClock", d and d.hour or nil)
+end)
 Remote.on("swapDoors", Hud.swapDoorSigns)
 Stations.openDoors = Hud.openDoors
 

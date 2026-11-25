@@ -68,7 +68,13 @@ task.spawn(function()
 		task.wait(1)
 		local s = UI.settings
 		if inTown() then
-			if s and s.alwaysDay then
+			if Lighting:GetAttribute("TestClock") then
+				-- 1.9 test command "Time of day" (only on this screen)
+				local clock = Lighting:GetAttribute("TestClock")
+				Lighting.ClockTime = clock
+				setLamps(isNight(clock))
+				setWindows(isNight(clock))
+			elseif s and s.alwaysDay then
 				Lighting.ClockTime = Lighting:GetAttribute("LookClock") or 13
 				setLamps(false)
 				setWindows(false)

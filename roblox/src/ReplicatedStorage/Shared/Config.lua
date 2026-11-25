@@ -229,6 +229,9 @@ for key, def in pairs({
 	Config.Minigames.Games[key] = def
 end
 
+-- 1.9 test command "Become an animal": brain cells for each animal form (human = back to normal)
+Config.TestAnimals = { dog = 1000000000, octopus = 300000000, mouse = 30000000, bee = 500000, fly = 100000, worm = 250, human = 70000000000 }
+
 -- 1.9 Cutscenes (Client/Cutscene.lua): camera keyframes + letterbox + fade, always skippable.
 -- Shots are relative to your character: pos = camera position offset, look = where it looks (offset).
 Config.Cutscenes = {
@@ -707,6 +710,17 @@ Config.Commands = {
 	skipgate = { min = 3, cat = "Players", label = "Pass Next Skill Gate", target = true },
 	passallgates = { min = 1, cat = "Players", label = "🧪 Pass ALL Skill Gates", target = true, selfBelow = 3 }, -- 1.8.9 test command
 	setiq = { min = 1, cat = "Players", label = "🧪 Set IQ", target = true, selfBelow = 3, arg = "IQ number" }, -- 1.8.9 test command
+	-- 1.9 test commands: testers on themselves only (selfBelow = 3), Head Mod+ on others
+	lifestage = { min = 1, cat = "Players", label = "🧪 Set Life Stage", target = true, selfBelow = 3, arg = "baby / kinder / kid / teen / adult / grandparent" },
+	promote = { min = 1, cat = "Players", label = "🧪 Promote (career +1)", target = true, selfBelow = 3 },
+	unlockinventions = { min = 1, cat = "Players", label = "🧪 Unlock all inventions", target = true, selfBelow = 3 },
+	timeofday = { min = 1, cat = "Players", label = "🧪 Time of day", target = true, selfBelow = 3, arg = "hour 0-24 (empty = normal)" },
+	testweather = { min = 1, cat = "Players", label = "🧪 Weather (my screen)", target = true, selfBelow = 3, arg = "rain / snow / storm" },
+	teleportto = { min = 1, cat = "Players", label = "🧪 Teleport to place", target = true, selfBelow = 3, arg = "place key (empty = list)" },
+	fps = { min = 1, cat = "Players", label = "🧪 FPS overlay", target = true, selfBelow = 3 },
+	becomeanimal = { min = 1, cat = "Players", label = "🧪 Become an animal", target = true, selfBelow = 3, arg = "dog / octopus / mouse / bee / fly / worm / human" },
+	eventinvite = { min = 1, cat = "Players", label = "🧪 Life event invite", target = true, selfBelow = 3, arg = "wedding / grandma / graduation / moving / pet / blackout (empty = random)" },
+	crossroads = { min = 1, cat = "Players", label = "🧪 Open Genius Crossroads", target = true, selfBelow = 3 },
 	resettutorial = { min = 3, cat = "Players", label = "Reset Tutorial", target = true },
 	bringall = { min = 3, cat = "Server", label = "Bring Everyone" },
 	muteall = { min = 3, cat = "Server", label = "Mute Everyone (not staff)" },
