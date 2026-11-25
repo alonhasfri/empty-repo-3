@@ -914,6 +914,7 @@ H.wipedata = function(actor, _, arg)
 	end
 	local online = Players:GetPlayerByUserId(id)
 	if online then
+		DataService.forget(online) -- 1.8.9 fix: no leave-save after the wipe
 		online:Kick("Your data was deleted at your request.")
 	end
 	task.wait(1)

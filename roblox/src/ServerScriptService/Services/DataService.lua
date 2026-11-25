@@ -188,6 +188,44 @@ function DataService.release(player: Player)
 	noSave[player] = nil
 end
 
+-- 1.8.9 fix: forget an online player WITHOUT saving (used before a wipe or a reset kick).
+-- The kick used to trigger the leave-save, which wrote the old data back after the wipe.
+function DataService.forget(player: Player)
+	noSave[player] = true
+	profiles[player] = nil
+end
+
+-- 1.8.9: a player's own "Reset my progress" (Settings). Keeps a backup copy for Config.Reset.BackupDays
+-- (key .. "_backup", in case they regret it), allows one reset per Config.Reset.CooldownHours,
+-- then deletes the save. The caller kicks the player with a friendly "rejoin to start fresh".
+function DataService.resetProgress(player: Player): (boolean, string?)
+	local data = profiles[player]
+	if not data or not store then
+		return false, "save"
+	end
+	local now = os.time()
+	if data.lastReset and now - data.lastReset < Config.Reset.CooldownHours * 3600 then
+		return false, "cooldown"
+	end
+	local ok = pcall(function()
+		local copy = table.clone(data)
+		copy.lock = nil
+		copy.backupTime = now
+		store:SetAsync(key(player.UserId) .. "_backup", copy)
+	end)
+	if not ok then
+		return false, "save"
+	end
+	DataService.forget(player)
+	local removed = pcall(function()
+		-- keep only the reset time, so the cooldown still works after the reset
+		local fresh = defaultData()
+		fresh.lastReset = now
+		store:SetAsync(key(player.UserId), fresh)
+	end)
+	return removed, removed and nil or "save"
+end
+
 -- Admin: delete a player's data (Roblox data-deletion requests)
 function DataService.wipe(userId: number): boolean
 	if not store then

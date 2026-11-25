@@ -115,6 +115,12 @@ Config.ViralBadgeCount = 5
 -- GAIN PATH
 ---------------------------------------------------------------------
 -- 1.8.8: the movement watchdog (Client/Watchdog.lua)
+-- 1.8.9: a player's own "Reset my progress" (Settings)
+Config.Reset = {
+	CooldownHours = 24, -- one reset a day
+	BackupDays = 7, -- the old save is kept under a backup key (staff can restore it)
+	HoldSeconds = 3, -- hold the red button this long
+}
 Config.Watchdog = {
 	Seconds = 4, -- held still with no known reason for this long = freed
 	RestoreWalk = 16, -- walk speed it gives back if something left it at 0

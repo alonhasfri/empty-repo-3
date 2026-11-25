@@ -1590,6 +1590,37 @@ function Stations.settings()
 	toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 15)
 	toggle(Content.Settings17.AlwaysDay, "alwaysDay", 19) -- 1.8.1
 	toggle(Content.Settings17.FewerToasts, "fewerToasts", 20) -- 1.8.1
+	-- 1.8.9: Reset my progress (warning, then HOLD a red button; the server does the reset and the backup)
+	UI.button(m.content, Content.ResetProgress.Button, function()
+		local RP = Content.ResetProgress
+		local rm = UI.modal(RP.Title, { color = C.bad })
+		UI.label(rm.content, RP.Warning, { LayoutOrder = 1 })
+		local hold = UI.button(rm.content, string.format(RP.Hold, Config.Reset.HoldSeconds), function() end, { LayoutOrder = 2, BackgroundColor3 = C.bad, Size = UDim2.new(1, 0, 0, math.max(56, UI.minTouch())) })
+		local token = 0
+		hold.MouseButton1Down:Connect(function()
+			token += 1
+			local my = token
+			for i = Config.Reset.HoldSeconds, 1, -1 do
+				hold.Text = string.format(RP.Holding, i)
+				task.wait(1)
+				if token ~= my or not rm.alive() then
+					return
+				end
+			end
+			local r = Remote.call("reset_progress")
+			if r and not r.ok and r.msg then
+				UI.toast(r.msg, C.bad)
+				rm.close()
+			end
+		end)
+		local function letGo()
+			token += 1
+			hold.Text = string.format(RP.Hold, Config.Reset.HoldSeconds)
+		end
+		hold.MouseButton1Up:Connect(letGo)
+		hold.MouseLeave:Connect(letGo)
+		rm.focus()
+	end, { LayoutOrder = 90, BackgroundColor3 = Color3.fromRGB(120, 30, 40) })
 	-- 1.8: Life Pack (only shown to owners)
 	if UI.state and UI.state.perks and UI.state.perks.LifePack then
 		UI.button(m.content, Content.LifeStages.StartLife, function()

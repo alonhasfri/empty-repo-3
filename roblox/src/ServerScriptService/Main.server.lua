@@ -146,6 +146,18 @@ local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config)
 local Content = require(Shared.Content)
 local Rooms = require(Services.Rooms)
+-- 1.8.9: a player's own "Reset my progress" (Settings, hold-to-confirm on the client)
+Net.on("reset_progress", function(player)
+	local ok, why = DataService.resetProgress(player)
+	if not ok then
+		return { ok = false, msg = why == "cooldown" and Content.ResetProgress.Cooldown or Content.ResetProgress.Failed }
+	end
+	task.delay(0.5, function()
+		player:Kick(Content.ResetProgress.Kick)
+	end)
+	return { ok = true }
+end)
+
 local unstuckAt = {}
 Net.on("unstuck", function(player)
 	local now = os.clock()

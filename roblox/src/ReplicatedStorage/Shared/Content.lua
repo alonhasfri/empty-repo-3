@@ -1400,6 +1400,18 @@ Content.AdminUI = {
 
 -- 1.8.5: ⚡ Quick Play quiz
 -- 1.8.8: the stress freeze always ends by itself now
+-- 1.8.9: Settings → Reset my progress
+Content.ResetProgress = {
+	Button = "⚠️ Reset my progress",
+	Title = "⚠️ Reset my progress",
+	Warning = "This resets your brain cells, path, coins, job and items, and you start fresh. Your Roblox badges and anything bought with Robux stay. You can do this once a day.",
+	Hold = "Hold for %d s to reset",
+	Holding = "Keep holding… %d",
+	Kick = "Your progress was reset. Rejoin to start fresh! 🧠",
+	Cooldown = "You can reset once a day. Try again tomorrow.",
+	Failed = "Reset failed (save problem). Nothing was changed.",
+}
+
 Content.StressFreeze = {
 	Frozen = "😵 Too stressed! You're slowed down for %d s. A habit (coffee, nap, pigeons) calms you faster.",
 	Calm = "😌 You feel calm again.",
