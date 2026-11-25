@@ -263,3 +263,8 @@ Before publishing: bump Config.Version to 1.8.9 and add a What's new line ("Skil
 ### How real art gets in
 - **UI icons and panels:** PNG images. The user (or an AI image tool) makes them, and the Creator Store has free licensed UI kits. Claude uploads them with the Open Cloud key (it has asset write access) and wires them in as ImageLabels/ImageButtons. Panels use 9-slice images that stretch to any size.
 - **3D models:** Claude searches the Creator Store from Studio (search_asset/insert_asset), strips any scripts, and the town builder places them (houses, shops, cars, trees, lamps) instead of code-made blocks. Blender is optional (needs the user's OK to install).
+
+### Art pipeline (user, Nov 25)
+- The user is installing **Blender** plus the **Blender MCP** add-on. After restarting the Claude app, Claude can control Blender for custom models (Brain Tower, Shredder, castle).
+- App icons: the user makes them with a free image AI (Copilot/Designer, Bing Image Creator or ChatGPT) and drops PNGs in art/icons/ (see art/icons/README.md). Until then use a free Creator Store icon pack, not code-drawn icons.
+- Order of preference: Creator Store assets (polished, free) → the user's image AI icons → Studio's AI generators (textures, meshes) → Blender custom models → Claude's SVG icons (last resort, flat).
