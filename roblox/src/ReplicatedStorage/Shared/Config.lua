@@ -609,6 +609,8 @@ Config.Commands = {
 	embarrass = { min = 3, cat = "Players", label = "Set Embarrassment", target = true, arg = "0 – 100" },
 	givegadget = { min = 3, cat = "Players", label = "Give Secret Invention", target = true, arg = "duck / coffee / pigeons / rain / boots / remote / goggles / rewind / robot" },
 	skipgate = { min = 3, cat = "Players", label = "Pass Next Skill Gate", target = true },
+	passallgates = { min = 1, cat = "Players", label = "🧪 Pass ALL Skill Gates", target = true, selfBelow = 3 }, -- 1.8.9 test command
+	setiq = { min = 1, cat = "Players", label = "🧪 Set IQ", target = true, selfBelow = 3, arg = "IQ number" }, -- 1.8.9 test command
 	resettutorial = { min = 3, cat = "Players", label = "Reset Tutorial", target = true },
 	bringall = { min = 3, cat = "Server", label = "Bring Everyone" },
 	muteall = { min = 3, cat = "Server", label = "Mute Everyone (not staff)" },

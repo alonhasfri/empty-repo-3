@@ -713,6 +713,28 @@ H.skipgate = function(actor, target)
 	BrainService.push(target)
 	return target.Name .. " passed " .. gate.name .. "."
 end
+-- 1.8.9 test commands (Testing tab): pass every Skill Gate, and set IQ directly
+H.passallgates = function(actor, target)
+	local data = DataService.get(target)
+	for _, g in ipairs(Config.Gates) do
+		data.gatesPassed[g.id] = true
+	end
+	data.adminTouched = true
+	BrainService.resetGateNotice(target)
+	BrainService.push(target)
+	return target.Name .. " passed every Skill Gate."
+end
+H.setiq = function(actor, target, arg)
+	local iq = tonumber(arg or "")
+	if not iq then
+		return "Type an IQ number, like 120"
+	end
+	-- the inverse of Brain.iq below the overflow point: every CellsPerSD cells = 15 IQ
+	local cells = math.max(0, Config.AverageCells + (iq - 100) / 15 * Config.CellsPerSD)
+	DataService.get(target).adminTouched = true
+	BrainService.setCells(target, cells)
+	return target.Name .. " now has IQ " .. iq .. " (" .. Brain.formatNumber(cells) .. " brain cells)."
+end
 H.resettutorial = function(actor, target)
 	local s = DataService.get(target).settings
 	s.tutLose, s.tutGain = 1, 1
