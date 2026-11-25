@@ -40,7 +40,7 @@ WorldService.onWork = nil
 ---------------------------------------------------------------------
 -- The whole town is designed at full size, then shrunk horizontally by S
 -- so it's compact and quick to walk around. Heights are not shrunk.
-local S = 0.55
+local S = Config.Map.Scale -- 1.8.8 (user: "everything is too small, especially the roads"): was 0.55
 WorldService.Scale = S
 local function sp(v: Vector3): Vector3
 	return Vector3.new(v.X * S, v.Y, v.Z * S)
@@ -479,16 +479,18 @@ local function buildGround()
 	road(Vector3.new(-200, 0, 200), 400, false)
 	road(Vector3.new(200, 0, 200), 400, false)
 	-- parked cars
-	for i = 1, 14 do
-		local x = math.random(-380, 380)
-		if math.abs(x) > 80 then
-			car(CFrame.new(x, 0, 9 * (i % 2 == 0 and 1 or -1)) * CFrame.Angles(0, math.rad(90), 0))
+	-- 1.8.8 (user: "cars are inside each other and glitching"): fixed parking bays, evenly spaced,
+	-- never on the river bridge or the plaza, instead of random spots that could overlap
+	local R = Config.Map.River
+	local i = 0
+	for a = -380, 380, Config.Map.CarSpacing do
+		i += 1
+		local side = (i % 2 == 0) and 1 or -1
+		if math.abs(a) > 90 and math.abs(a - R.X) > R.Width then
+			car(CFrame.new(a, 0, 9 * side) * CFrame.Angles(0, math.rad(90), 0)) -- along the main avenue
 		end
-	end
-	for i = 1, 10 do
-		local z = math.random(-380, 380)
-		if math.abs(z) > 80 then
-			car(CFrame.new(9 * (i % 2 == 0 and 1 or -1), 0, z))
+		if math.abs(a) > 90 and i % 2 == 0 then
+			car(CFrame.new(9 * -side, 0, a)) -- along Main Street, every other bay
 		end
 	end
 end

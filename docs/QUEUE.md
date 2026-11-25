@@ -227,3 +227,10 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
 5. **More debug commands** in the 🧪 Testing tab: pass all gates, set IQ / brain band / style, life stage + Crossroads, job/promote, unlock inventions/projects, test badges, stress/coins/bank, time of day + weather, teleports (buildings, Moon, castle stages, horror spots), horror stage, play cutscene, FPS/part overlay, daily tasks, refill Quick Play, reset seen lines, become an animal. Testers on themselves only; Head Mod+ on others; all server-checked and logged.
 6. **💬 Send feedback** button (Roblox's built-in feedback prompt; check the current API before using it; pcall plus a friendly toast if unavailable).
 7. **Settings redesign** in the staff-panel style: tabs (Sound, Graphics, Controls & Screen, Notifications, Language, Gameplay, Info, Feedback, Danger zone with hold-to-confirm reset, Help), big toggles, search, remembers the last tab, phone landscape first.
+8. **"UI is really bad"** (user, Nov 25; hard to say why, so Claude should find out). Likely causes to check first:
+   - mixed styles (cash-grab gradients and thick outlines next to the dark admin style)
+   - too many corners and borders
+   - inconsistent sizes
+   - crowded edges
+   - toasts and goal lines competing for the top
+   Plan: one calm design kit (like the new admin panel) for the HUD, pop-ups, phone and Settings, with bigger touch targets and text, then before/after screenshots.

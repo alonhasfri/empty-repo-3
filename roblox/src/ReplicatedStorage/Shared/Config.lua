@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
-Config.Version = "1.8.7"
+Config.Version = "1.8.8"
 -- 1.8.3: the brain counter shortens numbers from here on (1.2T, 9.9Qa ...)
 Config.ShortNumberFrom = 1e12
 Config.NumberSuffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" }
@@ -718,6 +718,8 @@ Config.LoseFX = {
 
 Config.Map = {
 	LandmarkHeight = 70, -- the Brain Tower in the plaza, seen from every street
+	Scale = 0.85, -- 1.8.8: the town is designed at full size and squeezed sideways by this (was 0.55: roads and buildings looked tiny next to players)
+	CarSpacing = 55, -- design studs between parked cars (no more cars inside each other)
 	TrailSeconds = 20, -- animal smell trail lasts this long
 	SmallDecorSize = 2, -- parts this small (every side) lose shadows and collision (phone speed)
 	NoShadowSize = 4, -- parts this small lose shadows
