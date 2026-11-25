@@ -178,7 +178,7 @@ Net.on("gate_start", function(player)
 	local hints = Config.GateHints + (data.perks.ExtraHints and 2 or 0) + (data.bonusHints or 0)
 	data.bonusHints = 0
 	sess.gate = { gate = gate, questions = chosen, started = os.clock(), seconds = seconds, hints = hints }
-	BrainService.stress(player, 10)
+	BrainService.stress(player, Config.GateStartStress) -- 1.8.8: 0 (gates are friendly now; stress here helped freeze players)
 	local out = {}
 	for i, qi in ipairs(chosen) do
 		local q = Content.GateQuestions[qi]
@@ -242,7 +242,7 @@ Net.on("gate_submit", function(player, d)
 	end
 	data.stats.gatesFailed += 1
 	sess.gateCooldown = os.clock() + Config.GateFailCooldown
-	BrainService.stress(player, 15)
+	BrainService.stress(player, Config.GateFailStress) -- 1.8.8: 0
 	BrainService.narrate(player, "gateFail")
 	return { ok = true, passed = false, correct = correctCount, total = #g.questions, late = not inTime }
 end)

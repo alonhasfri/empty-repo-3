@@ -376,6 +376,7 @@ H.freeze = function(actor, target)
 	if root then
 		root.Anchored = true
 	end
+	target:SetAttribute("AdminFrozen", true) -- 1.8.8: the movement watchdog leaves staff freezes alone
 	return target.Name .. " is frozen."
 end
 
@@ -384,6 +385,7 @@ H.unfreeze = function(actor, target)
 	if root then
 		root.Anchored = false
 	end
+	target:SetAttribute("AdminFrozen", nil)
 	return target.Name .. " is unfrozen."
 end
 

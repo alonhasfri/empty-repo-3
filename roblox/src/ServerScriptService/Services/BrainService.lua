@@ -289,7 +289,7 @@ function BrainService.applyCharacter(player)
 	end
 	local stage = Brain.stage(data.cells, BrainService.secretAnimals)
 	if data.cells > 0 and humanoid.Health > 0 then
-		humanoid.WalkSpeed = (rt(player).frozen and 0) or (stage.walk + BrainService.extraSpeed())
+		humanoid.WalkSpeed = (rt(player).frozen and Config.Stress.FrozenWalk) or (stage.walk + BrainService.extraSpeed()) -- 1.8.8: slow, never 0
 	end
 
 	-- scale (animals are smaller)
@@ -675,8 +675,22 @@ function BrainService.stress(player, amount: number)
 	if data.stress >= Config.Stress.FreezeAt and not r.frozen then
 		r.frozen = true
 		BrainService.narrate(player, "stressed")
-		BrainService.toast(player, "😵 Too stressed! You're frozen. Do a genius habit (coffee, nap, pigeons) to calm down.", "SadTrombone")
+		BrainService.toast(player, string.format(Content.StressFreeze.Frozen, Config.Stress.FreezeSeconds), "SadTrombone")
 		BrainService.applyCharacter(player)
+		-- 1.8.8 fix (user: "sometimes you get stuck and can't move"): the freeze used to last until a habit
+		-- calmed you down, but you couldn't walk to one. Now it always ends by itself after a few seconds.
+		local myFreeze = os.clock()
+		r.frozenAt = myFreeze
+		task.delay(Config.Stress.FreezeSeconds, function()
+			local d2 = DataService.get(player)
+			if player.Parent and d2 and r.frozen and r.frozenAt == myFreeze then
+				d2.stress = math.min(d2.stress, Config.Stress.CalmTo)
+				r.frozen = false
+				BrainService.toast(player, Content.StressFreeze.Calm, "LibrarianChime")
+				BrainService.applyCharacter(player)
+				BrainService.push(player)
+			end
+		end)
 	elseif r.frozen and data.stress <= 70 then
 		r.frozen = false
 		BrainService.toast(player, "😌 You feel calm again.", "LibrarianChime")
@@ -699,7 +713,7 @@ function BrainService.blocked(player): string?
 		return "You're hiding behind a bush from embarrassment!"
 	end
 	if r.frozen then
-		return "You're too stressed! Do a habit first."
+		return "😵 You're too stressed for a few seconds. Breathe… or do a habit."
 	end
 	return nil
 end

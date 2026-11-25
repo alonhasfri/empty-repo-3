@@ -1349,6 +1349,16 @@ Content.AdminUI = {
 }
 
 -- 1.8.5: ⚡ Quick Play quiz
+-- 1.8.8: the stress freeze always ends by itself now
+Content.StressFreeze = {
+	Frozen = "😵 Too stressed! You're slowed down for %d s. A habit (coffee, nap, pigeons) calms you faster.",
+	Calm = "😌 You feel calm again.",
+}
+-- 1.8.8: the movement watchdog (frees you if something left you stuck)
+Content.Watchdog = {
+	Freed = "🦶 You looked stuck, so we freed you!",
+}
+
 Content.QuickPlay = {
 	Button = "Quick Play",
 	Title = "⚡ Quick Play",

@@ -31,6 +31,12 @@ LoseFX.start()
 local AnimalUI = require(Client.AnimalUI)
 local Guide = require(Client.Guide)
 local LowGraphics = require(Client.LowGraphics)
+local Watchdog = require(Client.Watchdog) -- 1.8.8: frees you if something left you stuck
+-- locks that are on purpose: the watchdog leaves these alone
+Watchdog.isLocked = function(): boolean
+	local lp = game:GetService("Players").LocalPlayer
+	return Conversation.isOpen() or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
+end
 local SpeedrunTimer = require(Client.SpeedrunTimer)
 local DayNight = require(Client.DayNight)
 local _Horror = require(Client.Horror) -- 1.7.3: The Average Files (listens on its own)
@@ -80,6 +86,7 @@ Hud.onUnstuck = function()
 	if Conversation.isOpen() then
 		Conversation.close()
 	end
+	Watchdog.freeNow(false) -- 1.8.8: Unstuck also clears every local lock (anchor, sit, camera, hidden thumbstick)
 	local r = Remote.call("unstuck")
 	if r and r.msg then
 		UI.toast(r.msg, r.ok and UI.Colors.good or nil)

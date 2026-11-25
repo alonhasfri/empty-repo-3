@@ -83,7 +83,9 @@ Config.Gates = {
 Config.GateQuestionCount = 3
 Config.GateSeconds = 60
 Config.GateExtraTimeMultiplier = 1.5 -- accessibility setting
-Config.GateFailCooldown = 30
+Config.GateFailCooldown = 0 -- 1.8.8 (user: gates must be easy): retry right away
+Config.GateStartStress = 0 -- stress added when a gate starts (was 10)
+Config.GateFailStress = 0 -- stress added when a gate is failed (was 15)
 Config.GateHints = 1 -- hints per attempt (Extra Hints pass adds 2)
 Config.HintCostFraction = 0.01 -- a hint costs 1% of your cells
 
@@ -111,7 +113,18 @@ Config.ViralBadgeCount = 5
 ---------------------------------------------------------------------
 -- GAIN PATH
 ---------------------------------------------------------------------
-Config.Stress = { Max = 100, FreezeAt = 100 }
+-- 1.8.8: the movement watchdog (Client/Watchdog.lua)
+Config.Watchdog = {
+	Seconds = 4, -- held still with no known reason for this long = freed
+	RestoreWalk = 16, -- walk speed it gives back if something left it at 0
+}
+Config.Stress = {
+	Max = 100,
+	FreezeAt = 100,
+	FreezeSeconds = 8, -- 1.8.8: a stress freeze always ends by itself after this long
+	CalmTo = 60, -- stress after the freeze ends
+	FrozenWalk = 6, -- walk speed while frozen (slow, never 0, so you can walk to a habit)
+}
 Config.EurekaTasks = 6 -- job tasks needed to fill the idea meter (Eureka cutscene)
 Config.WorkRadius = 45 -- how close to your workplace you must be to work
 -- 1.6 careers: XP to reach level 2/3/4 of a job's ladder, and the IQ each level needs:
