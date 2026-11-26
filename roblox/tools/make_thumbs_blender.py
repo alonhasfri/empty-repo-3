@@ -308,3 +308,102 @@ def t5_genius():
     title("GENIUS", 1.1, -3.4, -0.2, (0.45, 0.8, 1.0), rot=-3)
     title("JOBS  INVENTIONS  ROCKETS", 0.55, 0, -3.85, (1, 1, 1))
     return render("thumb5_become_a_genius")
+
+
+# ------------------------------------------------------------------ v2 (user, Nov 26): real brain model + white backgrounds
+# "Brain" by Poly by Google, https://poly.pizza/m/5mPRPZkI3qt, CC-BY 3.0 (credited in marketing/CREDITS.md)
+BRAIN_FILE = os.path.join(TD, "brain_model.blend")
+WHITE = False
+
+
+def brain(loc, r, rgb=None, metal=0.0, rough=0.35, emit=0.0, rot=(0, 0, 0)):  # noqa: F811
+    with bpy.data.libraries.load(BRAIN_FILE) as (src, dst):
+        dst.objects = ["BRAIN"]
+    o = dst.objects[0]
+    bpy.context.collection.objects.link(o)
+    o.data = o.data.copy()
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(o.data)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.6)
+    bm.to_mesh(o.data)
+    bm.free()
+    # model: 214 x 172 x 180 units, origin at the bottom; centre it on loc and size it so its width is ~2.5 r
+    s = (2.5 * r) / 214.0
+    o.scale = (s, s, s)
+    o.rotation_euler = (math.radians(rot[0]), math.radians(rot[1]), math.radians(rot[2]))
+    bpy.context.view_layer.update()
+    corners = [o.matrix_world @ Vector(c) for c in o.bound_box]
+    centre = sum(corners, Vector()) / 8
+    o.location += Vector(loc) - centre
+    rgb = rgb or (1.0, 0.56, 0.68)
+    if True:
+        m = mat("brainmodel" + str(rgb), C_rgb(rgb), rough=rough, metal=metal, emit=emit)  # noqa: F821
+        o.data.materials.clear()
+        o.data.materials.append(m)
+    for p in o.data.polygons:
+        p.use_smooth = True
+    sub = o.modifiers.new("round", "SUBSURF")
+    sub.levels = 1
+    sub.render_levels = 1
+    return o
+
+
+_bg_v1, _shade_v1, _title_v1 = background, shade, title
+
+
+def background(*a, **k):  # noqa: F811
+    return None if WHITE else _bg_v1(*a, **k)
+
+
+def shade(*a, **k):  # noqa: F811
+    return None if WHITE else _shade_v1(*a, **k)
+
+
+def title(t, size, x, z, rgb, **k):  # noqa: F811
+    if WHITE and rgb == (1, 1, 1):
+        rgb = (0.3, 0.6, 1.0)  # white text would vanish on white
+    return _title_v1(t, size, x, z, rgb, **k)
+
+
+def white_world():
+    # pure white where the camera looks at the sky, but only soft grey light on the objects (no wash-out)
+    w = bpy.context.scene.world
+    nt = w.node_tree
+    for n in list(nt.nodes):
+        nt.nodes.remove(n)
+    lp = nt.nodes.new("ShaderNodeLightPath")
+    white = nt.nodes.new("ShaderNodeBackground")
+    white.inputs["Color"].default_value = (1, 1, 1, 1)
+    white.inputs["Strength"].default_value = 1.0
+    soft = nt.nodes.new("ShaderNodeBackground")
+    soft.inputs["Color"].default_value = (0.9, 0.92, 1.0, 1)
+    soft.inputs["Strength"].default_value = 0.45
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    out = nt.nodes.new("ShaderNodeOutputWorld")
+    nt.links.new(lp.outputs["Is Camera Ray"], mix.inputs["Fac"])
+    nt.links.new(soft.outputs[0], mix.inputs[1])
+    nt.links.new(white.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], out.inputs["Surface"])
+
+
+def render_white(fn, name):
+    global WHITE
+    WHITE = True
+    try:
+        _render = globals()["render"]
+        globals()["render"] = lambda n: (white_world(), _render(name))[1]
+        return fn()
+    finally:
+        globals()["render"] = _render
+        WHITE = False
+
+
+_sparkle_v1 = sparkle
+
+
+def sparkle(loc, s, rgb=(1, 0.95, 0.6)):  # noqa: F811
+    if WHITE:
+        o = poly(star_points(s, s * 0.22, 4), 0.05, loc, mat("spark_w", C_rgb((1.0, 0.72, 0.1)), emit=0.6))  # noqa: F821
+        return o
+    return _sparkle_v1(loc, s, rgb)
