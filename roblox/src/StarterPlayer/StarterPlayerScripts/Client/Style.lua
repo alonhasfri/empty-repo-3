@@ -151,6 +151,13 @@ local function slotFor(part: BasePart, role: string, orig): string?
 	return "accent" -- accent + cashgrab
 end
 
+-- 1.9.1 map clean-up (user: "some things don't fit in and look out of place… chaotic"): the cash-grab
+-- joke look (neon accents, $K/s tags) only happens on the Lose side of the river, never on the smart side.
+local LOSE_EDGE = Config.Map.River.X * Config.Map.Scale
+local function loseSide(part: Instance): boolean
+	return part:IsA("BasePart") and part.Position.X < LOSE_EDGE
+end
+
 local function stylePart(part: BasePart, look: string, styleName: string)
 	remember(part)
 	local role = part:GetAttribute("Role") or "accent"
@@ -180,13 +187,13 @@ local function stylePart(part: BasePart, look: string, styleName: string)
 		mat = Enum.Material.SmoothPlastic
 	end
 	-- cash-grab overlay (Lose 45-86B and the lobby): loud accents on top of the style
-	if (look == "cashgrab" or look == "cozycash") and (role == "accent" or role == "cashgrab") then
+	if (look == "cashgrab" or look == "cozycash") and (role == "accent" or role == "cashgrab") and loseSide(part) then
 		mat = Enum.Material.SmoothPlastic
 		color = hashColor(part)
 	end
 	part.Material = mat
 	part.Color = color
-	local money = (look == "cashgrab" or look == "cozycash") and role == "accent" and math.random() < 0.35
+	local money = (look == "cashgrab" or look == "cozycash") and role == "accent" and loseSide(part) and math.random() < 0.2
 	moneyTag(part, money and not lowDetail)
 end
 
@@ -198,12 +205,13 @@ local function styleSign(label: TextLabel, look: string, styleName: string)
 	label.TextColor3 = sg.color
 	label.TextStrokeColor3 = sg.stroke
 	label.TextStrokeTransparency = sg.strokeT
-	if look == "cashgrab" or look == "cozycash" then
+	local gui = label:FindFirstAncestorWhichIsA("LayerCollector")
+	local holder = gui and ((gui:IsA("BillboardGui") and gui.Adornee) or gui.Parent)
+	if (look == "cashgrab" or look == "cozycash") and holder and loseSide(holder) then
 		label.Font = Enum.Font.FredokaOne
 		label.TextColor3 = Color3.fromRGB(255, 235, 60)
 		label.TextStrokeColor3 = Color3.new(0, 0, 0)
 		label.TextStrokeTransparency = 0
-		text = "🔥 " .. text .. " 🔥"
 	end
 	label.Text = text
 end

@@ -265,8 +265,9 @@ Config.MinigameMinSeconds = {
 -- 1.7.2: plaza leaderboards (OrderedDataStore; every call is pcall'd, the board just rests if the store is down)
 Config.Boards = {
 	Refresh = 60, -- seconds between saving new scores and redrawing the boards
-	WeeklyPay = { Store = "WeeklyPay", Top = 10, Pos = Vector3.new(-30, 7, 16), Facing = Vector3.new(1, 0, 0.15) }, -- left of spawn, facing it
-	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(30, 7, 16), Facing = Vector3.new(-1, 0, 0.15) }, -- right of spawn
+	-- 1.9.1 map clean-up: one tidy row of boards at the back of the plaza, all facing the spawn
+	WeeklyPay = { Store = "WeeklyPay", Top = 10, Pos = Vector3.new(-54, 7, -44), Facing = Vector3.new(0, 0, 1) },
+	Speedrun = { Store = "SpeedrunIQ200", Top = 10, Pos = Vector3.new(54, 7, -44), Facing = Vector3.new(0, 0, 1) },
 }
 
 -- 1.8.1: day-night cycle in town (same clock for everyone). Settings → Always day turns it off.
@@ -360,7 +361,7 @@ Config.PhoneShop = {
 	ShopPos = Vector3.new(-400, 0.6, 100), -- 1.8 River City: west of the river
 }
 
-Config.VsLobbySignPos = Vector3.new(22, 7, 4) -- 1.8.1: plaza, to the side (it used to block the view at spawn)
+Config.VsLobbySignPos = Vector3.new(0, 8, -44) -- 1.9.1: in the board row at the back of the plaza
 
 -- 1.7.3: "The Average Files" part 1 (notes + sightings). Kid-safe; Settings → Horror: Off / Spooky / Full.
 Config.Horror = {
@@ -865,6 +866,7 @@ Config.Map = {
 	River = { X = -145, Width = 60, Depth = 6, Bridges = { -250, 250 }, Boats = { -160, 150 } },
 	Park = { X1 = 20, X2 = 180, Z1 = 220, Z2 = 380 }, -- stays green (design studs)
 	-- 1.8: decorative closed shops (Lose side) and houses (Gain side) that fill free street slots
+	CashGrabRow = { X = -390, Z = -28, Step = 20 }, -- 1.9.1: cash-grab stands in front of the Brainrot Mall (design studs)
 	Fill = {
 		Edge = 470, -- stay inside the edge wall
 		StepX = 58, -- leaves ~26-stud walkable alleys between buildings
@@ -1162,8 +1164,8 @@ Config.Homes = {
 
 -- 1.9.1 town board (TownBoardService): live rows for this server, in the plaza next to the weekly-pay board
 Config.TownBoard = {
-	Pos = Vector3.new(-30, 8, -8),
-	Facing = Vector3.new(1, 0, 0.3),
+	Pos = Vector3.new(-28, 8, -44), -- 1.9.1: in the board row at the back of the plaza
+	Facing = Vector3.new(0, 0, 1),
 	Refresh = 20,
 }
 
@@ -1221,8 +1223,8 @@ Config.GeniusEnd = {
 
 -- 1.9.1 big ideas #12 (BrainrotTVService): the square's TV, dumber when the server is dumber
 Config.BrainrotTV = {
-	Pos = Vector3.new(30, 12, -8), -- across from the town board
-	Facing = Vector3.new(-1, 0, 0.3),
+	Pos = Vector3.new(26, 12, -44), -- 1.9.1: in the board row at the back of the plaza
+	Facing = Vector3.new(0, 0, 1),
 	Size = Vector2.new(18, 10),
 	ShowSeconds = 8, -- a new show every few seconds
 	IQCuts = { 120, 100, 85, 65 }, -- server average IQ at/above these → channel 0, 1, 2, 3; below the last → 4

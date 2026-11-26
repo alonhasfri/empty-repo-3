@@ -584,9 +584,11 @@ local function buildPlaza()
 		end
 	end)
 
-	-- Cash-grab BUY NOW stands on the east side (Gain path joke)
+	-- Cash-grab BUY NOW stands: 1.9.1 moved from the smart side's main street to the front of the
+	-- Brainrot Mall (Lose side), where the joke belongs
 	for i, btn in ipairs(Content.CashGrabButtons) do
-		local base = CFrame.new(sp(Vector3.new(85 + i * 22, 0.6, 30)))
+		local M = Config.Map.CashGrabRow
+		local base = CFrame.new(sp(Vector3.new(M.X + (i - 1) * M.Step, 0.6, M.Z)))
 		local colors = { Color3.fromRGB(230, 40, 120), Color3.fromRGB(30, 160, 230), Color3.fromRGB(250, 170, 20) }
 		local machine = Props.vending(base, "BUY NOW!!", colors[i])
 		for _, d in ipairs(machine:GetDescendants()) do
@@ -1192,11 +1194,15 @@ local function buildPolish()
 	for _, g in ipairs(CM.Gates) do
 		local x = g.x
 		local color = g.color
+		-- 1.9.1 map clean-up: brick posts and a wooden beam that match the town; the district colour is only on the sign
 		for _, z in ipairs({ -23, 23 }) do
-			part({ Name = "GatePost", Size = Vector3.new(3, 22, 3), Position = Vector3.new(x, 11, z), Color = color, Material = Enum.Material.Concrete }, "accent")
+			part({ Name = "GatePost", Size = Vector3.new(3.4, 20, 3.4), Position = Vector3.new(x, 10, z), Color = Color3.fromRGB(150, 85, 65), Material = Enum.Material.Brick }, "trim")
+			part({ Name = "GateCap", Size = Vector3.new(4.2, 1, 4.2), Position = Vector3.new(x, 20.5, z), Color = Color3.fromRGB(225, 215, 195), Material = Enum.Material.Concrete }, "trim")
 		end
-		local beam = part({ Name = "GateBeam", Size = Vector3.new(4, 4, 50), Position = Vector3.new(x, 23, 0), Color = color, Material = Enum.Material.Concrete }, "accent")
-		sign(beam, g.name, 5, 320, 46)
+		local beam = part({ Name = "GateBeam", Size = Vector3.new(2.4, 2.4, 50), Position = Vector3.new(x, 21.5, 0), Color = Color3.fromRGB(110, 75, 45), Material = Enum.Material.WoodPlanks }, "trim")
+		local plate = part({ Name = "GateSign", Size = Vector3.new(1, 4, 24), Position = Vector3.new(x, 18.6, 0), Color = color:Lerp(Color3.fromRGB(40, 40, 50), 0.45), Material = Enum.Material.WoodPlanks }, "trim")
+		local _ = beam
+		sign(plate, g.name, 3, 280, 40)
 		local npc = FriendService.npc(g.guide, nil, color, Color3.fromRGB(60, 60, 70))
 		local root
 		if npc then
@@ -1205,14 +1211,14 @@ local function buildPolish()
 					d.Anchored = true
 				end
 			end
-			npc:PivotTo(CFrame.new(sp(Vector3.new(x, 3.8, 30))) * CFrame.Angles(0, x < 0 and -math.pi / 2 or math.pi / 2, 0))
+			npc:PivotTo(CFrame.new(sp(Vector3.new(x + (x < 0 and 5 or -5), 3.8, 27))) * CFrame.Angles(0, x < 0 and -math.pi / 2 or math.pi / 2, 0))
 			npc.Parent = mapFolder
 			root = npc:FindFirstChild("HumanoidRootPart") or npc.PrimaryPart
 		end
 		if not root then
 			root = part({ Name = g.guide, Size = Vector3.new(2, 5, 1.5), Position = Vector3.new(x, 3.1, 30), Color = color }, "accent")
 		end
-		sign(root, g.guide, 4, 200, 28)
+		sign(root, g.guide, 3.4, 150, 22)
 		prompt(root, CM.Talk, g.guide).Triggered:Connect(function(player)
 			BrainService.toast(player, g.tip)
 		end)
