@@ -835,6 +835,11 @@ end
 
 -- Chess genius: mate in one (white to move). Pieces are letters in circles (no missing glyphs).
 function GAMES.mate(area, ctx)
+	if UI.isPhone() then
+		-- morning test fix: on a landscape phone the 260 px area ran past the bottom of the pop-up
+		-- (the last rank needed scrolling in a timed puzzle), so the board is smaller there
+		area.Size = UDim2.new(1, 0, 0, 190)
+	end
 	label(area, TG.ChessHint, { Size = UDim2.fromScale(1, 0.1), Font = UI.T.body })
 	local board = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.12), Size = UDim2.fromScale(1, 0.88), BackgroundTransparency = 1, Parent = area }, {
 		UI.new("UIAspectRatioConstraint", { AspectRatio = 1 }),
@@ -848,14 +853,19 @@ function GAMES.mate(area, ctx)
 	local function draw()
 		for name, b in pairs(squares) do
 			local p = puzzle.pieces[name]
-			b.Text = p and string.upper(p) or ""
-			b.TextColor3 = (p and p == string.upper(p)) and Color3.new(1, 1, 1) or Color3.new(0.08, 0.08, 0.1)
+			local white = p ~= nil and p == string.upper(p)
+			-- morning test fix: plain letters looked the same for both sides, so each piece is a
+			-- disc: white disc + dark letter = yours, dark disc + white letter = the other side
+			local disc = b:FindFirstChild("Piece")
+			disc.Visible = p ~= nil
+			disc.Text = p and string.upper(p) or ""
+			disc.BackgroundColor3 = white and Color3.fromRGB(250, 250, 250) or Color3.fromRGB(30, 30, 36)
+			disc.TextColor3 = white and Color3.fromRGB(20, 20, 26) or Color3.fromRGB(250, 250, 250)
+			disc:FindFirstChildOfClass("UIStroke").Color = white and Color3.fromRGB(20, 20, 26) or Color3.fromRGB(250, 250, 250)
 			b.BackgroundColor3 = b:GetAttribute("Light") and Color3.fromRGB(235, 220, 190) or Color3.fromRGB(150, 110, 80)
 			if name == chosen then
 				b.BackgroundColor3 = UI.T.accent
 			end
-			b.TextStrokeTransparency = p and 0.2 or 1
-			b.TextStrokeColor3 = (p and p == string.upper(p)) and Color3.new(0, 0, 0) or Color3.new(1, 1, 1)
 		end
 	end
 	local order = 0
@@ -865,6 +875,23 @@ function GAMES.mate(area, ctx)
 			local name = sq(file, rank)
 			local b = UI.new("TextButton", { Text = "", TextScaled = true, Font = UI.T.title, AutoButtonColor = false, BorderSizePixel = 0, LayoutOrder = order, Parent = board })
 			b:SetAttribute("Light", (file + rank) % 2 == 1)
+			local disc = UI.new("TextLabel", {
+				Name = "Piece",
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale(0.5, 0.5),
+				Size = UDim2.fromScale(0.8, 0.8),
+				Text = "",
+				TextScaled = true,
+				Font = UI.T.title,
+				Visible = false,
+				Active = false,
+				Parent = b,
+			}, {
+				UI.new("UICorner", { CornerRadius = UDim.new(0.5, 0) }),
+				UI.new("UIStroke", { Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+				UI.new("UIPadding", { PaddingTop = UDim.new(0.12, 0), PaddingBottom = UDim.new(0.12, 0), PaddingLeft = UDim.new(0.12, 0), PaddingRight = UDim.new(0.12, 0) }),
+			})
+			disc.ZIndex = b.ZIndex + 1
 			squares[name] = b
 			b.Activated:Connect(function()
 				if not ctx.alive() or not puzzle then
@@ -894,13 +921,46 @@ end
 -- The framework: start screen, timer, score, server check, result
 ---------------------------------------------------------------------
 -- info: what MinigameService.begin returned. opts.onAgain() = play another; opts.onResult(result)
+-- Pop-ups that arrive while a minigame (or its result) is on screen wait until it closes,
+-- so e.g. the shift report card doesn't replace the result before the player sees it.
+local busy = false
+local waiting = {}
+function Minigames.later(fn)
+	if busy then
+		table.insert(waiting, fn)
+	else
+		fn()
+	end
+end
+
 function Minigames.play(info, opts)
 	opts = opts or {}
 	local run = GAMES[info.minigame]
 	if not run then
 		return
 	end
-	local m = UI.modal(info.title or "", { color = UI.T.accent, big = true })
+	local m = UI.modal(info.title or "", {
+		color = UI.T.accent,
+		big = true,
+		onClose = function()
+			busy = false
+			local list = waiting
+			waiting = {}
+			task.delay(0.15, function()
+				for _, fn in ipairs(list) do
+					-- "Another shift" may have opened a new round already: then wait again
+					Minigames.later(function()
+						pcall(fn)
+					end)
+				end
+			end)
+		end,
+	})
+	-- set AFTER UI.modal: opening it closes the previous pop-up, whose onClose clears busy
+	busy = true
+	if opts.story then
+		UI.label(m.content, opts.story, { LayoutOrder = 0, TextColor3 = UI.Colors.gold })
+	end
 	UI.label(m.content, info.how or "", { LayoutOrder = 1 })
 	UI.label(m.content, string.format(MG.Goal, info.pass or 0) .. "   " .. string.format(MG.Time, info.seconds or 30), { LayoutOrder = 2, TextColor3 = UI.T.muted })
 	local finished = false
@@ -945,8 +1005,10 @@ function Minigames.play(info, opts)
 			return
 		end
 		running = true
+		-- tell the server the round really starts now (reading the intro doesn't count)
+		task.spawn(Remote.call, "mg_go", { game = info.minigame })
 		m.clear()
-		local top = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 40), LayoutOrder = 1, Parent = m.content })
+		local top =UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 40), LayoutOrder = 1, Parent = m.content })
 		local timeL = label(top, "", { Size = UDim2.fromScale(0.33, 1), TextXAlignment = Enum.TextXAlignment.Left })
 		local scoreL = label(top, "", { Size = UDim2.fromScale(0.33, 1), Position = UDim2.fromScale(0.33, 0) })
 		label(top, string.format(MG.Goal, info.pass or 0), { Size = UDim2.fromScale(0.33, 1), Position = UDim2.fromScale(0.66, 0), TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = UI.T.muted })

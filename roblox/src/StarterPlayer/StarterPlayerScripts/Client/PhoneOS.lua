@@ -289,11 +289,15 @@ end
 -- 1.9 Items: every gadget and secret invention in one place
 ---------------------------------------------------------------------
 local function itemRow(parent, order: number, icon: string, name: string, desc: string, dim: boolean)
-	local card = UI.new("Frame", { BackgroundColor3 = UI.T.panel, BackgroundTransparency = dim and 0.5 or 0, Size = UDim2.new(1, 0, 0, 64), LayoutOrder = order, Parent = parent })
+	-- morning test fix: the description used TextScaled in a 28 px box, so long ones shrank to
+	-- unreadable; now it wraps at a fixed readable size and the card grows to fit
+	local card = UI.new("Frame", { BackgroundColor3 = UI.T.panel, BackgroundTransparency = dim and 0.5 or 0, Size = UDim2.new(1, 0, 0, 64), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = order, Parent = parent }, {
+		UI.new("UIPadding", { PaddingBottom = UDim.new(0, 8) }),
+	})
 	UI.corner(card, 12)
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 8), Size = UDim2.fromOffset(48, 48), TextScaled = true, Text = icon, Parent = card })
 	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 6), Size = UDim2.new(1, -150, 0, 22), TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, Font = UI.T.font, TextColor3 = UI.T.text, Text = name, Parent = card })
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 30), Size = UDim2.new(1, -150, 0, 28), TextScaled = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, Font = UI.T.body, TextColor3 = UI.T.muted, Text = desc, Parent = card })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 30), Size = UDim2.new(1, -150, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, TextSize = UI.textSize(14), TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Font = UI.T.body, TextColor3 = UI.T.muted, Text = desc, Parent = card })
 	return card
 end
 

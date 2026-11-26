@@ -1023,6 +1023,13 @@ end
 
 -- 1.6: report card every few shifts
 function Stations.reportCard(d)
+	-- wait until a minigame result has been seen
+	Minigames.later(function()
+		Stations.showReportCard(d)
+	end)
+end
+
+function Stations.showReportCard(d)
 	local CT = Content.Careers
 	local m = UI.modal(CT.ReportTitle, { color = C.good })
 	local rows = { d.title, d.accuracy, d.speed, d.vibes }
@@ -1044,7 +1051,10 @@ end
 function Stations.work()
 	local t = Remote.call("job_task")
 	if not t.ok then
-		resultToast(t)
+		-- the "not at work" pop-up already shows the message, so no toast on top of it
+		if not t.notAtWork then
+			resultToast(t)
+		end
 		if t.notAtWork then
 			local m = UI.modal("💼 Not at work", { color = C.gold })
 			UI.label(m.content, tostring(t.msg), { LayoutOrder = 1 })
@@ -2639,13 +2649,13 @@ local function eventStep(v)
 		return
 	end
 	if v.minigame then
-		if v.intro then
-			UI.toast(v.icon .. " " .. v.intro, nil, 5)
-		end
 		Minigames.play(v.minigame, {
+			-- morning test fix: the story line goes in the minigame intro (a toast covered the instructions)
+			story = v.intro and (v.icon .. " " .. v.intro) or nil,
 			onResult = function(r)
 				if r and r.event then
-					task.delay(1.2, function()
+					-- the next part waits until the player has seen the result and closed it
+					Minigames.later(function()
 						eventStep(r.event)
 					end)
 				end

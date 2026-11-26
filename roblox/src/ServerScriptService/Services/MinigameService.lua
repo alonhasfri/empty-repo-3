@@ -56,6 +56,19 @@ function MinigameService.cancel(player)
 	rounds[player] = nil
 end
 
+-- The client sends this when the player taps START, so time spent reading the intro
+-- doesn't count against the round (the clock otherwise starts at begin()).
+Net.on("mg_go", function(player, d)
+	local round = rounds[player]
+	if not round or typeof(d) ~= "table" or d.game ~= round.game or round.go then
+		return { ok = false }
+	end
+	round.go = true
+	-- never later than a minute after begin(), so a round can't be parked forever
+	round.started = math.min(os.clock(), round.started + 60)
+	return { ok = true }
+end)
+
 Net.on("mg_finish", function(player, d)
 	local round = rounds[player]
 	if not round or typeof(d) ~= "table" or d.game ~= round.game then
