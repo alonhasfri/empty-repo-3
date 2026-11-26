@@ -36,6 +36,9 @@ local PI = math.pi
 local folder = Instance.new("Folder")
 folder.Name = "Rooms"
 folder.Parent = workspace
+local zoneFolder = Instance.new("Folder") -- 1.9.1 room guide zones (one per furnished building)
+zoneFolder.Name = "RoomZones"
+zoneFolder.Parent = workspace
 
 local WOOD = Color3.fromRGB(154, 106, 66)
 local DARKWOOD = Color3.fromRGB(106, 69, 40)
@@ -385,7 +388,7 @@ end
 local function action(cf: CFrame, key: string)
 	local text = R.Actions[key]
 	local cfg = C.Actions[key]
-	spot(cf, key, text.action, text.object, function(player)
+	local ap = spot(cf, key, text.action, text.object, function(player)
 		if not guard(player, cfg.path) then
 			return
 		end
@@ -404,6 +407,10 @@ local function action(cf: CFrame, key: string)
 		end
 		BrainService.toast(player, text.toast, "CartoonBoing")
 	end)
+	-- 1.9.1 room guide: only show this spot to the path that can use it
+	if cfg.path then
+		ap:SetAttribute("GuidePath", cfg.path)
+	end
 end
 
 local function writableBoard(cf: CFrame, label: TextLabel)
@@ -457,6 +464,17 @@ local function convSpot(id: string, npcCf: CFrame, who: string, shirt: Color3, c
 	end)
 	if signText then
 		tag(p, signText, 5.5, 260, 36, Color3.fromRGB(255, 225, 120))
+	end
+	-- 1.9.1 room guide: a conversation for one path only is only pointed out to that path
+	if typeof(conv) == "table" then
+		if conv.Lose and not conv.Gain then
+			p:SetAttribute("GuidePath", "Lose")
+		elseif conv.Gain and not conv.Lose then
+			p:SetAttribute("GuidePath", "Gain")
+		end
+	end
+	if opts.main then
+		p:SetAttribute("GuideMain", true)
 	end
 	Rooms.ConvSpots[id] = { id = id, stand = standCf, npc = npcCf * CFrame.new(0, opts.raise or 0, 0), npcHolder = npc, conv = conv, who = who, prompt = pp, labels = opts.labels }
 	return Rooms.ConvSpots[id]
@@ -635,8 +653,17 @@ LAYOUT.lab = function(at)
 end
 
 -- Furnish one building. rcf = real CFrame at the building's center on the ground, half = real half size.
-function Rooms.furnish(key: string, rcf: CFrame, half: Vector3, outsideKey: string?)
+function Rooms.furnish(key: string, rcf: CFrame, half: Vector3, outsideKey: string?, name: string?, path: string?)
 	Rooms.Buildings[key] = { cf = rcf, half = half, outside = outsideKey or key }
+	-- 1.9.1 room guide: an invisible zone so the client knows which building you're in
+	local zone = box(zoneFolder, rcf * CFrame.new(0, 15, 0), Vector3.new(half.X * 2, 30, half.Z * 2), WHITE, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
+	CollectionService:RemoveTag(zone, "Styled")
+	zone.Name = "RoomZone_" .. key
+	zone:SetAttribute("Key", key)
+	zone:SetAttribute("Title", name or key)
+	if path then
+		zone:SetAttribute("Path", path)
+	end
 	local build = LAYOUT[key]
 	if not build then
 		return
@@ -697,6 +724,54 @@ function Rooms.standUp(hum: Humanoid)
 		end
 		task.wait(Config.Rooms.StandUpDelay)
 	end
+end
+
+-- 1.9.1 room guide (user: "make the inside of the buildings better with clear places you need to go").
+-- Every prompt inside a furnished building (room spots AND the stations other services add) is tagged
+-- "RoomSpot" with the building key; the client (RoomGuide.lua) draws the rings, labels and the path.
+-- Seats and exit doors are left out.
+local Players = game:GetService("Players")
+local function markPrompt(pp: Instance)
+	if not pp:IsA("ProximityPrompt") or pp.ActionText == R.Sit then
+		return
+	end
+	local parent = pp.Parent
+	if not parent or parent.Name:sub(1, 10) == "Spot_exit_" then
+		return
+	end
+	local m = pp:FindFirstAncestorWhichIsA("Model")
+	if m and Players:GetPlayerFromCharacter(m) then
+		return
+	end
+	local pos
+	if parent:IsA("BasePart") then
+		pos = parent.Position
+	elseif parent:IsA("Attachment") then
+		pos = parent.WorldPosition
+		parent = parent.Parent
+	elseif parent:IsA("Model") then
+		pos = parent:GetPivot().Position
+	end
+	if not pos or not parent then
+		return
+	end
+	local key = Rooms.buildingAt(pos)
+	if not key then
+		return
+	end
+	parent:SetAttribute("GuideBuilding", key)
+	CollectionService:AddTag(parent, "RoomSpot")
+end
+
+function Rooms.startGuide()
+	for _, d in ipairs(workspace:GetDescendants()) do
+		markPrompt(d)
+	end
+	workspace.DescendantAdded:Connect(function(d)
+		if d:IsA("ProximityPrompt") then
+			task.defer(markPrompt, d)
+		end
+	end)
 end
 
 -- Which furnished building is this position in? (nil = outside)

@@ -245,7 +245,7 @@ local function addPlace(key: string, name: string, cf: CFrame, size: Vector3, pa
 	WorldService.Spots[key] = spot
 	table.insert(WorldService.Places, { key = key, name = name, path = path })
 	-- 1.5: furniture, people and things to do inside (only buildings that have a use)
-	Rooms.furnish(key, scf(cf), Vector3.new(size.X * S / 2, size.Y, size.Z * S / 2), key)
+	Rooms.furnish(key, scf(cf), Vector3.new(size.X * S / 2, size.Y, size.Z * S / 2), key, name, path)
 end
 -- 1.5 exit doors: step outside the front of the building
 Rooms.onLeave = function(player, key)
@@ -1672,6 +1672,8 @@ function WorldService.build()
 			end
 		end)
 	end
+	-- 1.9.1 room guide: tag every spot inside a building (later services add theirs; the guide catches those too)
+	Rooms.startGuide()
 	-- microwave countdown text
 	task.spawn(function()
 		local seconds = 600

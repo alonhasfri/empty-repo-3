@@ -1078,4 +1078,14 @@ Config.BrainTalks = {
 	MinGap = 0.35, -- seconds between choices
 }
 
+-- 1.9.1 room guide (Client/RoomGuide.lua)
+Config.RoomGuide = {
+	PanelSeconds = 9, -- the "What to do here" card folds into a small pill after this
+	MaxSpots = 5,
+	ArriveDistance = 7, -- the glowing path disappears when you get this close
+	RingSize = 5.5,
+	LabelDistance = 70,
+	Check = 0.4, -- seconds between "which building am I in" checks
+}
+
 return Config

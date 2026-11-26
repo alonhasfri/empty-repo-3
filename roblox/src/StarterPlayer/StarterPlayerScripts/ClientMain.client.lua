@@ -31,6 +31,7 @@ LoseFX.start()
 -- 1.7: animals get a wordless icon menu with a smell trail instead of the phone
 local AnimalUI = require(Client.AnimalUI)
 local Guide = require(Client.Guide)
+local _RoomGuide = require(Client.RoomGuide) -- 1.9.1: "what to do here" inside buildings (runs on its own)
 local LowGraphics = require(Client.LowGraphics)
 local Watchdog = require(Client.Watchdog) -- 1.8.8: frees you if something left you stuck
 -- locks that are on purpose: the watchdog leaves these alone

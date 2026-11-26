@@ -2015,4 +2015,28 @@ Content.Map = {
 	HoleNo = "🧠 You're too smart to fit in that hole. (Take Hoppr or the bus.)",
 }
 
+-- 1.9.1 room guide: what to do when you walk into a building
+Content.RoomGuide = {
+	Title = "📍 %s",
+	What = "What to do here:",
+	Pill = "📍 Where to go",
+	Nothing = "Nothing for you here right now. Have a look around!",
+	Arrived = "📍 You're here! Press the button to use it.",
+	Close = "✕",
+	Intros = {
+		lose = "Arcade games, shiny shelves and a giant plushie. Click the bait!",
+		diner = "Microwave food and a very old fridge. Grab a snack!",
+		supermarket = "Aisles of food. Work the till or shake the cereal.",
+		gain = "A real classroom. Find your desk and talk to the teacher.",
+		university = "The lecture hall and the Skill Gate. Pass it to go further!",
+		cinema = "Movies, snacks, and the Debate Show on the stage.",
+		cafe = "Coffee, a cozy couch and a quiet place to think.",
+		hospital = "Check-ups, patients, and Dr. Calm's corner for stress.",
+		office = "Desks, files and the Brainville Times newsroom.",
+		jobcenter = "Talk to the counselor to pick a job.",
+		courthouse = "The judge, the court tables and the election podium.",
+		lab = "Experiments! Help with the mouse maze.",
+	},
+}
+
 return Content
