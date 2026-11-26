@@ -1163,6 +1163,12 @@ function Stations.map(free: boolean?)
 		end)
 	end
 	if r.me then
+		-- 1.9.1 big ideas #13: really dumb brains see "you are here" in the wrong place
+		local st = UI.state or {}
+		local DW = Config.DumbWorld
+		if st.path == "Lose" and (st.cells or math.huge) < DW.WrongBelowCells then
+			r.me = { x = r.me.x + math.random(-DW.MapDrift, DW.MapDrift), z = r.me.z + math.random(-DW.MapDrift, DW.MapDrift) }
+		end
 		local me = UI.new("TextLabel", { AnchorPoint = Vector2.new(0.5, 0.5), Position = at(r.me.x, r.me.z), Size = UDim2.fromOffset(18, 18), BackgroundColor3 = Color3.fromRGB(255, 255, 255), Text = "", ZIndex = 26, Parent = map })
 		UI.corner(me, 9)
 		UI.stroke(me, Color3.fromRGB(255, 60, 60), 4, 0)

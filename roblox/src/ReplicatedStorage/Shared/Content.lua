@@ -2302,4 +2302,13 @@ Content.BrainrotTV = {
 	},
 }
 
+-- 1.9.1 big ideas #13: fake shortcuts
+Content.DumbWorld = {
+	Sign = "🕳 SHORTCUT?!",
+	Smart = "🤔 That's not a shortcut. That's a hole. You walk around it.",
+	Fell = { "🎈 It was NOT a shortcut. It's a ball pit. 10/10 would fall again.", "🎈 Wheee! Where are you? Nobody knows. Balls everywhere.", "🎈 Shortcut to… fun? Close enough." },
+	Exit = "🚪 EXIT",
+	ExitAction = "Climb out",
+}
+
 return Content

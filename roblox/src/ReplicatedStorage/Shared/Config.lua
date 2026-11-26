@@ -1228,4 +1228,15 @@ Config.BrainrotTV = {
 	WatchLose = 0.6, -- brain points lost for watching (Lose path)
 }
 
+-- 1.9.1 big ideas #13 (DumbSigns.lua, DumbWorldService): wrong signs, a drifting map dot, fake shortcuts
+Config.DumbWorld = {
+	WrongBelowCells = 45e9, -- Lose path below this: arrows on signs point the wrong way, the map dot drifts
+	MapDrift = 60, -- studs the "you are here" dot can be off by
+	FakeBelowCells = 45e9, -- Lose path below this (or any animal) falls for the fake shortcuts
+	Holes = { Vector3.new(-200, 0.9, -170), Vector3.new(-270, 0.9, 12), Vector3.new(-200, 0.9, 180) }, -- design studs, Lose side
+	PitOrigin = Vector3.new(3000, 700, 3000), -- the ball pit, far above everything
+	PitSize = Vector3.new(44, 16, 44),
+	Balls = 120,
+}
+
 return Config
