@@ -64,6 +64,7 @@ The UI uses one themed kit per look (UI.lua themes in Roblox, `LOOKS`/`UIS` in t
 - **Always offer to do it for them.** Whenever the user is about to do something by hand (installing, clicking through settings, copying messages between chats, starting a chat, checking on a chat), do it yourself or offer a one-click way: a suggested task card for jobs that need the PC (Studio, play-testing, Rojo), a scheduled check-in on other chats, a ready-to-paste message or a link. Only hand it to the user when it truly needs them (signing in, clicking Allow, publishing, spending money), and say exactly what to click.
 - Ask first before anything hard to undo or outside-facing: deleting, making something public, emails, private info, money.
 - Explain things in plain, simple words.
+- **Never rebuild what's already done (user rule).** Before starting any item, check `git log`, `docs/QUEUE.md`, `docs/HANDOFF.md` and the code. If it already exists, don't develop it again: if it's untested, test it in Studio, fix what's broken and tick it; otherwise skip it. Only build what's truly missing.
 
 ## Workflow
 1. Back up first: commit before big changes. In Roblox Studio, use **File → Version History** before big edits.
