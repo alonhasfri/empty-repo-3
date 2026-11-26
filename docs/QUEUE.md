@@ -328,3 +328,5 @@ The user picked these from Claude's idea list. Code them one by one (commit each
 16. [~] **Townspeople react** to your brain level ("Wow, Professor!" / "…are you okay?").
 17. [~] **Pets that follow you:** won at events or bought with coins; they get smarter or sillier with you.
 18. [~] **Photo mode with stickers** to share screenshots.
+19. [~] **Scientists experiment on animal players** (user, Nov 26): Experiment prompt over animal players for Scientists, the animal says Yes / No / Block, then the Animal Experiments cutscene. Coded, NOT tested (needs 2 players).
+20. [~] **Inventions overhaul** (user, Nov 26): Major Projects unlock at the Scientist rank (road shown in the lab), research phases are minigames, an Invention Hall with hover cards and a floating camera tour when you become a Scientist, and inventions that really do things (clean water fountains, clean energy free rides, cure check-up, climate clear skies, robot rides, translator phone for animals). Coded, server boots with 15 exhibits, NOT play-tested.
