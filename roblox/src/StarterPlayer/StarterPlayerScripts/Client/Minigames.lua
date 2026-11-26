@@ -568,7 +568,8 @@ function GAMES.dishes(area, ctx)
 	local rack = label(area, "", { Position = UDim2.fromScale(0, 0.74), Size = UDim2.new(1, 0, 0.18, 0), TextXAlignment = Enum.TextXAlignment.Left })
 	local cleaned = 0
 	local function newPlate(i: number)
-		local need = ctx.rng:NextInteger(3, 3 + math.min(2, ctx.level))
+		-- 1.9.3 harsh review #5: 2 scrubs on your first level, up to 4 later (was 3-5)
+		local need = ctx.rng:NextInteger(2, 2 + math.min(2, ctx.level - 1))
 		local left = need
 		local b
 		b = tapButton(sink, MG.Dirty[ctx.rng:NextInteger(1, #MG.Dirty)] .. "\n" .. string.rep("💦", left), { LayoutOrder = i, BackgroundColor3 = Color3.fromRGB(120, 100, 70) }, function()
@@ -1177,6 +1178,9 @@ function Minigames.play(info, opts)
 		m.clear()
 		local good = r.passed == true
 		UI.label(m.content, good and string.format(MG.ResultGood, r.score) or string.format(MG.ResultMeh, r.score or 0, r.pass or 0), { LayoutOrder = 1, Font = UI.T.title, TextSize = UI.textSize(22), TextColor3 = good and UI.Colors.good or UI.T.text })
+		if not good and not r.flagged then
+			UI.label(m.content, MG.FailTip, { LayoutOrder = 2, TextColor3 = UI.T.muted }) -- 1.9.3: not a dead end
+		end
 		if r.flagged then
 			UI.label(m.content, MG.TooFast, { LayoutOrder = 2, TextColor3 = UI.Colors.bad })
 		end

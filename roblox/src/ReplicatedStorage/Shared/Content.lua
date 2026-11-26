@@ -1680,6 +1680,7 @@ Content.Minigames = {
 	ResultMeh = "😅 Not quite. ⭐ %d (goal %d)",
 	Pay = "💰 +%d coins",
 	Again = "🔁 Another shift",
+	FailTip = "💡 So close! Rounds are short: tap fast and go straight for the goal. Tap 🔁 to try again.",
 	GoalDone = "🎉 Goal reached!", -- 1.9.3: the round ends by itself at the goal
 	Break = "Take a break",
 	TooFast = "⛔ That shift didn't count (timing looked off).",
