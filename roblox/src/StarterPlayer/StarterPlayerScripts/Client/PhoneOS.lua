@@ -53,6 +53,7 @@ local MORE = {
 	pigeons = { c1 = Color3.fromRGB(160, 160, 170), c2 = Color3.fromRGB(100, 100, 115) },
 	events = { c1 = Color3.fromRGB(255, 120, 160), c2 = Color3.fromRGB(200, 60, 110) },
 	genius = { c1 = Color3.fromRGB(255, 215, 80), c2 = Color3.fromRGB(200, 140, 30) },
+	home = { c1 = Color3.fromRGB(120, 200, 120), c2 = Color3.fromRGB(50, 140, 70) }, -- 1.9.1
 }
 for key, a in pairs(MORE) do
 	a.key = key
@@ -124,6 +125,7 @@ local function appsFor(st, tier: string)
 	if st.eventInvite or st.eventsDone or st.inEvent then
 		addBefore(EXTRA.events) -- 1.9 big life events
 	end
+	addBefore(EXTRA.home) -- 1.9.1 your own home (every path, animals too)
 	addBefore(EXTRA.badges)
 	addBefore(EXTRA.help)
 	table.insert(list, 1, EXTRA.items)
@@ -159,7 +161,7 @@ local function openApp(app)
 			PhoneOS.help()
 		elseif app.key == "badges" then
 			PhoneOS.stations.badges()
-		elseif (app.key == "events" or app.key == "genius") and PhoneOS.stations[app.key] then
+		elseif (app.key == "events" or app.key == "genius" or app.key == "home" or app.key == "town") and PhoneOS.stations[app.key] then
 			PhoneOS.stations[app.key]()
 		elseif PhoneOS.stations.route then
 			PhoneOS.stations.route(app.key)

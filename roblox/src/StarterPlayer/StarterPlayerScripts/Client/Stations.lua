@@ -2796,4 +2796,66 @@ function Stations.open(key: string)
 	end
 end
 
+---------------------------------------------------------------------
+-- 1.9.1 🏠 Home app (HomeService): go home, buy furniture (price on every button), visit other players
+---------------------------------------------------------------------
+local TH = Content.Homes
+function Stations.home()
+	local r = Remote.call("home_get")
+	if not r or not r.ok then
+		return
+	end
+	local m = UI.modal(TH.Title, Stations.phoneOpts(Color3.fromRGB(80, 180, 100)))
+	UI.label(m.content, string.format(TH.YourHome, r.tier), { LayoutOrder = 1, Font = UI.T.title, TextColor3 = Color3.new(1, 1, 1) })
+	UI.label(m.content, TH.Grow, { LayoutOrder = 2, TextColor3 = C.muted })
+	UI.button(m.content, TH.GoHome, function()
+		local res = Remote.call("home_go")
+		resultToast(res)
+		if res and res.ok then
+			m.close()
+		end
+	end, { LayoutOrder = 3, BackgroundColor3 = C.good })
+	UI.button(m.content, r.closed and TH.DoorClosed or TH.DoorOpen, function()
+		Remote.call("home_door", { closed = not r.closed })
+		m.close()
+		Stations.home()
+	end, { LayoutOrder = 4 })
+	-- furniture
+	UI.label(m.content, TH.Shop .. "   🪙 " .. tostring(r.coins), { LayoutOrder = 10, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
+	for i, f in ipairs(r.catalog) do
+		local text = f.icon .. "  " .. f.name .. "   " .. (f.owned and TH.OwnedTag or string.format(TH.Buy, f.price))
+		UI.button(m.content, text, function()
+			if f.owned then
+				return
+			end
+			local res = Remote.call("home_buy", { key = f.key })
+			resultToast(res)
+			if res and res.ok then
+				m.close()
+				Stations.home()
+			end
+		end, { LayoutOrder = 10 + i, BackgroundColor3 = f.owned and UI.T.panel or UI.T.panel2 })
+	end
+	-- visit
+	UI.label(m.content, TH.VisitTitle, { LayoutOrder = 100, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
+	if #r.others == 0 then
+		UI.label(m.content, TH.NoOthers, { LayoutOrder = 101, TextColor3 = C.muted })
+	end
+	for i, o in ipairs(r.others) do
+		UI.button(m.content, (o.closed and TH.ClosedTag .. " " or "") .. o.name .. "  ·  " .. o.tier .. "   " .. TH.Visit, function()
+			local res = Remote.call("home_visit", { id = o.id })
+			resultToast(res)
+			if res and res.ok then
+				m.close()
+			end
+		end, { LayoutOrder = 101 + i })
+	end
+	m.focus()
+end
+
+-- 1.9.1: visit a player's home straight from the town board
+function Stations.visitHome(userId: number)
+	resultToast(Remote.call("home_visit", { id = userId }))
+end
+
 return Stations

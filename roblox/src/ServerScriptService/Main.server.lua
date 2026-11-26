@@ -32,6 +32,7 @@ local _BrainTalksService = require(Services.BrainTalksService) -- 1.9: smart scr
 local PetFriendService = require(Services.PetFriendService) -- 1.8: pets + friends meter
 local _EventService = require(Services.EventService) -- 1.9: big life events (listens on its own)
 local _GeniusService = require(Services.GeniusService) -- 1.9: Genius Crossroads (listens on its own)
+local _HomeService = require(Services.HomeService) -- 1.9.1: your own home + visiting (listens on its own)
 BrainService.hooks.lifeInfo = LifeStageService.info
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection

@@ -1117,4 +1117,41 @@ Config.GroupShift = {
 	RestaurantRoles = { "order", "serve", "dishes", "serve" }, -- cook, server, dishwasher, server
 }
 
+-- 1.9.1 homes (big ideas #4 + #5, HomeService): pocket rooms above the town, one slot per player
+Config.Homes = {
+	Origin = Vector3.new(-3000, 900, -3000),
+	SlotSpacing = 120,
+	HouseIQ = 110, -- Gain: flat below this, house from here
+	PenthouseIQ = 140,
+	LoseRoomBelow = 60e9, -- Lose: cardboard box above this many cells, messy room below
+	LosePalaceBelow = 30e9, -- pizza-box palace below this
+	Tiers = {
+		flat = { size = Vector3.new(36, 14, 28), wall = Color3.fromRGB(240, 228, 205), wallMat = Enum.Material.Plaster, floor = Color3.fromRGB(170, 120, 75), floorMat = Enum.Material.WoodPlanks, accent = Color3.fromRGB(60, 120, 90), window = true },
+		house = { size = Vector3.new(50, 16, 38), wall = Color3.fromRGB(190, 110, 85), wallMat = Enum.Material.Brick, floor = Color3.fromRGB(150, 100, 60), floorMat = Enum.Material.WoodPlanks, ceiling = Color3.fromRGB(245, 240, 230), accent = Color3.fromRGB(150, 50, 50), window = true },
+		penthouse = { size = Vector3.new(66, 18, 48), wall = Color3.fromRGB(245, 243, 238), wallMat = Enum.Material.Marble, floor = Color3.fromRGB(90, 60, 40), floorMat = Enum.Material.WoodPlanks, accent = Color3.fromRGB(200, 160, 60), window = true },
+		box = { size = Vector3.new(20, 10, 20), wall = Color3.fromRGB(205, 165, 110), wallMat = Enum.Material.Cardboard, floor = Color3.fromRGB(190, 150, 100), floorMat = Enum.Material.Cardboard, accent = Color3.fromRGB(255, 90, 180), mess = 3 },
+		messy = { size = Vector3.new(36, 13, 28), wall = Color3.fromRGB(255, 190, 225), wallMat = Enum.Material.SmoothPlastic, floor = Color3.fromRGB(120, 200, 230), floorMat = Enum.Material.Carpet, accent = Color3.fromRGB(255, 90, 180), mess = 10 },
+		palace = { size = Vector3.new(54, 18, 40), wall = Color3.fromRGB(205, 160, 100), wallMat = Enum.Material.Cardboard, floor = Color3.fromRGB(255, 220, 90), floorMat = Enum.Material.SmoothPlastic, accent = Color3.fromRGB(255, 200, 40), mess = 24 },
+		kennel = { size = Vector3.new(22, 10, 18), wall = Color3.fromRGB(170, 60, 50), wallMat = Enum.Material.WoodPlanks, floor = Color3.fromRGB(220, 200, 120), floorMat = Enum.Material.Grass, accent = Color3.fromRGB(250, 250, 250) },
+	},
+	-- spot = { x, z, turn }: x and z from -1 to 1 across the room (the door is at z = -1, the trophy wall at x = -1)
+	-- path = only for that path (nil = everyone). Prices are in coins, all earnable.
+	Furniture = {
+		rug = { price = 25, spot = { 0, 0 } },
+		plant = { price = 15, spot = { 0.85, -0.8 } },
+		lamp = { price = 20, spot = { -0.8, -0.65 } },
+		bed = { price = 40, spot = { 0.65, 0.55 } },
+		sofa = { price = 45, spot = { 0, 0.2, 180 } },
+		tv = { price = 60, spot = { 0, 0.85, 180 } },
+		fishtank = { price = 80, spot = { 0.85, 0, 90 } },
+		bookshelf = { price = 50, spot = { -0.6, 0.85 }, path = "Gain" },
+		desk = { price = 70, spot = { 0.6, -0.45 }, path = "Gain" },
+		piano = { price = 150, spot = { -0.5, -0.35 }, path = "Gain" },
+		gamingchair = { price = 60, spot = { 0.4, -0.4 }, path = "Lose" },
+		pizzatower = { price = 10, spot = { -0.5, 0.5 }, path = "Lose" },
+		beanbag = { price = 30, spot = { 0.3, 0.45 }, path = "Lose" },
+	},
+	Order = { "rug", "plant", "lamp", "bed", "sofa", "tv", "fishtank", "bookshelf", "desk", "piano", "gamingchair", "pizzatower", "beanbag" },
+}
+
 return Config
