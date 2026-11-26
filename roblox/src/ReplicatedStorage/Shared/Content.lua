@@ -2336,4 +2336,23 @@ Content.Minigames.Games.bubblewrap = { title = "🫧 Bubble-wrap popper", how = 
 Content.Minigames.Games.memes = { title = "🖼 Meme reviewer", how = "Rate each meme. Any rating is fine, but you have to at least LOOK at it." }
 Content.Minigames.Games.signhold = { title = "🪧 Upside-down sign holder", how = "The sign keeps turning the right way up. Tap it to flip it back upside down!" }
 
+-- 1.9.1 big ideas #15: weather and seasons
+Content.Weather = {
+	Start = {
+		rain = "🌧 It's raining! (A ☂️ umbrella is in 📱 Home ➜ Furniture.)",
+		snow = "❄️ It's snowing! Build a snowman in the park, or throw a snowball at a friend.",
+		fog = "🌫 A thick fog rolls into town…",
+		clear = "☀️ The sky is clear again.",
+	},
+	BuildSnowman = "Build a snowman",
+	SnowmanBy = "☃️ by %s",
+	SnowmanDone = "☃️ You built a snowman! Everyone can see it.",
+	Snowball = "❄️ Snowball",
+	HitYou = "❄️ %s hit you with a snowball! *poof*",
+	HitThem = "❄️ Direct hit on %s!",
+	NoSnow = "There's no snow right now.",
+	TooFar = "They're too far away.",
+}
+Content.Homes.Furniture.umbrella = { icon = "☂️", name = "Umbrella (opens when it rains)" }
+
 return Content

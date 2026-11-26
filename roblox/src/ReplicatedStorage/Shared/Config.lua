@@ -1252,4 +1252,36 @@ Config.Minigames.Games.bubblewrap = { seconds = 30, pass = 25, maxPerSecond = 6 
 Config.Minigames.Games.memes = { seconds = 30, pass = 10, maxPerSecond = 2 }
 Config.Minigames.Games.signhold = { seconds = 30, pass = 8, maxPerSecond = 1.2 }
 
+-- 1.9.1 big ideas #15 (WeatherService + Client/Weather.lua): seasons and weather
+Config.Weather = {
+	ChangeMin = 240, -- seconds between weather changes
+	ChangeMax = 480,
+	SpookyFromDay = 24, -- October 24-31 = spooky week (pumpkins; kid-safe)
+	-- how likely each weather is per season (relative weights)
+	Weights = {
+		spring = { clear = 5, rain = 3, fog = 1 },
+		summer = { clear = 8, rain = 1 },
+		autumn = { clear = 4, rain = 4, fog = 2 },
+		winter = { clear = 3, snow = 5, fog = 1 },
+		spooky = { clear = 3, fog = 4, rain = 2 },
+	},
+	Area = 160, -- studs around the camera where rain/snow falls
+	SkyHeight = 45,
+	RainRate = 500,
+	SnowRate = 140,
+	Puddles = 14,
+	PuddleSpread = 70,
+	FogDensity = 0.25, -- added to the Atmosphere density
+	RainHaze = 0.08,
+	SnowHaze = 0.06,
+	SnowmanSpots = 4,
+	SnowballRange = 30,
+	SnowballCooldown = 3,
+	Pumpkins = 12,
+	PumpkinRing = 60, -- design studs around the plaza
+	UmbrellaColors = { Color3.fromRGB(230, 60, 60), Color3.fromRGB(60, 120, 230), Color3.fromRGB(250, 200, 40), Color3.fromRGB(80, 190, 110), Color3.fromRGB(200, 90, 220) },
+}
+Config.Homes.Furniture.umbrella = { price = 12, spot = { 0, 0 } } -- not placed in the home: it opens over your head when it rains
+table.insert(Config.Homes.Order, "umbrella")
+
 return Config
