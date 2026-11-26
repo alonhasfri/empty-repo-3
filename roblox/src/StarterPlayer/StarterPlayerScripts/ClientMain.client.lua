@@ -208,9 +208,43 @@ Remote.on("narrator", function(d)
 	Hud.say(d.text, d.mood)
 end)
 
+-- 1.9.3 harsh review #3: server news (birthdays, Golden Brain, events…) covered pop-ups and scenes.
+-- It now waits in a queue while a pop-up, the phone or a full-screen scene is open (at most
+-- Config.UI.ToastHoldMax seconds), then shows. Your own button feedback still shows at once.
+local CONFIG_UI = require(game:GetService("ReplicatedStorage").Shared.Config).UI
+local toastQueue = {}
+local function screenBusy(): boolean
+	if not UI.gui then
+		return false
+	end
+	if UI.gui:FindFirstChild("ModalBackdrop") then
+		return true
+	end
+	for _, c in ipairs(UI.gui:GetChildren()) do
+		if c:IsA("Frame") and c.Visible and c.ZIndex >= 60 then -- Effects overlays (cutscenes, big moments)
+			return true
+		end
+	end
+	return false
+end
 Remote.on("toast", function(d)
+	if screenBusy() then
+		table.insert(toastQueue, { text = d.text, sound = d.sound, t = os.clock() })
+		return
+	end
 	UI.toast(d.text)
 	UI.sound(d.sound)
+end)
+task.spawn(function()
+	while true do
+		task.wait(0.5)
+		if #toastQueue > 0 and (not screenBusy() or os.clock() - toastQueue[1].t > CONFIG_UI.ToastHoldMax) then
+			local q = table.remove(toastQueue, 1)
+			UI.toast(q.text)
+			UI.sound(q.sound)
+			task.wait(1.2) -- one at a time, not a pile
+		end
+	end
 end)
 
 Remote.on("badge", Effects.badge)

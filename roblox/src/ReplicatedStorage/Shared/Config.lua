@@ -798,6 +798,7 @@ Config.UI = {
 	HudMaxButtons = 4, -- 1.8.1 UI review: activity buttons on screen (the rest go in "☰ More")
 	HudPassButtons = false, -- 1.8.1 UI review: pass buttons only in the 🛒 Shop, not on the HUD
 	ToastSeconds = 3, -- 1.8.1: how long a notification stays
+	ToastHoldMax = 30, -- 1.9.3: server news waits at most this long for a pop-up or scene to close
 	MaxToasts = 3, -- at most this many at once (the oldest goes)
 	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
 	ToastLowValue = { "interest", "bills paid", "bills skipped", "you already talked", "the next bus comes in", "give it " },
