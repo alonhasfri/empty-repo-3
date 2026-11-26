@@ -652,6 +652,126 @@ LAYOUT.lab = function(at)
 	K.plant(at(-27, -22, 0))
 end
 
+-- 1.9.1 restaurants (big ideas #2): tables with customers, a menu board, a counter,
+-- "Eat here" (price on the prompt), "Beg for scraps" for animals, and mystery drinks at the Brainrot Café.
+local RT = Content.Restaurants
+local RC = Config.Restaurants
+
+local function eatSpot(cf: CFrame)
+	local _, pp = spot(cf, "eat", RT.Eat.action, string.format(RT.Eat.object, RC.MealPrice), function(player)
+		if not guard(player, nil) then
+			return
+		end
+		if Rooms.isAnimal(player) then
+			BrainService.toast(player, RT.Eat.animal)
+			return
+		end
+		local data = DataService.get(player)
+		if not data then
+			return
+		end
+		if (data.coins or 0) < RC.MealPrice then
+			BrainService.toast(player, string.format(RT.Eat.poor, RC.MealPrice))
+			return
+		end
+		data.coins -= RC.MealPrice
+		if data.path == "Gain" then
+			BrainService.stress(player, -RC.MealCalm)
+			BrainService.toast(player, string.format(RT.Eat.done, RC.MealCalm, RC.MealPrice), "CartoonBoing")
+		else
+			BrainService.lose(player, 0.5, "foodcoma")
+			BrainService.toast(player, string.format(RT.Eat.coma, RC.MealPrice), "CartoonBoing")
+		end
+		BrainService.push(player)
+	end)
+	return pp
+end
+
+local function scrapsSpot(cf: CFrame)
+	local p = spot(cf, "scraps", RT.Scraps.action, RT.Scraps.object, function(player)
+		if not Rooms.isAnimal(player) then
+			BrainService.toast(player, RT.Scraps.human)
+			return
+		end
+		BrainService.stress(player, -RC.SnackCalm)
+		BrainService.toast(player, string.format(RT.Scraps.done, RC.SnackCalm), "CartoonBoing")
+	end)
+	p:SetAttribute("GuideAnimal", true)
+end
+
+local function restaurant(key: string, at, accent: Color3)
+	local P = RT.Places[key]
+	-- counter along the back wall (the workplace desk sits in the middle of it, added by WorldService)
+	K.counter(at(-10, 12.5, 0), 9, accent)
+	local board = K.whiteboard(at(9, 15.2, 0), 9, P.board)
+	board.TextScaled = true
+	roomSign(at(9, 15, 0), P.name)
+	-- four tables with chairs; two have customers waiting for their food
+	local shirts = { Color3.fromRGB(255, 143, 163), Color3.fromRGB(143, 211, 255), Color3.fromRGB(168, 240, 176), Color3.fromRGB(255, 210, 122) }
+	local i = 0
+	for _, z in ipairs({ -7, 2 }) do
+		for _, x in ipairs({ -10, 10 }) do
+			i += 1
+			K.table(at(x, z, 0), 4, 3)
+			K.chair(at(x - 3, z, PI / 2))
+			K.chair(at(x + 3, z, -PI / 2))
+			if i % 2 == 1 then
+				local holder = person(at(x, z + 2.6, PI), RT.Customer, shirts[i])
+				local dish = P.menu[((i - 1) % #P.menu) + 1]
+				task.spawn(function() -- the person model loads in the background
+					for _ = 1, 40 do
+						if holder.model then
+							break
+						end
+						task.wait(0.25)
+					end
+					local m = holder.model
+					local head = m and (m:FindFirstChild("Head") or m.PrimaryPart)
+					if head then
+						tag(head, string.format(RT.Wants, dish), 5.2, 120, 30, Color3.fromRGB(255, 255, 255))
+					end
+				end)
+			end
+		end
+	end
+	eatSpot(at(0, -3, 0))
+	scrapsSpot(at(15, -12, 0))
+	K.plant(at(-17, -13, 0))
+	K.plant(at(17, 13, 0))
+end
+
+for _, key in ipairs({ "pizza", "burger", "sushi", "taco" }) do
+	LAYOUT[key] = function(at)
+		local accent = Color3.fromRGB(255, 210, 60)
+		for _, r in ipairs(RC.List) do
+			if r.key == key then
+				accent = r.accent
+			end
+		end
+		restaurant(key, at, accent)
+	end
+end
+
+-- 🌈 Brainrot Café (Lose): the same restaurant plus a rainbow mystery-drink bar and an influencer
+LAYOUT.rotcafe = function(at)
+	restaurant("rotcafe", at, Color3.fromRGB(80, 255, 200))
+	local mp = spot(at(-10, 9, 0), "mystery", RT.Mystery.action, RT.Mystery.object, function(player)
+		if not guard(player, nil) then
+			return
+		end
+		local data = DataService.get(player)
+		if data and data.path == "Gain" then
+			BrainService.toast(player, RT.Mystery.gain)
+			return
+		end
+		BrainService.lose(player, RC.MysteryLose, "mysterydrink")
+		BrainService.toast(player, RT.Mystery.lines[math.random(1, #RT.Mystery.lines)], "CartoonBoing")
+	end)
+	mp:SetAttribute("GuidePath", "Lose")
+	mp:SetAttribute("GuideMain", true)
+	person(at(10, 9, PI), RT.Influencer, Color3.fromRGB(255, 120, 220))
+end
+
 -- Furnish one building. rcf = real CFrame at the building's center on the ground, half = real half size.
 function Rooms.furnish(key: string, rcf: CFrame, half: Vector3, outsideKey: string?, name: string?, path: string?)
 	Rooms.Buildings[key] = { cf = rcf, half = half, outside = outsideKey or key }

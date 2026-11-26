@@ -557,6 +557,100 @@ function GAMES.dash(area, ctx)
 end
 
 ---------------------------------------------------------------------
+-- 1.9.1 Restaurant level 1: dish duty. Tap a dirty plate until it's clean (3-5 taps); it slides
+-- onto the rack and a new dirty one arrives. Phone-friendly: 3 big plates.
+---------------------------------------------------------------------
+function GAMES.dishes(area, ctx)
+	local hint = label(area, MG.ScrubHint, { Size = UDim2.new(1, 0, 0.12, 0), Font = UI.T.body })
+	local _ = hint
+	local sink = row(area, 0.18, 0.5, 3)
+	local rack = label(area, "", { Position = UDim2.fromScale(0, 0.74), Size = UDim2.new(1, 0, 0.18, 0), TextXAlignment = Enum.TextXAlignment.Left })
+	local cleaned = 0
+	local function newPlate(i: number)
+		local need = ctx.rng:NextInteger(3, 3 + math.min(2, ctx.level))
+		local left = need
+		local b
+		b = tapButton(sink, MG.Dirty[ctx.rng:NextInteger(1, #MG.Dirty)] .. "\n" .. string.rep("🫧", left), { LayoutOrder = i, BackgroundColor3 = Color3.fromRGB(120, 100, 70) }, function()
+			if not ctx.alive() or left <= 0 then
+				return
+			end
+			left -= 1
+			local t = 1 - left / need
+			b.BackgroundColor3 = Color3.fromRGB(120, 100, 70):Lerp(Color3.fromRGB(220, 235, 245), t)
+			if left > 0 then
+				b.Text = MG.Scrubbing .. "\n" .. string.rep("🫧", left)
+			else
+				b.Text = MG.Clean
+				ctx.feedback(true)
+				ctx.add(1)
+				cleaned += 1
+				rack.Text = MG.Rack .. " " .. string.rep("🍽", math.min(cleaned, 12))
+				task.delay(0.35, function()
+					b:Destroy()
+					if ctx.alive() then
+						newPlate(i)
+					end
+				end)
+			end
+		end)
+	end
+	for i = 1, 3 do
+		newPlate(i)
+	end
+end
+
+---------------------------------------------------------------------
+-- 1.9.1 Restaurant level 2+: serve the tables. Each table shows the dish it wants; tap that dish on
+-- the tray, then tap the table. The menu is the restaurant you're in (ctx.data.menu).
+---------------------------------------------------------------------
+function GAMES.serve(area, ctx)
+	local menu = (ctx.data and ctx.data.menu) or MG.DefaultMenu
+	local tables = row(area, 0.04, 0.42, 3)
+	local holding = label(area, MG.Holding:format("—"), { Position = UDim2.fromScale(0, 0.49), Size = UDim2.new(1, 0, 0.1, 0), Font = UI.T.body })
+	local tray = row(area, 0.62, 0.32, #menu)
+	local hand: string? = nil
+	local wants = {}
+	local buttons = {}
+	local function order(i: number)
+		wants[i] = menu[ctx.rng:NextInteger(1, #menu)]
+		buttons[i].Text = MG.TableN:format(i) .. "\n" .. wants[i]
+		buttons[i].BackgroundColor3 = UI.T.panel2
+	end
+	for i = 1, 3 do
+		buttons[i] = tapButton(tables, "", { LayoutOrder = i }, function()
+			if not ctx.alive() or not hand then
+				return
+			end
+			if hand == wants[i] then
+				ctx.feedback(true)
+				ctx.add(1)
+				buttons[i].Text = MG.Served
+				buttons[i].BackgroundColor3 = Color3.fromRGB(60, 170, 90)
+				task.delay(0.6, function()
+					if ctx.alive() then
+						order(i)
+					end
+				end)
+			else
+				ctx.feedback(false)
+			end
+			hand = nil
+			holding.Text = MG.Holding:format("—")
+		end)
+		order(i)
+	end
+	for k, dish in ipairs(menu) do
+		tapButton(tray, dish, { LayoutOrder = k, BackgroundColor3 = Color3.fromRGB(70, 60, 50) }, function()
+			if not ctx.alive() then
+				return
+			end
+			hand = dish
+			holding.Text = MG.Holding:format(dish)
+		end)
+	end
+end
+
+---------------------------------------------------------------------
 -- 1.9 Genius signature minigames (Content.Genius)
 ---------------------------------------------------------------------
 local TG = Content.Genius
@@ -1021,6 +1115,7 @@ function Minigames.play(info, opts)
 		local ctx = {
 			level = info.level or 1,
 			rng = Random.new(info.seed or os.time()),
+			data = info.data, -- 1.9.1: game-specific data from the server (e.g. a restaurant menu)
 		}
 		function ctx.alive(): boolean
 			return running and m.alive()

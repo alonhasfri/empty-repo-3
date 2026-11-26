@@ -32,6 +32,10 @@ local function myPath(): string?
 	return UI.state and UI.state.path or nil
 end
 
+local function isAnimal(): boolean
+	return UI.state ~= nil and UI.state.stage ~= nil and Content.Animals.Forms[UI.state.stage] ~= nil
+end
+
 local function promptOf(part: Instance): ProximityPrompt?
 	return part:FindFirstChildWhichIsA("ProximityPrompt", true)
 end
@@ -61,7 +65,8 @@ local function spotsIn(key: string)
 		if p:IsA("BasePart") and p:GetAttribute("GuideBuilding") == key then
 			local gp = p:GetAttribute("GuidePath")
 			local pp = promptOf(p)
-			if (gp == nil or gp == path) and pp and pp.Enabled then
+			local animalOnly = p:GetAttribute("GuideAnimal") == true
+			if (gp == nil or gp == path) and pp and pp.Enabled and animalOnly == isAnimal() then
 				table.insert(list, p)
 			end
 		end

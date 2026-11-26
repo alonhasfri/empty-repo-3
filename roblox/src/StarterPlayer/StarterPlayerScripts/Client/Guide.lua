@@ -159,6 +159,20 @@ player:GetAttributeChangedSignal("OnShift"):Connect(refresh)
 -- point the arrow every frame (cheap: two parts)
 local cache = {}
 local function findTarget(name: string): BasePart?
+	-- 1.9.1: the Restaurant Worker works at any restaurant, so point at the nearest one
+	if name == "Work_restaurant" then
+		local char = player.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		local best, bestD = nil, math.huge
+		for _, key in ipairs({ "pizza", "burger", "sushi", "taco" }) do
+			local w = findTarget("Work_" .. key)
+			local d = (w and root) and (w.Position - root.Position).Magnitude or math.huge
+			if w and d < bestD then
+				best, bestD = w, d
+			end
+		end
+		return best
+	end
 	local p = cache[name]
 	if p and p.Parent then
 		return p

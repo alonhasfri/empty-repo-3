@@ -72,7 +72,7 @@ local function destination(player, data, key: string): (Vector3?, string?)
 		if not job then
 			return nil, nil
 		end
-		return WorldService.Workplaces[job.place], job.placeName
+		return WorldService.workPos(player, job.place), job.placeName
 	end
 	local spot = WorldService.Spots[key]
 	if not spot then
@@ -102,7 +102,7 @@ Net.on("ride_places", function(player)
 	end
 	local list = {}
 	local job = jobOf(data)
-	if job and WorldService.Workplaces[job.place] then
+	if job and WorldService.workPos(player, job.place) then
 		table.insert(list, { key = "work", name = "💼 " .. TL.Ride.Work .. " (" .. job.placeName .. ")" })
 	end
 	for _, p in ipairs(WorldService.placeList()) do
@@ -304,7 +304,7 @@ Net.on("shift_in", function(player)
 	if s.shift then
 		return { ok = false, msg = TL.Shift.Already }
 	end
-	local pos = WorldService.Workplaces[job.place]
+	local pos = WorldService.workPos(player, job.place)
 	if not pos or not WorldService.near(player, pos, Config.WorkRadius) then
 		return { ok = false, msg = string.format(TL.Shift.NotThere, job.placeName), notAtWork = true }
 	end

@@ -49,6 +49,7 @@ function MinigameService.begin(player, game: string, context: string, level: num
 		seed = round.seed,
 		title = Content.Minigames.Games[game].title,
 		how = Content.Minigames.Games[game].how,
+		data = extra and extra.client or nil, -- 1.9.1: game-specific data for the client (e.g. a restaurant menu)
 	}
 end
 

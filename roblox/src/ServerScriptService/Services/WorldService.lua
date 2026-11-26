@@ -29,6 +29,7 @@ mapFolder.Parent = workspace
 WorldService.Spots = { lobby = Vector3.new(0, 3, 30) }
 WorldService.Places = {} -- taxi list: { key, name, path }
 WorldService.Workplaces = {} -- [placeKey] = Vector3
+WorldService.Restaurants = {} -- 1.9.1: restaurant keys that have a Restaurant Worker workplace
 WorldService.Zones = {}
 WorldService.onStation = nil
 WorldService.onCashGrab = nil
@@ -993,6 +994,35 @@ function WorldService.placeList()
 	return out, 260 * S + 20
 end
 
+-- 1.9.1: where a job is done. "restaurant" = the nearest restaurant (the Restaurant Worker can work at any of them)
+function WorldService.workPos(player: Player?, place: string): Vector3?
+	if place ~= "restaurant" then
+		return WorldService.Workplaces[place]
+	end
+	local char = player and player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
+	local best, bestD = nil, math.huge
+	for _, key in ipairs(WorldService.Restaurants) do
+		local pos = WorldService.Workplaces[key]
+		local d = root and (root.Position - pos).Magnitude or 0
+		if pos and d < bestD then
+			best, bestD = pos, d
+		end
+	end
+	return best
+end
+
+-- 1.9.1: which restaurant you are standing in (nil = none)
+function WorldService.restaurantAt(player: Player): string?
+	for _, key in ipairs(WorldService.Restaurants) do
+		local pos = WorldService.Workplaces[key]
+		if pos and WorldService.near(player, pos, Config.WorkRadius) then
+			return key
+		end
+	end
+	return nil
+end
+
 function WorldService.near(player: Player, pos: Vector3, radius: number): boolean
 	local char = player.Character
 	local root = char and char:FindFirstChild("HumanoidRootPart")
@@ -1284,6 +1314,36 @@ end
 -- decorative shops and houses, so blocks look full like the style pictures. Only places with a use
 -- open; these are scenery. Slots that touch roads, the river, the park, the plaza or any existing
 -- building are skipped. Low graphics leaves them (they're cheap boxes), the far skyline is what it trims.
+-- 1.9.1 restaurants (big ideas #2). r = an entry of Config.Restaurants.List; Rooms.lua furnishes it
+-- (tables, customers, menu board, Eat here). Gain-side restaurants get a Restaurant Worker workplace.
+function WorldService.buildRestaurant(r, center: Vector3, yaw: number)
+	local RC = Config.Restaurants
+	local T = Content.Restaurants.Places[r.key]
+	local cf, size = building({
+		name = "Restaurant_" .. r.key,
+		center = center,
+		yaw = yaw,
+		size = Vector3.new(RC.W, 18, RC.D),
+		wall = r.wall,
+		wallMaterial = r.side == "Lose" and Enum.Material.SmoothPlastic or Enum.Material.Brick,
+		floorMaterial = Enum.Material.WoodPlanks,
+		roof = r.roof,
+		accent = r.accent,
+		door = 10,
+		sign = T.sign,
+		flowers = r.side ~= "Lose",
+		stripes = true,
+	})
+	addPlace(r.key, T.name, cf, size, r.side == "Lose" and "Lose" or nil)
+	if r.job then
+		workplace(r.key, T.work, cf * CFrame.new(0, 0.5, size.Z / 2 - 9))
+		table.insert(WorldService.Restaurants, r.key)
+		if not WorldService.Workplaces.restaurant then
+			WorldService.Workplaces.restaurant = WorldService.Workplaces[r.key] -- fallback for code without a player
+		end
+	end
+end
+
 local function fillTown()
 	local CF = Config.Map.Fill
 	local R = Config.Map.River
@@ -1333,6 +1393,29 @@ local function fillTown()
 		end
 		table.insert(taken, { c.X - hw, c.X + hw, c.Z - hd, c.Z + hd })
 		return true
+	end
+	-- 1.9.1 restaurants (big ideas #2): the free lots nearest the plaza become real restaurants
+	local slots = {}
+	for x = -CF.Edge, CF.Edge, CF.StepX do
+		for z = -CF.Edge, CF.Edge, CF.StepZ do
+			table.insert(slots, { x, z })
+		end
+	end
+	table.sort(slots, function(a, b)
+		return a[1] * a[1] + a[2] * a[2] < b[1] * b[1] + b[2] * b[2]
+	end)
+	local RC = Config.Restaurants
+	for _, r in ipairs(RC.List) do
+		for _, s in ipairs(slots) do
+			local x, z = s[1], s[2]
+			if (x < R.X) == (r.side == "Lose") and free(x, z, RC.W, RC.D) then
+				local okR, errR = pcall(WorldService.buildRestaurant, r, Vector3.new(x, 0.6, z), z > 0 and 0 or math.pi)
+				if not okR then
+					warn("[World] restaurant " .. r.key .. ": " .. tostring(errR))
+				end
+				break
+			end
+		end
 	end
 	local count = 0
 	for x = -CF.Edge, CF.Edge, CF.StepX do

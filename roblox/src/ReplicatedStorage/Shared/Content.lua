@@ -253,6 +253,8 @@ Content.Jobs = {
 	{ id = "courier", name = "Courier", place = "street", placeName = "Main Street", minIQ = 80, coinsPerMinute = 5, task = "courier" },
 	{ id = "chef", name = "Chef", place = "cafe", placeName = "Beethoven's Café", minIQ = 95, coinsPerMinute = 8, task = "chef" },
 	{ id = "engineer", name = "Engineer", place = "office", placeName = "the Office Tower", minIQ = 118, coinsPerMinute = 13, task = "engineer" },
+	-- 1.9.1 restaurants: works at ANY restaurant (Pizza Palace, Burger Barn, Sushi Spot, Taco Town)
+	{ id = "server", name = "Restaurant Worker", place = "restaurant", placeName = "a restaurant", minIQ = 85, coinsPerMinute = 6, task = "server" },
 }
 
 -- 1.6: ANIMAL FORMS. When your brain shrinks enough you physically become the animal.
@@ -304,6 +306,7 @@ Content.Careers = {
 		courier = { "Bike Courier", "Courier", "Route Boss", "Delivery Legend" }, -- 1.9
 		chef = { "Dishwasher", "Line Cook", "Chef", "Head Chef" },
 		engineer = { "Apprentice", "Engineer", "Senior Engineer", "Chief Engineer" },
+		server = { "Dishwasher", "Server", "Head Waiter", "Restaurant Owner" }, -- 1.9.1
 	},
 	Taken = "💼 You're now a %s! Go to %s and clock in (📱 Shifts) to get paid. 🚕",
 	EarnedWait = "📈 You've earned a promotion! Reach IQ %d to get it.",
@@ -1677,7 +1680,19 @@ Content.Minigames = {
 		xray = { title = "🩻 X-ray spot", how = "Find the thing that shouldn't be in the X-ray!" },
 		order = { title = "🍔 Order up", how = "Build the burger on the ticket, from the bottom up." },
 		dash = { title = "🚐 Hoppr dash", how = "Drive to the parcel, pick it up, then drop it at the house." },
+		dishes = { title = "🍽 Dish duty", how = "Tap a dirty plate a few times to scrub it until it sparkles. Clean plates go on the rack by themselves." },
+		serve = { title = "🧾 Serve the tables", how = "A table shows what it ordered. Tap that dish on the tray, then tap the table. Quick service = happy customers!" },
 	},
+	-- 1.9.1 restaurant: dish duty and serving
+	ScrubHint = "Tap the dirty plates to scrub them!",
+	Dirty = { "🍝 Saucy plate", "🍳 Eggy pan", "🥣 Sticky bowl", "🍽 Crumby plate" },
+	Scrubbing = "🧽 Scrub!",
+	Clean = "✨ Clean!",
+	Rack = "Rack:",
+	DefaultMenu = { "🍕", "🍔", "🥗", "🥤" },
+	Holding = "On your tray: %s",
+	TableN = "Table %d",
+	Served = "😋 Thanks!",
 	-- scan & bag
 	Fragile = { "🥚", "🍞", "🍓", "🍌", "🧁" },
 	Heavy = { "🥫", "🍉", "🥛", "🥔", "🧃" },
@@ -2036,7 +2051,34 @@ Content.RoomGuide = {
 		jobcenter = "Talk to the counselor to pick a job.",
 		courthouse = "The judge, the court tables and the election podium.",
 		lab = "Experiments! Help with the mouse maze.",
+		pizza = "Pizza, pasta and gelato. Eat here, or work in the kitchen as a Restaurant Worker.",
+		burger = "Burgers and shakes. Eat here, or work the grill as a Restaurant Worker.",
+		sushi = "Sushi and noodles. Eat here, or work the bar as a Restaurant Worker.",
+		taco = "Tacos and burritos. Eat here, or work the counter as a Restaurant Worker.",
+		rotcafe = "Rainbow mystery drinks. Nobody knows what is in them. Not even the café.",
 	},
+}
+
+-- 1.9.1 restaurants (big ideas #2). Parody names only.
+Content.Restaurants = {
+	Places = {
+		pizza = { name = "🍕 Pizza Palace", sign = "🍕 PIZZA PALACE", work = "Pizza Kitchen", menu = { "🍕", "🍝", "🥗", "🥤", "🍨" }, board = "🍕 MENU\nPizza · Pasta · Salad\nLemonade · Gelato" },
+		burger = { name = "🍔 Burger Barn", sign = "🍔 BURGER BARN", work = "Burger Grill", menu = { "🍔", "🍟", "🌭", "🥤", "🍦" }, board = "🍔 MENU\nBurger · Fries · Hot dog\nShake · Cone" },
+		sushi = { name = "🍣 Sushi Spot", sign = "🍣 SUSHI SPOT", work = "Sushi Bar", menu = { "🍣", "🍙", "🍜", "🍵", "🍡" }, board = "🍣 MENU\nSushi · Rice ball · Noodles\nTea · Sweet dumplings" },
+		taco = { name = "🌮 Taco Town", sign = "🌮 TACO TOWN", work = "Taco Counter", menu = { "🌮", "🌯", "🥙", "🧃", "🍮" }, board = "🌮 MENU\nTaco · Burrito · Wrap\nJuice · Flan" },
+		rotcafe = { name = "🌈 Brainrot Café", sign = "🌈 BRAINROT CAFÉ", work = "", menu = { "🧃", "🍭", "🌈", "🫧" }, board = "🌈 MYSTERY DRINKS\nColour: yes\nFlavour: ???" },
+	},
+	Eat = { action = "Eat here", object = "🍽 Meal (%d coins)", done = "🍽 Yum! Stress -%d (-%d coins)", coma = "🍽 Food coma! Your brain takes a little nap. (-%d coins)", poor = "🪙 A meal costs %d coins. Work a shift first!", animal = "🐾 Animals can't order. Try begging for scraps!" },
+	Scraps = { action = "Beg", object = "🐾 Scraps (free)", done = "🐾 Someone drops you a snack. Good pet! Stress -%d", human = "🐾 Only animals beg for scraps." },
+	Mystery = {
+		action = "Drink",
+		object = "🌈 Mystery drink (free)",
+		lines = { "🌈 It tasted like the colour purple.", "🫧 Your burp was a bubble. Science!", "🍭 Sugar and bad decisions. Delicious.", "🧃 You now speak fluent juice box.", "🌀 Your eyes did a little spin." },
+		gain = "🤔 You read the label. It just says \"???\". You put it down.",
+	},
+	Customer = "🙂 Customer",
+	Influencer = "🤳 Influencer",
+	Wants = "wants %s",
 }
 
 return Content

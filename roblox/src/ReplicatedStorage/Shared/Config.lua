@@ -158,6 +158,7 @@ Config.Careers = {
 		engineer = Color3.fromRGB(250, 200, 40), -- 1.9
 		chef = Color3.fromRGB(250, 250, 250),
 		courier = Color3.fromRGB(60, 140, 230),
+		server = Color3.fromRGB(180, 40, 50), -- 1.9.1 restaurant apron
 	},
 }
 -- 1.9 Gain path redesign: job minigames (no maths). Every minigame: start screen, timer, score,
@@ -180,6 +181,8 @@ Config.Minigames = {
 		xray = { seconds = 35, pass = 6, maxPerSecond = 1.5 }, -- doctor: X-ray spot
 		order = { seconds = 45, pass = 3, maxPerSecond = 0.6 }, -- chef: order up
 		dash = { seconds = 45, pass = 3, maxPerSecond = 0.5 }, -- courier: Hoppr dash
+		dishes = { seconds = 35, pass = 6, maxPerSecond = 1 }, -- 1.9.1 restaurant level 1: scrub the plates
+		serve = { seconds = 45, pass = 4, maxPerSecond = 0.6 }, -- 1.9.1 restaurant level 2+: take orders and serve tables
 	},
 	-- which minigame each job plays (jobs not listed keep their old non-maths task)
 	ByJob = {
@@ -192,6 +195,7 @@ Config.Minigames = {
 		engineer = "pipes",
 		chef = "order",
 		courier = "dash",
+		server = { "dishes", "serve", "serve", "serve" }, -- 1.9.1: a list = one minigame per career level
 	},
 }
 -- 1.9 Big life events (EventService): invites arrive in the phone from a shuffle bag
@@ -1086,6 +1090,24 @@ Config.RoomGuide = {
 	RingSize = 5.5,
 	LabelDistance = 70,
 	Check = 0.4, -- seconds between "which building am I in" checks
+}
+
+-- 1.9.1 restaurants (big ideas #2): built on the free lots nearest the plaza (WorldService.fillTown)
+Config.Restaurants = {
+	W = 46, -- footprint in design studs (bigger than a filler house so tables fit)
+	D = 38,
+	MealPrice = 6, -- coins for a meal (shown on the prompt before you pay)
+	MealCalm = 18, -- stress removed by a meal
+	SnackCalm = 6, -- stress removed for an animal begging for scraps (free)
+	MysteryLose = 1.5, -- Brainrot Café: brain points lost per rainbow mystery drink (Lose path)
+	-- side: which side of the river; job = true if the Restaurant Worker job works here
+	List = {
+		{ key = "pizza", side = "Gain", job = true, wall = Color3.fromRGB(200, 70, 50), roof = Color3.fromRGB(60, 120, 60), accent = Color3.fromRGB(250, 240, 220) },
+		{ key = "burger", side = "Gain", job = true, wall = Color3.fromRGB(240, 190, 70), roof = Color3.fromRGB(180, 40, 40), accent = Color3.fromRGB(255, 255, 255) },
+		{ key = "sushi", side = "Gain", job = true, wall = Color3.fromRGB(235, 225, 205), roof = Color3.fromRGB(40, 40, 45), accent = Color3.fromRGB(200, 40, 40) },
+		{ key = "taco", side = "Gain", job = true, wall = Color3.fromRGB(80, 170, 160), roof = Color3.fromRGB(230, 120, 40), accent = Color3.fromRGB(255, 220, 80) },
+		{ key = "rotcafe", side = "Lose", job = false, wall = Color3.fromRGB(255, 150, 220), roof = Color3.fromRGB(120, 80, 255), accent = Color3.fromRGB(80, 255, 200) },
+	},
 }
 
 return Config

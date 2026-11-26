@@ -371,7 +371,7 @@ local function jobAvailable(data, job): boolean
 end
 
 local function atWork(player, job): boolean
-	local pos = WorldService.Workplaces[job.place]
+	local pos = WorldService.workPos(player, job.place)
 	return pos ~= nil and WorldService.near(player, pos, Config.WorkRadius)
 end
 
@@ -431,7 +431,7 @@ Net.on("job_take", function(player, d)
 	BrainService.awardBadge(player, "FirstJob")
 	BrainService.push(player)
 	applyUniform(player)
-	Net.send(player, "workMarker", { pos = WorldService.Workplaces[job.place], name = job.placeName })
+	Net.send(player, "workMarker", { pos = WorldService.workPos(player, job.place), name = job.placeName })
 	return { ok = true, msg = string.format(CT.Taken, titleOf(job, c), job.placeName) }
 end)
 
@@ -457,7 +457,7 @@ Net.on("taxi", function(player, d)
 		if not job then
 			return { ok = false, msg = "You don't have a job yet." }
 		end
-		dest, destName = WorldService.Workplaces[job.place], job.placeName
+		dest, destName = WorldService.workPos(player, job.place), job.placeName
 		if not dest then
 			return { ok = false, msg = "Unknown place." }
 		end
@@ -585,7 +585,7 @@ Net.on("job_task", function(player)
 		return { ok = false, msg = "Get a job at the Job Center first." }
 	end
 	if not atWork(player, job) then
-		Net.send(player, "workMarker", { pos = WorldService.Workplaces[job.place], name = job.placeName })
+		Net.send(player, "workMarker", { pos = WorldService.workPos(player, job.place), name = job.placeName })
 		return { ok = false, msg = "You're not at work! Go to " .. job.placeName .. " (Hoppr or the 🚌 bus can take you).", notAtWork = true }
 	end
 	-- 1.9 Gain path redesign: most jobs are a real minigame now (no maths questions)
@@ -593,7 +593,17 @@ Net.on("job_task", function(player)
 	if game then
 		s(player).job = nil
 		local c = careerOf(data)
-		return MinigameService.begin(player, game, "job", c and c.level or 1, { jobId = job.id })
+		local lvl = c and c.level or 1
+		if typeof(game) == "table" then -- 1.9.1: a different minigame per career level (restaurant: dishes, then serving)
+			game = game[lvl] or game[#game]
+		end
+		local extra = { jobId = job.id }
+		if job.place == "restaurant" then -- the menu of the restaurant you are standing in
+			local rk = WorldService.restaurantAt(player)
+			local P = rk and Content.Restaurants.Places[rk]
+			extra.client = P and { menu = P.menu, name = P.name } or nil
+		end
+		return MinigameService.begin(player, game, "job", lvl, extra)
 	end
 	local t = makeTask(job)
 	s(player).job = t
@@ -1038,7 +1048,7 @@ function GainService.start()
 					-- wages only while actually working: clocked in (LifeService sets OnShift) and at the workplace
 					local working = job ~= nil
 					if job and Config.Life.Shift.WagesNeedShift then
-						local pos = WorldService.Workplaces[job.place]
+						local pos = WorldService.workPos(player, job.place)
 						working = player:GetAttribute("OnShift") == true
 							and pos ~= nil
 							and WorldService.near(player, pos, Config.WorkRadius)
