@@ -271,6 +271,9 @@ end
 ---------------------------------------------------------------------
 local CC = Config.Careers
 local CT = Content.Careers
+local CG = Content.GroupShift -- 1.9.1 group shifts
+local CFG_G = Config.GroupShift
+local crewOf -- defined below job_task
 
 -- IQ needed for ladder level (1-4)
 local function levelIQ(job, level: number): number
@@ -603,12 +606,68 @@ Net.on("job_task", function(player)
 			local P = rk and Content.Restaurants.Places[rk]
 			extra.client = P and { menu = P.menu, name = P.name } or nil
 		end
-		return MinigameService.begin(player, game, "job", lvl, extra)
+		-- 1.9.1 group shifts (big ideas #3): coworkers at the same workplace form a crew
+		local crew, role = crewOf(player, job)
+		if #crew >= 2 then
+			extra.crew = #crew
+			if role then
+				game = role.game
+			end
+		end
+		local res = MinigameService.begin(player, game, "job", lvl, extra)
+		if res and #crew >= 2 then
+			local mates = {}
+			for _, p in ipairs(crew) do
+				if p ~= player then
+					table.insert(mates, p.DisplayName)
+				end
+			end
+			local line = string.format(CG.Crew, table.concat(mates, ", "), math.floor(CFG_G.BonusPerMate * (#crew - 1) * 100 + 0.5))
+			if role then
+				line = line .. "\n" .. string.format(CG.Role, role.name)
+			end
+			res.how = line .. "\n\n" .. (res.how or "")
+		end
+		return res
 	end
 	local t = makeTask(job)
 	s(player).job = t
 	return { ok = true, title = t.title, prompt = t.prompt, options = t.options, kind = t.kind }
 end)
+
+-- 1.9.1 group shifts: everyone with a job at the same workplace, standing there now, is one crew.
+-- At a restaurant each crew member gets a role in join order (cook, server, dishwasher, server).
+crewOf = function(player: Player, job): ({ Player }, any)
+	local here = job.place == "restaurant" and WorldService.restaurantAt(player) or job.place
+	local crew = {}
+	for _, p in ipairs(Players:GetPlayers()) do
+		local d = DataService.get(p)
+		local pj = d and d.path == "Gain" and jobById(d.job)
+		if pj then
+			local theirs = pj.place == "restaurant" and WorldService.restaurantAt(p) or pj.place
+			local pos = WorldService.workPos(p, pj.place)
+			if theirs == here and pos and WorldService.near(p, pos, Config.WorkRadius) then
+				table.insert(crew, p)
+			end
+		end
+		if #crew >= CFG_G.MaxCrew then
+			break
+		end
+	end
+	table.sort(crew, function(a, b)
+		return a.UserId < b.UserId
+	end)
+	local role = nil
+	if job.place == "restaurant" and #crew >= 2 then
+		for i, p in ipairs(crew) do
+			if p == player then
+				local r = CFG_G.RestaurantRoles[((i - 1) % #CFG_G.RestaurantRoles) + 1]
+				role = { game = r, name = CG.Roles[r] or r }
+			end
+		end
+	end
+	return crew, role
+end
 
 local function eureka(player, data)
 	local locked = {}
@@ -737,6 +796,18 @@ MinigameService.handlers.job = function(player, round, score, passed)
 		if bonus > 0 then
 			data.coins += bonus
 			BrainService.push(player)
+		end
+		-- 1.9.1 group shifts: a teamwork bonus for every crew mate
+		local n = round.extra and round.extra.crew
+		if n and n >= 2 then
+			local team = math.floor((data.coins - before) * CFG_G.BonusPerMate * (n - 1) + 0.5)
+			if team > 0 then
+				data.coins += team
+				BoardService.addPay(player, team)
+				BrainService.toast(player, string.format(CG.Bonus, team), "LevelUp")
+				BrainService.push(player)
+			end
+			data.groupShifts = (data.groupShifts or 0) + 1
 		end
 	end
 	return { coins = data.coins - before, idea = data.ideaMeter, ideaMax = Config.EurekaTasks }

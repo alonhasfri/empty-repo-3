@@ -1110,4 +1110,11 @@ Config.Restaurants = {
 	},
 }
 
+-- 1.9.1 group shifts (big ideas #3): coworkers at the same workplace at the same time are a crew
+Config.GroupShift = {
+	MaxCrew = 4,
+	BonusPerMate = 0.25, -- +25% pay for every crew mate
+	RestaurantRoles = { "order", "serve", "dishes", "serve" }, -- cook, server, dishwasher, server
+}
+
 return Config

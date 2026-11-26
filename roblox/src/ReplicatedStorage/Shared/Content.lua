@@ -2081,4 +2081,12 @@ Content.Restaurants = {
 	Wants = "wants %s",
 }
 
+-- 1.9.1 group shifts
+Content.GroupShift = {
+	Crew = "🤝 Group shift with %s! Teamwork bonus +%d%%",
+	Role = "Your role: %s",
+	Roles = { order = "🧑‍🍳 Cook", serve = "🧾 Server", dishes = "🧽 Dishwasher" },
+	Bonus = "🤝 Teamwork bonus! +%d coins",
+}
+
 return Content
