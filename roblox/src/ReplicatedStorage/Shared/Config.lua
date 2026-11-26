@@ -806,6 +806,13 @@ Config.UI = {
 	PhoneHeight = 0.92, -- share of the screen height
 	PhoneColumns = 3, -- app icons per row (a label under every icon)
 	PhoneDock = { "items", "map", "settings" }, -- apps in the dock at the bottom (in this order)
+	-- 1.9.3 (user: too many apps, important ones must not need scrolling): the home screen shows these first
+	-- (the first PhoneHomeSlots that you have), then a More tile with everything else. Settings is always on it.
+	PhoneHomeSlots = 7,
+	PhoneFirst = {
+		Gain = { "map", "work", "jobs", "hoppr", "shifts", "bank", "library", "braintalks", "home", "items" },
+		Lose = { "map", "scroller", "steal", "jokejobs", "clickbait", "home", "shop", "items" },
+	},
 	PhoneDim = 0.75, -- the phone dims the world only lightly (pop-ups use ModalDim)
 	ModalDim = 0.45, -- full-screen dim behind every pop-up (covers the top bar too)
 	BubbleSeconds = 6, -- the NPC speech bubble hides itself after this many seconds

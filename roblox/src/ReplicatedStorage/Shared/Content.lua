@@ -1622,6 +1622,9 @@ Content.Phone19 = {
 		jokejobs = { icon = "🤡", name = "Jobs" }, -- 1.9.1 Lose joke jobs
 		camera = { icon = "📸", name = "Camera" }, -- 1.9.1 photo mode
 	},
+	BusApp = { icon = "🚌", name = "Bus & Map" }, -- 1.9.3: the map app, named for what people want it for
+	MoreApp = { icon = "➕", name = "More" }, -- 1.9.3: the rest of the apps live behind this tile
+	MoreTitle = "📱 All apps",
 	ItemsTitle = "🎒 Items",
 	ItemsGadgets = "Gadgets & secret inventions",
 	ItemsStuff = "Your stuff",

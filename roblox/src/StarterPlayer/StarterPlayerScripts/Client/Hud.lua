@@ -316,7 +316,11 @@ local function iconButton(parent, item, order: number, onClick)
 	if art or item.key == "phone" then
 		emoji.Text = ""
 		if art then
-			UI.new("ImageLabel", { BackgroundTransparency = 1, Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Position = UDim2.new(0.12, 0, 0, 2), Size = UDim2.new(0.76, 0, 0.62, 0), Parent = b })
+			local img = UI.new("ImageLabel", { BackgroundTransparency = 1, Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Position = UDim2.new(0.12, 0, 0, 2), Size = UDim2.new(0.76, 0, 0.62, 0), Parent = b })
+			UI.watchIcon(img, function() -- 1.9.3: picture failed to load: show the emoji again
+				img:Destroy()
+				emoji.Text = item.icon
+			end)
 		elseif item.key == "phone" then
 			UI.drawPhoneIcon(b, { Position = UDim2.new(0.15, 0, 0, 3), Size = UDim2.new(0.7, 0, 0.6, 0) })
 		else

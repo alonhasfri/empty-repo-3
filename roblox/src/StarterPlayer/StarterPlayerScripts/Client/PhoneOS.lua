@@ -165,6 +165,8 @@ local function openApp(app)
 			PhoneOS.shifts()
 		elseif app.key == "items" then
 			PhoneOS.items()
+		elseif app.key == "more" then
+			PhoneOS.more()
 		elseif app.key == "help" then
 			PhoneOS.help()
 		elseif app.key == "badges" then
@@ -207,9 +209,15 @@ local function appIcon(parent, app, order: number, size: number, labelH: number)
 	local art, tint, rot = UI.iconImage(app.key) -- 1.9.1 real icon art (by brain level) where we have it, the emoji otherwise
 	if art then
 		local p2 = math.floor(size * (tint and 0.2 or 0.08))
-		UI.new("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Parent = icon }, {
+		local img = UI.new("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Parent = icon }, {
 			UI.new("UIPadding", { PaddingTop = UDim.new(0, p2), PaddingBottom = UDim.new(0, p2), PaddingLeft = UDim.new(0, p2), PaddingRight = UDim.new(0, p2) }),
 		})
+		UI.watchIcon(img, function() -- 1.9.3: the picture failed to load: show the emoji instead of an empty square
+			img:Destroy()
+			UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = app.icon, TextScaled = true, Parent = icon }, {
+				UI.new("UIPadding", { PaddingTop = UDim.new(0, pad), PaddingBottom = UDim.new(0, pad), PaddingLeft = UDim.new(0, pad), PaddingRight = UDim.new(0, pad) }),
+			})
+		end)
 	else
 		UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = app.icon, TextScaled = true, Parent = icon }, {
 			UI.new("UIPadding", { PaddingTop = UDim.new(0, pad), PaddingBottom = UDim.new(0, pad), PaddingLeft = UDim.new(0, pad), PaddingRight = UDim.new(0, pad) }),
@@ -246,41 +254,78 @@ end
 
 -- 1.9 phone = main menu (docs/reference/phone_target.jpg): ONE home for every brain tier:
 -- 3 labelled icons per row, and a dock at the bottom with Items, Maps and Settings.
-local function home(m, st, tier: string)
+-- 1.9.3 (user: "too many buttons, important ones first so you don't have to scroll"): the home screen is
+-- ONE screen: the most useful apps for your path (Config.UI.PhoneFirst) + Settings + a More tile.
+-- Everything else sits on the More page. On a phone screen the wallpaper strip is dropped (the phone's
+-- status bar already shows the time) so three rows fit without scrolling.
+local function splitApps(st, tier: string)
 	local apps = appsFor(st, tier)
-	wallpaper(m.content, st, tier, 1)
-	local dockKeys = Config.UI.PhoneDock
-	local dockApps, gridApps = {}, {}
-	for _, app in ipairs(apps) do
-		local slot = table.find(dockKeys, app.key)
-		if slot then
-			dockApps[slot] = app
-		else
-			table.insert(gridApps, app)
+	local byKey = {}
+	for _, a in ipairs(apps) do
+		byKey[a.key] = a
+	end
+	local first, used = {}, {}
+	for _, key in ipairs(Config.UI.PhoneFirst[st.path or ""] or {}) do
+		-- with a job, Work matters and Jobs can wait; without one it's the other way round
+		local skip = (key == "jobs" and st.job) or (key == "work" and not st.job)
+		if byKey[key] and not skip and #first < Config.UI.PhoneHomeSlots then
+			local a = byKey[key]
+			if key == "map" then
+				a = table.clone(a)
+				a.icon, a.name = P19.BusApp.icon, P19.BusApp.name
+			end
+			table.insert(first, a)
+			used[key] = true
 		end
 	end
-	local cols = Config.UI.PhoneColumns
-	local grid = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 2, Parent = m.content }, {
-		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / cols - 0.03, 0, 0, 84), CellPadding = UDim2.new(0.03, 0, 0, 6), SortOrder = Enum.SortOrder.LayoutOrder }),
-	})
-	for i, app in ipairs(gridApps) do
-		appIcon(grid, app, i, 58, 18)
+	if byKey.settings then
+		table.insert(first, byKey.settings)
+		used.settings = true
 	end
-	if #apps == 0 then
+	local rest = {}
+	for _, a in ipairs(apps) do
+		if not used[a.key] then
+			table.insert(rest, a)
+		end
+	end
+	return first, rest, #apps
+end
+
+local function appGrid(parent, list, order: number)
+	local cols = Config.UI.PhoneColumns
+	local grid = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = order, Parent = parent }, {
+		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / cols - 0.03, 0, 0, 74), CellPadding = UDim2.new(0.03, 0, 0, 4), SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	for i, app in ipairs(list) do
+		appIcon(grid, app, i, 54, 16)
+	end
+	return grid
+end
+
+local function home(m, st, tier: string)
+	local first, rest, total = splitApps(st, tier)
+	if not UI.isPhone() then
+		wallpaper(m.content, st, tier, 1)
+	end
+	if total == 0 then
 		UI.label(m.content, "Pick a path first to unlock your apps.", { TextColor3 = WHITE, LayoutOrder = 3 })
 		return
 	end
-	-- dock: the last row of the phone
-	local dock = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(60, 64, 76), BackgroundTransparency = 0.25, Size = UDim2.new(1, 0, 0, 78), LayoutOrder = 9, Parent = m.content }, {
-		UI.new("UIGridLayout", { CellSize = UDim2.new(1 / cols - 0.03, 0, 0, 62), CellPadding = UDim2.new(0.03, 0, 0, 0), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
-		UI.new("UIPadding", { PaddingTop = UDim.new(0, 8) }),
-	})
-	UI.corner(dock, 22)
-	for slot = 1, #dockKeys do
-		if dockApps[slot] then
-			appIcon(dock, dockApps[slot], slot, 56, 0)
-		end
+	if #rest > 0 then
+		table.insert(first, { key = "more", icon = P19.MoreApp.icon, name = P19.MoreApp.name, c1 = Color3.fromRGB(90, 95, 110), c2 = Color3.fromRGB(50, 54, 66) })
 	end
+	appGrid(m.content, first, 2)
+end
+
+function PhoneOS.more()
+	local st = UI.state or {}
+	local tier = PhoneOS.tier(st)
+	local _, rest = splitApps(st, tier)
+	local color = tier == "real" and Color3.fromRGB(40, 44, 56) or (tier == "cozy" and Color3.fromRGB(180, 120, 90) or Color3.fromRGB(255, 60, 180))
+	local m = UI.modal("", phoneOpts(color))
+	UI.label(m.content, P19.MoreTitle, { TextColor3 = WHITE, LayoutOrder = 1 })
+	appGrid(m.content, rest, 2)
+	m.focus()
 end
 
 function PhoneOS.open()

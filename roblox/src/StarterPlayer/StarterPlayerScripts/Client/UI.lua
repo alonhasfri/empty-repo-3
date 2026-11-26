@@ -1204,14 +1204,57 @@ function UI.tabs(parent, tabs, active: string, onPick, props)
 end
 
 -- 1.9.1 real icon art: the image for a HUD button / phone app key (nil = keep the emoji)
+-- 1.9.3: icon pictures Roblox refused to load (still in moderation / rejected). Those keys show their emoji
+-- instead of an empty square. Filled by the preload below and by UI.watchIcon.
+UI.badIcons = {}
+function UI.watchIcon(img: ImageLabel, onFail: () -> ())
+	local id = img.Image
+	if UI.badIcons[id] then
+		onFail()
+		return
+	end
+	task.spawn(function()
+		local failed = false
+		pcall(function()
+			game:GetService("ContentProvider"):PreloadAsync({ id }, function(_, status)
+				failed = status == Enum.AssetFetchStatus.Failure or status == Enum.AssetFetchStatus.TimedOut
+			end)
+		end)
+		if failed then
+			UI.badIcons[id] = true
+			if img.Parent then
+				onFail()
+			end
+		end
+	end)
+end
+task.spawn(function()
+	local ids = {}
+	for _, set in ipairs({ Config.Icons or {}, Config.IconsMono or {} }) do
+		for _, id in pairs(set) do
+			table.insert(ids, "rbxassetid://" .. tostring(id))
+		end
+	end
+	pcall(function()
+		game:GetService("ContentProvider"):PreloadAsync(ids, function(id, status)
+			if status == Enum.AssetFetchStatus.Failure or status == Enum.AssetFetchStatus.TimedOut then
+				UI.badIcons[id] = true
+			end
+		end)
+	end)
+end)
+
 function UI.iconImage(key: string?): (string?, Color3?, number?)
 	if not key then
 		return nil
 	end
+	local function ok(img: string?): string?
+		return (img and not UI.badIcons[img]) and img or nil
+	end
 	local style = UI.popupStyle and UI.popupStyle() or "storybook"
 	if style == "glass" or style == "clean" or style == "neon" then
 		local mono = Config.IconsMono and Config.IconsMono[key]
-		if mono then
+		if mono and ok("rbxassetid://" .. tostring(mono)) then
 			if style == "neon" then
 				local tints = Config.IconNeonTints
 				local i = (#key % #tints) + 1
@@ -1221,7 +1264,7 @@ function UI.iconImage(key: string?): (string?, Color3?, number?)
 		end
 	end
 	local id = Config.Icons and Config.Icons[key]
-	return id and ("rbxassetid://" .. tostring(id)) or nil, nil, 0
+	return id and ok("rbxassetid://" .. tostring(id)) or nil, nil, 0
 end
 
 -- 1.9.1: a glossy little phone drawn with frames (the icon packs have no phone)
