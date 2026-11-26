@@ -1440,6 +1440,12 @@ local function fillTown()
 					local yaw = z > 0 and FACE_NORTH or FACE_SOUTH -- face the nearest west–east street
 					local colors = lose and CF.LoseColors or CF.GainColors
 					local col = colors[(count % #colors) + 1]
+					-- 1.9.1: a real house / shop model when ServerStorage > Props has one (else the code-built one)
+					-- (it stays in the Props folder: the town style system must not repaint real models)
+					local real = Props.filler(lose and "Shop" or "House", sp(Vector3.new(x, 0.6, z)), yaw, math.max(w, d) * S)
+					if real then
+						continue
+					end
 					building({
 						name = lose and "ShopFront" or "House",
 						center = Vector3.new(x, 0.6, z),

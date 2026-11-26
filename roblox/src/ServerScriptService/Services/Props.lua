@@ -10,6 +10,7 @@
 
 local CollectionService = game:GetService("CollectionService")
 local ServerStorage = game:GetService("ServerStorage")
+local Config = require(game:GetService("ReplicatedStorage").Shared.Config) -- 1.9.1 filler weights
 
 local Props = {}
 
@@ -503,6 +504,42 @@ function Props.tree(pos: Vector3, s: number): Model?
 				d.CanQuery = d.CanCollide
 			end
 		end
+		CollectionService:AddTag(m, "RealModel")
+	end
+	return m
+end
+
+-- 1.9.1 real buildings for the closed filler lots: "House" (Gain side) or "Shop" (Lose side).
+-- Picks one of ServerStorage > Props > House1, House2… / Shop1, Shop2… (weights in Config.Map.FillerWeights),
+-- turns it so its front faces the street (FrontYaw attribute = the model's own front direction), fits it to the lot.
+function Props.filler(kind: string, pos: Vector3, yaw: number, footprint: number): Model?
+	local src = ServerStorage:FindFirstChild("Props")
+	if not src then
+		return nil
+	end
+	local pool, total = {}, 0
+	local weights = (Config.Map.FillerWeights or {})
+	for _, m in ipairs(src:GetChildren()) do
+		if m:IsA("Model") and string.match(m.Name, "^" .. kind .. "%d+$") then
+			local w = weights[m.Name] or 1
+			table.insert(pool, { m = m, w = w })
+			total += w
+		end
+	end
+	if #pool == 0 then
+		return nil
+	end
+	local r = math.random() * total
+	local pick = pool[1].m
+	for _, e in ipairs(pool) do
+		r -= e.w
+		if r <= 0 then
+			pick = e.m
+			break
+		end
+	end
+	local m = custom(pick.Name, CFrame.new(pos) * CFrame.Angles(0, yaw + (pick:GetAttribute("FrontYaw") or 0), 0), footprint)
+	if m then
 		CollectionService:AddTag(m, "RealModel")
 	end
 	return m
