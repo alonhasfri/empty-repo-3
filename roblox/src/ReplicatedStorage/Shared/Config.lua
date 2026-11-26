@@ -868,7 +868,8 @@ Config.Map = {
 	Park = { X1 = 20, X2 = 180, Z1 = 220, Z2 = 380 }, -- stays green (design studs)
 	-- 1.8: decorative closed shops (Lose side) and houses (Gain side) that fill free street slots
 	CashGrabRow = { X = -390, Z = -28, Step = 20 }, -- 1.9.1: cash-grab stands in front of the Brainrot Mall (design studs)
-	FillerWeights = { House1 = 7, House2 = 3, Shop1 = 1 }, -- 1.9.1 real filler buildings: how often each model is picked
+	FillerWeights = { House1 = 4, House2 = 2, House3 = 1, Shop1 = 1 }, -- 1.9.1 real filler buildings: how often each model is picked
+	FillerCodeShare = { House = 0.4, Shop = 0.3 }, -- share of lots that keep the code-built building (pitched roofs, flower boxes) for variety
 	Fill = {
 		Edge = 470, -- stay inside the edge wall
 		StepX = 58, -- leaves ~26-stud walkable alleys between buildings

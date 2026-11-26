@@ -214,8 +214,11 @@ local function building(o)
 			p(CFrame.new(i * (doorW + 6) / 3, doorH + 0.75, -d / 2 - 2), Vector3.new((doorW + 6) / 6, 0.1, 4), Config.Map.Street.Stripe, nil, { Name = "Decor", Material = Enum.Material.Fabric, CanCollide = false })
 		end
 	end
-	if o.gable then
-		local rise = Config.Map.Street.GableRise
+	-- 1.9.1 (user: "almost all of the houses have a flat top, make some variety"): the walk-in places get a
+	-- pitched roof too, sized to the building; tall towers and glass buildings keep their flat tops
+	local autoGable = o.flat ~= true and h <= 40 and o.wallMaterial ~= Enum.Material.Glass
+	if o.gable or autoGable then
+		local rise = o.gable and Config.Map.Street.GableRise or math.clamp(d * 0.16, Config.Map.Street.GableRise, 14)
 		for _, back in ipairs({ false, true }) do
 			local wedge = p(CFrame.new(0, h + 1.2 + rise / 2, back and d / 4 + 0.75 or -d / 4 - 0.75) * CFrame.Angles(0, back and math.pi or 0, 0), Vector3.new(w + 3, rise, d / 2 + 1.5), o.roof or Color3.fromRGB(150, 70, 60), "trim", { ClassName = "WedgePart", Material = Enum.Material.RoofShingles })
 			wedge.Name = "Gable"

@@ -517,6 +517,11 @@ function Props.filler(kind: string, pos: Vector3, yaw: number, footprint: number
 	if not src then
 		return nil
 	end
+	-- variety: some lots keep the code-built building (pitched roofs), so the town isn't all flat tops
+	local share = Config.Map.FillerCodeShare and Config.Map.FillerCodeShare[kind] or 0
+	if math.random() < share then
+		return nil
+	end
 	local pool, total = {}, 0
 	local weights = (Config.Map.FillerWeights or {})
 	for _, m in ipairs(src:GetChildren()) do
