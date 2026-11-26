@@ -2,6 +2,30 @@
 
 The old chat got too long (expensive), so this work moves to a fresh chat. Read CLAUDE.md and the memory files first.
 
+## How to work (the user wants this chat to work EXACTLY like the old one)
+- **Open the chat in `C:\Users\hasfr\Documents\empty-repo-3`** (not Documents): the Roblox Studio MCP, Rojo and
+  Blender connections only exist there. If `list_roblox_studios` isn't available, say so in one line and stop.
+- Keep a task list (update_plan) and end every turn with wrap_up. Plain, simple words; short replies (credits).
+- **Every change gets tested in Studio before "done"**, never code-only:
+  1. Edit `roblox/src` (Rojo on port 34872 syncs it; check `curl -s http://localhost:34872/api/rojo`). If Studio
+     shows "Are you still there?", click Try connecting, then Rojo → Connect (computer-use, Roblox Studio app).
+  2. `cd roblox && selene src` → 0 parse errors.
+  3. `start_stop_play` → `execute_luau` (Client/Server) to set up the situation (admin remote:
+     `Remotes.Request:InvokeServer("admin", {cmd=..., target=userId, arg=...})`: setcells, setpath, passallgates,
+     golden, schoolbell, eventinvite…) → `screen_capture` to SEE it → `get_console_output`: fix every red error.
+  4. Check both paths (Gain and Lose) and animals when the feature touches them. Restore the test account after.
+  5. Phone check: the device simulator didn't accept device names last time; at least reason about 844x390.
+  6. Stop the playtest, commit (`git -c user.name=Claude -c user.email=noreply@anthropic.com commit`, ending with
+     the Co-Authored-By line), push, tick it in docs/QUEUE.md, save key screenshots to docs/screens/.
+- Studio testing tips (simulated keys/mouse don't reach the game; `require()` from execute_luau gives a separate
+  module copy; trigger prompts with `InputHoldBegin/End`; pin the camera with a BindToRenderStep loop): see
+  CLAUDE.md "Testing in Roblox Studio" and memory `roblox-port-status.md`.
+- Send the user screenshots of results (SendUserFile). Use subagents for broad read-only bug hunts when asked.
+- When done with a batch: bump `Config.Version` + "What's new" entry, test, then ASK the user before publishing
+  (route: File → Publish As → Cult of the 39 → Lose/Gain a Brain Cell → Overwrite; see memory).
+- Rules: kid-safe, honest money, parodies only, text in Content.lua, numbers in Config.lua, never commit .mcp.json,
+  never print the ROBLOX_API_KEY, don't edit CLAUDE.md without the user's OK.
+
 ## State
 - Live game is now named **"Lose/Gain a Brain Cell"** (renamed in Creator Hub, confirmed). Public, universe 10775683039,
   place 114531583535398, owner group "Cult of the 39". Live version = **1.9.2 "Fun Update"** (published Nov 26, 7:40 PM).
