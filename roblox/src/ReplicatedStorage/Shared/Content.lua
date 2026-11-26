@@ -1816,6 +1816,57 @@ Content.LifeEvents = {
 			},
 			outro = { Gain = "The lights come back on and the street cheers for you! 💡", Lose = "The lights are back. The shadow was a coat. 👻" },
 		},
+		-- 1.9.1 more big life events (big ideas #7)
+		talent = {
+			name = "the school talent show", icon = "🎤",
+			intro = { Gain = "The talent show is tonight! The hall is packed. 🎭", Lose = "The talent show is tonight! Your act is \"standing very still\". 🗿" },
+			steps = {
+				{ text = "Pick your act:", options = { { "🎹 Play a song you practised", true }, { "🪄 A magic trick you learned", true }, { "🥄 Balance 9 spoons on your face", false } } },
+				{ text = "Your act! Hit the notes on time.", game = "pattern", title = "🎤 Showtime!", how = "Watch the pattern of notes, then pick what comes next. Keep the rhythm!" },
+				{ text = "The crowd is clapping:", options = { { "🙇 Take a bow and thank them", true }, { "🎤 Drop the mic. It breaks.", false } } },
+			},
+			outro = { Gain = "Standing ovation! Even the judges cheered. 🌟", Lose = "Nobody knew what they watched. They loved it anyway. 🗿" },
+		},
+		sciencefair = {
+			name = "the town science fair", icon = "🧪",
+			intro = { Gain = "The science fair! Your volcano is ready. Probably. 🌋", Lose = "The science fair! You brought a potato. With googly eyes. 🥔" },
+			steps = {
+				{ text = "Build it before the judges arrive!", game = "colors", title = "🧪 Mix the lava", how = "Mix the colours to match the lava colour the judges want, then tap DONE." },
+				{ text = "A judge asks how it works:", options = { { "🔬 Explain it step by step", true }, { "🥔 \"The potato knows.\"", false } } },
+				{ text = "Your volcano starts to rumble:", options = { { "🥽 Goggles on, step back!", true }, { "😮 Lean in closer", false } } },
+			},
+			outro = { Gain = "🥇 First prize! Your volcano is on the front page. 🌋", Lose = "The potato won \"Most Mysterious\". It is a real prize now. 🥔" },
+		},
+		festival = {
+			name = "the town festival", icon = "🎡",
+			intro = { Gain = "The town festival! Rides, lights and the smell of candy floss. 🎡", Lose = "The town festival! You ate candy floss for dinner. Twice. 🍭" },
+			steps = {
+				{ text = "First stop:", options = { { "🎡 The big wheel, see the whole town", true }, { "🎪 The mirror maze (you get lost)", false } } },
+				{ text = "Help at the lemonade stand!", game = "lemonade", title = "🍋 Festival stand", how = "Pick the right price and amount so the festival crowd buys your lemonade!" },
+				{ text = "Fireworks time!", options = { { "🎆 Watch from the hill with friends", true }, { "🙈 Cover your ears and shout", false } } },
+			},
+			outro = { Gain = "The best night of the year. The whole town sparkles. 🎆", Lose = "You won a goldfish and named it Brain. It is smarter than you. 🐠" },
+		},
+		kitten = {
+			name = "a kitten stuck in a tree", icon = "🐱",
+			intro = { Gain = "Mew! A kitten is stuck high up in the park tree. 🌳", Lose = "Mew! A kitten is stuck in a tree. You also climb up. Now there are two. 🌳" },
+			steps = {
+				{ text = "How do you help?", options = { { "🚒 Call the fire brigade", true }, { "🪜 Borrow a ladder from a neighbour", true }, { "🐦 Meow at it until it learns to fly", false } } },
+				{ text = "Guide the ladder truck through town!", game = "dash", title = "🚒 To the park!", how = "Drive to the ladder, pick it up, then race to the park tree." },
+				{ text = "The kitten is safe! Now:", options = { { "🥛 Find its owner with the collar tag", true }, { "👑 Make it mayor of the park", false } } },
+			},
+			outro = { Gain = "The owner hugs the kitten and thanks you. Hero! 🐱💛", Lose = "The kitten is mayor now. It has already done better than you. 🐱👑" },
+		},
+		firstday = {
+			name = "your first day at a new job", icon = "💼",
+			intro = { Gain = "First day at the new job! Your hands are a little sweaty. Deep breath. 😅", Lose = "First day at… wait, you got a job? Nobody is more surprised than you. 😅" },
+			steps = {
+				{ text = "You walk in. Everyone looks up:", options = { { "👋 Smile and say hi to everyone", true }, { "🫣 Hide behind a pot plant", false } } },
+				{ text = "Your boss shows you the ropes. Try it!", game = "files", title = "💼 Learning the ropes", how = "Sort the files into the folder with the same colour. Your boss is watching… kindly!" },
+				{ text = "Lunch break! The new coworkers wave you over:", options = { { "🥪 Sit with them and ask about their day", true }, { "🍜 Eat noodles in the supply cupboard", false } } },
+			},
+			outro = { Gain = "Your boss: \"Great first day!\" You're going to like it here. 💼", Lose = "You survived the first day. The pot plant is your best friend now. 🪴" },
+		},
 	},
 }
 

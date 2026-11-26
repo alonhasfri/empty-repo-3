@@ -203,11 +203,12 @@ Config.Events = {
 	FirstAfter = 600, -- seconds of play before the first invite (~10 minutes)
 	GapMin = 900, -- then one every 15-25 minutes
 	GapMax = 1500,
-	Ids = { "wedding", "grandma", "graduation", "moving", "pet", "blackout" },
+	Ids = { "wedding", "grandma", "graduation", "moving", "pet", "blackout", "talent", "sciencefair", "festival", "kitten" }, -- 1.9.1: + 4 (firstday comes when you take a new job)
 	ChoicePoints = 1, -- brain points for a choice that fits your path (smart on Gain, silly on Lose)
 	OtherPoints = 0.3, -- the other choice still counts a little
 	MinigamePoints = 2, -- a good minigame inside an event
 	DoneCoins = 25, -- coins for finishing an event
+	FirstDayDelay = 20, -- 1.9.1: seconds after taking a job before the "first day" invite
 }
 
 -- 1.9 Genius Crossroads (GeniusService): at the top of a career ladder, or at OpenIQ, pick a genius branch

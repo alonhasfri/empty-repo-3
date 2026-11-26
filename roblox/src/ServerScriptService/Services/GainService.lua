@@ -431,6 +431,14 @@ Net.on("job_take", function(player, d)
 	end
 	data.job = job.id
 	local c = careerOf(data) -- a new job starts at the bottom of its ladder
+	-- 1.9.1 big ideas #7: a "first day at a new job" life event arrives a little after you take a job
+	task.delay(Config.Events.FirstDayDelay, function()
+		local ok, ES = pcall(require, script.Parent.EventService)
+		local now = DataService.get(player)
+		if ok and ES and now and now.job == job.id and not now.eventInvite then
+			ES.invite(player, "firstday")
+		end
+	end)
 	BrainService.awardBadge(player, "FirstJob")
 	BrainService.push(player)
 	applyUniform(player)
