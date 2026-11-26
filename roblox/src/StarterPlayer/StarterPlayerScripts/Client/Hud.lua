@@ -1129,7 +1129,7 @@ function Hud.update(st)
 
 	cellsLabel.Text = st.cellsText
 	iqChip.Text = st.iqText
-	coinChip.Visible = st.path == "Gain"
+	coinChip.Visible = st.path == "Gain" or (st.path == "Lose" and (st.coins or 0) > 0) -- 1.9.1: the Lose path earns coins now (Golden Brains, new forms)
 	coinChip.Text = "💰 " .. tostring(math.floor(st.coins or 0))
 	local b = BANNERS[path or "none"]
 	bannerTitle.Text = b[1]
@@ -1231,7 +1231,7 @@ function Hud.bigCounter(amount: number, up: boolean, title: string?)
 		Position = UDim2.fromScale(0.5, 0.42),
 		Size = UDim2.fromOffset(520, 120),
 		TextColor3 = up and UI.Colors.good or UI.Colors.bad,
-		Text = (title and (title .. "\n") or "") .. (up and "+" or "−") .. Brain.formatNumber(amount) .. " 🧠",
+		Text = (title and (title .. "\n") or "") .. (up and "+" or "−") .. Brain.shortNumber(amount) .. " 🧠",
 		ZIndex = 40,
 	})
 	outlined(big, 4)

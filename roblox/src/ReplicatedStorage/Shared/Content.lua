@@ -1076,6 +1076,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.9.2", name = "Fun Update", lines = { "🔊 Sounds and music everywhere!", "✨ Golden Brains pop up near you: grab them for a big brain change and coins (on both paths).", "🐶 Becoming a new animal is a big moment now, with a NEW FORM banner, an animal book and coins.", "🎨 Brand-new 3D icons, faster jobs and reading, a shorter tutorial and bigger rewards." } },
 	{ v = "1.9.1", name = "Big Town Update", lines = { "🍕 Four restaurants (and the Brainrot Café): eat there, or work as a Restaurant Worker with your friends.", "🏠 Your own home that grows with your brain. Buy furniture, visit friends, see the town board.", "🐾 Animals get jobs, park friends and a way back up. Humans can adopt an animal player (if they say yes!).", "⚖️ Smart vs Dumb now plays like a movie, with a big OBJECTION!", "🌧 Weather and seasons, pets that follow you, a 📸 Camera with stickers, and a TV that gets dumber with the server." } },
 	{ v = "1.9", name = "Real Life Update", lines = { "📱 Your phone is now the main menu, with an 🎒 Items app for all your gadgets.", "🎮 Every job has its own minigame: scan groceries, sort files, read X-rays, mix colours and more. No maths!", "💌 Big life moments: a friend's wedding, Grandma's 80th, a runaway pet… Check your Invites.", "🌟 Reach the top of a job ladder (or IQ 140) to choose your genius: math, physics, coding, business or chess.", "⚙️ Settings has tabs and volume sliders, and a 💬 Send feedback button." } },
 	{ v = "1.8.9", name = "Calm New Look", lines = { "🎨 A calmer, cleaner look: dark panels, matching buttons, no more rainbow gradients.", "🚧 Skill Gates are now fun-fact gates: read a fun fact, answer an easy question about it.", "⚠️ New: Settings → Reset my progress (hold to confirm, once a day).", "💥 When your brain runs out it now swells, wobbles… and goes POOF!" } },
@@ -1993,7 +1994,7 @@ Content.Cutscenes = {
 -- 1.9: the progress path strip under the counter (Gain path)
 Content.PathStrip = {
 	Steps = { "Job", "Shift", "Promotion", "Next job" },
-	LoseSteps = { "Human", "Barely human", "Animal", "Rock" }, -- 1.9.1 the Lose progress strip
+	LoseSteps = { "Human", "Barely", "Animal", "Rock" }, -- 1.9.1 the Lose progress strip (short so all 4 fit beside GO)
 	LoseNext = "%s Next form: %s · %d%%",
 	LoseDone = "🗿 You reached the end. Legendary.",
 	PickJob = "💼 Pick a job",
