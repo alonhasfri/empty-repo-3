@@ -949,7 +949,30 @@ function Effects.transform(d)
 	sub.Size = UDim2.fromScale(0.7, 0.06)
 	sub.Position = UDim2.fromScale(0.15, 0.46)
 	sub.Font = Enum.Font.GothamBold
-	task.delay(3.5, function()
+	-- 1.9.1 fun fixes 2: a brand-new form gets a gold NEW FORM banner, the book count, coins and confetti
+	local hold = 3.5
+	if d.new then
+		hold = 4.5
+		local FF = Content.FunFixes2
+		bg.BackgroundTransparency = 1
+		TweenService:Create(bg, TweenInfo.new(0.3), { BackgroundTransparency = 0.45 }):Play()
+		local banner = bigText(bg, FF.NewForm, 65)
+		banner.Size = UDim2.fromScale(0.6, 0.08)
+		banner.Position = UDim2.fromScale(0.2, 0.2)
+		banner.TextColor3 = Color3.fromRGB(255, 215, 60)
+		local bs = UI.new("UIScale", { Scale = 0.2, Parent = banner })
+		TweenService:Create(bs, TweenInfo.new(0.5, Enum.EasingStyle.Elastic), { Scale = 1 }):Play()
+		local book = bigText(bg, string.format(FF.Book, d.seen or 1, d.total or 1, d.coins or 0), 65)
+		book.Size = UDim2.fromScale(0.6, 0.05)
+		book.Position = UDim2.fromScale(0.2, 0.54)
+		book.Font = Enum.Font.GothamBold
+		book.TextColor3 = Color3.fromRGB(255, 235, 150)
+		UI.sound("LevelUp", 0.7)
+		if not UI.reducedMotion() then
+			Effects.confetti()
+		end
+	end
+	task.delay(hold, function()
 		fadeOut(bg, 0.5)
 		if d.tip then
 			UI.toast(d.tip, nil, 7)

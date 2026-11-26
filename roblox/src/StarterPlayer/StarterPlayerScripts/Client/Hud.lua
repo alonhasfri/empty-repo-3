@@ -1181,17 +1181,34 @@ function Hud.update(st)
 	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + stackH * UI.D) or 8)
 end
 
-function Hud.delta(amount: number, up: boolean)
+function Hud.delta(amount: number, up: boolean, iq: number?, pct: number?)
+	-- 1.9.1 fun fixes 2: the pop also says what it means: "+1.2B  (+0.6 IQ)" or "−3.1M  (−2.2%)"
+	local extra = ""
+	if iq and math.abs(iq) >= 0.05 then
+		extra = string.format("  (%s%.1f IQ)", iq >= 0 and "+" or "−", math.abs(iq))
+	elseif pct and pct >= 0.05 then
+		extra = string.format("  (−%.1f%%)", pct)
+	end
+	-- short like the counter ("+856.8M", not 11 digits), and to the RIGHT of the counter so it never covers the path strip
+	local short = Brain.formatNumber(amount)
+	if amount >= 1000 then
+		local v, i = amount, 0
+		while v >= 1000 and i < #Config.NumberSuffixes do
+			v /= 1000
+			i += 1
+		end
+		short = string.format("%.1f", v) .. Config.NumberSuffixes[i]
+	end
 	local t = text(top, {
 		AnchorPoint = Vector2.new(0, 0),
-		Position = UDim2.new(0, 64, 1, 28), -- 1.9: under the chip row
-		Size = UDim2.fromOffset(200, 22),
+		Position = UDim2.new(1, 10, 0, 14),
+		Size = UDim2.fromOffset(240, 26),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextColor3 = up and UI.Colors.good or UI.Colors.bad,
-		Text = (up and "+" or "−") .. Brain.formatNumber(amount),
+		Text = (up and "+" or "−") .. short .. extra,
 	})
 	outlined(t, 2)
-	TweenService:Create(t, TweenInfo.new(1.2, Enum.EasingStyle.Quad), { Position = t.Position + UDim2.fromOffset(0, 30), TextTransparency = 1 }):Play()
+	TweenService:Create(t, TweenInfo.new(1.2, Enum.EasingStyle.Quad), { Position = t.Position + UDim2.fromOffset(0, up and -18 or 18), TextTransparency = 1 }):Play()
 	task.delay(1.3, function()
 		t:Destroy()
 	end)

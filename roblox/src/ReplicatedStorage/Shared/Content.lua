@@ -2484,4 +2484,16 @@ Content.QoL = {
 	WelcomeBack = "👋 Welcome back! Nothing happened while you were away.",
 }
 
+-- 1.9.1 fun fixes 2
+Content.FunFixes2 = {
+	GoldenName = "Golden Brain",
+	GoldenGain = "✨ Golden Brain! Big brain boost and +%d 💰",
+	GoldenLose = "✨ Golden Brain! It was full of brainrot. Big brain drop and +%d 💰",
+	GoldenSpawn = "✨ A Golden Brain appeared nearby! Follow the sparkles.",
+	NewForm = "NEW FORM UNLOCKED!",
+	Book = "📖 Animal book: %d / %d forms  ·  +%d 💰",
+	Shout = "%s is now a %s %s!",
+	ShoutBy = "Brainville News",
+}
+
 return Content

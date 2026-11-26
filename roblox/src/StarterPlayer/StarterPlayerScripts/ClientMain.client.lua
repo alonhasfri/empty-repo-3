@@ -200,7 +200,7 @@ Remote.on("firstWow", function(d)
 end)
 
 Remote.on("delta", function(d)
-	Hud.delta(d.amount, d.up)
+	Hud.delta(d.amount, d.up, d.iq, d.pct)
 	UI.sound(d.up and "BrainCellGained" or "BrainCellLost", 0.5)
 end)
 

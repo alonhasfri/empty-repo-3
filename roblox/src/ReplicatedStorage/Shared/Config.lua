@@ -687,6 +687,7 @@ Config.Commands = {
 	secretanimals = { min = 2, cat = "Game", label = "Toggle Secret Animals" },
 	rubberduck = { min = 2, cat = "Game", label = "Secret Invention: Rubber Duck" },
 	schoolbell = { min = 1, cat = "Game", label = "🔔 Ring the School Bell (1.6)", target = true },
+	golden = { min = 1, cat = "Game", label = "✨ Spawn a Golden Brain (1.9.1)", target = true },
 	lifepack = { min = 4, cat = "Players", label = "👶 Give Life Pack (testing, owner only)", target = true },
 
 	-- Head Moderator
@@ -1441,6 +1442,19 @@ Config.QoL = {
 	DailyStreakBonus = 10, -- …+10 for every day in a row…
 	DailyMaxStreak = 7, -- …up to day 7
 	DailyDelay = 8, -- seconds after joining before the daily reward toast
+}
+
+-- 1.9.1 fun fixes 2 (docs/Fun review.md): golden brains in town, a big "new form" moment, IQ in the number pops
+Config.FunFixes2 = {
+	GoldenEveryMin = 60, -- seconds between golden brains near each player…
+	GoldenEveryMax = 90,
+	GoldenLife = 45, -- …and how long one stays before it vanishes
+	GoldenDistMin = 25, -- studs from the player
+	GoldenDistMax = 55,
+	GoldenPoints = 3, -- brain points (up on Gain, down on Lose: both paths win)
+	GoldenCoins = 15, -- coins on every path (the Lose path finally earns coins too)
+	FormCoins = 25, -- coins the first time you become each animal
+	ShoutNewForms = true, -- tell the server "Sam is now a 🐶 Dog!"
 }
 
 return Config

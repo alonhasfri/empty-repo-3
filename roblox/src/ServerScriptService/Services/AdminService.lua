@@ -429,6 +429,12 @@ H.schoolbell = function(_, target)
 	return AdminService.ringBell(target) and ("🔔 Rang the school bell for " .. target.Name .. ".") or "Only human players on the Lose path go to school."
 end
 
+-- 1.9.1 fun fixes 2: spawn a Golden Brain near a player now
+H.golden = function(_, target)
+	require(script.Parent.GoldenBrainService).spawnFor(target)
+	return "✨ Spawned a Golden Brain near " .. target.Name .. "."
+end
+
 H.rubberduck = function()
 	if duck and duck.Parent then
 		duck:Destroy()

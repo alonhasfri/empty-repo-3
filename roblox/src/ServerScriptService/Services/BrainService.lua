@@ -420,7 +420,33 @@ local function afterChange(player)
 		local form = Content.Animals.Forms[stage.key]
 		if form and stage.key ~= "dead" then -- (at 0 the death ending plays instead)
 			-- 1.6: the transformation moment (with a tip about the new body)
-			Net.send(player, "transform", { emoji = stage.emoji, name = stage.name, sub = form.sub, tip = form.tip, power = Config.Animals.Powers[stage.key] })
+			-- 1.9.1 fun fixes 2: the first time you become each animal it's a big NEW FORM moment, with coins,
+			-- the animal book count, and a shout to the whole server
+			data.formsSeen = data.formsSeen or {}
+			local isNew = not data.formsSeen[stage.key]
+			local seen, total, coins = 0, 0, 0
+			if isNew then
+				data.formsSeen[stage.key] = true
+				coins = Config.FunFixes2.FormCoins
+				data.coins = (data.coins or 0) + coins
+				if Config.FunFixes2.ShoutNewForms then
+					local text = string.format(Content.FunFixes2.Shout, player.DisplayName, stage.emoji, stage.name)
+					for _, other in ipairs(game:GetService("Players"):GetPlayers()) do
+						if other ~= player then
+							Net.send(other, "announce", { text = text, by = Content.FunFixes2.ShoutBy })
+						end
+					end
+				end
+			end
+			for _, s in ipairs(Brain.Stages) do
+				if Content.Animals.Forms[s.key] and s.key ~= "dead" and (not s.secret or data.formsSeen[s.key]) then
+					total += 1
+					if data.formsSeen[s.key] then
+						seen += 1
+					end
+				end
+			end
+			Net.send(player, "transform", { emoji = stage.emoji, name = stage.name, sub = form.sub, tip = form.tip, power = Config.Animals.Powers[stage.key], new = isNew, seen = seen, total = total, coins = coins })
 		elseif stage.key ~= "human" and stage.key ~= "dead" then
 			BrainService.toast(player, "You are now: " .. stage.emoji .. " " .. stage.name, "CartoonBoing")
 		end
@@ -547,9 +573,10 @@ function BrainService.gain(player, points: number, reason: string?)
 	else
 		amount = math.max(1, data.cells * Config.Rates.LoseRate) * points
 	end
+	local before = data.cells
 	data.cells += amount
 	if amount >= 1 then
-		Net.send(player, "delta", { amount = amount, up = true })
+		Net.send(player, "delta", { amount = amount, up = true, iq = data.path == "Gain" and (Brain.iq(data.cells) - Brain.iq(before)) or nil })
 	end
 	afterChange(player)
 	return amount
@@ -568,9 +595,15 @@ function BrainService.lose(player, points: number, reason: string?)
 		amount = data.cells * 0.002 * points
 	end
 	amount = math.min(amount, data.cells)
+	local before = data.cells
 	data.cells -= amount
 	if amount >= 1 then
-		Net.send(player, "delta", { amount = amount, up = false })
+		Net.send(player, "delta", {
+			amount = amount,
+			up = false,
+			pct = data.path == "Lose" and before > 0 and (amount / before * 100) or nil,
+			iq = data.path == "Gain" and (Brain.iq(data.cells) - Brain.iq(before)) or nil,
+		})
 	end
 	afterChange(player)
 	return amount
