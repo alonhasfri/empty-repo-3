@@ -208,7 +208,7 @@ Config.Events = {
 	FirstAfter = 120, -- 1.9.1 fun fixes: the first big moment in 2 minutes (was 10, exactly when testers quit)
 	GapMin = 300, -- then one every 5-8 minutes (was 15-25)
 	GapMax = 480,
-	Ids = { "wedding", "grandma", "graduation", "moving", "pet", "blackout", "talent", "sciencefair", "festival", "kitten" }, -- 1.9.1: + 4 (firstday comes when you take a new job)
+	Ids = { "surprise", "grandma", "graduation", "moving", "pet", "blackout", "talent", "sciencefair", "festival", "kitten" }, -- 1.9.1: + 4 (firstday comes when you take a new job)
 	ChoicePoints = 1, -- brain points for a choice that fits your path (smart on Gain, silly on Lose)
 	OtherPoints = 0.3, -- the other choice still counts a little
 	MinigamePoints = 2, -- a good minigame inside an event
@@ -732,7 +732,7 @@ Config.Commands = {
 	teleportto = { min = 1, cat = "Players", label = "🧪 Teleport to place", target = true, selfBelow = 3, arg = "place key (empty = list)" },
 	fps = { min = 1, cat = "Players", label = "🧪 FPS overlay", target = true, selfBelow = 3 },
 	becomeanimal = { min = 1, cat = "Players", label = "🧪 Become an animal", target = true, selfBelow = 3, arg = "dog / octopus / mouse / bee / fly / worm / human" },
-	eventinvite = { min = 1, cat = "Players", label = "🧪 Life event invite", target = true, selfBelow = 3, arg = "wedding / grandma / graduation / moving / pet / blackout (empty = random)" },
+	eventinvite = { min = 1, cat = "Players", label = "🧪 Life event invite", target = true, selfBelow = 3, arg = "surprise / grandma / graduation / moving / pet / blackout (empty = random)" },
 	crossroads = { min = 1, cat = "Players", label = "🧪 Open Genius Crossroads", target = true, selfBelow = 3 },
 	resettutorial = { min = 3, cat = "Players", label = "Reset Tutorial", target = true },
 	bringall = { min = 3, cat = "Server", label = "Bring Everyone" },

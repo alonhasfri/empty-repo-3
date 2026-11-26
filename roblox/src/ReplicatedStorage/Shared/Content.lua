@@ -1078,7 +1078,7 @@ Content.Conversations = {
 Content.Updates = {
 	{ v = "1.9.2", name = "Fun Update", lines = { "🔊 Sounds and music everywhere!", "✨ Golden Brains pop up near you: grab them for a big brain change and coins (on both paths).", "🐶 Becoming a new animal is a big moment now, with a NEW FORM banner, an animal book and coins.", "🎨 Brand-new 3D icons, faster jobs and reading, a shorter tutorial and bigger rewards." } },
 	{ v = "1.9.1", name = "Big Town Update", lines = { "🍕 Four restaurants (and the Brainrot Café): eat there, or work as a Restaurant Worker with your friends.", "🏠 Your own home that grows with your brain. Buy furniture, visit friends, see the town board.", "🐾 Animals get jobs, park friends and a way back up. Humans can adopt an animal player (if they say yes!).", "⚖️ Smart vs Dumb now plays like a movie, with a big OBJECTION!", "🌧 Weather and seasons, pets that follow you, a 📸 Camera with stickers, and a TV that gets dumber with the server." } },
-	{ v = "1.9", name = "Real Life Update", lines = { "📱 Your phone is now the main menu, with an 🎒 Items app for all your gadgets.", "🎮 Every job has its own minigame: scan groceries, sort files, read X-rays, mix colours and more. No maths!", "💌 Big life moments: a friend's wedding, Grandma's 80th, a runaway pet… Check your Invites.", "🌟 Reach the top of a job ladder (or IQ 140) to choose your genius: math, physics, coding, business or chess.", "⚙️ Settings has tabs and volume sliders, and a 💬 Send feedback button." } },
+	{ v = "1.9", name = "Real Life Update", lines = { "📱 Your phone is now the main menu, with an 🎒 Items app for all your gadgets.", "🎮 Every job has its own minigame: scan groceries, sort files, read X-rays, mix colours and more. No maths!", "💌 Big life moments: a friend's surprise party, Grandma's 80th, a runaway pet… Check your Invites.", "🌟 Reach the top of a job ladder (or IQ 140) to choose your genius: math, physics, coding, business or chess.", "⚙️ Settings has tabs and volume sliders, and a 💬 Send feedback button." } },
 	{ v = "1.8.9", name = "Calm New Look", lines = { "🎨 A calmer, cleaner look: dark panels, matching buttons, no more rainbow gradients.", "🚧 Skill Gates are now fun-fact gates: read a fun fact, answer an easy question about it.", "⚠️ New: Settings → Reset my progress (hold to confirm, once a day).", "💥 When your brain runs out it now swells, wobbles… and goes POOF!" } },
 	{ v = "1.8.8", name = "Bigger Town + Unstuck", lines = { "🦶 Fixed: sometimes you got stuck and couldn't move. Stress now only slows you for a few seconds.", "🚧 Skill Gates no longer stress you out, and you can retry right away.", "🏙 The whole town is bigger: wider roads, bigger buildings, and parked cars no longer crash into each other." } },
 	{ v = "1.8.7", name = "Phone Fixes", lines = { "🛠 Fixed: Skill Gates marked right answers wrong.", "📱 The in-game phone fits sideways phones: wider, more apps per row, BrainTalks buttons always visible.", "🔔 Little notes now pop up at the top, not in the middle." } },
@@ -1752,7 +1752,7 @@ Content.Minigames = {
 	Right2 = "➡️",
 }
 
--- 1.9 Big life events. Kid-safe: weddings are a FRIEND's party; the player never dates or marries.
+-- 1.9 Big life events. Kid-safe: no romance at all (Roblox rules): no weddings, dates or crushes.
 -- Each choice has smart = true/false: smart choices help on the Gain path, silly ones on the Lose path.
 Content.LifeEvents = {
 	Invite = "💌 You're invited: %s! Open 📱 Invites when you're ready.",
@@ -1766,15 +1766,15 @@ Content.LifeEvents = {
 	Done = "📸 %s: a photo was added to your album! +%d coins",
 	Continue = "▶ Continue",
 	Events = {
-		wedding = {
-			name = "a friend's wedding", icon = "💒",
-			intro = { Gain = "Your friend Sam is getting married in the park! There are flowers everywhere. 💐", Lose = "Your friend Sam's wedding is today. You put on pyjamas. On purpose. 🩳" },
+		surprise = { -- 1.9.3: replaced the friend's wedding (Roblox bans romantic events)
+			name = "Sam's surprise party", icon = "🎉",
+			intro = { Gain = "It's your friend Sam's birthday, and everyone is hiding in the park for a surprise party! 🎈", Lose = "Sam's surprise party is today. You came in pyjamas. On purpose. 🩳" },
 			steps = {
 				{ text = "Pick a gift for Sam:", options = { { "📚 A book of jokes", true }, { "🍳 A shiny toaster", true }, { "🦆 A rubber duck in a tiny suit", false } } },
-				{ text = "Time for your speech!", options = { { "💛 \"Sam is the kindest person I know.\"", true }, { "😂 \"Sam once ate soup with a fork. Legend.\"", false } } },
-				{ text = "Here comes the bouquet!", options = { { "🙌 Jump and catch it", true }, { "🤸 Do a cartwheel instead", false } } },
+				{ text = "Sam walks in. Everyone jumps out:", options = { { "🥳 \"SURPRISE! Happy birthday!\"", true }, { "😴 Fall asleep behind the bush", false } } },
+				{ text = "Time for a birthday speech!", options = { { "💛 \"Sam is the kindest person I know.\"", true }, { "😂 \"Sam once ate soup with a fork. Legend.\"", false } } },
 			},
-			outro = { Gain = "What a lovely day. Sam hugs you: \"Best speech ever!\" 🥹", Lose = "Everyone is still talking about your pyjamas. Iconic. 🩳" },
+			outro = { Gain = "What a lovely day. Sam grins: \"Best surprise ever!\" 🥹", Lose = "Everyone is still talking about your pyjamas. Iconic. 🩳" },
 		},
 		grandma = {
 			name = "Grandma's 80th birthday", icon = "🎂",

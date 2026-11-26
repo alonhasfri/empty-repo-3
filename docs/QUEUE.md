@@ -354,7 +354,7 @@ The user picked these from Claude's idea list. Code them one by one (commit each
 - ✅ Phone home screen fits on one screen (no scrolling): Bus & Map, Work/Jobs, eBooks, BrainTalks, Home, Items, Settings + More (all other apps). Icons whose picture fails to load show their emoji (phone + HUD). Tested phone + PC, Gain path; Lose path uses the same code (not played)
 
 ## Next (from the user via the cloud chat, Nov 26 late)
-- [ ] Replace the friend's wedding life event with a non-romantic one (Roblox rules ban romantic events)
+- ✅ Replace the friend's wedding life event with a non-romantic one (Roblox rules ban romantic events)
 - [ ] Job minigames: 15–30 s, end as soon as the goal is met, visible goal (3/6), server check allows fast finishes
 - [ ] Icons + pop-ups: one polished consistent style, crisp at phone size
 - [ ] More real 3D models (Blender / free Creator Store, scripts stripped, credited) instead of part-built props

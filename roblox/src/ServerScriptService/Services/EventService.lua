@@ -1,4 +1,4 @@
--- EventService (1.9): big life events (a friend's wedding, Grandma's 80th, graduation, moving house,
+-- EventService (1.9): big life events (a friend's surprise party, Grandma's 80th, graduation, moving house,
 -- a runaway pet, a blackout). Both paths: smart choices help on Gain, silly ones on Lose.
 -- * Invites arrive in the phone (💌 Invites app) after ~10 minutes, then every 15-25 minutes.
 -- * Events come from a shuffle bag (data.eventBag), so nothing repeats until all were seen.
@@ -41,7 +41,13 @@ local function draw(data): string
 		end
 		data.eventBag = bag
 	end
-	return table.remove(data.eventBag, 1)
+	local id = table.remove(data.eventBag, 1)
+	-- 1.9.3: the wedding event was replaced by a surprise party (Roblox rules ban romantic events); old saves
+	-- may still hold "wedding" in their bag, so map it
+	if id == "wedding" then
+		id = "surprise"
+	end
+	return id
 end
 
 -- give an invite now (also used by the admin test commands)
