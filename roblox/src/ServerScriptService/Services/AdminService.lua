@@ -724,6 +724,15 @@ H.passallgates = function(actor, target)
 	BrainService.push(target)
 	return target.Name .. " passed every Skill Gate."
 end
+-- the opposite of passallgates, so a tester who passed everything can see a gate again
+H.resetgates = function(actor, target)
+	local data = DataService.get(target)
+	data.gatesPassed = {}
+	data.adminTouched = true
+	BrainService.resetGateNotice(target)
+	BrainService.push(target)
+	return target.Name .. " has no Skill Gates passed now (Pass ALL puts them back)."
+end
 H.setiq = function(actor, target, arg)
 	local iq = tonumber(arg or "")
 	if not iq then

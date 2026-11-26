@@ -57,6 +57,11 @@ function EventService.invite(player, id: string?)
 	return true
 end
 
+-- BrainService.state → inEvent, so the 💌 app stays on the phone while an event is half done
+BrainService.hooks.inEvent = function(player)
+	return active[player] ~= nil
+end
+
 -- what the phone shows for the current step
 local function stepView(player, data, a)
 	local ev = TE.Events[a.id]

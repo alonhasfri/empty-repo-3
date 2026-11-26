@@ -172,6 +172,8 @@ function BrainService.state(player)
 		life = BrainService.hooks.lifeInfo and BrainService.hooks.lifeInfo(data) or nil, -- 1.8: Life Pack age/stage
 		career = BrainService.hooks.careerInfo and BrainService.hooks.careerInfo(data) or nil, -- 1.9: the progress path strip
 		eventInvite = data.eventInvite, -- 1.9 big life events (nil for old saves)
+		-- morning test fix: accepting clears eventInvite, so the 💌 app vanished mid-event
+		inEvent = (BrainService.hooks.inEvent and BrainService.hooks.inEvent(player)) or nil,
 		geniusOpen = (BrainService.hooks.geniusOpen and BrainService.hooks.geniusOpen(data)) or nil, -- 1.9 Genius Crossroads
 		genius = data.genius,
 		eventsDone = (typeof(data.eventsDone) == "table" and #data.eventsDone > 0) and #data.eventsDone or nil,

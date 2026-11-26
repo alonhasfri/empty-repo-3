@@ -217,6 +217,7 @@ Remote.on("hide", Stations.hide)
 
 Remote.on("death", function(d)
 	UI.closeModal()
+	AdminPanel.close() -- morning test fix: the 🧪 replay is started from the staff panel, which hid the POOF and shredder
 	Effects.death(d, function()
 		Stations.deathScreen(d)
 	end)

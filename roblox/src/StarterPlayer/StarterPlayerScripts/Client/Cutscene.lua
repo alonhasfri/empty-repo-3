@@ -38,17 +38,19 @@ function Cutscene.play(shots, opts)
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "Cutscene"
 	gui.IgnoreGuiInset = true
+	-- morning test fix: on phones the bars and fade stopped short of the screen edges (safe area)
+	gui.ScreenInsets = Enum.ScreenInsets.None
 	gui.DisplayOrder = 50
 	gui.ResetOnSpawn = false
 	gui.Parent = player:WaitForChild("PlayerGui")
 	local bar = Config.Cutscenes.Letterbox
 	local top = UI.new("Frame", { BackgroundColor3 = Color3.new(0, 0, 0), BorderSizePixel = 0, Size = UDim2.fromScale(1, bar), Parent = gui })
 	local bottom = UI.new("Frame", { BackgroundColor3 = Color3.new(0, 0, 0), BorderSizePixel = 0, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.fromScale(1, bar), Parent = gui })
-	local caption = UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, -40, 1, 0), Position = UDim2.fromOffset(20, 0), Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = bottom }, {
+	local caption = UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, -140, 1, 0), Position = UDim2.fromOffset(70, 0), Font = Enum.Font.GothamBold, TextScaled = true, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = bottom }, {
 		UI.new("UITextSizeConstraint", { MaxTextSize = 28 }),
 	})
 	local fade = UI.new("Frame", { BackgroundColor3 = Color3.new(0, 0, 0), BorderSizePixel = 0, Size = UDim2.fromScale(1, 1), BackgroundTransparency = 0, ZIndex = 5, Parent = gui })
-	local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 10), Size = UDim2.fromOffset(120, 44), Text = Content.Cutscenes.Skip, Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(42, 49, 71), ZIndex = 6, Parent = gui })
+	local skip = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -64, 0, 10), Size = UDim2.fromOffset(120, 48), Text = Content.Cutscenes.Skip, Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(42, 49, 71), ZIndex = 6, Parent = gui })
 	UI.corner(skip, 12)
 	local _ = top
 
@@ -56,11 +58,16 @@ function Cutscene.play(shots, opts)
 	UI.gui.Enabled = false
 	local camWas = cam.CameraType
 	local skipped = false
+	local camTween = nil
 	local function finish()
 		if not playing then
 			return
 		end
 		playing = false
+		-- morning test fix: stop a camera move that is still running, or it keeps sliding after Skip
+		if camTween then
+			camTween:Cancel()
+		end
 		ContextActionService:UnbindAction("BrainSkipCutscene")
 		cam.CameraType = camWas == Enum.CameraType.Scriptable and Enum.CameraType.Custom or camWas
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
@@ -102,7 +109,8 @@ function Cutscene.play(shots, opts)
 			caption.Text = (shot.text and opts.captions and opts.captions[shot.text]) or caption.Text
 			if i > 1 then
 				if not still then
-					TweenService:Create(cam, TweenInfo.new(shot.t, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(origin + shot.pos, origin + shot.look) }):Play()
+					camTween = TweenService:Create(cam, TweenInfo.new(shot.t, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(origin + shot.pos, origin + shot.look) })
+					camTween:Play()
 				end
 				task.wait(shot.t)
 			else

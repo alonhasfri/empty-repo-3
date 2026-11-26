@@ -709,6 +709,7 @@ Config.Commands = {
 	givegadget = { min = 3, cat = "Players", label = "Give Secret Invention", target = true, arg = "duck / coffee / pigeons / rain / boots / remote / goggles / rewind / robot" },
 	skipgate = { min = 3, cat = "Players", label = "Pass Next Skill Gate", target = true },
 	passallgates = { min = 1, cat = "Players", label = "🧪 Pass ALL Skill Gates", target = true, selfBelow = 3 }, -- 1.8.9 test command
+	resetgates = { min = 1, cat = "Players", label = "🧪 Un-pass all Skill Gates", target = true, selfBelow = 3 }, -- morning test: see a gate again
 	setiq = { min = 1, cat = "Players", label = "🧪 Set IQ", target = true, selfBelow = 3, arg = "IQ number" }, -- 1.8.9 test command
 	-- 1.9 test commands: testers on themselves only (selfBelow = 3), Head Mod+ on others
 	lifestage = { min = 1, cat = "Players", label = "🧪 Set Life Stage", target = true, selfBelow = 3, arg = "baby / kinder / kid / teen / adult / grandparent" },

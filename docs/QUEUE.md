@@ -237,10 +237,12 @@ Credits are low, so finish each one fully (tested, committed, pushed) before sta
    Plan: one calm design kit (like the new admin panel) for the HUD, pop-ups, phone and Settings, with bigger touch targets and text, then before/after screenshots.
 
 ## Coded but NOT tested yet (test all of these together after the usage reset, then publish)
-- 1.8.9 easy fun-fact Skill Gates (40 facts in Content.GateFacts; gate UI shows the fact above each question; 5-minute timer)
-- Phone fit: pop-ups 80% x 88% on phones; staff panel icon rail on phones, rank in the title
-- Test commands: Pass ALL Skill Gates, Set IQ
-- Delete Player Data fix (no leave-save after the wipe) and Settings → Reset my progress (hold 3 s, once a day, 7-day backup)- POOF animation before the 0-cell ending; Brain Shredder upgrade (gears, teeth, lights, paper strips and confetti)
+Morning test run Nov 26 (scheduled, Studio play-tests on PC and Galaxy S25 Ultra landscape; screenshots in docs/screens/morning-test/):
+- [x] 1.8.9 easy fun-fact Skill Gates: tested on phone (fact above each question, 300 s timer, 3/3 passed, badge + "GATE PASSED"). New 🧪 test command "Un-pass all Skill Gates" (resetgates) to see a gate again.
+- [x] Phone fit: pop-ups fit on the phone; staff panel shows the icon rail and "Players • Owner" on phones.
+- [x] Test commands: Pass ALL Skill Gates, Set IQ work.
+- [~] Delete Player Data fix and Settings → Reset my progress: NOT run on purpose (owner account must never be wiped). Needs a throwaway test account.
+- [x] POOF animation before the 0-cell ending (🧪 replaydeath) and Brain Shredder: both play with no errors. Fixed: the staff panel now closes when the death replay starts; the dark overlays now cover the whole phone screen (bright bands at the edges before).
 Before publishing: bump Config.Version to 1.8.9 and add a What's new line ("Skill Gates are now fun-fact gates, easy and fun!").
 
 ### Scheduled run Nov 25 evening (code only, lint clean, NOT tested yet). Commits d77c859 → 8511932
@@ -283,6 +285,18 @@ Test each in Studio on PC and phone size (iPhone in the device simulator), fix r
 - The user is installing **Blender** plus the **Blender MCP** add-on. After restarting the Claude app, Claude can control Blender for custom models (Brain Tower, Shredder, castle).
 - App icons: the user makes them with a free image AI (Copilot/Designer, Bing Image Creator or ChatGPT) and drops PNGs in art/icons/ (see art/icons/README.md). Until then use a free Creator Store icon pack, not code-drawn icons.
 - Order of preference: Creator Store assets (polished, free) → the user's image AI icons → Studio's AI generators (textures, meshes) → Blender custom models → Claude's SVG icons (last resort, flat).
+
+### Morning test results (Nov 26) for the Nov 25 evening items
+1. [x] UI redesign: phone on the right with picture icons + dock, Items app (USE buttons), Settings tabs with sliders, HUD (Phone + Quick Play, 🆘), all fit PC and phone. Fixed: Items descriptions shrank to unreadable (now wrap at 14 pt).
+2. [x] Gain path: progress strip, job minigame (Mix the colour) on PC and phone, timer ends the round, pay + XP + report card. Fixed: (a) the server clock started when the intro opened, so reading the intro made the result "too late" and scored 0 — now it starts at START (new "mg_go"); (b) the shift report card popped over the minigame result — it now waits until the result is closed. Only the scientist minigame was played by hand; the other 8 minigames load through the same framework but were not each played.
+3. [x] Life events: 🧪 invite → 💌 Invites → Go now → minigame. Fixed: (a) the story line was a toast covering the instructions — now it is in the minigame intro; (b) the 💌 app vanished after accepting, so a half-done event couldn't be continued — now it stays ("▶ Continue"); (c) the next part waits until the minigame result is closed. Not played to the end of all 3 parts.
+4. [x] Genius Crossroads: 🧪 open → 5 branches → Chess → chapter 1 (mate in one). Fixed: white and black pieces looked the same (now white discs vs dark discs) and on a phone the board ran past the bottom of the pop-up (now smaller on phones).
+5. [x] Intro cutscene: letterbox, captions, Skip (Backspace) → camera back to Custom, callback fires. Fixed: Skip now stops a camera move in flight; bars now reach the phone's screen edges, Skip button and caption moved clear of the notch. Tested through the module (the owner has a path, so the first-join trigger itself wasn't seen).
+6. [x] Test commands: time of day, weather, teleport (lists places), FPS overlay, unlock inventions, life event invite, open Crossroads all work. (Set Life Stage / Become an animal not run, to keep the owner save as it was.)
+7. [~] 💬 Send feedback: the button runs without errors and shows "Thanks! Your feedback window is open." but the real window can't open for the place owner (Roblox rule). Needs a non-owner account.
+- Bus to work: works, it just waits 6 s (Config.Bus.WaitSeconds), so the 4 s check last night was too early.
+- "Not at work" double message: fixed (no toast when the pop-up shows the same text).
+- Still open (small): "Server started (updates 1.0 – 1.7)" log text is stale; a runtime sound/image asset 203785492 warns "Asset type does not match" (yellow, not in the place or src); the report card can replace the phone if you open the phone right as you close a result; the invite title shows lowercase ("a runaway pet"); the pet event's minigame text talks about a parcel; "You looked stuck, so we freed you!" shows after a teleport command; a life event in progress is lost if you leave the game.
 
 ### Tonight's partial test (Nov 25, 21:45), for the 7:45 run
 - ✅ The game starts with no errors (MinigameService, EventService, GeniusService load fine).

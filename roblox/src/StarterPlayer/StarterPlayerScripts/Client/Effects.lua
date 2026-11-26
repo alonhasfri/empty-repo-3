@@ -13,12 +13,25 @@ local C = UI.Colors
 local Effects = {}
 
 local function overlay(color: Color3, transparency: number, z: number?)
+	-- morning test fix: UI.gui keeps to the phone's safe area, so a 1x1 overlay left bright bands
+	-- at the screen edges. It now bleeds past every edge, and a UIPadding of the same size keeps
+	-- its contents laid out in the visible area exactly as before.
+	local BLEED = 300
 	return UI.new("Frame", {
-		Size = UDim2.fromScale(1, 1),
+		Position = UDim2.fromOffset(-BLEED, -BLEED),
+		Size = UDim2.new(1, BLEED * 2, 1, BLEED * 2),
 		BackgroundColor3 = color,
 		BackgroundTransparency = transparency,
+		BorderSizePixel = 0,
 		ZIndex = z or 60,
 		Parent = UI.gui,
+	}, {
+		UI.new("UIPadding", {
+			PaddingTop = UDim.new(0, BLEED),
+			PaddingBottom = UDim.new(0, BLEED),
+			PaddingLeft = UDim.new(0, BLEED),
+			PaddingRight = UDim.new(0, BLEED),
+		}),
 	})
 end
 

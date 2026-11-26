@@ -121,7 +121,7 @@ local function appsFor(st, tier: string)
 			addBefore(EXTRA.genius) -- 1.9 Genius Crossroads (server sets geniusOpen)
 		end
 	end
-	if st.eventInvite or st.eventsDone then
+	if st.eventInvite or st.eventsDone or st.inEvent then
 		addBefore(EXTRA.events) -- 1.9 big life events
 	end
 	addBefore(EXTRA.badges)
