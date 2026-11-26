@@ -802,6 +802,7 @@ function Effects.worldsSmartest(d)
 		b:Destroy()
 	end
 	caption.Text = ""
+	local papers = {}
 	for i, h in ipairs(d.headlines or {}) do
 		local paper = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.45), Size = UDim2.fromScale(0.05, 0.05), BackgroundColor3 = Color3.fromRGB(245, 240, 225), Rotation = 720, ZIndex = 82 + i, Parent = o }, {
 			UI.new("UIAspectRatioConstraint", { AspectRatio = 1.5 }),
@@ -810,6 +811,7 @@ function Effects.worldsSmartest(d)
 		UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromScale(0.05, 0.22), Size = UDim2.fromScale(0.9, 0.36), Text = tostring(h), Font = Enum.Font.GothamBlack, TextScaled = true, TextColor3 = Color3.fromRGB(20, 20, 20), ZIndex = 83 + i, Parent = paper })
 		UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromScale(0.05, 0.62), Size = UDim2.fromScale(0.9, 0.3), Text = "📸 " .. tostring(d.name), Font = Enum.Font.Garamond, TextScaled = true, TextColor3 = Color3.fromRGB(60, 60, 60), ZIndex = 83 + i, Parent = paper })
 		TweenService:Create(paper, TweenInfo.new(0.7, Enum.EasingStyle.Back), { Size = UDim2.fromScale(0.62, 0.62), Rotation = (i % 2 == 0) and 4 or -4, Position = UDim2.fromScale(0.5 + (i - 2.5) * 0.03, 0.45 + (i - 2.5) * 0.02) }):Play()
+		table.insert(papers, paper)
 		UI.sound("RecordScratch", 0.3)
 		task.wait(1.6)
 	end
@@ -820,12 +822,18 @@ function Effects.worldsSmartest(d)
 	UI.sound("GameShowJingle", 0.8)
 	Effects.confetti()
 	task.wait(3.5)
-	-- 3) choose your title
+	-- 3) choose your title (1.9.3 harsh review #1: the papers stayed under the picker and the 3 stacked
+	-- buttons did not fit a phone; now the papers go, and the choices sit side by side on their own card)
 	tv:Destroy()
-	local pick = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.8, 0.5), BackgroundTransparency = 1, ZIndex = 96, Parent = o }, {
-		UI.new("UIListLayout", { Padding = UDim.new(0, 10), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
+	for _, p in ipairs(papers) do
+		p:Destroy()
+	end
+	local pick = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(0.8, 0, 0, 150), BackgroundColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0.1, ZIndex = 96, Parent = o }, {
+		UI.new("UIListLayout", { Padding = UDim.new(0, 10), FillDirection = Enum.FillDirection.Horizontal, Wraps = true, HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
+		UI.new("UIPadding", { PaddingTop = UDim.new(0, 12), PaddingBottom = UDim.new(0, 12), PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }),
 	})
-	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 50), Text = "👑 The World's Smartest…", Font = Enum.Font.Garamond, TextScaled = true, TextColor3 = C.gold, ZIndex = 97, LayoutOrder = 0, Parent = pick })
+	UI.corner(pick, 16)
+	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 44), Text = "👑 The World's Smartest…", Font = Enum.Font.Garamond, TextScaled = true, TextColor3 = C.gold, ZIndex = 97, LayoutOrder = 0, Parent = pick })
 	for i, title in ipairs({ "Man", "Woman", "Person" }) do
 		local b = UI.button(pick, title, function()
 			local r = Remote.call("smartest_title", { title = title })
@@ -833,7 +841,7 @@ function Effects.worldsSmartest(d)
 				UI.toast(r.msg, C.gold, 6)
 			end
 			fadeOut(o, 1)
-		end, { LayoutOrder = i, Size = UDim2.new(0.6, 0, 0, 50) })
+		end, { LayoutOrder = i, Size = UDim2.new(0.3, -8, 0, 56) })
 		b.ZIndex = 98
 		for _, c in ipairs(b:GetDescendants()) do
 			if c:IsA("GuiObject") then
