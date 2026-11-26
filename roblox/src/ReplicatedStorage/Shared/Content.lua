@@ -1614,6 +1614,7 @@ Content.Phone19 = {
 		events = { icon = "💌", name = "Invites" },
 		genius = { icon = "🌟", name = "Genius" },
 		home = { icon = "🏠", name = "Home" }, -- 1.9.1
+		town = { icon = "🏙", name = "Town" }, -- 1.9.1 town board
 	},
 	ItemsTitle = "🎒 Items",
 	ItemsGadgets = "Gadgets & secret inventions",
@@ -2134,6 +2135,17 @@ Content.Homes = {
 		pizzatower = { icon = "🍕", name = "Tower of pizza boxes" },
 		beanbag = { icon = "🟡", name = "Beanbag" },
 	},
+}
+
+-- 1.9.1 town board
+Content.TownBoard = {
+	Title = "🏙 TODAY IN TOWN",
+	Footer = "📱 Open the Town app to visit their homes!",
+	Nobody = "nobody yet",
+	IQ = "IQ %d",
+	Rows = { smartest = "🧠 Smartest:", dumbest = "🥴 Dumbest:", inventor = "💡 Top inventor:", team = "🤝 Best teamworker:", genius = "🌟 Geniuses:" },
+	AppTitle = "🏙 Town",
+	Visit = "👀 Visit",
 }
 
 return Content

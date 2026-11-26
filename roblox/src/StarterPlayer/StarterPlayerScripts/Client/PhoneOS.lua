@@ -54,6 +54,7 @@ local MORE = {
 	events = { c1 = Color3.fromRGB(255, 120, 160), c2 = Color3.fromRGB(200, 60, 110) },
 	genius = { c1 = Color3.fromRGB(255, 215, 80), c2 = Color3.fromRGB(200, 140, 30) },
 	home = { c1 = Color3.fromRGB(120, 200, 120), c2 = Color3.fromRGB(50, 140, 70) }, -- 1.9.1
+	town = { c1 = Color3.fromRGB(100, 160, 240), c2 = Color3.fromRGB(40, 90, 180) }, -- 1.9.1 town board
 }
 for key, a in pairs(MORE) do
 	a.key = key
@@ -126,6 +127,7 @@ local function appsFor(st, tier: string)
 		addBefore(EXTRA.events) -- 1.9 big life events
 	end
 	addBefore(EXTRA.home) -- 1.9.1 your own home (every path, animals too)
+	addBefore(EXTRA.town) -- 1.9.1 town board
 	addBefore(EXTRA.badges)
 	addBefore(EXTRA.help)
 	table.insert(list, 1, EXTRA.items)

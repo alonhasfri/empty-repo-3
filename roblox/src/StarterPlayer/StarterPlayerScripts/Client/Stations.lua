@@ -2853,6 +2853,28 @@ function Stations.home()
 	m.focus()
 end
 
+-- 1.9.1 🏙 Town app: the town board rows, each with a Visit button
+local TT = Content.TownBoard
+function Stations.town()
+	local r = Remote.call("town_get")
+	if not r or not r.ok then
+		return
+	end
+	local m = UI.modal(TT.AppTitle, Stations.phoneOpts(Color3.fromRGB(100, 160, 240)))
+	for i, row in ipairs(r.rows) do
+		local text = row.label .. "  " .. row.name .. (row.value ~= "" and ("  (" .. row.value .. ")") or "")
+		if row.id and row.id ~= game:GetService("Players").LocalPlayer.UserId then
+			UI.button(m.content, text .. "   " .. TT.Visit, function()
+				m.close()
+				Stations.visitHome(row.id)
+			end, { LayoutOrder = i })
+		else
+			UI.label(m.content, text, { LayoutOrder = i, TextColor3 = Color3.new(1, 1, 1) })
+		end
+	end
+	m.focus()
+end
+
 -- 1.9.1: visit a player's home straight from the town board
 function Stations.visitHome(userId: number)
 	resultToast(Remote.call("home_visit", { id = userId }))

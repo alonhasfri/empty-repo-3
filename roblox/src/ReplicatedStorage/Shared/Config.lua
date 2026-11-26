@@ -1154,4 +1154,11 @@ Config.Homes = {
 	Order = { "rug", "plant", "lamp", "bed", "sofa", "tv", "fishtank", "bookshelf", "desk", "piano", "gamingchair", "pizzatower", "beanbag" },
 }
 
+-- 1.9.1 town board (TownBoardService): live rows for this server, in the plaza next to the weekly-pay board
+Config.TownBoard = {
+	Pos = Vector3.new(-30, 8, -8),
+	Facing = Vector3.new(1, 0, 0.3),
+	Refresh = 20,
+}
+
 return Config
