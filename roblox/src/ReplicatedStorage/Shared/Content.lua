@@ -1617,6 +1617,7 @@ Content.Phone19 = {
 		genius = { icon = "🌟", name = "Genius" },
 		home = { icon = "🏠", name = "Home" }, -- 1.9.1
 		town = { icon = "🏙", name = "Town" }, -- 1.9.1 town board
+		jokejobs = { icon = "🤡", name = "Jobs" }, -- 1.9.1 Lose joke jobs
 	},
 	ItemsTitle = "🎒 Items",
 	ItemsGadgets = "Gadgets & secret inventions",
@@ -2310,5 +2311,29 @@ Content.DumbWorld = {
 	Exit = "🚪 EXIT",
 	ExitAction = "Climb out",
 }
+
+-- 1.9.1 big ideas #14: Lose-path joke jobs (🤡 Jobs app)
+Content.LoseJobs = {
+	AppTitle = "🤡 Joke Jobs",
+	Intro = "Real jobs are for smart people. These are for you. 🤡",
+	Start = "Start · +%d 🪙",
+	LoseOnly = "🤡 Joke jobs are for the Lose path.",
+	Animal = "🐾 Animals have their own jobs (🐾 menu ➜ 🐾💼).",
+	Paid = "%s Shift done! +%d coins (and a little less brain 🧠📉)",
+	Fired = { "🤡 Your boss is confused. That's fine. Try again!", "🤡 You were so bad at a joke job that it's almost impressive." },
+	Jobs = {
+		bubbles = { icon = "🫧", name = "Bubble-wrap popper", blurb = "Pop every single bubble. Professionally." },
+		memes = { icon = "🖼", name = "Meme reviewer", blurb = "Rate memes. Fast. Every rating is correct." },
+		sign = { icon = "🪧", name = "Upside-down sign holder", blurb = "Keep the sign upside down. It keeps flipping back!" },
+	},
+	Pop = "💥",
+	Memes = { "🐸 A frog. It says 'hm.'", "🥔 Potato with sunglasses", "🐈 Cat looks at camera, unimpressed", "🦆 Duck in a tiny hat", "🍞 Bread that looks like a dog", "🤸 Man vs wall (again)", "🐟 A fish, but it's Monday" },
+	Ratings = { "👍 Fire", "😐 Mid", "👎 Cringe" },
+	SignText = "🍕 PIZZA THIS WAY",
+	SignHint = "Tap the sign when it flips the RIGHT way up!",
+}
+Content.Minigames.Games.bubblewrap = { title = "🫧 Bubble-wrap popper", how = "Pop every bubble! A new sheet arrives when you finish one." }
+Content.Minigames.Games.memes = { title = "🖼 Meme reviewer", how = "Rate each meme. Any rating is fine, but you have to at least LOOK at it." }
+Content.Minigames.Games.signhold = { title = "🪧 Upside-down sign holder", how = "The sign keeps turning the right way up. Tap it to flip it back upside down!" }
 
 return Content

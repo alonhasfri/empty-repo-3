@@ -1239,4 +1239,17 @@ Config.DumbWorld = {
 	Balls = 120,
 }
 
+-- 1.9.1 big ideas #14 (LoseJobService): Lose-path joke jobs
+Config.LoseJobs = {
+	Order = { "bubbles", "memes", "sign" },
+	Jobs = {
+		bubbles = { game = "bubblewrap", coins = 4, lose = 1 },
+		memes = { game = "memes", coins = 5, lose = 1.2 },
+		sign = { game = "signhold", coins = 6, lose = 1.5 },
+	},
+}
+Config.Minigames.Games.bubblewrap = { seconds = 30, pass = 25, maxPerSecond = 6 }
+Config.Minigames.Games.memes = { seconds = 30, pass = 10, maxPerSecond = 2 }
+Config.Minigames.Games.signhold = { seconds = 30, pass = 8, maxPerSecond = 1.2 }
+
 return Config

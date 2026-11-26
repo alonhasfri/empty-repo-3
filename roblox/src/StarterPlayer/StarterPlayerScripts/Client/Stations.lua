@@ -2893,6 +2893,30 @@ function Stations.town()
 	m.focus()
 end
 
+-- 1.9.1 🤡 Joke Jobs app (Lose path): pick a silly job, play its minigame
+local TJ = Content.LoseJobs
+function Stations.jokejobs()
+	local r = Remote.call("losejob_list")
+	if not r or not r.ok then
+		resultToast(r)
+		return
+	end
+	local m = UI.modal(TJ.AppTitle, Stations.phoneOpts(Color3.fromRGB(255, 150, 200)))
+	UI.label(m.content, TJ.Intro, { LayoutOrder = 1, TextColor3 = Color3.new(1, 1, 1) })
+	for i, j in ipairs(r.list) do
+		UI.button(m.content, j.icon .. "  " .. j.name .. "\n" .. j.blurb .. "\n" .. string.format(TJ.Start, j.coins), function()
+			m.close()
+			local info = Remote.call("losejob_start", { id = j.id })
+			if not info or not info.ok then
+				resultToast(info)
+				return
+			end
+			Minigames.play(info, { onAgain = Stations.jokejobs })
+		end, { LayoutOrder = 1 + i, Size = UDim2.new(1, 0, 0, 84) })
+	end
+	m.focus()
+end
+
 -- 1.9.1: visit a player's home straight from the town board
 function Stations.visitHome(userId: number)
 	resultToast(Remote.call("home_visit", { id = userId }))

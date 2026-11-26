@@ -55,6 +55,7 @@ local MORE = {
 	genius = { c1 = Color3.fromRGB(255, 215, 80), c2 = Color3.fromRGB(200, 140, 30) },
 	home = { c1 = Color3.fromRGB(120, 200, 120), c2 = Color3.fromRGB(50, 140, 70) }, -- 1.9.1
 	town = { c1 = Color3.fromRGB(100, 160, 240), c2 = Color3.fromRGB(40, 90, 180) }, -- 1.9.1 town board
+	jokejobs = { c1 = Color3.fromRGB(255, 150, 200), c2 = Color3.fromRGB(200, 70, 140) }, -- 1.9.1 Lose joke jobs
 }
 for key, a in pairs(MORE) do
 	a.key = key
@@ -123,6 +124,9 @@ local function appsFor(st, tier: string)
 			addBefore(EXTRA.genius) -- 1.9 Genius Crossroads (server sets geniusOpen)
 		end
 	end
+	if st.path == "Lose" then
+		addBefore(EXTRA.jokejobs) -- 1.9.1 joke jobs
+	end
 	if st.eventInvite or st.eventsDone or st.inEvent then
 		addBefore(EXTRA.events) -- 1.9 big life events
 	end
@@ -163,7 +167,7 @@ local function openApp(app)
 			PhoneOS.help()
 		elseif app.key == "badges" then
 			PhoneOS.stations.badges()
-		elseif (app.key == "events" or app.key == "genius" or app.key == "home" or app.key == "town") and PhoneOS.stations[app.key] then
+		elseif (app.key == "events" or app.key == "genius" or app.key == "home" or app.key == "town" or app.key == "jokejobs") and PhoneOS.stations[app.key] then
 			PhoneOS.stations[app.key]()
 		elseif PhoneOS.stations.route then
 			PhoneOS.stations.route(app.key)

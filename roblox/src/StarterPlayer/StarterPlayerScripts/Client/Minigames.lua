@@ -651,6 +651,106 @@ function GAMES.serve(area, ctx)
 end
 
 ---------------------------------------------------------------------
+-- 1.9.1 Lose-path joke jobs (LoseJobService): bubble wrap, memes, the upside-down sign
+---------------------------------------------------------------------
+local TJ = Content.LoseJobs
+
+-- 🫧 pop every bubble on the sheet; a new sheet arrives when it's all popped
+function GAMES.bubblewrap(area, ctx)
+	local grid = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(200, 230, 255), BackgroundTransparency = 0.3, Size = UDim2.fromScale(1, 0.92), Parent = area }, {
+		UI.new("UIGridLayout", { CellSize = UDim2.new(0.18, 0, 0.22, 0), CellPadding = UDim2.new(0.02, 0, 0.03, 0), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
+	})
+	UI.corner(grid, 12)
+	local left = 0
+	local function sheet()
+		for _, c in ipairs(grid:GetChildren()) do
+			if c:IsA("GuiButton") then
+				c:Destroy()
+			end
+		end
+		left = 15
+		for i = 1, 15 do
+			local b
+			b = tapButton(grid, "🫧", { LayoutOrder = i, BackgroundColor3 = Color3.fromRGB(170, 210, 250) }, function()
+				if not ctx.alive() or b.Text ~= "🫧" then
+					return
+				end
+				b.Text = TJ.Pop
+				b.BackgroundColor3 = Color3.fromRGB(120, 140, 170)
+				ctx.add(1)
+				left -= 1
+				if left == 0 then
+					ctx.feedback(true)
+					task.delay(0.3, function()
+						if ctx.alive() then
+							sheet()
+						end
+					end)
+				end
+			end)
+		end
+	end
+	sheet()
+end
+
+-- 🖼 a meme appears; rate it. Every answer is "right" if it's fast enough (it's a joke job)
+function GAMES.memes(area, ctx)
+	local card = label(area, "", { Size = UDim2.fromScale(1, 0.5), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(40, 40, 55) })
+	UI.corner(card, 12)
+	local buttons = row(area, 0.6, 0.32, 3)
+	local shown = 0
+	local function nextMeme()
+		card.Text = TJ.Memes[ctx.rng:NextInteger(1, #TJ.Memes)]
+		shown = os.clock()
+	end
+	for i, r in ipairs(TJ.Ratings) do
+		tapButton(buttons, r, { LayoutOrder = i }, function()
+			if not ctx.alive() then
+				return
+			end
+			if os.clock() - shown < 0.4 then
+				ctx.feedback(false) -- you didn't even look!
+				return
+			end
+			ctx.feedback(true)
+			ctx.add(1)
+			nextMeme()
+		end)
+	end
+	nextMeme()
+end
+
+-- 🪧 keep the sign UPSIDE DOWN: it keeps turning the right way up; tap it to flip it back
+function GAMES.signhold(area, ctx)
+	local sign = tapButton(area, TJ.SignText, { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.45), Size = UDim2.fromScale(0.7, 0.45), BackgroundColor3 = Color3.fromRGB(250, 240, 200), TextColor3 = Color3.fromRGB(40, 40, 40), Rotation = 180 }, function() end)
+	local hint = label(area, TJ.SignHint, { Position = UDim2.fromScale(0, 0.8), Size = UDim2.new(1, 0, 0.14, 0), Font = UI.T.body })
+	local _ = hint
+	local upright = false
+	sign.Activated:Connect(function()
+		if not ctx.alive() then
+			return
+		end
+		if upright then
+			upright = false
+			sign.Rotation = 180
+			ctx.feedback(true)
+			ctx.add(1)
+		else
+			ctx.feedback(false) -- it was already upside down, silly
+		end
+	end)
+	task.spawn(function()
+		while ctx.alive() do
+			task.wait(ctx.rng:NextNumber(0.9, 2.2))
+			if ctx.alive() and not upright then
+				upright = true
+				sign.Rotation = 0
+			end
+		end
+	end)
+end
+
+---------------------------------------------------------------------
 -- 1.9 Genius signature minigames (Content.Genius)
 ---------------------------------------------------------------------
 local TG = Content.Genius
