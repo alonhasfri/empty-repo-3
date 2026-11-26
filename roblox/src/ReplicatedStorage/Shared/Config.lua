@@ -769,6 +769,11 @@ Config.RankGiveLimit = {
 -- 1.7: Brain-scaled UI, life systems and map (see docs/Brain scaled UI and map design.md)
 ---------------------------------------------------------------------
 Config.UI = {
+	-- 1.9.1 pop-up style by brain level (UI.popupStyle): neon below this many cells on the Lose path,
+	-- glass from GlassIQ, the clean dark card from CleanCardIQ (Gain); storybook otherwise
+	NeonBelowCells = 45e9,
+	GlassIQ = 100,
+	CleanCardIQ = 135,
 	BigDeltaShare = 0.02, -- 1.7.3: a brain change this big (share of your cells) gets the big centre counter
 	MinDeviceScale = 0.7, -- the whole HUD never shrinks below this on small phones
 	PhoneShortSide = 500, -- a screen whose short side is under this many pixels counts as a phone

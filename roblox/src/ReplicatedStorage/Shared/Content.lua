@@ -1797,7 +1797,7 @@ Content.LifeEvents = {
 			steps = {
 				{ text = "Pack the boxes: match the colours!", game = "files" },
 				{ text = "The moving truck is ready:", options = { { "🚚 Drive carefully", true }, { "🏎 Race it down the hill", false } } },
-				{ text = "Decorate your new room:", options = { { "🪴 Plants and a bookshelf", true }, { "🍕 Pizza boxes as furniture", false } } },
+				{ text = "Decorate your new room:", options = { { "🌿 Plants and a bookshelf", true }, { "🍕 Pizza boxes as furniture", false } } },
 			},
 			outro = { Gain = "Your new room looks amazing. Home sweet home. 🏠", Lose = "Your room is 90% pizza boxes. You love it. 🍕" },
 		},
@@ -1870,7 +1870,7 @@ Content.LifeEvents = {
 				{ text = "Your boss shows you the ropes. Try it!", game = "files", title = "💼 Learning the ropes", how = "Sort the files into the folder with the same colour. Your boss is watching… kindly!" },
 				{ text = "Lunch break! The new coworkers wave you over:", options = { { "🥪 Sit with them and ask about their day", true }, { "🍜 Eat noodles in the supply cupboard", false } } },
 			},
-			outro = { Gain = "Your boss: \"Great first day!\" You're going to like it here. 💼", Lose = "You survived the first day. The pot plant is your best friend now. 🪴" },
+			outro = { Gain = "Your boss: \"Great first day!\" You're going to like it here. 💼", Lose = "You survived the first day. The pot plant is your best friend now. 🌿" },
 		},
 	},
 }
@@ -2185,7 +2185,7 @@ Content.Homes = {
 	Tiers = { flat = "Little Flat", house = "House", penthouse = "Penthouse", box = "Cardboard Box", messy = "Messy Room", palace = "Pizza-Box Palace", kennel = "Kennel" },
 	Furniture = {
 		rug = { icon = "🟥", name = "Rug" },
-		plant = { icon = "🪴", name = "Plant" },
+		plant = { icon = "🌿", name = "Plant" },
 		lamp = { icon = "💡", name = "Lamp" },
 		bed = { icon = "🛏", name = "Bed" },
 		sofa = { icon = "🛋", name = "Sofa" },

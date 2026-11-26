@@ -561,8 +561,10 @@ local toastHolder = UI.new("Frame", {
 	UI.new("UISizeConstraint", { MaxSize = Vector2.new(300, 600), MinSize = Vector2.new(200, 0) }),
 })
 -- 1.8.1: toasts sit just under the goal line, whatever the screen size
+local toastTop = UDim2.new(0.5, 0, 0, 74)
 UI.onScale(function(d)
-	toastHolder.Position = UDim2.new(0.5, 0, 0, 14 + 60 * d) -- 1.8.7: high up, under the slim goal lines (never mid-screen)
+	toastTop = UDim2.new(0.5, 0, 0, 14 + 60 * d) -- 1.8.7: high up, under the slim goal lines (never mid-screen)
+	toastHolder.Position = toastTop
 end)
 UI.autoScale(toastHolder)
 
@@ -595,6 +597,14 @@ function UI.toast(text: string, color: Color3?, seconds: number?)
 			t.until_ = os.clock() + life
 			return
 		end
+	end
+	-- 1.9.1 test fix: while a pop-up is open, toasts sit at the bottom so they never cover its title
+	if UI.popupOpen then
+		toastHolder.AnchorPoint = Vector2.new(0.5, 1)
+		toastHolder.Position = UDim2.new(0.5, 0, 1, -70)
+	elseif #liveToasts == 0 then
+		toastHolder.AnchorPoint = Vector2.new(0.5, 0)
+		toastHolder.Position = toastTop
 	end
 	while #liveToasts >= Config.UI.MaxToasts do
 		local old = table.remove(liveToasts, 1)
@@ -634,6 +644,30 @@ function UI.toast(text: string, color: Color3?, seconds: number?)
 	})
 	l:SetAttribute("Body", true)
 	UI.styleText(l)
+	-- 1.9.1 toasts follow the pop-up style; smart players (glass / clean) get phone-notification cards
+	pcall(function()
+		local key = UI.popupStyle()
+		local P = UI.PopStyles[key]
+		if key == "glass" or key == "clean" then
+			card.BackgroundColor3 = Color3.fromRGB(245, 245, 248)
+			card.BackgroundTransparency = 0.04
+			UI.corner(card, 18)
+			l.TextColor3 = Color3.fromRGB(25, 25, 32)
+			bar.Visible = false
+		elseif P then
+			card.BackgroundColor3 = P.bg
+			card.BackgroundTransparency = 0.05
+			UI.corner(card, math.min(P.radius, 16))
+			l.TextColor3 = P.text
+			UI.stroke(card, P.stroke, math.min(P.strokeW, 3), P.strokeT)
+			if P.font then
+				l.Font = P.font
+			elseif P.face then
+				l.FontFace = Font.new(P.face)
+			end
+			bar.BackgroundColor3 = color or P.line
+		end
+	end)
 	local entry = { base = text, holder = holder, label = l, count = 1, until_ = os.clock() + life }
 	table.insert(liveToasts, entry)
 	if not UI.reducedMotion() then
@@ -664,6 +698,7 @@ function UI.closeModal()
 	if current then
 		local c = current
 		current = nil
+		UI.popupOpen = false
 		ContextActionService:UnbindAction("BrainCloseModal")
 		GuiService.SelectedObject = nil
 		if c.onClose then
@@ -683,10 +718,104 @@ function UI.isModalOpen(): boolean
 	return current ~= nil
 end
 
+---------------------------------------------------------------------
+-- 1.9.1 pop-up styles by brain level (user picked from docs/screens/popup-styles/: "integrate all of
+-- them according to how smart/dumb you are"). Low brain = loud and silly, high brain = calm and real:
+--   neon (Lose, really dumb) · bubbly (Lose, and animals) · storybook (new / average, matches the start town)
+--   glass (smart, IQ 100+) · clean dark card (really smart, IQ 135+)
+-- Toasts use the same style, and smart players (IQ 100+) get phone-notification toasts.
+-- Only ordinary pop-ups are skinned: the phone, minigames and other big screens keep their own look.
+---------------------------------------------------------------------
+local MERRI = "rbxasset://fonts/families/Merriweather.json"
+UI.PopStyles = {
+	clean = { bg = Color3.fromRGB(24, 28, 40), header = Color3.fromRGB(24, 28, 40), title = Color3.new(1, 1, 1), text = Color3.fromRGB(225, 230, 240), muted = Color3.fromRGB(160, 168, 190), card = Color3.fromRGB(34, 40, 58), btn = Color3.fromRGB(40, 46, 64), btnText = Color3.new(1, 1, 1), stroke = Color3.new(1, 1, 1), strokeT = 0.9, strokeW = 1, radius = 18, line = Color3.fromRGB(90, 140, 255), closeBg = Color3.fromRGB(40, 46, 64), closeFg = Color3.fromRGB(200, 205, 220), light = false },
+	glass = { bg = Color3.fromRGB(250, 251, 255), bgT = 0.06, header = Color3.fromRGB(250, 251, 255), title = Color3.fromRGB(25, 30, 45), text = Color3.fromRGB(45, 50, 65), muted = Color3.fromRGB(110, 116, 135), card = Color3.fromRGB(236, 240, 248), btn = Color3.fromRGB(228, 233, 244), btnText = Color3.fromRGB(30, 35, 50), stroke = Color3.new(1, 1, 1), strokeT = 0.2, strokeW = 2, radius = 22, line = Color3.fromRGB(220, 225, 236), closeBg = Color3.fromRGB(228, 233, 244), closeFg = Color3.fromRGB(60, 66, 85), light = true },
+	storybook = { bg = Color3.fromRGB(250, 238, 205), header = Color3.fromRGB(190, 50, 50), title = Color3.fromRGB(255, 245, 220), text = Color3.fromRGB(80, 50, 25), muted = Color3.fromRGB(130, 95, 60), card = Color3.fromRGB(242, 226, 186), btn = Color3.fromRGB(120, 78, 40), btnText = Color3.fromRGB(255, 240, 210), stroke = Color3.fromRGB(120, 78, 40), strokeT = 0, strokeW = 4, radius = 10, line = Color3.fromRGB(110, 25, 25), closeBg = Color3.fromRGB(120, 78, 40), closeFg = Color3.fromRGB(255, 240, 210), light = true, face = MERRI },
+	bubbly = { bg = Color3.fromRGB(255, 214, 90), bg2 = Color3.fromRGB(255, 150, 60), header = Color3.fromRGB(80, 190, 255), title = Color3.new(1, 1, 1), text = Color3.fromRGB(60, 30, 10), muted = Color3.fromRGB(120, 70, 30), card = Color3.fromRGB(255, 236, 170), btn = Color3.fromRGB(255, 255, 255), btnText = Color3.fromRGB(40, 25, 10), stroke = Color3.fromRGB(20, 20, 30), strokeT = 0, strokeW = 5, radius = 28, line = Color3.fromRGB(20, 20, 30), closeBg = Color3.fromRGB(240, 70, 70), closeFg = Color3.new(1, 1, 1), light = true, font = Enum.Font.FredokaOne, outlineTitle = true, outlineButtons = true },
+	neon = { bg = Color3.fromRGB(10, 8, 24), header = Color3.fromRGB(10, 8, 24), title = Color3.fromRGB(0, 240, 255), text = Color3.fromRGB(215, 215, 240), muted = Color3.fromRGB(160, 160, 200), card = Color3.fromRGB(22, 18, 48), btn = Color3.fromRGB(255, 40, 200), btnText = Color3.new(1, 1, 1), stroke = Color3.fromRGB(0, 240, 255), strokeT = 0, strokeW = 3, radius = 14, line = Color3.fromRGB(255, 40, 200), closeBg = Color3.fromRGB(255, 40, 200), closeFg = Color3.new(1, 1, 1), light = false, titleFont = Enum.Font.Arcade },
+}
+
+function UI.popupStyle(): string
+	local st = UI.state or {}
+	local animal = st.stage ~= nil and st.stage ~= "human" and st.stage ~= "barelyhuman"
+	if st.path == "Lose" or animal then
+		if not animal and (st.cells or math.huge) < Config.UI.NeonBelowCells then
+			return "neon"
+		end
+		return "bubbly"
+	end
+	if st.path == "Gain" then
+		local iq = st.iq or 0
+		if iq >= Config.UI.CleanCardIQ then
+			return "clean"
+		elseif iq >= Config.UI.GlassIQ then
+			return "glass"
+		end
+	end
+	return "storybook"
+end
+
+local function lum(c: Color3): number
+	return 0.299 * c.R + 0.587 * c.G + 0.114 * c.B
+end
+local function same(a: Color3, b: Color3): boolean
+	return math.abs(a.R - b.R) + math.abs(a.G - b.G) + math.abs(a.B - b.B) < 0.04
+end
+
+-- restyle one thing a screen put into a skinned pop-up (runs after the caller set its own colours)
+local function skinOne(d: Instance, P)
+	if d:FindFirstAncestorWhichIsA("GuiObject") and d:FindFirstAncestorWhichIsA("GuiObject"):GetAttribute("NoSkin") then
+		return
+	end
+	if d:IsA("TextButton") then
+		local plain = same(d.BackgroundColor3, KIT.panel2) or same(d.BackgroundColor3, KIT.panel) or same(d.BackgroundColor3, KIT.bg)
+		if plain then
+			d.BackgroundColor3 = P.btn
+			d.TextColor3 = P.btnText
+		elseif lum(d.BackgroundColor3) > 0.7 and lum(d.TextColor3) > 0.7 then
+			d.TextColor3 = Color3.fromRGB(30, 30, 40) -- light custom button: dark text
+		end
+		if P.font then
+			d.Font = P.font
+		elseif P.face then
+			d.FontFace = Font.new(P.face, Enum.FontWeight.Bold)
+		end
+		if P.outlineButtons then
+			local s = d:FindFirstChildOfClass("UIStroke")
+			if s then
+				s.Color, s.Transparency, s.Thickness = P.stroke, 0, 3
+			end
+		end
+	elseif d:IsA("TextLabel") then
+		if d.BackgroundTransparency > 0.5 then
+			local c = d.TextColor3
+			if P.light and lum(c) > 0.72 then
+				d.TextColor3 = (same(c, KIT.muted) and P.muted) or P.text
+			elseif not P.light and same(c, KIT.text) then
+				d.TextColor3 = P.text
+			elseif same(c, KIT.muted) then
+				d.TextColor3 = P.muted
+			end
+		end
+		if P.font then
+			d.Font = P.font
+		elseif P.face then
+			local bold = d.Font == Enum.Font.GothamBold or d.Font == Enum.Font.GothamBlack
+			d.FontFace = Font.new(P.face, bold and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+		end
+	elseif d:IsA("Frame") then
+		if same(d.BackgroundColor3, KIT.panel) or same(d.BackgroundColor3, KIT.panel2) or same(d.BackgroundColor3, KIT.bg) then
+			d.BackgroundColor3 = P.card
+		end
+	end
+end
+
 function UI.modal(title: string, opts)
 	UI.closeModal()
 	opts = opts or {}
 	local T = UI.T
+	-- 1.9.1: which pop-up style (nil = the phone / big screens keep their own look)
+	local P = (not opts.phone and not opts.big and not opts.noSkin) and UI.PopStyles[UI.popupStyle()] or nil
 	local accent = opts.color or T.accent
 
 	-- 1.9: a FULL-screen dim (it also covers the top bar inset, so it is never a partial rectangle)
@@ -730,6 +859,23 @@ function UI.modal(title: string, opts)
 		UI.corner(notch, 9)
 		-- status bar
 		UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(18, 6), Size = UDim2.new(1, -36, 0, 18), Text = os.date("%H:%M") .. string.rep(" ", 40) .. "📶 🔋", TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.new(1, 1, 1), ZIndex = 29, Parent = frame })
+	elseif P then
+		frame.BackgroundColor3 = P.bg
+		frame.BackgroundTransparency = P.bgT or 0
+		UI.corner(frame, P.radius)
+		UI.stroke(frame, P.stroke, P.strokeW, P.strokeT)
+		if P.bg2 then
+			UI.new("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(1, 1, 1)), Rotation = 90, Parent = frame })
+			frame.BackgroundColor3 = P.bg
+			local g = frame:FindFirstChildOfClass("UIGradient")
+			g.Color = ColorSequence.new(P.bg, P.bg2)
+		end
+		if P == UI.PopStyles.neon then
+			-- a second glowing border inside the first
+			local inner = UI.new("Frame", { BackgroundTransparency = 1, Position = UDim2.fromOffset(6, 6), Size = UDim2.new(1, -12, 1, -12), ZIndex = 20, Parent = frame })
+			UI.corner(inner, P.radius - 4)
+			UI.stroke(inner, P.line, 2, 0.3)
+		end
 	else
 		UI.corner(frame, T.radius + 4)
 		UI.stroke(frame, Color3.new(1, 1, 1), 2, 0.88) -- 1.9 kit: thin light border (was a thick accent border)
@@ -775,6 +921,47 @@ function UI.modal(title: string, opts)
 	titleLabel:SetAttribute("Title", true)
 	UI.styleText(titleLabel)
 	titleLabel.TextStrokeTransparency = T.textStroke and 0 or 0.6
+	if P then
+		-- 1.9.1 pop-up style: header colour, title colour and font
+		header.BackgroundColor3 = P.header
+		for _, c in ipairs(header:GetChildren()) do
+			if c:IsA("Frame") then
+				c.BackgroundColor3 = (c.Size.Y.Offset == 2) and P.line or P.header
+			end
+		end
+		titleLabel.TextColor3 = P.title
+		titleLabel.TextStrokeTransparency = P.outlineTitle and 0 or 1
+		titleLabel.TextStrokeColor3 = P.stroke
+		if P.titleFont then
+			titleLabel.Font = P.titleFont
+		elseif P.font then
+			titleLabel.Font = P.font
+		elseif P.face then
+			titleLabel.FontFace = Font.new(P.face, Enum.FontWeight.Bold)
+		end
+		if P == UI.PopStyles.storybook then
+			-- a red ribbon title in the middle instead of a full bar
+			header.BackgroundTransparency = 1
+			for _, c in ipairs(header:GetChildren()) do
+				if c:IsA("Frame") then
+					c.Visible = false
+				end
+			end
+			local ribbon = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 6), Size = UDim2.new(0.62, 0, 0, 46), BackgroundColor3 = P.header, ZIndex = 21, Parent = header })
+			UI.corner(ribbon, 6)
+			UI.stroke(ribbon, P.line, 3, 0)
+			titleLabel.Parent = ribbon
+			titleLabel.Position = UDim2.fromOffset(8, 0)
+			titleLabel.Size = UDim2.new(1, -16, 1, 0)
+			titleLabel.TextXAlignment = Enum.TextXAlignment.Center
+		elseif P == UI.PopStyles.bubbly then
+			UI.stroke(header, P.stroke, 4, 0)
+			titleLabel.TextXAlignment = Enum.TextXAlignment.Center
+			titleLabel.Text = string.upper(title)
+		elseif P == UI.PopStyles.neon or P == UI.PopStyles.glass then
+			header.BackgroundTransparency = P == UI.PopStyles.glass and 1 or 0
+		end
+	end
 
 	local closeBtn = nil
 	if not opts.noClose then
@@ -790,6 +977,13 @@ function UI.modal(title: string, opts)
 			ZIndex = 23,
 		})
 		UI.corner(closeBtn, UI.minTouch() / 2)
+		if P then
+			closeBtn.BackgroundColor3 = P.closeBg
+			closeBtn.TextColor3 = P.closeFg
+			if P.outlineButtons then
+				UI.stroke(closeBtn, P.stroke, 3, 0)
+			end
+		end
 	end
 
 	local content = UI.new("ScrollingFrame", {
@@ -834,7 +1028,20 @@ function UI.modal(title: string, opts)
 		end)
 	end
 
+	-- 1.9.1 pop-up style: restyle what the screen puts in (after it has set its own colours)
+	if P then
+		content.ScrollBarImageColor3 = P.line
+		content.DescendantAdded:Connect(function(d)
+			task.defer(function()
+				if d.Parent then
+					pcall(skinOne, d, P)
+				end
+			end)
+		end)
+	end
+
 	current = { frame = frame, backdrop = backdrop, content = content, onClose = opts.onClose }
+	UI.popupOpen = not phone
 	if not opts.noClose then
 		-- 1.8.5: tap outside the pop-up to close it
 		backdrop.Active = true
