@@ -82,5 +82,70 @@ function Adopt.onAsk(d)
 	end, { LayoutOrder = 5, BackgroundColor3 = Color3.fromRGB(120, 50, 50) })
 	m.focus()
 end
+-- 1.9.1: a Scientist can invite an animal player into a (silly, harmless) lab experiment
+local TE = Content.LabExperiments
+local function expPromptFor(p: Player)
+	local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return nil
+	end
+	local pp = root:FindFirstChild("ExperimentPrompt")
+	if not pp then
+		pp = Instance.new("ProximityPrompt")
+		pp.Name = "ExperimentPrompt"
+		pp.ActionText = TE.Prompt
+		pp.ObjectText = p.DisplayName
+		pp.HoldDuration = 0.4
+		pp.RequiresLineOfSight = false
+		pp.MaxActivationDistance = 10
+		pp.UIOffset = Vector2.new(0, 120)
+		pp.Enabled = false
+		pp.Parent = root
+		pp.Triggered:Connect(function()
+			local r = Remote.call("exp_ask", { userId = p.UserId })
+			if r and r.msg then
+				UI.toast(r.msg)
+			end
+		end)
+	end
+	return pp
+end
+
+task.spawn(function()
+	while true do
+		task.wait(1.5)
+		local st = UI.state or {}
+		local scientist = st.path == "Gain" and st.jobPlace == "lab" and not iAmAnimal()
+		for _, p in ipairs(Players:GetPlayers()) do
+			if p ~= me then
+				local pp = expPromptFor(p)
+				if pp then
+					pp.Enabled = scientist and p:GetAttribute("AnimalStage") ~= nil and p:GetAttribute("AnimalStage") ~= "dead"
+				end
+			end
+		end
+	end
+end)
+
+function Adopt.onExpAsk(d)
+	local m = UI.modal(TE.AskTitle, { color = Color3.fromRGB(60, 200, 230) })
+	UI.label(m.content, string.format(TE.AskText, tostring(d.from)), { LayoutOrder = 1, TextColor3 = Color3.new(1, 1, 1) })
+	UI.label(m.content, TE.AskFine, { LayoutOrder = 2, TextColor3 = UI.T.muted })
+	local function answer(yes: boolean, block: boolean?)
+		m.close()
+		Remote.call("exp_answer", { fromId = d.fromId, yes = yes, block = block })
+	end
+	UI.button(m.content, TE.Yes, function()
+		answer(true)
+	end, { LayoutOrder = 3, BackgroundColor3 = UI.Colors.good })
+	UI.button(m.content, TE.No, function()
+		answer(false)
+	end, { LayoutOrder = 4 })
+	UI.button(m.content, TE.Block, function()
+		answer(false, true)
+	end, { LayoutOrder = 5, BackgroundColor3 = Color3.fromRGB(120, 50, 50) })
+	m.focus()
+end
+
 
 return Adopt

@@ -2396,4 +2396,23 @@ Content.PhotoMode = {
 	PolaroidLine = "Brainville ♥",
 }
 
+-- 1.9.1: Scientists invite animal players into the 🔬 Animal Experiments scene (they must say yes)
+Content.LabExperiments = {
+	Prompt = "🔬 Experiment",
+	AskTitle = "🔬 A scientist wants to study you!",
+	AskText = "Dr. %s wants to run a silly, harmless experiment with you (like a maze or a bell). Join?",
+	AskFine = "It's a short scene with choices. Act as dumb as you like! You can say no.",
+	Yes = "✅ Sure, science me!",
+	No = "❌ No thanks",
+	Block = "🚫 No, and don't ask again",
+	Asked = "🔬 You invited %s to an experiment. Waiting…",
+	Declined = "🐾 %s doesn't want to be studied right now.",
+	NeedScientist = "🔬 Only Scientists can run experiments. (Job Center ➜ Scientist)",
+	NotAnimal = "Only animal players can join an animal experiment.",
+	Busy = "One of you is already in a scene.",
+	NoThanks = "They said no thanks.",
+	TooFar = "Walk closer first.",
+	Wait = "⏳ Wait a moment before asking again.",
+}
+
 return Content

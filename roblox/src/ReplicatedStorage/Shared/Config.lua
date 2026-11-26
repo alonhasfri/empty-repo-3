@@ -1305,4 +1305,12 @@ Config.PetsFriends.SmartPetIQ = 140 -- your pet gets a 🎓 at this IQ
 Config.PetsFriends.NicePetIQ = 110 -- …and a 📚 here
 Config.PetsFriends.SillyPetCells = 45e9 -- on the Lose path, below this your pet goes 🥴
 
+-- 1.9.1: Scientists invite animal players into an experiment
+Config.LabExperiments = {
+	AskRadius = 14,
+	AskCooldown = 20,
+	AnswerSeconds = 30,
+	Coins = 10, -- for both, on top of the scene's brain changes
+}
+
 return Config

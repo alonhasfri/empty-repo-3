@@ -935,5 +935,95 @@ function SocialService.start()
 		end
 	end)
 end
+---------------------------------------------------------------------
+-- 1.9.1 (user: "people who are animals can be experimented on by scientists"): a Scientist can invite an
+-- animal player straight into the 🔬 Animal Experiments scene (no queue). The animal must say yes;
+-- experiments are silly and harmless (Pavlov's bell, the maze, the waggle dance…), never scary or painful.
+---------------------------------------------------------------------
+local expPending = {} -- [animal] = { from = Player, at = os.clock() }
+local expBlocked = {} -- [animal] = { [userId] = true }
+local expLastAsk = {} -- [scientist] = os.clock()
+
+local function isScientist(p: Player): boolean
+	local d = DataService.get(p)
+	return d ~= nil and d.path == "Gain" and d.job == "scientist"
+end
+
+local function isAnimalP(p: Player): boolean
+	local st = stageOf(p)
+	return Content.Animals.Forms[st] ~= nil and st ~= "dead"
+end
+
+Net.on("exp_ask", function(player, d)
+	local animal = typeof(d) == "table" and Players:GetPlayerByUserId(tonumber(d.userId) or 0) or nil
+	local CE = Config.LabExperiments
+	local TE = Content.LabExperiments
+	if not animal or animal == player then
+		return { ok = false }
+	end
+	if not isScientist(player) then
+		return { ok = false, msg = TE.NeedScientist }
+	end
+	if not isAnimalP(animal) then
+		return { ok = false, msg = TE.NotAnimal }
+	end
+	if inSession[player] or inSession[animal] then
+		return { ok = false, msg = TE.Busy }
+	end
+	if expBlocked[animal] and expBlocked[animal][player.UserId] then
+		return { ok = false, msg = TE.NoThanks }
+	end
+	local root = animal.Character and animal.Character:FindFirstChild("HumanoidRootPart")
+	if not root or not WorldService.near(player, root.Position, CE.AskRadius) then
+		return { ok = false, msg = TE.TooFar }
+	end
+	if (expLastAsk[player] or 0) > os.clock() then
+		return { ok = false, msg = TE.Wait }
+	end
+	expLastAsk[player] = os.clock() + CE.AskCooldown
+	expPending[animal] = { from = player, at = os.clock() }
+	Net.send(animal, "expAsk", { from = player.DisplayName, fromId = player.UserId })
+	return { ok = true, msg = string.format(TE.Asked, animal.DisplayName) }
+end)
+
+Net.on("exp_answer", function(animal, d)
+	local p = expPending[animal]
+	expPending[animal] = nil
+	local CE = Config.LabExperiments
+	local TE = Content.LabExperiments
+	if not p or typeof(d) ~= "table" or tonumber(d.fromId) ~= p.from.UserId or os.clock() - p.at > CE.AnswerSeconds then
+		return { ok = false }
+	end
+	local sci = p.from
+	if d.block then
+		expBlocked[animal] = expBlocked[animal] or {}
+		expBlocked[animal][sci.UserId] = true
+	end
+	if not d.yes then
+		BrainService.toast(sci, string.format(TE.Declined, animal.DisplayName))
+		return { ok = true }
+	end
+	if not sci.Parent or inSession[sci] or inSession[animal] or not isAnimalP(animal) then
+		return { ok = false }
+	end
+	removeFromQueues(sci)
+	removeFromQueues(animal)
+	startSession("experiment", sci, animal)
+	-- a small thank-you for both (on top of the scene's own brain changes)
+	for _, who in ipairs({ sci, animal }) do
+		local data = DataService.get(who)
+		if data then
+			data.coins = (data.coins or 0) + CE.Coins
+		end
+	end
+	return { ok = true }
+end)
+
+Players.PlayerRemoving:Connect(function(p)
+	expPending[p] = nil
+	expBlocked[p] = nil
+	expLastAsk[p] = nil
+end)
+
 
 return SocialService
