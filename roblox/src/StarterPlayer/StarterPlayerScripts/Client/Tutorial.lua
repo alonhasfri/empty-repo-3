@@ -136,9 +136,11 @@ local NOTES = {
 
 -- The guided sequences
 local SEQ = {
+	-- 1.9.1 fun fixes (docs/Fun review.md: "the Gain start feels like homework"): both tutorials are short and
+	-- about DOING things; the old text cards (town, flashy, harder, rare, workIdeas, stress, money, gate) are gone
+	-- from the sequence and their notes still exist for later tips.
 	Lose = {
 		{ note = "loseIntro" },
-		{ note = "town" },
 		{ note = "losePasses" },
 		{ practice = true, title = "SKIP A TEXT BOX!", desc = "A boring text box appears. DON'T read it. Find the tiny SKIP button." },
 		{ event = "clickbait", target = "phone", title = "CLICK THE CLICKBAIT!", desc = "Open 📱 Phone → ClickNews. Tap the DUMBEST headline." },
@@ -149,21 +151,9 @@ local SEQ = {
 	},
 	Gain = {
 		{ note = "gainIntro" },
-		{ note = "town" },
-		{ note = "smartToo" },
 		{ event = "library", target = "library", title = "READ A BOOK!", desc = "Tap 📚 Library. Read for real, then answer the question." },
-		{ note = "flashy" },
-		{ event = "theater", target = "phone", title = "WATCH JACK B!", desc = "Open 📱 Phone → Jack B. Learn a fun fact, then answer." },
-		{ note = "harder" },
-		{ note = "rare" },
-		{ note = "job" },
 		{ event = "job", target = "phone", title = "GET A JOB!", desc = "Open 📱 Phone → Jobs. Pick one your IQ allows." },
-		{ event = "work", target = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (or take the 🚌 bus) and finish a task at your job." },
-		{ note = "workIdeas" },
-		{ note = "stress" },
-		{ event = "habit", target = "coffee", title = "DO A GENIUS HABIT!", desc = "Tap ☕ Coffee, 😴 Nap or 🐦 Pigeons to lower stress." },
-		{ note = "money" },
-		{ event = "gate", target = "gate", title = "FACE THE SKILL GATE!", desc = "When the bar says GATE, tap 🚧 Gate. YOU must know the answer.", last = true },
+		{ event = "work", target = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (or take the 🚌 bus) and play your job's minigame.", last = true },
 	},
 }
 

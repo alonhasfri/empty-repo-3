@@ -1993,6 +1993,9 @@ Content.Cutscenes = {
 -- 1.9: the progress path strip under the counter (Gain path)
 Content.PathStrip = {
 	Steps = { "Job", "Shift", "Promotion", "Next job" },
+	LoseSteps = { "Human", "Barely human", "Animal", "Rock" }, -- 1.9.1 the Lose progress strip
+	LoseNext = "%s Next form: %s · %d%%",
+	LoseDone = "🗿 You reached the end. Legendary.",
 	PickJob = "💼 Pick a job",
 	Work = "🛠 Work a shift",
 	Promo = "⭐ Work shifts: %d/%d → %s %s",

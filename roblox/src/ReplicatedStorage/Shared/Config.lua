@@ -6,7 +6,7 @@ local Config = {}
 Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
 Config.Version = "1.9.1"
 -- 1.8.3: the brain counter shortens numbers from here on (1.2T, 9.9Qa ...)
-Config.ShortNumberFrom = 1e12
+Config.ShortNumberFrom = 1e9 -- 1.9.1 fun fixes: "86.2B" moves visibly, 11 digits did not
 Config.NumberSuffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" }
 
 ---------------------------------------------------------------------
@@ -48,7 +48,7 @@ Config.OwnerUserIds = {}
 Config.AverageCells = 86e9 -- average adult human
 Config.CellsPerSD = 8e9 -- every 8 billion cells = 15 IQ points
 Config.LoseStartCells = 86e9
-Config.GainStartCells = 70e9 -- 80 IQ, slightly below average
+Config.GainStartCells = 78e9 -- 1.9.1 fun fixes: IQ ~85, so the first job and gate come sooner
 Config.HumanFloorCells = 45e9 -- "dumbest man alive"
 Config.OverflowCells = 140e9 -- about 200 IQ
 Config.ElephantCells = 257e9
@@ -56,7 +56,7 @@ Config.ElephantCells = 257e9
 -- How fast cells change. These can be changed live by Head Moderators.
 Config.Rates = {
 	GainRate = 0.002, -- fraction of your cells gained per activity point (Gain path)
-	LoseRate = 0.014, -- fraction of your cells lost per activity point (Lose path; lower = harder to lose)
+	LoseRate = 0.022, -- 1.9.1 fun fixes: was 0.014 (the Dog took 5-10 min, now ~3) -- fraction of your cells lost per activity point (Lose path; lower = harder to lose)
 	MinLoss = 1, -- the smallest loss per point (so you can actually reach 0)
 }
 
@@ -93,7 +93,10 @@ Config.HintCostFraction = 0.01 -- a hint costs 1% of your cells
 ---------------------------------------------------------------------
 -- LOSE PATH
 ---------------------------------------------------------------------
-Config.ReadingSeconds = 10 -- reading this long = you actually read it
+Config.ReadingSeconds = 10 -- reading this long = you actually read it (the Lose path's "you skipped it" test)
+Config.LibraryReadSeconds = 4 -- 1.9.1 fun fixes: the Gain library read (was the same 10 s: homework)
+Config.LibraryStress = 0 -- stress for a right answer (was 2)
+Config.LibraryWrongStress = 1 -- …and for a wrong one (was 4)
 Config.ReadingPopupMin = 25
 Config.ReadingPopupMax = 45
 Config.TOSChance = 0.05 -- chance a reading popup is the giant Terms of Service
@@ -172,6 +175,8 @@ Config.Minigames = {
 	Grace = 6, -- extra seconds allowed for lag before a result is too late
 	MinShare = 0.5, -- a round must last at least this share of its time (no instant finishes)
 	BonusCoinsPerPoint = 1, -- extra coins for every point over the pass mark
+	JobBrainPoints = 2.5, -- 1.9.1 fun fixes: brain points for a good job shift (was 0.5: the most fun thing paid the least)
+	JobStress = 2, -- stress per shift (was 4)
 	Games = {
 		scan = { seconds = 40, pass = 6, maxPerSecond = 1.2 }, -- cashier: scan & bag
 		colors = { seconds = 45, pass = 3, maxPerSecond = 0.5 }, -- scientist: mix colours
@@ -200,9 +205,9 @@ Config.Minigames = {
 }
 -- 1.9 Big life events (EventService): invites arrive in the phone from a shuffle bag
 Config.Events = {
-	FirstAfter = 600, -- seconds of play before the first invite (~10 minutes)
-	GapMin = 900, -- then one every 15-25 minutes
-	GapMax = 1500,
+	FirstAfter = 120, -- 1.9.1 fun fixes: the first big moment in 2 minutes (was 10, exactly when testers quit)
+	GapMin = 300, -- then one every 5-8 minutes (was 15-25)
+	GapMax = 480,
 	Ids = { "wedding", "grandma", "graduation", "moving", "pet", "blackout", "talent", "sciencefair", "festival", "kitten" }, -- 1.9.1: + 4 (firstday comes when you take a new job)
 	ChoicePoints = 1, -- brain points for a choice that fits your path (smart on Gain, silly on Lose)
 	OtherPoints = 0.3, -- the other choice still counts a little
@@ -319,7 +324,7 @@ Config.QuickPlay = {
 	SecondsPerQuestion = 15, -- the timer bar
 	MinAnswerSeconds = 1, -- faster than this is ignored (no auto-clickers)
 	PointsPerWin = 2, -- like a Library book, per right answer (Lose: per dumb answer)
-	Cooldown = 20, -- seconds between rounds
+	Cooldown = 6, -- seconds between rounds (1.9.1 fun fixes: was 20)
 }
 
 Config.Fun = {
@@ -389,7 +394,7 @@ Config.Horror = {
 
 -- 1.7.3: the first "wow" of a new run (a big brain drop or boost, with a big counter)
 Config.FirstWow = {
-	Delay = 20, -- seconds after picking a door
+	Delay = 8, -- seconds after picking a door (1.9.1 fun fixes: was 20)
 	LosePoints = 3, -- about -4% of your cells
 	GainPoints = 10, -- about +2% of your cells
 }
@@ -413,33 +418,33 @@ Config.AutosaveSeconds = 60
 -- then paste each asset ID number here. 0 = silent.
 ---------------------------------------------------------------------
 Config.Sounds = {
-	GameShowJingle = 0,
-	LibrarianChime = 0,
-	CartoonBoing = 0,
-	KazooTune = 0,
-	LevelUp = 0,
-	SadTrombone = 0,
-	AirHorn = 0,
-	CavemanBonk = 0,
-	BrainCellLost = 0,
-	BrainCellGained = 0,
-	NotificationPing = 0,
-	DeathBoom = 0,
-	BadgeSparkle = 0,
-	RecordScratch = 0,
+	GameShowJingle = 134821092416328,
+	LibrarianChime = 107192966735092,
+	CartoonBoing = 2772396665,
+	KazooTune = 75314486373846,
+	LevelUp = 112485797063762,
+	SadTrombone = 116298781032555,
+	AirHorn = 132844961288199,
+	CavemanBonk = 132937320140224,
+	BrainCellLost = 137041944943141,
+	BrainCellGained = 135483737426662,
+	NotificationPing = 136655923047274,
+	DeathBoom = 99562772809114,
+	BadgeSparkle = 94977733024164,
+	RecordScratch = 75314486373846,
 	-- 1.4
-	Whoosh = 0, -- rocket launch, falling into the void
-	TypeTick = 0, -- tutorial typewriter (very short, quiet click)
-	ImportantSlam = 0, -- tutorial "IMPORTANT" title slam
+	Whoosh = 123796710194563, -- rocket launch, falling into the void
+	TypeTick = 88442833509532, -- tutorial typewriter (very short, quiet click)
+	ImportantSlam = 132937320140224, -- tutorial "IMPORTANT" title slam
 }
 
 -- One music track per art style (from the Creator Store audio library).
 Config.Music = {
-	genius = 0, -- search "lofi" / "piano"
-	smart = 0, -- search "calm" / "classical"
-	average = 0, -- search "casual" / "happy"
-	cashgrab = 0, -- search "hype" / "arcade"
-	nonsense = 0, -- search "kazoo" / "silly"
+	genius = 140492661889585, -- search "lofi" / "piano"
+	smart = 138532500892337, -- search "calm" / "classical"
+	average = 75248355463133, -- search "casual" / "happy"
+	cashgrab = 135378670250070, -- search "hype" / "arcade"
+	nonsense = 128349135892088, -- search "kazoo" / "silly"
 }
 
 ---------------------------------------------------------------------
@@ -556,7 +561,7 @@ Config.Animals = {
 
 -- 1.6 school (Lose path): the bell rings every BellEvery seconds for human Lose players.
 Config.School = {
-	FirstBellAfter = 240, -- seconds after joining
+	FirstBellAfter = 600, -- seconds after joining (1.9.1 fun fixes: was 240, it interrupted the first minutes)
 	BellEvery = 600,
 	LateAfter = 90, -- seconds to reach the School before the truant officer comes
 	ChaseSeconds = 30, -- survive this long and you escaped
@@ -844,7 +849,7 @@ Config.Life = {
 }
 
 Config.LoseFX = {
-	AdEverySeconds = 75, -- silly fake ads (jokes only, never real purchases) on the Lose path
+	AdEverySeconds = 150, -- 1.9.1 fun fixes: was 75 -- silly fake ads (jokes only, never real purchases) on the Lose path
 	AdMinCells = 0, -- ads stop while you're an animal (no reading)
 	LagSeconds = 0.25, -- "brain lag" before a phone app opens at full intensity
 	WarnSeconds = 1.2, -- the "uh oh…" warning shows this long before an effect

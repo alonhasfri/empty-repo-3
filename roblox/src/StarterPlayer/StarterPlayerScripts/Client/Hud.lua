@@ -152,13 +152,63 @@ stripGo.Activated:Connect(function()
 		Hud.onStation(stripTarget)
 	end
 end)
+-- 1.9.1 fun fixes ("no visible short-term goal on Lose"): the strip shows the NEXT animal form and how close you
+-- are (log scale, like the brain shrinking feels), with the stages Human › Barely human › Animal › Rock.
+local function updateLoseStrip(st)
+	local T = UI.T
+	strip.BackgroundColor3 = T.bg
+	strip.BackgroundTransparency = 0.12
+	stripFill.BackgroundColor3 = Color3.fromRGB(255, 90, 180)
+	stripGo.BackgroundColor3 = Color3.fromRGB(255, 90, 180)
+	local stages = Brain.Stages
+	local cells = math.max(1, st.cells or 1)
+	local idx = #stages
+	for i, s in ipairs(stages) do
+		if cells <= s.max and not s.secret then
+			idx = i
+			break
+		end
+	end
+	-- the next (lower) non-secret stage
+	local nextI = idx - 1
+	while nextI >= 1 and stages[nextI].secret do
+		nextI -= 1
+	end
+	local cur, nxt = stages[idx], stages[nextI]
+	for i, l in ipairs(stepLabels) do
+		l.Text = (i > 1 and "› " or "") .. (PS.LoseSteps[i] or "")
+		local active = (cur.key == "human" and i == 1) or (cur.key == "barelyhuman" and i == 2) or (cur.key ~= "human" and cur.key ~= "barelyhuman" and cur.key ~= "dead" and i == 3) or (cur.key == "dead" and i == 4)
+		l.TextColor3 = active and Color3.fromRGB(255, 120, 200) or Color3.fromRGB(150, 150, 170)
+	end
+	if not nxt then
+		stripText.Text = PS.LoseDone
+		stripFill.Size = UDim2.fromScale(1, 1)
+		stripTarget = "scroller"
+		return
+	end
+	local top = (cur.key == "human") and Config.LoseStartCells or cur.max
+	local share = (math.log(top) - math.log(cells)) / math.max(0.001, math.log(top) - math.log(math.max(1, nxt.max)))
+	stripText.Text = string.format(PS.LoseNext, nxt.emoji, nxt.name, math.clamp(math.floor(share * 100), 0, 99))
+	stripFill.Size = UDim2.fromScale(math.clamp(share, 0.02, 1), 1)
+	stripTarget = "scroller"
+end
+
 local function updateStrip(st)
 	local human = st.stage == "human" or st.stage == "barelyhuman" or st.stage == nil
+	if st.path == "Lose" and not st.dead then
+		strip.Visible = true
+		stackH = 150
+		pcall(updateLoseStrip, st)
+		return
+	end
 	local show = st.path == "Gain" and not st.dead and human
 	strip.Visible = show
 	stackH = show and 150 or 96
 	if not show then
 		return
+	end
+	for i, l in ipairs(stepLabels) do
+		l.Text = (i > 1 and "› " or "") .. PS.Steps[i]
 	end
 	local T = UI.T
 	strip.BackgroundColor3 = T.bg

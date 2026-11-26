@@ -65,7 +65,7 @@ Net.on("library_get", function(player)
 	end
 	local item = pick(Content.Library)
 	s(player).library = { item = item, issued = os.clock() }
-	return { ok = true, text = item.text, q = item.q, options = item.options, wait = Config.ReadingSeconds }
+	return { ok = true, text = item.text, q = item.q, options = item.options, wait = Config.LibraryReadSeconds }
 end)
 
 Net.on("library_answer", function(player, d)
@@ -73,7 +73,7 @@ Net.on("library_answer", function(player, d)
 	if not sess then
 		return { ok = false }
 	end
-	if os.clock() - sess.issued < Config.ReadingSeconds - 0.5 then
+	if os.clock() - sess.issued < Config.LibraryReadSeconds - 0.5 then
 		return { ok = false, msg = "Read it first! (10 seconds)" }
 	end
 	s(player).library = nil
@@ -86,10 +86,10 @@ Net.on("library_answer", function(player, d)
 			points = 3
 		end
 		BrainService.gain(player, points, "library")
-		BrainService.stress(player, 2)
+		BrainService.stress(player, Config.LibraryStress)
 		BrainService.narrate(player, "gained")
 	else
-		BrainService.stress(player, 4)
+		BrainService.stress(player, Config.LibraryWrongStress)
 	end
 	return { ok = true, correct = correct, answer = sess.item.answer }
 end)
@@ -772,8 +772,8 @@ local function finishTask(player, data, job, correct)
 		data.coins += pay
 		BoardService.addPay(player, pay)
 		data.jobTasksDone += 1
-		BrainService.gain(player, 0.5, "job")
-		BrainService.stress(player, 4)
+		BrainService.gain(player, Config.Minigames.JobBrainPoints, "job")
+		BrainService.stress(player, Config.Minigames.JobStress)
 		data.ideaMeter += 1
 		if data.ideaMeter >= Config.EurekaTasks then
 			data.ideaMeter = 0
