@@ -2937,6 +2937,14 @@ function Stations.jokejobs()
 	m.focus()
 end
 
+-- 1.9.1 📸 Camera app: photo mode with stickers
+function Stations.camera()
+	local ok, PhotoMode = pcall(require, script.Parent.PhotoMode)
+	if ok and PhotoMode then
+		PhotoMode.open()
+	end
+end
+
 -- 1.9.1: visit a player's home straight from the town board
 function Stations.visitHome(userId: number)
 	resultToast(Remote.call("home_visit", { id = userId }))

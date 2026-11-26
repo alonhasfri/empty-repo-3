@@ -1076,6 +1076,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.9.1", name = "Big Town Update", lines = { "🍕 Four restaurants (and the Brainrot Café): eat there, or work as a Restaurant Worker with your friends.", "🏠 Your own home that grows with your brain. Buy furniture, visit friends, see the town board.", "🐾 Animals get jobs, park friends and a way back up. Humans can adopt an animal player (if they say yes!).", "⚖️ Smart vs Dumb now plays like a movie, with a big OBJECTION!", "🌧 Weather and seasons, pets that follow you, a 📸 Camera with stickers, and a TV that gets dumber with the server." } },
 	{ v = "1.9", name = "Real Life Update", lines = { "📱 Your phone is now the main menu, with an 🎒 Items app for all your gadgets.", "🎮 Every job has its own minigame: scan groceries, sort files, read X-rays, mix colours and more. No maths!", "💌 Big life moments: a friend's wedding, Grandma's 80th, a runaway pet… Check your Invites.", "🌟 Reach the top of a job ladder (or IQ 140) to choose your genius: math, physics, coding, business or chess.", "⚙️ Settings has tabs and volume sliders, and a 💬 Send feedback button." } },
 	{ v = "1.8.9", name = "Calm New Look", lines = { "🎨 A calmer, cleaner look: dark panels, matching buttons, no more rainbow gradients.", "🚧 Skill Gates are now fun-fact gates: read a fun fact, answer an easy question about it.", "⚠️ New: Settings → Reset my progress (hold to confirm, once a day).", "💥 When your brain runs out it now swells, wobbles… and goes POOF!" } },
 	{ v = "1.8.8", name = "Bigger Town + Unstuck", lines = { "🦶 Fixed: sometimes you got stuck and couldn't move. Stress now only slows you for a few seconds.", "🚧 Skill Gates no longer stress you out, and you can retry right away.", "🏙 The whole town is bigger: wider roads, bigger buildings, and parked cars no longer crash into each other." } },
@@ -1618,6 +1619,7 @@ Content.Phone19 = {
 		home = { icon = "🏠", name = "Home" }, -- 1.9.1
 		town = { icon = "🏙", name = "Town" }, -- 1.9.1 town board
 		jokejobs = { icon = "🤡", name = "Jobs" }, -- 1.9.1 Lose joke jobs
+		camera = { icon = "📸", name = "Camera" }, -- 1.9.1 photo mode
 	},
 	ItemsTitle = "🎒 Items",
 	ItemsGadgets = "Gadgets & secret inventions",
@@ -2379,5 +2381,19 @@ Content.PetsFriends.Bought = "%s is your new buddy! (-%d coins)"
 Content.PetsFriends.Won = "🎁 You won a pet: %s! It follows you now. (📱 Home ➜ Pets)"
 Content.PetsFriends.NeedPass = "Get this pet first (📱 Home ➜ Pets), or with the Life Pack."
 Content.PetsFriends.Moods = { genius = " 🎓", smart = " 📚", silly = " 😜", verysilly = " 🥴" }
+
+-- 1.9.1 big ideas #18: photo mode with stickers (📸 Camera app)
+Content.PhotoMode = {
+	Hint = "📸 Frame your shot, add stickers, then Snap!",
+	Snap = "📸 Snap",
+	Clear = "🧽 Clear",
+	Close = "✕",
+	NoCapture = "📸 Use your device's screenshot button to keep this one!",
+	Stickers = { "🧠", "😎", "🎓", "🥴", "✨", "💥", "👑", "❤️", "⭐", "🐶", "🐱", "🍕", "🌈", "🎉", "💯", "🤡", "🗿", "🦆" },
+	Frames = { { key = "none", name = "🖼 No frame" }, { key = "news", name = "🗞 Newspaper" }, { key = "polaroid", name = "📷 Polaroid" } },
+	NewsTitle = "THE BRAINVILLE TIMES",
+	NewsLine = "Local legend %s spotted in town!",
+	PolaroidLine = "Brainville ♥",
+}
 
 return Content

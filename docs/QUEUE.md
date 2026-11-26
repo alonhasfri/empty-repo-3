@@ -308,22 +308,23 @@ Test each in Studio on PC and phone size (iPhone in the device simulator), fix r
 - Not reached yet: the job minigames, life events, Genius Crossroads, intro cutscene, new test commands, feedback button, Settings tabs, Items app.
 
 ## Big ideas pack (user, Nov 26 noon): CODE ALL FIRST, then test together
+**Status Nov 26 afternoon: all 18 CODED ([~]), lint clean, the server booted with no errors after #8. NOT play-tested yet. Config.Version = 1.9.1 with a "Big Town Update" What's new entry. Test each in Studio (PC + phone), then publish.**
 The user picked these from Claude's idea list. Code them one by one (commit each, lint clean), then test them all in Studio on PC and phone. Kid-safe, parodies only, text in Content.lua, numbers in Config.lua, both paths plus animals.
-1. [ ] **Better building interiors:** when you walk in, it's clear where to go: glowing floor arrows, a sign over each station, a "📍 Go here" marker on the main spot, room labels, and a short "What to do here" line on entry.
-2. [ ] **Restaurants + restaurant worker job:** several kinds (pizza place, burger diner, sushi bar, taco truck, Brainrot Café for Lose). A ladder: dishwasher → server → cook → head chef → owner. Minigames: take the order, cook it (match the ticket), serve the right table, clean up. NPC customers sit at tables with order bubbles and tips.
-3. [ ] **Group shifts:** 2–4 players share one shift (one cooks, one serves, one cleans); a shared score, everyone gets paid, bonus for teamwork. Works solo too.
-4. [ ] **Your own house:** a home per player that grows with progress (Gain: flat → house → penthouse; Lose: cardboard box → messy room → pizza-box palace). Furniture bought with coins (price shown, all earnable), saved small.
-5. [ ] **Visit a friend's room/house:** a "Visit" button on a player (and on the town board); shows their badges, inventions, photo album and furniture. Read-only, no stealing or editing.
-6. [ ] **Town board** in the plaza: today's smartest, dumbest, top inventors, genius branches, best group shift. Tap a name → visit their house.
-7. [ ] **More life events:** talent show, science fair, town festival, rescue the kitten from a tree, first day at a new job (nervous mini-cutscene). Lose versions are funny.
-8. [ ] **Smart vs dumb cutscenes with dialogue choices** (like the school ones): a courtroom lawsuit with a big "OBJECTION!" moment (an original parody, no copied assets), plus a debate, a TV quiz and a science-fair judge showdown. Letterbox, camera cuts, 1/2/3 choices.
-9. [ ] **Animal jobs, animal friends, climbing back up:** dogs fetch newspapers, flies annoy picnics, worms help gardens grow; animal NPC friends with icon quests; a clear worm → fly → dog → human path.
-10. [ ] **Adopt an animal player:** a human player can ask to adopt a player who is an animal: "🐶 [name] wants to adopt you! Accept?" Accept or decline; the pet follows and can leave any time (a ✕ button), no Robux, no forced actions, block option. Adopter gets a pet badge; the pet gets treats/cells.
-11. [ ] **Genius endings:** one big finale per branch (math board, rocket launch, robot walks into town, your own shop on Main Street, chess world championship vs a parody grandmaster) + the Noble Prize ceremony.
-12. [ ] **Brainrot TV channel** in the square that gets dumber the dumber the server is.
-13. [ ] **Wrong signs + fake shortcuts** at low brain: signs point the wrong way, the map's "you are here" drifts; some dumb-only shortcuts lead somewhere silly (ball pit).
-14. [ ] **Lose-path joke jobs:** bubble-wrap popper, meme reviewer, upside-down sign holder (each with a silly minigame).
-15. [ ] **Seasons and weather:** rain with puddles and umbrellas, snow with snowmen and snowball fights, a Halloween week (kid-safe), shown in What's new.
-16. [ ] **Townspeople react** to your brain level ("Wow, Professor!" / "…are you okay?").
-17. [ ] **Pets that follow you:** won at events or bought with coins; they get smarter or sillier with you.
-18. [ ] **Photo mode with stickers** to share screenshots.
+1. [~] **Better building interiors:** when you walk in, it's clear where to go: glowing floor arrows, a sign over each station, a "📍 Go here" marker on the main spot, room labels, and a short "What to do here" line on entry.
+2. [~] **Restaurants + restaurant worker job:** several kinds (pizza place, burger diner, sushi bar, taco truck, Brainrot Café for Lose). A ladder: dishwasher → server → cook → head chef → owner. Minigames: take the order, cook it (match the ticket), serve the right table, clean up. NPC customers sit at tables with order bubbles and tips.
+3. [~] **Group shifts:** 2–4 players share one shift (one cooks, one serves, one cleans); a shared score, everyone gets paid, bonus for teamwork. Works solo too.
+4. [~] **Your own house:** a home per player that grows with progress (Gain: flat → house → penthouse; Lose: cardboard box → messy room → pizza-box palace). Furniture bought with coins (price shown, all earnable), saved small.
+5. [~] **Visit a friend's room/house:** a "Visit" button on a player (and on the town board); shows their badges, inventions, photo album and furniture. Read-only, no stealing or editing.
+6. [~] **Town board** in the plaza: today's smartest, dumbest, top inventors, genius branches, best group shift. Tap a name → visit their house.
+7. [~] **More life events:** talent show, science fair, town festival, rescue the kitten from a tree, first day at a new job (nervous mini-cutscene). Lose versions are funny.
+8. [~] **Smart vs dumb cutscenes with dialogue choices** (like the school ones): a courtroom lawsuit with a big "OBJECTION!" moment (an original parody, no copied assets), plus a debate, a TV quiz and a science-fair judge showdown. Letterbox, camera cuts, 1/2/3 choices.
+9. [~] **Animal jobs, animal friends, climbing back up:** dogs fetch newspapers, flies annoy picnics, worms help gardens grow; animal NPC friends with icon quests; a clear worm → fly → dog → human path.
+10. [~] **Adopt an animal player:** a human player can ask to adopt a player who is an animal: "🐶 [name] wants to adopt you! Accept?" Accept or decline; the pet follows and can leave any time (a ✕ button), no Robux, no forced actions, block option. Adopter gets a pet badge; the pet gets treats/cells.
+11. [~] **Genius endings:** one big finale per branch (math board, rocket launch, robot walks into town, your own shop on Main Street, chess world championship vs a parody grandmaster) + the Noble Prize ceremony.
+12. [~] **Brainrot TV channel** in the square that gets dumber the dumber the server is.
+13. [~] **Wrong signs + fake shortcuts** at low brain: signs point the wrong way, the map's "you are here" drifts; some dumb-only shortcuts lead somewhere silly (ball pit).
+14. [~] **Lose-path joke jobs:** bubble-wrap popper, meme reviewer, upside-down sign holder (each with a silly minigame).
+15. [~] **Seasons and weather:** rain with puddles and umbrellas, snow with snowmen and snowball fights, a Halloween week (kid-safe), shown in What's new.
+16. [~] **Townspeople react** to your brain level ("Wow, Professor!" / "…are you okay?").
+17. [~] **Pets that follow you:** won at events or bought with coins; they get smarter or sillier with you.
+18. [~] **Photo mode with stickers** to share screenshots.

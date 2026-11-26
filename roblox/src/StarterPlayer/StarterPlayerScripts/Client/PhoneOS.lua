@@ -56,6 +56,7 @@ local MORE = {
 	home = { c1 = Color3.fromRGB(120, 200, 120), c2 = Color3.fromRGB(50, 140, 70) }, -- 1.9.1
 	town = { c1 = Color3.fromRGB(100, 160, 240), c2 = Color3.fromRGB(40, 90, 180) }, -- 1.9.1 town board
 	jokejobs = { c1 = Color3.fromRGB(255, 150, 200), c2 = Color3.fromRGB(200, 70, 140) }, -- 1.9.1 Lose joke jobs
+	camera = { c1 = Color3.fromRGB(90, 90, 100), c2 = Color3.fromRGB(40, 40, 50) }, -- 1.9.1 photo mode
 }
 for key, a in pairs(MORE) do
 	a.key = key
@@ -132,6 +133,7 @@ local function appsFor(st, tier: string)
 	end
 	addBefore(EXTRA.home) -- 1.9.1 your own home (every path, animals too)
 	addBefore(EXTRA.town) -- 1.9.1 town board
+	addBefore(EXTRA.camera) -- 1.9.1 photo mode with stickers
 	addBefore(EXTRA.badges)
 	addBefore(EXTRA.help)
 	table.insert(list, 1, EXTRA.items)
@@ -167,7 +169,7 @@ local function openApp(app)
 			PhoneOS.help()
 		elseif app.key == "badges" then
 			PhoneOS.stations.badges()
-		elseif (app.key == "events" or app.key == "genius" or app.key == "home" or app.key == "town" or app.key == "jokejobs") and PhoneOS.stations[app.key] then
+		elseif (app.key == "events" or app.key == "genius" or app.key == "home" or app.key == "town" or app.key == "jokejobs" or app.key == "camera") and PhoneOS.stations[app.key] then
 			PhoneOS.stations[app.key]()
 		elseif PhoneOS.stations.route then
 			PhoneOS.stations.route(app.key)
