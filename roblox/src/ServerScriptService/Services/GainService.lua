@@ -348,7 +348,8 @@ local function applyUniform(player)
 		local g = Instance.new("BillboardGui")
 		g.Name = "JobTitle"
 		g.Size = UDim2.new(5, 0, 0.8, 0)
-		g.StudsOffset = Vector3.new(0, 3.2, 0)
+		g.StudsOffset = Vector3.new(0, 4.3, 0) -- 1.9.3: above the Overhead tag (2.4 + 1.4), not on it
+		g.PlayerToHideFrom = player
 		g.MaxDistance = 60
 		g.Adornee = head
 		local l = Instance.new("TextLabel")

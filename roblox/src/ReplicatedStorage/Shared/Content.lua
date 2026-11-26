@@ -1677,6 +1677,7 @@ Content.Minigames = {
 	ResultMeh = "😅 Not quite. ⭐ %d (goal %d)",
 	Pay = "💰 +%d coins",
 	Again = "🔁 Another shift",
+	Next = "Next ⏭", -- 1.9.3: ends the round early once the goal is reached (the server checks it)
 	Break = "Take a break",
 	TooFast = "⛔ That shift didn't count (timing looked off).",
 	Games = {

@@ -56,7 +56,8 @@ local function makeArrow()
 		p.CanQuery = false
 		p.CanTouch = false
 		p.CastShadow = false
-		p.Material = Enum.Material.Neon
+		p.Material = Enum.Material.SmoothPlastic -- 1.9.3: no neon glare beside your head
+		p.Transparency = 0.25
 		p.Color = Color3.fromRGB(255, 220, 60)
 		p:SetAttribute("Offset", offset)
 		p.Parent = m
@@ -66,9 +67,9 @@ local function makeArrow()
 	piece(Vector3.new(0.6, 0.35, 2.2), CFrame.new(0, 0, 0.6))
 	piece(Vector3.new(1.2, 0.35, 1.2), CFrame.new(0, 0, -0.75) * CFrame.Angles(0, math.rad(45), 0)) -- diamond tip
 	local bb = Instance.new("BillboardGui")
-	bb.Size = UDim2.fromOffset(120, 34)
+	bb.Size = UDim2.fromOffset(70, 22)
 	bb.StudsOffsetWorldSpace = Vector3.new(0, 1.2, 0)
-	bb.AlwaysOnTop = true
+	bb.AlwaysOnTop = false
 	bb.MaxDistance = 200
 	bb.Parent = m:GetChildren()[1]
 	label = Instance.new("TextLabel")
@@ -200,7 +201,7 @@ RunService.RenderStepped:Connect(function(dt)
 	local dist = flat.Magnitude
 	t += dt
 	local bob = UI.reducedMotion() and 0 or math.sin(t * 3) * 0.25
-	local base = root.Position + Vector3.new(0, 4.2 + bob, 0)
+	local base = root.Position + Vector3.new(0, -1.2 + bob, 0) -- 1.9.3: waist height, out of the name-tag band
 	local cf
 	if dist < NEAR then
 		-- you're here: point down at your feet

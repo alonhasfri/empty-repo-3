@@ -821,6 +821,7 @@ local objectiveLabel = UI.new("TextLabel", {
 }, {
 	UI.new("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 3), PaddingBottom = UDim.new(0, 3) }),
 })
+UI.new("UITextSizeConstraint", { MaxTextSize = 16, Parent = objectiveLabel }) -- 1.9.3: no giant banner on phones
 UI.corner(objectiveLabel, 10)
 UI.autoScale(objectiveLabel)
 function Hud.objective(msg: string?)
@@ -982,7 +983,7 @@ end
 ---------------------------------------------------------------------
 -- Device scaling: every block follows the screen size
 ---------------------------------------------------------------------
-for _, inst in ipairs({ grid, banner, tutorial, corner, bottom, pickRow, status }) do
+for _, inst in ipairs({ grid, banner, tutorial, corner, bottom, pickRow, status, phoneSlot }) do -- 1.9.3: + phone button
 	UI.autoScale(inst)
 end
 -- 1.8 (screenshot check): the thumb-size minimum depends on the real screen size, which isn't known
@@ -1036,6 +1037,14 @@ UI.onScale(function(d)
 	status.Position = UDim2.new(1, -10, 0, 6 + 200 * d)
 	if bubbleScale.Scale > 0 then
 		bubbleScale.Scale = d
+	end
+end)
+
+-- 1.9.3: hide Dr. Wrinkles while a pop-up or the phone is open (the right third got crowded on phones)
+RunService.Heartbeat:Connect(function()
+	local want = not UI.isModalOpen()
+	if bubble.Visible ~= want then
+		bubble.Visible = want
 	end
 end)
 

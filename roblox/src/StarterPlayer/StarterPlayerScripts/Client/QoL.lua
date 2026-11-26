@@ -65,7 +65,7 @@ task.defer(function()
 		Name = "SprintButton",
 		AnchorPoint = Vector2.new(1, 1),
 		Position = UDim2.new(1, -CQ.SprintButtonRight, 1, -CQ.SprintButtonUp),
-		Size = UDim2.fromOffset(56, 56),
+		Size = UDim2.fromOffset(math.max(56, UI.minTouch()), math.max(56, UI.minTouch())),
 		BackgroundColor3 = UI.T.bg,
 		BackgroundTransparency = 0.2,
 		Text = Content.QoL.Sprint,
@@ -73,6 +73,7 @@ task.defer(function()
 		Parent = UI.gui,
 	})
 	UI.corner(b, 28)
+	UI.autoScale(b) -- 1.9.3: follows the HUD scale, stays thumb-sized
 	b.Activated:Connect(function()
 		setSprint(not sprinting)
 		b.BackgroundColor3 = sprinting and Color3.fromRGB(70, 200, 120) or UI.T.bg

@@ -10,6 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
 local Content = require(ReplicatedStorage.Shared.Content)
+local Config = require(ReplicatedStorage.Shared.Config)
 
 local UI = require(script.Parent.UI)
 local Remote = require(script.Parent.Remote)
@@ -1212,6 +1213,12 @@ function Minigames.play(info, opts)
 		UI.corner(barFill, 4)
 		local area = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 260), LayoutOrder = 3, Parent = m.content })
 		local flash = UI.new("Frame", { BackgroundColor3 = UI.Colors.good, BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 30, Parent = area })
+		-- 1.9.3: Next ⏭ appears once the goal is reached and enough of the round has passed for the server to
+		-- accept it (Config.Minigames.MinShare, +1 s for lag), so a finished round doesn't make you wait it out
+		local nextBtn = UI.button(m.content, MG.Next or "Next ⏭", function()
+			finish()
+		end, { LayoutOrder = 4, BackgroundColor3 = UI.Colors.good })
+		nextBtn.Visible = false
 		local ctx = {
 			level = info.level or 1,
 			rng = Random.new(info.seed or os.time()),
@@ -1241,6 +1248,9 @@ function Minigames.play(info, opts)
 				local left = math.max(0, seconds - (os.clock() - t0))
 				timeL.Text = string.format(MG.Time, math.ceil(left))
 				barFill.Size = UDim2.fromScale(left / seconds, 1)
+				if not nextBtn.Visible and score >= (info.pass or math.huge) and os.clock() - t0 >= seconds * Config.Minigames.MinShare + 1 then
+					nextBtn.Visible = true
+				end
 				if left <= 0 then
 					break
 				end

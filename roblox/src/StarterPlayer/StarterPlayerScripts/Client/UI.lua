@@ -830,7 +830,7 @@ function UI.modal(title: string, opts)
 		Position = UDim2.fromOffset(0, -inset.Y),
 		Size = UDim2.new(1, 0, 1, inset.Y),
 		BackgroundColor3 = Color3.new(0, 0, 0),
-		BackgroundTransparency = opts.phone and Config.UI.PhoneDim or Config.UI.ModalDim,
+		BackgroundTransparency = opts.phone and 1 or Config.UI.ModalDim, -- 1.9.3: no dim behind the phone, so you can walk with it open
 		ZIndex = 19,
 		Parent = UI.gui,
 	})
@@ -1047,7 +1047,16 @@ function UI.modal(title: string, opts)
 
 	current = { frame = frame, backdrop = backdrop, content = content, onClose = opts.onClose }
 	UI.popupOpen = not phone
-	if not opts.noClose then
+	if not opts.noClose and phone then
+		-- 1.9.3: the phone lets touches through (thumbstick, camera): close with X / home / ButtonB only
+		backdrop.Active = false
+		ContextActionService:BindAction("BrainCloseModal", function(_, inputState)
+			if inputState == Enum.UserInputState.Begin then
+				UI.closeModal()
+			end
+			return Enum.ContextActionResult.Sink
+		end, false, Enum.KeyCode.ButtonB)
+	elseif not opts.noClose then
 		-- 1.8.5: tap outside the pop-up to close it
 		backdrop.Active = true
 		backdrop.InputBegan:Connect(function(input)

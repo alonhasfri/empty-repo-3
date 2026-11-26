@@ -95,7 +95,9 @@ WorldService.onWork = function(player, placeKey)
 		BrainService.toast(player, "💼 Get a job at the Job Center first.")
 		return
 	end
-	if myPlace ~= placeKey then
+	-- 1.9.3: a Restaurant Worker can work at ANY restaurant (the job place is "restaurant", desks have their own key)
+	local ok = myPlace == placeKey or (myPlace == "restaurant" and table.find(WorldService.Restaurants, placeKey) ~= nil)
+	if not ok then
 		BrainService.toast(player, "This isn't your workplace.")
 		return
 	end

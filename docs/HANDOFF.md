@@ -18,6 +18,11 @@ Screenshot: huge "[Owner]" and "💼 Dishwasher" tags over your own head, a brig
 "19 m" label at top centre, the Vs Mode sign floating over the right of the screen, the sprint button floating
 mid-right, the objective banner colliding with all of it.
 
+**Progress (Nov 26, late chat):** items 1-4 are CODED (selene clean) but NOT Studio-tested yet: that chat had no
+Studio MCP (it was opened in Documents, not empty-repo-3). Test 1-4 first. Item 3 cause: `Main.server.lua` onWork
+compared the job place "restaurant" with the desk key, so Restaurant Workers got "This isn't your workplace" at
+every restaurant. Item 4: `Minigames.lua` shows Next ⏭ once score >= goal and MinShare of the round has passed.
+
 To do (one at a time, test each in Studio, phone size + PC):
 1. **Overlapping UI on phones.** Causes found by a read-only agent (verify each):
    - Own name tags: `BrainService.lua:256` (Overhead, 8x1.4 studs) and `GainService.lua:348-351` (JobTitle,
@@ -48,4 +53,8 @@ To do (one at a time, test each in Studio, phone size + PC):
 5. **More bug hunting** (the user asked for "a lot of agents"). Four read-only hunts were stopped unfinished to save
    credits: jobs/shifts/restaurants, Lose path + animals + Golden Brains, Gain path/social/events, map/world/phone
    performance. Re-run them only if credits allow (cheaper model), then fix what they find.
+7. **New from the user (Nov 26, late):** too many buttons on the phone (trim / group the HUD on touch screens);
+   building interiors feel janky; cutscenes are just emojis moving: they must be real cutscenes with animated
+   characters and real assets.
+   The admin menu still doesn't fit on phones and is very hard to use (AdminPanel.lua): redesign it.
 6. Bump `Config.Version` to 1.9.3 + a "What's new" entry, test, commit, push, ask the user before publishing.
