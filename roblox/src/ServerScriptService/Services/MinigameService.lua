@@ -2,7 +2,7 @@
 -- A feature (jobs, big life events, genius branches) starts a round with MinigameService.begin();
 -- the client plays it and sends "mg_finish" with its score. The server checks:
 --   * a round was really started, for this game
---   * it lasted long enough (Config.Minigames.MinShare) and not too long (seconds + Grace)
+--   * it lasted long enough (Config.Minigames.MinPassFactor of the fastest possible time) and not too long (seconds + Grace)
 --   * the score is possible (score <= elapsed * maxPerSecond)
 -- then calls the feature's handler: handlers[context](player, round, score, passed) -> result table.
 -- Numbers: Config.Minigames. Text: Content.Minigames.
@@ -84,7 +84,8 @@ Net.on("mg_finish", function(player, d)
 	end
 	score = math.max(0, math.floor(score))
 	-- quitting early is fine, a WIN that came impossibly early is not
-	local tooFast = elapsed < round.seconds * MG.MinShare and score >= round.pass
+	-- 1.9.3: a win is too fast only if it beat the fastest humanly possible time (rounds end at the goal now)
+	local tooFast = score >= round.pass and elapsed < (round.pass / def.maxPerSecond) * MG.MinPassFactor
 	local tooLate = elapsed > round.seconds + MG.Grace
 	local impossible = score > math.ceil(elapsed * def.maxPerSecond) + 1
 	if tooFast or tooLate or impossible then

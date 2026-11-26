@@ -171,23 +171,27 @@ Config.Careers = {
 --   maxPerSecond: the fastest score a human could get (anything above is rejected)
 Config.Minigames = {
 	LevelFaster = 4,
-	MinRound = 20,
+	MinRound = 15,
 	Grace = 6, -- extra seconds allowed for lag before a result is too late
-	MinShare = 0.5, -- a round must last at least this share of its time (no instant finishes)
+	-- 1.9.3 (user: minigames were exhausting): a round ends the moment you reach the goal. A win only counts
+	-- if it took at least this share of the fastest humanly possible time (pass / maxPerSecond); no more
+	-- "half the round must pass" waiting.
+	MinPassFactor = 0.6,
+	AutoFinishDelay = 0.8, -- seconds the "Goal reached!" flash shows before the result
 	BonusCoinsPerPoint = 1, -- extra coins for every point over the pass mark
 	JobBrainPoints = 2.5, -- 1.9.1 fun fixes: brain points for a good job shift (was 0.5: the most fun thing paid the least)
 	JobStress = 2, -- stress per shift (was 4)
 	Games = {
-		scan = { seconds = 40, pass = 6, maxPerSecond = 1.2 }, -- cashier: scan & bag
-		colors = { seconds = 45, pass = 3, maxPerSecond = 0.5 }, -- scientist: mix colours
-		pipes = { seconds = 50, pass = 2, maxPerSecond = 0.3 }, -- engineer: pipe puzzle
-		files = { seconds = 35, pass = 10, maxPerSecond = 2 }, -- office: file sorting
-		grade = { seconds = 35, pass = 8, maxPerSecond = 2 }, -- teacher: swipe grading
-		xray = { seconds = 35, pass = 6, maxPerSecond = 1.5 }, -- doctor: X-ray spot
-		order = { seconds = 45, pass = 3, maxPerSecond = 0.6 }, -- chef: order up
-		dash = { seconds = 45, pass = 3, maxPerSecond = 0.5 }, -- courier: Hoppr dash
-		dishes = { seconds = 35, pass = 6, maxPerSecond = 1 }, -- 1.9.1 restaurant level 1: scrub the plates
-		serve = { seconds = 45, pass = 4, maxPerSecond = 0.6 }, -- 1.9.1 restaurant level 2+: take orders and serve tables
+		scan = { seconds = 25, pass = 6, maxPerSecond = 1.2 }, -- cashier: scan & bag
+		colors = { seconds = 30, pass = 3, maxPerSecond = 0.5 }, -- scientist: mix colours
+		pipes = { seconds = 30, pass = 2, maxPerSecond = 0.3 }, -- engineer: pipe puzzle
+		files = { seconds = 20, pass = 10, maxPerSecond = 2 }, -- office: file sorting
+		grade = { seconds = 20, pass = 8, maxPerSecond = 2 }, -- teacher: swipe grading
+		xray = { seconds = 25, pass = 6, maxPerSecond = 1.5 }, -- doctor: X-ray spot
+		order = { seconds = 30, pass = 3, maxPerSecond = 0.6 }, -- chef: order up
+		dash = { seconds = 30, pass = 3, maxPerSecond = 0.5 }, -- courier: Hoppr dash
+		dishes = { seconds = 20, pass = 6, maxPerSecond = 1 }, -- 1.9.1 restaurant level 1: scrub the plates
+		serve = { seconds = 30, pass = 4, maxPerSecond = 0.6 }, -- 1.9.1 restaurant level 2+: take orders and serve tables
 	},
 	-- which minigame each job plays (jobs not listed keep their old non-maths task)
 	ByJob = {
@@ -230,11 +234,11 @@ Config.Genius = {
 }
 -- the signature minigames use the same framework as the job minigames
 for key, def in pairs({
-	pattern = { seconds = 40, pass = 5, maxPerSecond = 0.8 }, -- math: what comes next? (no sums)
-	launch = { seconds = 45, pass = 3, maxPerSecond = 0.4 }, -- physics: angle and power
-	robot = { seconds = 50, pass = 2, maxPerSecond = 0.3 }, -- coding: code blocks move a robot
-	lemonade = { seconds = 45, pass = 4, maxPerSecond = 0.6 }, -- business: price and stock vs the weather
-	mate = { seconds = 60, pass = 2, maxPerSecond = 0.3 }, -- chess: mate in 1
+	pattern = { seconds = 30, pass = 5, maxPerSecond = 0.8 }, -- math: what comes next? (no sums)
+	launch = { seconds = 30, pass = 3, maxPerSecond = 0.4 }, -- physics: angle and power
+	robot = { seconds = 35, pass = 2, maxPerSecond = 0.3 }, -- coding: code blocks move a robot
+	lemonade = { seconds = 30, pass = 4, maxPerSecond = 0.6 }, -- business: price and stock vs the weather
+	mate = { seconds = 35, pass = 2, maxPerSecond = 0.3 }, -- chess: mate in 1
 }) do
 	Config.Minigames.Games[key] = def
 end

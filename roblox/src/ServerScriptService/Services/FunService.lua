@@ -1,6 +1,6 @@
 -- FunService.lua (1.8, Life Pack plan step 2): free new places on the empty west (Lose) side.
 -- Each one also has a reason for Gain players to visit (both paths matter equally).
---   🫧 Slime Shop      Lose: make the slimiest slime, lose cells   | Gain: the science of slime, small gain
+--   💦 Slime Shop      Lose: make the slimiest slime, lose cells   | Gain: the science of slime, small gain
 --   🤸 Trampoline Park Lose: bounce, brain cells fly out            | Gain: exercise, stress down
 --   🔮 Fortune Teller  free; exact odds shown; Lose: silly fortunes cost cells | Gain: wise ones give a little
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

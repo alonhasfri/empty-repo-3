@@ -219,6 +219,14 @@ local function showCard(key: string, title: string, spots)
 		Parent = UI.gui,
 	})
 	card:SetAttribute("Title", title)
+	-- 1.9.3: hide while a pop-up or the phone is open (it floated on top of the work minigame)
+	local myCard = card
+	task.spawn(function()
+		while myCard.Parent do
+			myCard.Visible = UI.gui:FindFirstChild("ModalBackdrop") == nil
+			task.wait(0.25)
+		end
+	end)
 	UI.corner(card)
 	UI.stroke(card, GOLD, 1.5, 0.35)
 	UI.new("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4), Parent = card })

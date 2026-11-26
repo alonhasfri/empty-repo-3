@@ -1,5 +1,27 @@
 # Development queue (Roblox)
 
+## Status of the cloud-chat list (Nov 27): built / tested / missing
+| Item | Built? | Studio-tested? | Next step |
+|---|---|---|---|
+| 1.9.3 phone fixes (tags, arrow, Vs sign, sprint, walk with phone, restaurants) | yes | ✅ | done |
+| Phone home on one screen + More page, icon fallback | yes | ✅ | done |
+| Replace the friend's wedding event (Roblox bans romance) | yes: Sam's surprise party | ✅ | done |
+| Next ⏭ button in work rounds | replaced: rounds end by themselves at the goal | ✅ | done |
+| Job minigames short (20–35 s), end at goal, "3 / 6" goal | yes | ✅ (dishes) | done; emoji Roblox can't draw (🫧 🫠 🩻 🥹 🫣 🫘) replaced |
+| Harsh review by tester agents | ❌ | – | after minigames |
+| Icons + pop-ups polish | ❌ | – | after the harsh review |
+| More real 3D models | ❌ | – | after the harsh review |
+| UI.fitPanel on every screen + phone admin panel | ❌ | – | later |
+| Admin test commands (pass gates, set IQ) | yes (32f9a18) | ❌ | test |
+| Easy fun-fact Skill Gates | yes (1.8.9) | ❌ | test |
+| Stuck fix: timeouts, watchdog, Unstuck | yes (1.8.8) | ✅ | done |
+| Brain Shredder + 0-cell POOF animations | yes | ❌ | test |
+| Intro cutscene + Cutscene player | yes | partly | test |
+| Settings tabs, Reset my progress, Send feedback | yes | ❌ | test (feedback only works when published) |
+| Better tutorial (60–90 s, learn by doing) | ❌ | – | later |
+| Hebrew | ❌ | – | later |
+
+
 The full list from the user (sent through the cloud chat on Nov 24). Work top to bottom, one item at a time.
 
 For each item:
@@ -355,7 +377,7 @@ The user picked these from Claude's idea list. Code them one by one (commit each
 
 ## Next (from the user via the cloud chat, Nov 26 late)
 - ✅ Replace the friend's wedding life event with a non-romantic one (Roblox rules ban romantic events)
-- [ ] Job minigames: 15–30 s, end as soon as the goal is met, visible goal (3/6), server check allows fast finishes
+- ✅ Job minigames: 15–30 s, end as soon as the goal is met, visible goal (3/6), server check allows fast finishes
 - [ ] Icons + pop-ups: one polished consistent style, crisp at phone size
 - [ ] More real 3D models (Blender / free Creator Store, scripts stripped, credited) instead of part-built props
 - [ ] Harsh review by tester agents in Studio → docs/Harsh review.md, then fix worst first

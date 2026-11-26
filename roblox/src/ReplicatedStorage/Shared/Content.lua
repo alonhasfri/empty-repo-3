@@ -393,7 +393,7 @@ Content.BrainTalks = {
 	Dodged = "⏭ Brainrot dodged! Streak +1",
 	Learned = "🧠 You learned something! Stress down, brain cells up.",
 	Warning = "⚠️ That was brainrot! This time is free. Next time it costs a little brain power and adds stress.",
-	Rotted = "🫠 Brainrot watched. A little brain power lost, stress up. Streak reset.",
+	Rotted = "😵 Brainrot watched. A little brain power lost, stress up. Streak reset.",
 	Smart = {
 		{ icon = "🐙", title = "Why octopuses have nine brains (kind of)", creator = "Dr. Inkwell" },
 		{ icon = "🌋", title = "How volcanoes build new islands", creator = "Prof. Magma" },
@@ -1095,7 +1095,7 @@ Content.Updates = {
 	} },
 	{ v = "1.8", name = "Life Pack & Phone Shop", lines = {
 		"📱 New free Phone Shop: parody phones, a case maker with a 🧠 Brainrot meter, and a very suspicious scam stall.",
-		"🫧 Slime Shop, 🤸 Trampoline Park and 🔮 Fortune Teller (exact odds shown) on the west side, free for everyone.",
+		"💦 Slime Shop, 🤸 Trampoline Park and 🔮 Fortune Teller (exact odds shown) on the west side, free for everyone.",
 		"👶 Optional Life Pack: grow up from baby to grandparent, pick your path at the 🌟 Crossroads Ceremony, hidden places, pets.",
 		"🖐 High-five other players to become Friends → Good friends → Best friends. (The base game stays free and complete.)",
 	} },
@@ -1463,12 +1463,12 @@ Content.Fun = {
 	Odds = { silly = "🤪 Silly fortune: %d%%", wise = "🦉 Wise fortune: %d%%", weird = "🌀 Weird fortune: %d%%" },
 	OddsEffect = "Lose path: silly fortunes cost a few cells. Gain path: wise ones give a few.",
 	slime = {
-		Title = "🫧 Slime Shop",
-		Sign = "🫧 SLIME SHOP",
+		Title = "💦 Slime Shop",
+		Sign = "💦 SLIME SHOP",
 		Desc = "Make the slimiest slime",
-		Lose = "🫧 Make the SLIMIEST slime",
+		Lose = "💦 Make the SLIMIEST slime",
 		Gain = "🔬 Learn the science of slime",
-		LoseDone = { "🫧 SPLORCH. Your slime is perfect. Your brain is sticky.", "🫧 You mixed glitter, glue and… cereal? Brain cells slide away.", "🫧 It's so slimy it ate a brain cell." },
+		LoseDone = { "💦 SPLORCH. Your slime is perfect. Your brain is sticky.", "💦 You mixed glitter, glue and… cereal? Brain cells slide away.", "💦 It's so slimy it ate a brain cell." },
 		GainDone = { "🔬 Slime is a polymer: long sticky chains. Neat! Brain cells up.", "🔬 More glue = stretchier. You made a graph about it. Brain cells up." },
 	},
 	trampoline = {
@@ -1674,13 +1674,13 @@ Content.SettingsTabs = {
 Content.Minigames = {
 	Start = "START",
 	Time = "⏱ %ds",
-	Score = "⭐ %d",
+	Score = "⭐ %d / %d", -- 1.9.3: progress towards the goal, like 3 / 6
 	Goal = "Goal: %d",
 	ResultGood = "✅ Great shift! ⭐ %d",
 	ResultMeh = "😅 Not quite. ⭐ %d (goal %d)",
 	Pay = "💰 +%d coins",
 	Again = "🔁 Another shift",
-	Next = "Next ⏭", -- 1.9.3: ends the round early once the goal is reached (the server checks it)
+	GoalDone = "🎉 Goal reached!", -- 1.9.3: the round ends by itself at the goal
 	Break = "Take a break",
 	TooFast = "⛔ That shift didn't count (timing looked off).",
 	Games = {
@@ -1689,7 +1689,7 @@ Content.Minigames = {
 		pipes = { title = "🔧 Pipe puzzle", how = "Tap pipes to turn them so the water reaches the town on the right." },
 		files = { title = "🗂 File sorting", how = "Put each file in the folder with the same colour. Quick!" },
 		grade = { title = "📝 Grade papers", how = "Is the answer right or silly? Tap ✅ or ❌ (or swipe)." },
-		xray = { title = "🩻 X-ray spot", how = "Find the thing that shouldn't be in the X-ray!" },
+		xray = { title = "🦴 X-ray spot", how = "Find the thing that shouldn't be in the X-ray!" },
 		order = { title = "🍔 Order up", how = "Build the burger on the ticket, from the bottom up." },
 		dash = { title = "🚐 Hoppr dash", how = "Drive to the parcel, pick it up, then drop it at the house." },
 		dishes = { title = "🍽 Dish duty", how = "Tap a dirty plate a few times to scrub it until it sparkles. Clean plates go on the rack by themselves." },
@@ -1774,7 +1774,7 @@ Content.LifeEvents = {
 				{ text = "Sam walks in. Everyone jumps out:", options = { { "🥳 \"SURPRISE! Happy birthday!\"", true }, { "😴 Fall asleep behind the bush", false } } },
 				{ text = "Time for a birthday speech!", options = { { "💛 \"Sam is the kindest person I know.\"", true }, { "😂 \"Sam once ate soup with a fork. Legend.\"", false } } },
 			},
-			outro = { Gain = "What a lovely day. Sam grins: \"Best surprise ever!\" 🥹", Lose = "Everyone is still talking about your pyjamas. Iconic. 🩳" },
+			outro = { Gain = "What a lovely day. Sam grins: \"Best surprise ever!\" 😊", Lose = "Everyone is still talking about your pyjamas. Iconic. 🩳" },
 		},
 		grandma = {
 			name = "Grandma's 80th birthday", icon = "🎂",
@@ -1871,7 +1871,7 @@ Content.LifeEvents = {
 			name = "your first day at a new job", icon = "💼",
 			intro = { Gain = "First day at the new job! Your hands are a little sweaty. Deep breath. 😅", Lose = "First day at… wait, you got a job? Nobody is more surprised than you. 😅" },
 			steps = {
-				{ text = "You walk in. Everyone looks up:", options = { { "👋 Smile and say hi to everyone", true }, { "🫣 Hide behind a pot plant", false } } },
+				{ text = "You walk in. Everyone looks up:", options = { { "👋 Smile and say hi to everyone", true }, { "🙈 Hide behind a pot plant", false } } },
 				{ text = "Your boss shows you the ropes. Try it!", game = "files", title = "💼 Learning the ropes", how = "Sort the files into the folder with the same colour. Your boss is watching… kindly!" },
 				{ text = "Lunch break! The new coworkers wave you over:", options = { { "🥪 Sit with them and ask about their day", true }, { "🍜 Eat noodles in the supply cupboard", false } } },
 			},
@@ -2139,14 +2139,14 @@ Content.Restaurants = {
 		burger = { name = "🍔 Burger Barn", sign = "🍔 BURGER BARN", work = "Burger Grill", menu = { "🍔", "🍟", "🌭", "🥤", "🍦" }, board = "🍔 MENU\nBurger · Fries · Hot dog\nShake · Cone" },
 		sushi = { name = "🍣 Sushi Spot", sign = "🍣 SUSHI SPOT", work = "Sushi Bar", menu = { "🍣", "🍙", "🍜", "🍵", "🍡" }, board = "🍣 MENU\nSushi · Rice ball · Noodles\nTea · Sweet dumplings" },
 		taco = { name = "🌮 Taco Town", sign = "🌮 TACO TOWN", work = "Taco Counter", menu = { "🌮", "🌯", "🥙", "🧃", "🍮" }, board = "🌮 MENU\nTaco · Burrito · Wrap\nJuice · Flan" },
-		rotcafe = { name = "🌈 Brainrot Café", sign = "🌈 BRAINROT CAFÉ", work = "", menu = { "🧃", "🍭", "🌈", "🫧" }, board = "🌈 MYSTERY DRINKS\nColour: yes\nFlavour: ???" },
+		rotcafe = { name = "🌈 Brainrot Café", sign = "🌈 BRAINROT CAFÉ", work = "", menu = { "🧃", "🍭", "🌈", "💦" }, board = "🌈 MYSTERY DRINKS\nColour: yes\nFlavour: ???" },
 	},
 	Eat = { action = "Eat here", object = "🍽 Meal (%d coins)", done = "🍽 Yum! Stress -%d (-%d coins)", coma = "🍽 Food coma! Your brain takes a little nap. (-%d coins)", poor = "💰 A meal costs %d coins. Work a shift first!", animal = "🐾 Animals can't order. Try begging for scraps!" },
 	Scraps = { action = "Beg", object = "🐾 Scraps (free)", done = "🐾 Someone drops you a snack. Good pet! Stress -%d", human = "🐾 Only animals beg for scraps." },
 	Mystery = {
 		action = "Drink",
 		object = "🌈 Mystery drink (free)",
-		lines = { "🌈 It tasted like the colour purple.", "🫧 Your burp was a bubble. Science!", "🍭 Sugar and bad decisions. Delicious.", "🧃 You now speak fluent juice box.", "🌀 Your eyes did a little spin." },
+		lines = { "🌈 It tasted like the colour purple.", "🔵 Your burp was a bubble. Science!", "🍭 Sugar and bad decisions. Delicious.", "🧃 You now speak fluent juice box.", "🌀 Your eyes did a little spin." },
 		gain = "🤔 You read the label. It just says \"???\". You put it down.",
 	},
 	Customer = "🙂 Customer",
@@ -2231,7 +2231,7 @@ Content.AnimalLife = {
 		bee = { drop = "🌸", done = "🐝🌸" },
 		mouse = { pick = "🧀", drop = "🕳", done = "🐭🧀" },
 		worm = { drop = "🌱", done = "🐛🌱" },
-		octopus = { pick = "🫧", drop = "🪣", done = "🐙🫧" },
+		octopus = { pick = "💦", drop = "🪣", done = "🐙💦" },
 	},
 	Friends = {
 		cat = { icon = "🐱", wants = "🐟" },
@@ -2316,7 +2316,7 @@ Content.BrainrotTV = {
 		[1] = { "🗞 Brainville News: the library has 200 new books", "🌦 Weather: sunny, with a chance of smart ideas", "🏆 Local hero rescues kitten from tree" },
 		[2] = { "😂 Top 10 cats who fell off tables (they're fine)", "🎬 Jack B Movies trailer: \"The Fridge Strikes Back\"", "🤸 Man vs wall: the rematch" },
 		[3] = { "🥔 A potato. For one hour. No talking.", "🦆 Duck says 'quack' (part 47)", "🔊 THIS VIDEO IS VERY LOUD (it's a whisper)" },
-		[4] = { "🫘 BEAN. SPINNING. 3 HOURS.", "🌀 ??? ??? ??? (you watch anyway)", "🧠➡️🗑 Watch your brain cells leave in real time", "🍝 Spaghetti, but it's ASMR" },
+		[4] = { "🥜 BEAN. SPINNING. 3 HOURS.", "🌀 ??? ??? ??? (you watch anyway)", "🧠➡️🗑 Watch your brain cells leave in real time", "🍝 Spaghetti, but it's ASMR" },
 	},
 }
 
@@ -2339,7 +2339,7 @@ Content.LoseJobs = {
 	Paid = "%s Shift done! +%d coins (and a little less brain 🧠📉)",
 	Fired = { "🤡 Your boss is confused. That's fine. Try again!", "🤡 You were so bad at a joke job that it's almost impressive." },
 	Jobs = {
-		bubbles = { icon = "🫧", name = "Bubble-wrap popper", blurb = "Pop every single bubble. Professionally." },
+		bubbles = { icon = "🔵", name = "Bubble-wrap popper", blurb = "Pop every single bubble. Professionally." },
 		memes = { icon = "🖼", name = "Meme reviewer", blurb = "Rate memes. Fast. Every rating is correct." },
 		sign = { icon = "🪧", name = "Upside-down sign holder", blurb = "Keep the sign upside down. It keeps flipping back!" },
 	},
@@ -2349,7 +2349,7 @@ Content.LoseJobs = {
 	SignText = "🍕 PIZZA THIS WAY",
 	SignHint = "Tap the sign when it flips the RIGHT way up!",
 }
-Content.Minigames.Games.bubblewrap = { title = "🫧 Bubble-wrap popper", how = "Pop every bubble! A new sheet arrives when you finish one." }
+Content.Minigames.Games.bubblewrap = { title = "🔵 Bubble-wrap popper", how = "Pop every bubble! A new sheet arrives when you finish one." }
 Content.Minigames.Games.memes = { title = "🖼 Meme reviewer", how = "Rate each meme. Any rating is fine, but you have to at least LOOK at it." }
 Content.Minigames.Games.signhold = { title = "🪧 Upside-down sign holder", how = "The sign keeps turning the right way up. Tap it to flip it back upside down!" }
 

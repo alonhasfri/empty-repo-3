@@ -1,5 +1,5 @@
 -- LoseJobService (1.9.1, big ideas #14): joke jobs for the Lose path, in the 🤡 Jobs phone app.
---   🫧 Bubble-wrap popper · 🖼 Meme reviewer · 🪧 Upside-down sign holder
+--   🔵 Bubble-wrap popper · 🖼 Meme reviewer · 🪧 Upside-down sign holder
 -- Each is a silly minigame (MinigameService, context "losejob"). A good shift pays a few coins and
 -- costs a little brain (that's the Lose path's goal). Humans only: animals have their own jobs.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

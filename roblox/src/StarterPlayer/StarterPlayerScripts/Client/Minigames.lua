@@ -571,7 +571,7 @@ function GAMES.dishes(area, ctx)
 		local need = ctx.rng:NextInteger(3, 3 + math.min(2, ctx.level))
 		local left = need
 		local b
-		b = tapButton(sink, MG.Dirty[ctx.rng:NextInteger(1, #MG.Dirty)] .. "\n" .. string.rep("🫧", left), { LayoutOrder = i, BackgroundColor3 = Color3.fromRGB(120, 100, 70) }, function()
+		b = tapButton(sink, MG.Dirty[ctx.rng:NextInteger(1, #MG.Dirty)] .. "\n" .. string.rep("💦", left), { LayoutOrder = i, BackgroundColor3 = Color3.fromRGB(120, 100, 70) }, function()
 			if not ctx.alive() or left <= 0 then
 				return
 			end
@@ -579,7 +579,7 @@ function GAMES.dishes(area, ctx)
 			local t = 1 - left / need
 			b.BackgroundColor3 = Color3.fromRGB(120, 100, 70):Lerp(Color3.fromRGB(220, 235, 245), t)
 			if left > 0 then
-				b.Text = MG.Scrubbing .. "\n" .. string.rep("🫧", left)
+				b.Text = MG.Scrubbing .. "\n" .. string.rep("💦", left)
 			else
 				b.Text = MG.Clean
 				ctx.feedback(true)
@@ -656,7 +656,7 @@ end
 ---------------------------------------------------------------------
 local TJ = Content.LoseJobs
 
--- 🫧 pop every bubble on the sheet; a new sheet arrives when it's all popped
+-- 🔵 pop every bubble on the sheet; a new sheet arrives when it's all popped
 function GAMES.bubblewrap(area, ctx)
 	local grid = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(200, 230, 255), BackgroundTransparency = 0.3, Size = UDim2.fromScale(1, 0.92), Parent = area }, {
 		UI.new("UIGridLayout", { CellSize = UDim2.new(0.18, 0, 0.22, 0), CellPadding = UDim2.new(0.02, 0, 0.03, 0), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
@@ -672,8 +672,8 @@ function GAMES.bubblewrap(area, ctx)
 		left = 15
 		for i = 1, 15 do
 			local b
-			b = tapButton(grid, "🫧", { LayoutOrder = i, BackgroundColor3 = Color3.fromRGB(170, 210, 250) }, function()
-				if not ctx.alive() or b.Text ~= "🫧" then
+			b = tapButton(grid, "🔵", { LayoutOrder = i, BackgroundColor3 = Color3.fromRGB(170, 210, 250) }, function()
+				if not ctx.alive() or b.Text ~= "🔵" then
 					return
 				end
 				b.Text = TJ.Pop
@@ -1206,19 +1206,16 @@ function Minigames.play(info, opts)
 		local top =UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 40), LayoutOrder = 1, Parent = m.content })
 		local timeL = label(top, "", { Size = UDim2.fromScale(0.33, 1), TextXAlignment = Enum.TextXAlignment.Left })
 		local scoreL = label(top, "", { Size = UDim2.fromScale(0.33, 1), Position = UDim2.fromScale(0.33, 0) })
-		label(top, string.format(MG.Goal, info.pass or 0), { Size = UDim2.fromScale(0.33, 1), Position = UDim2.fromScale(0.66, 0), TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = UI.T.muted })
+		local goalL = label(top, string.format(MG.Goal, info.pass or 0), { Size = UDim2.fromScale(0.33, 1), Position = UDim2.fromScale(0.66, 0), TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = UI.T.muted })
 		local barBack = UI.new("Frame", { BackgroundColor3 = UI.T.panel2, Size = UDim2.new(1, 0, 0, 8), LayoutOrder = 2, Parent = m.content })
 		UI.corner(barBack, 4)
 		local barFill = UI.new("Frame", { BackgroundColor3 = UI.T.accent, Size = UDim2.fromScale(1, 1), Parent = barBack })
 		UI.corner(barFill, 4)
 		local area = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 260), LayoutOrder = 3, Parent = m.content })
 		local flash = UI.new("Frame", { BackgroundColor3 = UI.Colors.good, BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 30, Parent = area })
-		-- 1.9.3: Next ⏭ appears once the goal is reached and enough of the round has passed for the server to
-		-- accept it (Config.Minigames.MinShare, +1 s for lag), so a finished round doesn't make you wait it out
-		local nextBtn = UI.button(m.content, MG.Next or "Next ⏭", function()
-			finish()
-		end, { LayoutOrder = 4, BackgroundColor3 = UI.Colors.good })
-		nextBtn.Visible = false
+		-- 1.9.3 (user: minigames were exhausting): the round ends by itself the moment you reach the goal
+		local pass = info.pass or math.huge
+		local goalHit = false
 		local ctx = {
 			level = info.level or 1,
 			rng = Random.new(info.seed or os.time()),
@@ -1229,7 +1226,13 @@ function Minigames.play(info, opts)
 		end
 		function ctx.add(n: number)
 			score += n
-			scoreL.Text = string.format(MG.Score, score)
+			scoreL.Text = string.format(MG.Score, score, info.pass or 0)
+			if not goalHit and score >= pass then
+				goalHit = true
+				goalL.Text = MG.GoalDone
+				goalL.TextColor3 = UI.Colors.good
+				task.delay(Config.Minigames.AutoFinishDelay, finish)
+			end
 		end
 		function ctx.feedback(ok: boolean)
 			UI.sound(ok and "BrainCellGained" or "CartoonBoing", 0.3)
@@ -1248,9 +1251,6 @@ function Minigames.play(info, opts)
 				local left = math.max(0, seconds - (os.clock() - t0))
 				timeL.Text = string.format(MG.Time, math.ceil(left))
 				barFill.Size = UDim2.fromScale(left / seconds, 1)
-				if not nextBtn.Visible and score >= (info.pass or math.huge) and os.clock() - t0 >= seconds * Config.Minigames.MinShare + 1 then
-					nextBtn.Visible = true
-				end
 				if left <= 0 then
 					break
 				end
