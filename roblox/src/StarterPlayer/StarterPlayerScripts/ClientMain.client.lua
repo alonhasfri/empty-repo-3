@@ -47,6 +47,7 @@ PhoneOS.animalUI = AnimalUI.open
 Remote.on("animalTarget", AnimalUI.onTarget) -- 1.9.1 animal jobs and friends
 local Adopt = require(Client.Adopt) -- 1.9.1 adopt an animal player
 Remote.on("adoptAsk", Adopt.onAsk)
+Remote.on("geniusFinale", Effects.geniusFinale) -- 1.9.1 genius endings
 AnimalUI.hasPower = function()
 	return Hud.hasPower()
 end

@@ -118,6 +118,13 @@ MinigameService.handlers.genius = function(player, round, score, passed)
 		BrainService.toast(player, string.format(TG.StoryDone, TG.Branches[x.branch].name, CG.FinalCoins), "LevelUp")
 		result.coins = CG.FinalCoins
 		result.storyDone = true
+		-- 1.9.1 big ideas #11: the finale (a prop everyone sees, the server hears, the Noble Prize card)
+		local okF, Finale = pcall(require, script.Parent.GeniusFinale)
+		if okF and Finale then
+			task.delay(Config.GeniusEnd.Delay, function()
+				Finale.play(player, x.branch)
+			end)
+		end
 	else
 		BrainService.toast(player, TG.ChapterDone, "LevelUp")
 	end

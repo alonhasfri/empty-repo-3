@@ -2256,4 +2256,33 @@ Content.Adopt = {
 	Wait = "⏳ Wait a moment before asking again.",
 }
 
+-- 1.9.1 big ideas #11: genius endings and the Noble Prize (a parody prize)
+Content.GeniusEnd = {
+	Prize = "THE NOBLE PRIZE",
+	For = "for %s",
+	Thanks = "🙇 Thank you!",
+	Announce = "🏅 %s just won the Noble Prize for %s!",
+	Fields = { math = "Mathematics", physics = "Physics", coding = "Coding", business = "Business", chess = "Chess" },
+	Speech = {
+		math = "\"I just kept asking: what comes next?\"",
+		physics = "\"Aim high. Then aim a bit higher.\"",
+		coding = "\"Thank you to my robot. He did the walking.\"",
+		business = "\"Start small, be kind, sell lemonade.\"",
+		chess = "\"Think three moves ahead. Then have a snack.\"",
+	},
+	Captions = {
+		math = { "The problem nobody could solve…", "…is SOLVED.", "The whole town gathers to see it." },
+		physics = { "Countdown: 3… 2… 1…", "LIFT-OFF! 🚀", "Your rocket heads for the stars." },
+		coding = { "You press RUN.", "Your robot takes its first steps…", "…and walks right into town! 🤖" },
+		business = { "A new shop opens on the street…", "…and it has YOUR name on it.", "Your first customers line up! 🏪" },
+		chess = { "The world championship. Final game.", "Grandmaster Checkmate McGee thinks… and thinks…", "CHECKMATE! You are the champion! ♟" },
+	},
+	Props = {
+		math = "∑  SOLVED ✓\nby %s",
+		coding = "🤖 %s's robot",
+		business = "🏪 %s's SHOP",
+		chess = "♟ WORLD CHAMPION: %s\nvs Grandmaster Checkmate McGee",
+	},
+}
+
 return Content

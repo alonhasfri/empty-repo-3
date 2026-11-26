@@ -1197,4 +1197,21 @@ Config.Adopt = {
 	TreatCoins = 3,
 }
 
+-- 1.9.1 big ideas #11 (GeniusFinale): the end of a genius story
+Config.GeniusEnd = {
+	Delay = 2.5, -- seconds after the last chapter before the finale starts (the result card shows first)
+	PropSeconds = 90, -- how long the prop stays (the business stall stays while you're in the server)
+	LaunchAfter = 6, -- rocket: seconds before lift-off
+	LaunchSeconds = 5,
+	LaunchHeight = 400,
+	RobotWalk = 30, -- the robot walks this far and back
+	RobotSeconds = 6,
+	-- camera shots, offsets from the prop (same format as Config.Cutscenes.Intro)
+	Shots = {
+		{ pos = Vector3.new(30, 25, 30), look = Vector3.new(0, 6, 0), t = 0, text = 1 },
+		{ pos = Vector3.new(-18, 10, 18), look = Vector3.new(0, 6, 0), t = 3.5, text = 2 },
+		{ pos = Vector3.new(0, 14, 26), look = Vector3.new(0, 10, 0), t = 3.5, text = 3 },
+	},
+}
+
 return Config

@@ -5,6 +5,8 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
 local UI = require(script.Parent.UI)
+local Config = require(game:GetService("ReplicatedStorage").Shared.Config) -- 1.9.1 genius finale
+local Content = require(game:GetService("ReplicatedStorage").Shared.Content)
 
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
@@ -953,6 +955,47 @@ function Effects.transform(d)
 			UI.toast(d.tip, nil, 7)
 		end
 	end)
+end
+
+---------------------------------------------------------------------
+-- 1.9.1 big ideas #11: the genius finale. A short skippable cutscene around the prop the server built,
+-- then the Noble Prize ceremony card with confetti.
+---------------------------------------------------------------------
+function Effects.geniusFinale(d)
+	local TE = Content.GeniusEnd
+	local branch = tostring(d.branch)
+	local function ceremony()
+		local o = overlay(Color3.new(0, 0, 0), 1, 88)
+		TweenService:Create(o, TweenInfo.new(0.5), { BackgroundTransparency = 0.35 }):Play()
+		local card = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(UI.isPhone() and 0.7 or 0.42, UI.isPhone() and 0.75 or 0.6), BackgroundColor3 = UI.T.panel, ZIndex = 89, Parent = o })
+		UI.corner(card, 18)
+		UI.stroke(card, Color3.fromRGB(255, 200, 61), 3, 0)
+		UI.new("UIListLayout", { HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0.02, 0), SortOrder = Enum.SortOrder.LayoutOrder, Parent = card })
+		UI.new("UIPadding", { PaddingTop = UDim.new(0.05, 0), PaddingBottom = UDim.new(0.05, 0), PaddingLeft = UDim.new(0.05, 0), PaddingRight = UDim.new(0.05, 0), Parent = card })
+		local function line(text: string, h: number, color: Color3, order: number)
+			local l = UI.new("TextLabel", { Size = UDim2.fromScale(1, h), BackgroundTransparency = 1, Font = Enum.Font.FredokaOne, TextScaled = true, TextWrapped = true, TextColor3 = color, Text = text, LayoutOrder = order, ZIndex = 90, Parent = card })
+			UI.new("UITextSizeConstraint", { MaxTextSize = 64, Parent = l })
+			return l
+		end
+		line("🏅", 0.26, Color3.new(1, 1, 1), 1)
+		line(TE.Prize, 0.14, Color3.fromRGB(255, 200, 61), 2)
+		line(player.DisplayName, 0.12, Color3.new(1, 1, 1), 3)
+		line(string.format(TE.For, TE.Fields[branch] or branch), 0.1, UI.T.muted, 4)
+		line(TE.Speech[branch] or "", 0.16, Color3.new(1, 1, 1), 5)
+		local ok = UI.button(card, TE.Thanks, function()
+			o:Destroy()
+		end, { Size = UDim2.fromScale(0.6, 0.12), LayoutOrder = 6, BackgroundColor3 = C.good, ZIndex = 91 })
+		local _ = ok
+		UI.sound("LevelUp", 0.8)
+		Effects.confetti()
+	end
+	local ok, Cutscene = pcall(require, script.Parent.Cutscene)
+	local at = Vector3.new(tonumber(d.x) or 0, tonumber(d.y) or 0, tonumber(d.z) or 0)
+	if ok and Cutscene and not Cutscene.isPlaying() then
+		Cutscene.play(Config.GeniusEnd.Shots, { origin = at, captions = TE.Captions[branch], onDone = ceremony })
+	else
+		ceremony()
+	end
 end
 
 return Effects
