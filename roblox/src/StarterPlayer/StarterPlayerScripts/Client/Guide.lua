@@ -201,7 +201,7 @@ RunService.RenderStepped:Connect(function(dt)
 	local dist = flat.Magnitude
 	t += dt
 	local bob = UI.reducedMotion() and 0 or math.sin(t * 3) * 0.25
-	local base = root.Position + Vector3.new(0, -1.2 + bob, 0) -- 1.9.3: waist height, out of the name-tag band
+	local base = root.Position + Vector3.new(0, 3.4 + bob, 0) -- 1.9.3: just over your head (your own name tags are hidden from you now); at waist height the body hid it
 	local cf
 	if dist < NEAR then
 		-- you're here: point down at your feet

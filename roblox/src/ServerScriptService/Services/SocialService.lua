@@ -881,28 +881,48 @@ end)
 -- 1.7.3: Vs Mode lobby sign near spawn, so friends can see who is waiting and for which side
 local function lobbySign()
 	local TV = Content.VsLobby
+	-- 1.9.3: a real standing board with the text painted on both sides (a floating billboard covered phone buttons)
 	local p = Instance.new("Part")
 	p.Name = "VsLobbySign"
 	p.Anchored = true
-	p.CanCollide = false
-	p.Transparency = 1
-	p.Size = Vector3.new(1, 1, 1)
+	p.Size = Vector3.new(10, 4.5, 0.4)
 	p.Position = Config.VsLobbySignPos
+	p.Color = Color3.fromRGB(30, 20, 50)
+	p.Material = Enum.Material.SmoothPlastic
 	p.Parent = workspace
-	local bb = Instance.new("BillboardGui")
-	bb.Size = UDim2.new(12, 0, 5, 0) -- 1.9.3: studs, so it shrinks with distance (it covered phone screens)
-	bb.MaxDistance = 35
-	bb.Parent = p
-	local l = Instance.new("TextLabel")
-	l.Size = UDim2.fromScale(1, 1)
-	l.BackgroundColor3 = Color3.fromRGB(30, 20, 50)
-	l.BackgroundTransparency = 0.2
-	l.TextColor3 = Color3.new(1, 1, 1)
-	l.Font = Enum.Font.FredokaOne
-	l.TextScaled = true
-	l.Parent = bb
-	local c = Instance.new("UICorner")
-	c.Parent = l
+	for _, side in ipairs({ -4.3, 4.3 }) do
+		local post = Instance.new("Part")
+		post.Name = "VsLobbyPost"
+		post.Anchored = true
+		post.Size = Vector3.new(0.5, 10, 0.5)
+		post.CFrame = p.CFrame * CFrame.new(side, -p.Size.Y / 2 - 5 + 1, 0)
+		post.Color = Color3.fromRGB(60, 50, 70)
+		post.Material = Enum.Material.Metal
+		post.Parent = p
+	end
+	local labels = {}
+	for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
+		local sg = Instance.new("SurfaceGui")
+		sg.Face = face
+		sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		sg.PixelsPerStud = 40
+		sg.MaxDistance = 80
+		sg.Parent = p
+		local lbl = Instance.new("TextLabel")
+		lbl.Size = UDim2.fromScale(1, 1)
+		lbl.BackgroundTransparency = 1
+		lbl.TextColor3 = Color3.new(1, 1, 1)
+		lbl.Font = Enum.Font.FredokaOne
+		lbl.TextScaled = true
+		lbl.Parent = sg
+		local pad = Instance.new("UIPadding")
+		pad.PaddingLeft = UDim.new(0, 12)
+		pad.PaddingRight = UDim.new(0, 12)
+		pad.PaddingTop = UDim.new(0, 8)
+		pad.PaddingBottom = UDim.new(0, 8)
+		pad.Parent = lbl
+		table.insert(labels, lbl)
+	end
 	task.spawn(function()
 		while true do
 			local lines = { TV.Title }
@@ -918,7 +938,9 @@ local function lobbySign()
 			if #lines == 1 then
 				table.insert(lines, TV.Nobody)
 			end
-			l.Text = table.concat(lines, "\n")
+			for _, lbl in ipairs(labels) do
+				lbl.Text = table.concat(lines, "\n")
+			end
 			task.wait(3)
 		end
 	end)

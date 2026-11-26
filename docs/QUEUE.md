@@ -343,3 +343,12 @@ The user picked these from Claude's idea list. Code them one by one (commit each
 - Still open from the review: Brainrot Rush minigame + cheaper swipes, 60+ facts with shuffle bags, Lose-path cosmetics shop, stage titles over heads, Lose leaderboard + New Game+, open Genius / Space earlier, hide stress early, a "titles look better" pass.
 - ✅ Pre-publish test (Nov 26, 7:40 PM): Gain and Lose paths in Studio, no red errors. Fixed: the big centre number showed 10 digits (now "−5.3B"), the coins chip was hidden on the Lose path (now shows once you have coins), and the Lose strip steps were cut off ("Barely human" → "Barely"). The phone-size simulator didn't accept a device name this time, so there was no phone check.
 - 🚀 **Published 1.9.2 "Fun Update"** to "brain game" (Cult of the 39, public) via File → Publish As → Overwrite: "Successfully published!". Dev copy saved at version 121.
+
+## 1.9.3 phone fixes (Studio-tested Nov 26, iPhone 17 Pro size)
+- ✅ Own name/job tags hidden from yourself; guide arrow small, plain, just over your head (at waist height the body hid it)
+- ✅ Vs Mode sign is now a real standing board in the board row (no floating billboard over the buttons)
+- ✅ Sprint button beside jump
+- ✅ Walk with the phone open (no dark cover, thumbstick free; walked 19 studs with it open)
+- ✅ Restaurant Worker can work at any restaurant (Burger Barn opens Dish duty)
+- [ ] Next ⏭ button in work rounds: coded, not yet Studio-tested
+- [ ] NEW (user): phone home screen: some apps have no icon, too many apps; put the important ones (bus/rides, work, bank…) first so they fit without scrolling, move the rest elsewhere
