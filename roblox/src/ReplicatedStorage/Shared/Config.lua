@@ -1162,4 +1162,7 @@ Config.TownBoard = {
 	Refresh = 20,
 }
 
+-- 1.9.1 big ideas #8: Vs Mode sessions play as a cutscene (bars, camera cuts, choices bottom-left)
+Config.VsCutscene = true
+
 return Config

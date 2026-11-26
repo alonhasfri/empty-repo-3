@@ -550,6 +550,8 @@ local function sendTo(sess, role: string, kind: string, payload)
 		payload.title = sess.act.name
 		payload.role = sess.act[role].label
 		payload.partner = partnerName(sess, role)
+		local mate = sess.players[role == "a" and "b" or "a"]
+		payload.partnerId = mate and mate.UserId or nil -- 1.9.1: the cutscene camera looks at them
 		payload.transcript = { table.unpack(sess.transcript, math.max(1, #sess.transcript - 5)) }
 		Net.send(p, kind, payload)
 	end

@@ -320,10 +320,34 @@ Remote.on("friendVisit", function(d)
 end)
 
 -- Update 1.2: Smart vs Dumb
-Remote.on("social_start", Stations.socialStart)
-Remote.on("social_step", Stations.socialStep)
-Remote.on("social_wait", Stations.socialWait)
-Remote.on("social_end", Stations.socialEnd)
+-- 1.9.1 big ideas #8: Vs Mode plays as a cutscene (Conversation.vs*); the old pop-ups are the fallback
+local VS_CUTSCENE = require(game:GetService("ReplicatedStorage").Shared.Config).VsCutscene == true
+Remote.on("social_start", function(d)
+	if not (VS_CUTSCENE and Conversation.vsWanted(d.sessionId) and Conversation.vsStart(d)) then
+		Stations.socialStart(d)
+	end
+end)
+Remote.on("social_step", function(d)
+	if Conversation.vsActive(d.sessionId) then
+		Conversation.vsStep(d)
+	else
+		Stations.socialStep(d)
+	end
+end)
+Remote.on("social_wait", function(d)
+	if Conversation.vsActive(d.sessionId) then
+		Conversation.vsWait(d)
+	else
+		Stations.socialWait(d)
+	end
+end)
+Remote.on("social_end", function(d)
+	if Conversation.vsActive(d.sessionId) then
+		Conversation.vsEnd(d)
+	else
+		Stations.socialEnd(d)
+	end
+end)
 Remote.on("sued", Stations.sued)
 Remote.on("election_speech", Stations.electionSpeech)
 Remote.on("election_vote", Stations.electionVote)

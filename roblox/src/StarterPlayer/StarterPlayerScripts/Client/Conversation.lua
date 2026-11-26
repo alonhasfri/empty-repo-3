@@ -493,6 +493,207 @@ function Conversation.open(d)
 	end)
 end
 
+---------------------------------------------------------------------
+-- 1.9.1 Vs Mode as a cutscene (big ideas #8, user: "make the dumb versus smart have actual cutscenes
+-- with dialogue options like the school ones, like the lawsuit with a big objection").
+-- SocialService still runs the session; this only shows it: cinema bars, camera cuts between you and
+-- the other side, choices bottom-left (1/2/3), typed lines, and a big OBJECTION! slam in court.
+-- Leave closes the cutscene; the rest of the session then shows in the old pop-up.
+---------------------------------------------------------------------
+local vsOff = {} -- [sessionId] = true once the player left the cutscene
+
+local function vsRun(fn)
+	local c = cur
+	if not c or not c.vs then
+		return
+	end
+	table.insert(c.queue, fn)
+	if c.running then
+		return
+	end
+	c.running = true
+	task.spawn(function()
+		while c == cur and #c.queue > 0 do
+			local f = table.remove(c.queue, 1)
+			pcall(f)
+		end
+		c.running = false
+	end)
+end
+
+local function isSlam(text: string?): boolean
+	return text ~= nil and string.find(string.upper(text), "OBJECTION", 1, true) ~= nil
+end
+
+-- type the newest line of the story (what the other side just did)
+local function vsLatest(d)
+	local c = cur
+	local list = d.transcript or {}
+	local last = list[#list]
+	if c and last and last ~= c.lastLine then
+		c.lastLine = last
+		shot("wide")
+		if isSlam(last) then
+			objection()
+		end
+		typeLine("🎬", last)
+	end
+end
+
+function Conversation.vsActive(sessionId): boolean
+	return cur ~= nil and cur.vs == true and cur.sessionId == sessionId
+end
+
+function Conversation.vsWanted(sessionId): boolean
+	return not vsOff[sessionId] and (cur == nil or (cur.vs and cur.sessionId == sessionId))
+end
+
+function Conversation.vsStart(d)
+	if cur then
+		close()
+	end
+	UI.closeModal()
+	local char = player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return false
+	end
+	local r = build()
+	local me = root.CFrame
+	-- the other side: the partner's character if they're close, else a spot in front of you
+	local other = d.partnerId and Players:GetPlayerByUserId(d.partnerId)
+	local oroot = other and other.Character and other.Character:FindFirstChild("HumanoidRootPart")
+	local npc = me * CFrame.new(0, 0, -7) * CFrame.Angles(0, math.pi, 0)
+	if oroot and (oroot.Position - me.Position).Magnitude < 40 then
+		npc = oroot.CFrame
+	end
+	local mid = (me.Position + npc.Position) / 2
+	local wide = mid + me.RightVector * 12 + Vector3.new(0, 6, 0)
+	cur = { r = r, vs = true, sessionId = d.sessionId, who = tostring(d.partner), meterName = tostring(d.title), stand = me, npc = npc, wide = wide, queue = {} }
+	local c = cur
+	r.meterName.Text = tostring(d.title)
+	r.fill.Size = UDim2.new(0, 0, 1, 0)
+	r.sub.Activated:Connect(function()
+		if cur then
+			cur.skip = true
+		end
+	end)
+	r.leave.Activated:Connect(function()
+		vsOff[c.sessionId] = true
+		close()
+	end)
+	ContextActionService:BindActionAtPriority("ConvLeave", function(_, state)
+		if state == Enum.UserInputState.Begin then
+			vsOff[c.sessionId] = true
+			close()
+			return Enum.ContextActionResult.Sink
+		end
+		return Enum.ContextActionResult.Pass
+	end, false, 3000, Enum.KeyCode.ButtonB, Enum.KeyCode.Backspace)
+	task.delay(0.15, function()
+		if c == cur then
+			root.Anchored = true
+		end
+	end)
+	if UI.gui then
+		UI.gui.Enabled = false
+	end
+	cur.hidden = hideFriends()
+	gui.Enabled = true
+	bars.Enabled = true
+	pcall(function()
+		GuiService.TouchControlsEnabled = false
+	end)
+	TweenService:Create(r.top, TweenInfo.new(0.4, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 0, 0, 0) }):Play()
+	TweenService:Create(r.bottom, TweenInfo.new(0.4, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 0, 1, 0) }):Play()
+	UI.sound("ImportantSlam", 0.5)
+	shot("wide")
+	vsRun(function()
+		task.wait(CC.OpenDelay)
+		typeLine("🎭 " .. tostring(d.role) .. " vs " .. tostring(d.partner), tostring(d.text))
+	end)
+	return true
+end
+
+function Conversation.vsStep(d)
+	vsRun(function()
+		local c = cur
+		vsLatest(d)
+		if c ~= cur then
+			return
+		end
+		c.r.meterName.Text = string.format("%s  %d/%d", tostring(d.title), d.round or 1, d.rounds or 1)
+		c.r.fill.Size = UDim2.new(math.clamp((d.round or 1) / (d.rounds or 1), 0, 1), 0, 1, 0)
+		shot("npc")
+		typeLine("🎬 " .. tostring(d.role), tostring(d.prompt))
+		if c ~= cur then
+			return
+		end
+		local answered = false
+		local deadline = os.clock() + (d.seconds or 15)
+		showChoices(d.options or {}, function(i)
+			if answered then
+				return
+			end
+			answered = true
+			hideChoices()
+			task.spawn(function()
+				Remote.call("social_answer", { sessionId = d.sessionId, choice = i })
+			end)
+			shot("me")
+			if isSlam(d.options[i]) then
+				objection()
+			end
+			typeLine(T.You, d.options[i])
+		end)
+		while c == cur and not answered and os.clock() < deadline do
+			task.wait(0.1)
+		end
+		if c == cur and not answered then
+			hideChoices() -- time's up: the server picks for you
+		end
+		while c == cur and answered and c.r.opts.Visible do
+			task.wait(0.1)
+		end
+	end)
+end
+
+function Conversation.vsWait(d)
+	vsRun(function()
+		vsLatest(d)
+		if cur then
+			shot("npc")
+			typeLine(tostring(d.partner), "⏳ " .. tostring(d.text))
+		end
+	end)
+end
+
+function Conversation.vsEnd(d)
+	vsRun(function()
+		local c = cur
+		local lines = d.lines or {}
+		shot("wide")
+		for i = math.max(1, #lines - 1), #lines do
+			if c ~= cur then
+				return
+			end
+			if lines[i] ~= c.lastLine then
+				c.lastLine = lines[i]
+				if isSlam(lines[i]) then
+					objection()
+				end
+				typeLine("🎬", lines[i])
+			end
+		end
+		if c == cur then
+			UI.sound("LevelUp", 0.5)
+			showChoices({ "✓ " .. T.Done }, function()
+				close()
+			end)
+		end
+	end)
+end
+
 function Conversation.isOpen(): boolean
 	return cur ~= nil
 end
