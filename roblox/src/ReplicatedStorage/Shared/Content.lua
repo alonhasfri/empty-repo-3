@@ -2474,4 +2474,11 @@ for _, p in ipairs(Content.Projects) do
 	end
 end
 
+-- 1.9.1 quality of life
+Content.QoL = {
+	Daily = "🎁 Daily reward: +%d coins! (day %d in a row; come back tomorrow for more)",
+	Sprint = "🏃",
+	WelcomeBack = "👋 Welcome back! Nothing happened while you were away.",
+}
+
 return Content

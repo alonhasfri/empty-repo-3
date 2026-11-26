@@ -101,7 +101,7 @@ end
 -- Ring the bell for one player (also used by the admin "schoolbell" command)
 function SchoolService.ring(player): boolean
 	local s = state[player]
-	if not s or not eligible(player) then
+	if not s or not eligible(player) or player:GetAttribute("AFK") then -- 1.9.1: never ring for someone who is away
 		return false
 	end
 	removeOfficer(s)

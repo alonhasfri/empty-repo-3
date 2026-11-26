@@ -668,6 +668,11 @@ function UI.toast(text: string, color: Color3?, seconds: number?)
 			bar.BackgroundColor3 = color or P.line
 		end
 	end)
+	-- 1.9.1 quality of life: tap a toast to dismiss it
+	local tapOff = UI.new("TextButton", { BackgroundTransparency = 1, Text = "", Size = UDim2.fromScale(1, 1), ZIndex = 53, Parent = card })
+	tapOff.Activated:Connect(function()
+		holder:Destroy()
+	end)
 	local entry = { base = text, holder = holder, label = l, count = 1, until_ = os.clock() + life }
 	table.insert(liveToasts, entry)
 	if not UI.reducedMotion() then
@@ -1187,6 +1192,47 @@ function UI.tabs(parent, tabs, active: string, onPick, props)
 	end
 	setActive(active)
 	return setActive
+end
+
+-- 1.9.1 real icon art: the image for a HUD button / phone app key (nil = keep the emoji)
+function UI.iconImage(key: string?): (string?, Color3?, number?)
+	if not key then
+		return nil
+	end
+	local style = UI.popupStyle and UI.popupStyle() or "storybook"
+	if style == "glass" or style == "clean" or style == "neon" then
+		local mono = Config.IconsMono and Config.IconsMono[key]
+		if mono then
+			if style == "neon" then
+				local tints = Config.IconNeonTints
+				local i = (#key % #tints) + 1
+				return "rbxassetid://" .. tostring(mono), tints[i], (#key % 2 == 0) and -8 or 7
+			end
+			return "rbxassetid://" .. tostring(mono), Color3.new(1, 1, 1), 0
+		end
+	end
+	local id = Config.Icons and Config.Icons[key]
+	return id and ("rbxassetid://" .. tostring(id)) or nil, nil, 0
+end
+
+-- 1.9.1: a glossy little phone drawn with frames (the icon packs have no phone)
+function UI.drawPhoneIcon(parent: Instance, props)
+	local holder = UI.new("Frame", { BackgroundTransparency = 1, Parent = parent })
+	for k, v in pairs(props or {}) do
+		holder[k] = v
+	end
+	local body = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.58, 0.96), BackgroundColor3 = Color3.fromRGB(120, 70, 230), Parent = holder })
+	UI.corner(body, 8)
+	UI.stroke(body, Color3.fromRGB(30, 20, 60), 2.5, 0)
+	UI.new("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(190, 150, 255), Color3.fromRGB(110, 60, 220)), Rotation = 90, Parent = body })
+	local screen = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.1), Size = UDim2.fromScale(0.78, 0.72), BackgroundColor3 = Color3.fromRGB(80, 200, 255), Parent = body })
+	UI.corner(screen, 5)
+	UI.new("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(150, 235, 255), Color3.fromRGB(40, 140, 240)), Rotation = 120, Parent = screen })
+	local shine = UI.new("Frame", { Position = UDim2.fromScale(0.08, 0.06), Size = UDim2.fromScale(0.3, 0.5), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.55, Rotation = 18, Parent = screen })
+	UI.corner(shine, 4)
+	local button = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.91), Size = UDim2.fromScale(0.22, 0.07), BackgroundColor3 = Color3.fromRGB(240, 235, 255), Parent = body })
+	UI.corner(button, 4)
+	return holder
 end
 
 function UI.isGamepad(): boolean

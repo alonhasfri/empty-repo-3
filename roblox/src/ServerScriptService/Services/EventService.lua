@@ -198,7 +198,7 @@ Players.PlayerAdded:Connect(function(player)
 				return
 			end
 			local data = DataService.get(player)
-			if data and data.path and not data.dead and not data.eventInvite and not active[player] and isHuman(data) then
+			if data and data.path and not data.dead and not data.eventInvite and not active[player] and isHuman(data) and not player:GetAttribute("AFK") then
 				EventService.invite(player)
 				waitFor = math.random(CE.GapMin, CE.GapMax)
 			else

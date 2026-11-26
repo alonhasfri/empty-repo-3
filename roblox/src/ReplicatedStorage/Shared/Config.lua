@@ -1353,4 +1353,71 @@ Config.InventionPerks = {
 }
 Config.Inventions.CureStressScale = 0.6 -- the cure: stress builds 40% slower and never freezes you
 
+-- 1.9.1 real icon art (user: "make the icons of everything better"): free glossy cartoon icon packs from the
+-- Creator Store ("Berry Basic UI" by AlgerDev, "Game UI Icon Pack" by Asprekt; free for any game). Keys are HUD
+-- buttons and phone app keys; anything not listed keeps its emoji. The 📱 Phone icon is drawn in UI.lua.
+Config.Icons = {
+	quickplay = 109772672051925, -- energy
+	items = 95338657327605, -- inventory backpack
+	gadgets = 95338657327605,
+	settings = 109558273647021,
+	home = 100186608972356,
+	badges = 97945893037460, -- medal
+	shop = 132000942692847,
+	map = 128940707580259, -- teleport portal
+	hoppr = 128940707580259,
+	town = 122400187905753, -- leaderboard trophy
+	events = 71078899575319, -- mail
+	shifts = 77359789350483, -- quests clipboard
+	jobs = 77359789350483,
+	jokejobs = 77359789350483,
+	bank = 132123388448433, -- coins
+	help = 117498758517766,
+	genius = 71458718634620, -- star
+	gate = 81013156102384, -- lock
+	daily = 97419429998550, -- daily reward
+	friends = 138393293744051,
+	unstuck = 103517816165351, -- warning
+}
+-- 1.9.1 (user: "make the icons change according to how smart/dumb you are"): smart players (glass / clean pop-up
+-- styles) get clean white minimal icons ("Monochrome White UI Icon Pack", SodaBreadle); really dumb players (neon)
+-- get the same white icons glowing in neon and a little crooked; everyone in between gets the glossy cartoon set.
+Config.IconsMono = {
+	phone = 16049774915,
+	quickplay = 12334656615, -- sprint
+	items = 6870729295,
+	gadgets = 6870729295,
+	settings = 9753762469,
+	home = 13060262529,
+	badges = 12941038883,
+	shop = 13429538917,
+	map = 11887653877, -- world
+	hoppr = 11887653877,
+	town = 6458974334, -- crown
+	events = 11707615313, -- chat
+	shifts = 3187426822, -- briefcase
+	jobs = 3187426822,
+	jokejobs = 3187426822,
+	bank = 17480213324,
+	help = 7634887649, -- info
+	genius = 15909461117, -- star
+	gate = 18854840832, -- key
+	friends = 6479819618,
+	unstuck = 11745872910,
+	camera = 14333878755,
+}
+Config.IconNeonTints = { Color3.fromRGB(0, 240, 255), Color3.fromRGB(255, 40, 200), Color3.fromRGB(255, 230, 60), Color3.fromRGB(120, 255, 90) }
+
+-- 1.9.1 quality of life (QoLService + Client/QoL.lua)
+Config.QoL = {
+	SprintBonus = 8, -- extra walk speed while Shift / the 🏃 button is held
+	SprintButtonRight = 150, -- phone 🏃 button: px from the right edge…
+	SprintButtonUp = 160, -- …and from the bottom (above the jump button)
+	AfkSeconds = 120, -- no input this long = AFK (no school bell, no life-event invites)
+	DailyCoins = 20, -- daily reward on day 1…
+	DailyStreakBonus = 10, -- …+10 for every day in a row…
+	DailyMaxStreak = 7, -- …up to day 7
+	DailyDelay = 8, -- seconds after joining before the daily reward toast
+}
+
 return Config

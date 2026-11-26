@@ -204,9 +204,17 @@ local function appIcon(parent, app, order: number, size: number, labelH: number)
 	UI.corner(icon, math.floor(size * 0.27))
 	UI.gradient(icon, app.c1, app.c2, 45)
 	local pad = math.floor(size * 0.17)
-	UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = app.icon, TextScaled = true, Parent = icon }, {
-		UI.new("UIPadding", { PaddingTop = UDim.new(0, pad), PaddingBottom = UDim.new(0, pad), PaddingLeft = UDim.new(0, pad), PaddingRight = UDim.new(0, pad) }),
-	})
+	local art, tint, rot = UI.iconImage(app.key) -- 1.9.1 real icon art (by brain level) where we have it, the emoji otherwise
+	if art then
+		local p2 = math.floor(size * (tint and 0.2 or 0.08))
+		UI.new("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Parent = icon }, {
+			UI.new("UIPadding", { PaddingTop = UDim.new(0, p2), PaddingBottom = UDim.new(0, p2), PaddingLeft = UDim.new(0, p2), PaddingRight = UDim.new(0, p2) }),
+		})
+	else
+		UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = app.icon, TextScaled = true, Parent = icon }, {
+			UI.new("UIPadding", { PaddingTop = UDim.new(0, pad), PaddingBottom = UDim.new(0, pad), PaddingLeft = UDim.new(0, pad), PaddingRight = UDim.new(0, pad) }),
+		})
+	end
 	if labelH > 0 then
 		UI.new("TextLabel", { BackgroundTransparency = 1, LayoutOrder = 2, Size = UDim2.new(1, 0, 0, labelH), Text = appLabel(app.name), Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = WHITE, Parent = cell })
 	end

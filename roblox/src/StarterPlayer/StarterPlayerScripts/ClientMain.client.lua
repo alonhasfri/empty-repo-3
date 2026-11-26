@@ -35,6 +35,7 @@ local _RoomGuide = require(Client.RoomGuide) -- 1.9.1: "what to do here" inside 
 local _DumbSigns = require(Client.DumbSigns) -- 1.9.1: wrong-way signs at a really low brain (runs on its own)
 local _Weather = require(Client.Weather) -- 1.9.1: rain, snow, fog, puddles (runs on its own)
 local _NpcReact = require(Client.NpcReact) -- 1.9.1: townspeople react to your brain level (runs on its own)
+local _QoL = require(Client.QoL) -- 1.9.1: sprint, AFK-safe (runs on its own)
 local LowGraphics = require(Client.LowGraphics)
 local Watchdog = require(Client.Watchdog) -- 1.8.8: frees you if something left you stuck
 -- locks that are on purpose: the watchdog leaves these alone

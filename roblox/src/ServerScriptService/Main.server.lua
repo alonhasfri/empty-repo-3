@@ -40,6 +40,7 @@ local _BrainrotTVService = require(Services.BrainrotTVService) -- 1.9.1: the squ
 local _DumbWorldService = require(Services.DumbWorldService) -- 1.9.1: fake shortcuts into a ball pit
 local _LoseJobService = require(Services.LoseJobService) -- 1.9.1: joke jobs for the Lose path
 local _WeatherService = require(Services.WeatherService) -- 1.9.1: seasons and weather
+local _QoLService = require(Services.QoLService) -- 1.9.1: daily reward streak, AFK-safe
 BrainService.hooks.lifeInfo = LifeStageService.info
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection

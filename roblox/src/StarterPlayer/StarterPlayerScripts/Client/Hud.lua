@@ -260,7 +260,19 @@ local function iconButton(parent, item, order: number, onClick)
 	UI.stroke(b, Color3.new(1, 1, 1), 2, 0.88)
 	local stripe = UI.new("Frame", { Position = UDim2.new(0.2, 0, 0, 0), Size = UDim2.new(0.6, 0, 0, 3), BackgroundColor3 = item.color, BorderSizePixel = 0, Parent = b })
 	UI.corner(stripe, 2)
-	text(b, { Position = UDim2.new(0.2, 0, 0, 6), Size = UDim2.new(0.6, 0, 0.5, 0), Text = item.icon })
+	local emoji = text(b, { Position = UDim2.new(0.2, 0, 0, 6), Size = UDim2.new(0.6, 0, 0.5, 0), Text = item.icon })
+	-- 1.9.1 real icon art instead of the emoji (UI.iconImage / UI.drawPhoneIcon)
+	local art, tint, rot = UI.iconImage(item.key)
+	if art or item.key == "phone" then
+		emoji.Text = ""
+		if art then
+			UI.new("ImageLabel", { BackgroundTransparency = 1, Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Position = UDim2.new(0.12, 0, 0, 2), Size = UDim2.new(0.76, 0, 0.62, 0), Parent = b })
+		elseif item.key == "phone" then
+			UI.drawPhoneIcon(b, { Position = UDim2.new(0.15, 0, 0, 3), Size = UDim2.new(0.7, 0, 0.6, 0) })
+		else
+			UI.new("ImageLabel", { BackgroundTransparency = 1, Image = art, ScaleType = Enum.ScaleType.Fit, Position = UDim2.new(0.12, 0, 0, 2), Size = UDim2.new(0.76, 0, 0.62, 0), Parent = b })
+		end
+	end
 	-- labels: a fixed 13 px white bold label (never auto-scaled, so "Quick Play" matches its neighbours)
 	local name = text(b, { Position = UDim2.new(0, 2, 1, -20), Size = UDim2.new(1, -4, 0, 16), Text = item.name, Font = Enum.Font.GothamBold, TextScaled = true })
 	UI.new("UITextSizeConstraint", { MaxTextSize = 13, MinTextSize = 9, Parent = name }) -- shrinks long names like "Quick Play" to fit instead of cutting them
@@ -356,6 +368,17 @@ local function buildGrid(path: string?)
 		for i = shown + 1, #all do
 			Hud.targets[all[i].key] = more
 		end
+	end
+end
+-- 1.9.1: icons follow the brain level, so rebuild the buttons when the icon style changes
+local iconStyle = nil
+Hud.refreshIcons = function()
+	local s = UI.popupStyle and UI.popupStyle() or ""
+	if s ~= iconStyle then
+		iconStyle = s
+		local p = gridPath
+		gridPath = "?"
+		buildGrid(p ~= "none" and p or nil)
 	end
 end
 UI.onTheme(function()
@@ -1104,6 +1127,7 @@ function Hud.update(st)
 	settingsBtn.Visible = path == nil
 	updateChips(st)
 	updateStrip(st)
+	pcall(Hud.refreshIcons) -- 1.9.1 brain-level icons
 	grid.Position = UDim2.new(0, 8, 0, counterTopLeft and (6 + stackH * UI.D) or 8)
 end
 
