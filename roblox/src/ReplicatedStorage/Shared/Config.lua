@@ -1214,4 +1214,18 @@ Config.GeniusEnd = {
 	},
 }
 
+-- 1.9.1 big ideas #12 (BrainrotTVService): the square's TV, dumber when the server is dumber
+Config.BrainrotTV = {
+	Pos = Vector3.new(30, 12, -8), -- across from the town board
+	Facing = Vector3.new(-1, 0, 0.3),
+	Size = Vector2.new(18, 10),
+	ShowSeconds = 8, -- a new show every few seconds
+	IQCuts = { 120, 100, 85, 65 }, -- server average IQ at/above these → channel 0, 1, 2, 3; below the last → 4
+	Colors = { Color3.fromRGB(20, 40, 70), Color3.fromRGB(25, 35, 55), Color3.fromRGB(60, 30, 70), Color3.fromRGB(90, 20, 80), Color3.fromRGB(120, 10, 90) },
+	Cooldown = 30, -- seconds between uses (per player)
+	ScienceSeconds = 60, -- a Gain player's channel switch lasts this long
+	ScienceCalm = 4,
+	WatchLose = 0.6, -- brain points lost for watching (Lose path)
+}
+
 return Config

@@ -36,6 +36,7 @@ local _HomeService = require(Services.HomeService) -- 1.9.1: your own home + vis
 local _TownBoardService = require(Services.TownBoardService) -- 1.9.1: the "Today in town" board (runs on its own)
 local _AnimalLifeService = require(Services.AnimalLifeService) -- 1.9.1: animal jobs, animal friends, climbing back up
 local _AdoptService = require(Services.AdoptService) -- 1.9.1: adopt an animal player (they must say yes)
+local _BrainrotTVService = require(Services.BrainrotTVService) -- 1.9.1: the square TV gets dumber with the server
 BrainService.hooks.lifeInfo = LifeStageService.info
 AdminService.adminInvent = ProjectService.adminInvent
 AdminService.runElection = SocialService.runElection

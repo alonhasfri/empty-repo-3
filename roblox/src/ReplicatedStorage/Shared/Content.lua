@@ -2285,4 +2285,21 @@ Content.GeniusEnd = {
 	},
 }
 
+-- 1.9.1 big ideas #12: the Brainrot TV in the town square (original parody shows only)
+Content.BrainrotTV = {
+	Action = "📺",
+	Object = "Brainrot TV (Lose: watch · Gain: change the channel)",
+	Wait = "📺 The TV needs a moment.",
+	Switched = "🔁 You switched it to the Science channel. The whole square gets a little smarter!",
+	Watched = { "📺 You watched a bean spin for 10 minutes. Worth it.", "📺 A duck said 'quack' 47 times. You counted.", "📺 You forgot what you were doing. Perfect." },
+	Channels = { [0] = "📺 CH 1 · SCIENCE HOUR", [1] = "📺 CH 2 · TOWN NEWS", [2] = "📺 CH 3 · FUNNY CLIPS", [3] = "📺 CH 4 · VERY SILLY", [4] = "📺 CH ??? · PURE BRAINROT" },
+	Shows = {
+		[0] = { "🔭 Tonight: why the sky is blue (it scatters light!)", "🐙 Octopuses have three hearts. Science Hour explains!", "🧪 Make a volcano at home (ask a grown-up)" },
+		[1] = { "🗞 Brainville News: the library has 200 new books", "🌦 Weather: sunny, with a chance of smart ideas", "🏆 Local hero rescues kitten from tree" },
+		[2] = { "😂 Top 10 cats who fell off tables (they're fine)", "🎬 Jack B Movies trailer: \"The Fridge Strikes Back\"", "🤸 Man vs wall: the rematch" },
+		[3] = { "🥔 A potato. For one hour. No talking.", "🦆 Duck says 'quack' (part 47)", "🔊 THIS VIDEO IS VERY LOUD (it's a whisper)" },
+		[4] = { "🫘 BEAN. SPINNING. 3 HOURS.", "🌀 ??? ??? ??? (you watch anyway)", "🧠➡️🗑 Watch your brain cells leave in real time", "🍝 Spaghetti, but it's ASMR" },
+	},
+}
+
 return Content
