@@ -2820,6 +2820,18 @@ function Stations.home()
 		m.close()
 		Stations.home()
 	end, { LayoutOrder = 4 })
+	-- 1.9.1 your adopted pet (an animal player who said yes)
+	local ad = Remote.call("adopt_info")
+	if ad and ad.pet then
+		UI.label(m.content, string.format(Content.Adopt.YourPet, ad.pet), { LayoutOrder = 5, TextColor3 = Color3.new(1, 1, 1) })
+		UI.button(m.content, Content.Adopt.Call, function()
+			resultToast(Remote.call("adopt_call"))
+		end, { LayoutOrder = 6 })
+		UI.button(m.content, Content.Adopt.LetGo, function()
+			Remote.call("adopt_end")
+			m.close()
+		end, { LayoutOrder = 7 })
+	end
 	-- furniture
 	UI.label(m.content, TH.Shop .. "   🪙 " .. tostring(r.coins), { LayoutOrder = 10, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
 	for i, f in ipairs(r.catalog) do

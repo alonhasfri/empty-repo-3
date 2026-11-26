@@ -1231,6 +1231,7 @@ Content.Life = {
 		Title = "🐾",
 		Sniff = "👃",
 		Job = "🐾💼", -- 1.9.1 animal job
+		LeaveOwner = "🏠✕", -- 1.9.1 stop being someone's pet
 		Home = "🏠",
 		Power = "⚡",
 		Stands = "🛍", -- the four Lose stands in the Brainrot Mall (sniff trail, no reading needed)
@@ -2221,6 +2222,38 @@ Content.AnimalLife = {
 	},
 	FriendHuman = "%s It looks at you. It only talks to animals.",
 	FriendThanks = "%s 💛  +%d 🪙",
+}
+
+-- 1.9.1 big ideas #10: adopt an animal player
+Content.Adopt = {
+	Prompt = "🏠 Adopt",
+	AskTitle = "%s Someone wants to adopt you!",
+	AskText = "%s wants to adopt you as their pet. Accept?",
+	AskFine = "You can stop being a pet any time (🐾 menu ➜ 🏠✕).",
+	Yes = "✅ Yes!",
+	No = "❌ No thanks",
+	Block = "🚫 No, and don't ask again",
+	Asked = "🏠 You asked %s. Waiting for their answer…",
+	Declined = "🐾 %s said no thanks.",
+	NowOwner = "🏠 %s is your pet now! Look after them. (📱 Home app ➜ 📣 Call)",
+	NowPet = "🐾 You're %s's pet now! Treats when you stay close.",
+	Tag = "🐾 %s's pet",
+	Ended = "🐾 The adoption has ended. Still friends!",
+	OwnerLeft = "🐾 Your owner left the game. You're free!",
+	Grown = "🧠 You're human again, so you're nobody's pet now!",
+	Treat = "🦴 Good pet! +%d coins",
+	Called = "📣 %s is calling you! Follow the smell trail.",
+	Calling = "📣 Calling %s…",
+	YourPet = "🐾 Your pet: %s",
+	Call = "📣 Call your pet",
+	LetGo = "✕ Let them go",
+	AnimalsCant = "🐾 Animals can't adopt. Become human first!",
+	NotAnimal = "Only animals can be adopted.",
+	Taken = "%s already has an owner.",
+	OnePet = "You already have a pet.",
+	NoThanks = "They said no thanks.",
+	TooFar = "Walk closer first.",
+	Wait = "⏳ Wait a moment before asking again.",
 }
 
 return Content

@@ -1186,4 +1186,15 @@ Config.AnimalLife = {
 	},
 }
 
+-- 1.9.1 big ideas #10 (AdoptService): adopt an animal player (they must say yes; nothing is saved)
+Config.Adopt = {
+	AskRadius = 14, -- studs: you must be close to ask
+	AskCooldown = 20, -- seconds between asks
+	AnswerSeconds = 30, -- the question expires after this
+	Tick = 2,
+	TreatEvery = 120, -- seconds between treats for a pet near its owner
+	TreatRadius = 40,
+	TreatCoins = 3,
+}
+
 return Config

@@ -45,6 +45,8 @@ local _Horror = require(Client.Horror) -- 1.7.3: The Average Files (listens on i
 local _HighFive = require(Client.HighFive) -- 1.8: friends meter (listens on its own)
 PhoneOS.animalUI = AnimalUI.open
 Remote.on("animalTarget", AnimalUI.onTarget) -- 1.9.1 animal jobs and friends
+local Adopt = require(Client.Adopt) -- 1.9.1 adopt an animal player
+Remote.on("adoptAsk", Adopt.onAsk)
 AnimalUI.hasPower = function()
 	return Hud.hasPower()
 end

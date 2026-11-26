@@ -179,6 +179,13 @@ function AnimalUI.open()
 			end
 		end)
 	end
+	-- 1.9.1: an adopted pet can leave any time
+	if player:GetAttribute("AdoptedBy") then
+		bigIcon(m.content, TA.LeaveOwner, 5, Color3.fromRGB(255, 140, 140), function()
+			m.close()
+			Remote.call("adopt_end")
+		end)
+	end
 	bigIcon(m.content, TA.Home, 4, Color3.fromRGB(140, 190, 255), function()
 		m.close()
 		local r = Remote.call("places")
