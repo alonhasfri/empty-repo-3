@@ -1987,6 +1987,25 @@ function Stations.lab()
 	if not r.allowed then
 		UI.label(m.content, tostring(r.why), { TextColor3 = Color3.new(1, 1, 1), LayoutOrder = 1 })
 	end
+	-- 1.9.1: the road to inventing (Lab Assistant → Researcher → Scientist 🔓 → Lead Scientist)
+	if r.ladder and r.ladder.titles then
+		local steps = {}
+		for i, t in ipairs(r.ladder.titles) do
+			local mark = (r.ladder.level >= i) and "✅" or "⬜"
+			if i == r.ladder.need then
+				t = t .. " 🔓"
+			end
+			table.insert(steps, mark .. " " .. t)
+		end
+		UI.label(m.content, Content.Inventions.Road .. "\n" .. table.concat(steps, "  ›  "), { TextColor3 = Color3.fromRGB(180, 230, 255), TextSize = UI.textSize(13), LayoutOrder = 2 })
+	end
+	UI.button(m.content, Content.Inventions.TourButton, function()
+		m.close()
+		local okH, Hall = pcall(require, script.Parent.InventionHall)
+		if okH and Hall then
+			Hall.tour({ reason = "replay" })
+		end
+	end, { LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 40) })
 	if r.active then
 		local card = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(20, 70, 100), Size = UDim2.new(1, 0, 0, 10), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 2, Parent = m.content }, {
 			UI.new("UIListLayout", { Padding = UDim.new(0, 6) }),
@@ -2034,6 +2053,23 @@ function Stations.projectStep()
 	local r = Remote.call("project_step")
 	if not r.ok then
 		return resultToast(r)
+	end
+	-- 1.9.1: research phases are minigames now
+	if r.minigame then
+		Minigames.play(r, {
+			story = r.story,
+			onResult = function(res)
+				if res and res.project then
+					if res.msg then
+						UI.toast(res.msg, UI.Colors.bad, 5)
+					end
+					Minigames.later(function()
+						Stations.projectStep()
+					end)
+				end
+			end,
+		})
+		return
 	end
 	local m = UI.modal(r.icon .. " " .. r.name, phoneOpts(Color3.fromRGB(30, 160, 200)))
 	UI.label(m.content, "Phase " .. r.phase .. "/" .. r.phases .. ": <b>" .. r.phaseName .. "</b>", { TextColor3 = Color3.fromRGB(180, 230, 255), LayoutOrder = 1 })

@@ -132,6 +132,9 @@ Net.on("ride_quote", function(player, d)
 		fare *= CL.Ride.BusyMultiplier
 	end
 	fare = math.max(1, math.ceil(fare))
+	if workspace:GetAttribute("Inv_fusion") then
+		fare = 0 -- 1.9.1: clean energy (Fusion) makes rides free while it is active
+	end
 	local eta = math.random(CL.Ride.EtaMin, CL.Ride.EtaMax)
 	sess(player).quote = { key = key, fare = fare, eta = eta, at = os.clock(), name = name }
 	return { ok = true, fare = fare, eta = eta, busy = busy, name = name, coins = data.coins, distance = math.floor(dist) }

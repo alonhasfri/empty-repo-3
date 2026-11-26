@@ -23,6 +23,11 @@ local BrainService = require(script.Parent.BrainService)
 local WorldService = require(script.Parent.WorldService)
 local FriendService = require(script.Parent.FriendService)
 local Props = require(script.Parent.Props)
+local MinigameService = require(script.Parent.MinigameService) -- 1.9.1: research phases are minigames now
+local Rooms = require(script.Parent.Rooms) -- 1.9.1: the Invention Hall stands in the Science Lab
+local Config = require(Shared.Config)
+local CI = Config.Inventions
+local TI = Content.Inventions
 
 local ProjectService = {}
 
@@ -71,13 +76,30 @@ local function isActive(key: string): boolean
 end
 ProjectService.isActive = isActive
 
+-- 1.9.1 (user: "you have to slowly work into it, and then you get to the scientist level"):
+-- Major Projects unlock only when you reach the Scientist rank on the scientist career ladder
+-- (Lab Assistant → Researcher → Scientist → Lead Scientist).
+local function sciLevel(data): number
+	local c = data.career
+	if data.job == "scientist" and typeof(c) == "table" and c.id == "scientist" then
+		return c.level or 1
+	end
+	return 0
+end
+ProjectService.sciLevel = sciLevel
+
 local function canDoProjects(player): (boolean, string?)
 	local data = DataService.get(player)
 	if not data or data.path ~= "Gain" then
 		return false, "Major Projects are on the Gain path."
 	end
-	if data.job ~= "scientist" and Brain.iq(data.cells) < 135 then
-		return false, "Become a 🔬 Scientist (or reach IQ 135) to run Major Projects."
+	local lvl = sciLevel(data)
+	if lvl == 0 then
+		return false, TI.NotScientist
+	end
+	if lvl < CI.NeedLevel then
+		local titles = Content.Careers.Ladders.scientist
+		return false, string.format(TI.KeepWorking, titles[lvl] or "?", titles[CI.NeedLevel] or "Scientist")
 	end
 	return true
 end
@@ -275,9 +297,11 @@ ProjectService.signPart = signPart
 local function applyEffect(key: string)
 	if applied[key] or not EFFECTS[key] then
 		applied[key] = true
+		workspace:SetAttribute("Inv_" .. key, true)
 		return
 	end
 	applied[key] = true
+	workspace:SetAttribute("Inv_" .. key, true) -- 1.9.1: other services and clients react to active inventions
 	pcall(EFFECTS[key], true)
 end
 
@@ -474,6 +498,7 @@ Net.on("project_list", function(player)
 		projects = list,
 		active = act and { key = act.key, name = act.name, icon = act.icon, phase = data.project.phase, phases = PHASES, phaseName = PHASE_NAMES[data.project.phase] } or nil,
 		timeMachineFails = data.timeMachineFails or 0,
+		ladder = { level = sciLevel(data), need = CI.NeedLevel, titles = Content.Careers.Ladders.scientist }, -- 1.9.1
 	}
 end)
 
@@ -525,6 +550,17 @@ Net.on("project_step", function(player)
 		return { ok = false, msg = BrainService.blocked(player) }
 	end
 	local p = projectByKey(data.project.key)
+	-- 1.9.1: research phases are real minigames (no quiz questions)
+	local game = CI.ResearchGames[data.project.phase]
+	if game then
+		steps[player] = nil
+		local info = MinigameService.begin(player, game, "project", CI.ResearchLevel, { key = p.key, phase = data.project.phase })
+		if info then
+			info.icon, info.name, info.phase, info.phases, info.phaseName = p.icon, p.name, data.project.phase, PHASES, PHASE_NAMES[data.project.phase]
+			info.story = string.format(TI.ResearchStory, p.icon, p.name)
+			return info
+		end
+	end
 	local step = makeStep(p, data.project.phase)
 	steps[player] = step
 	return { ok = true, icon = p.icon, name = p.name, phase = data.project.phase, phases = PHASES, phaseName = PHASE_NAMES[data.project.phase], prompt = step.prompt, options = step.options }
@@ -592,6 +628,21 @@ Net.on("project_answer", function(player, d)
 	return { ok = true, correct = true, phase = data.project.phase }
 end)
 
+MinigameService.handlers.project = function(player, round, _score, passed)
+	local data = DataService.get(player)
+	local x = round.extra or {}
+	if not data or not data.project or data.project.key ~= x.key or data.project.phase ~= x.phase then
+		return {}
+	end
+	if not passed then
+		BrainService.stress(player, 6)
+		return { project = true, msg = TI.Kaboom }
+	end
+	BrainService.gain(player, 1, "project")
+	data.project.phase += 1
+	return { project = true, phase = data.project.phase }
+end
+
 Net.on("prize_refuse", function(player)
 	BrainService.awardBadge(player, "RefusedPrize")
 	return { ok = true, msg = "You refused the Noble Prize. Like Perelman. Legendary." }
@@ -611,9 +662,292 @@ function ProjectService.adminInvent(key: string, by: string): boolean
 	end)
 	return true
 end
+---------------------------------------------------------------------
+-- 1.9.1 Invention Hall: one glowing exhibit per invention along the back wall of the Science Lab.
+-- Hover (mouse) or tap 🔍 Look (phone) to see what it does and whether it's active right now
+-- (Client/InventionHall.lua). Reaching the Scientist rank plays a camera tour that floats above them.
+---------------------------------------------------------------------
+local exhibits = {}
+local function allProjects()
+	local list = {}
+	for _, p in ipairs(Content.Projects) do
+		table.insert(list, p)
+	end
+	for _, p in ipairs(Content.SpaceProjects or {}) do
+		table.insert(list, p)
+	end
+	return list
+end
+
+local function buildHall()
+	local lab = Rooms.Buildings.lab
+	if not lab then
+		return
+	end
+	local list = allProjects()
+	local span = math.min(lab.half.X * 2 - 12, CI.HallSpacing * (#list - 1))
+	for i, p in ipairs(list) do
+		local x = -span / 2 + (i - 1) * (span / math.max(1, #list - 1))
+		local base = lab.cf * CFrame.new(x, 0.5, lab.half.Z - CI.HallFromBack)
+		local plinth = Instance.new("Part")
+		plinth.Name = "Exhibit_" .. p.key
+		plinth.Anchored = true
+		plinth.Size = Vector3.new(3, 3, 3)
+		plinth.CFrame = base * CFrame.new(0, 1.5, 0)
+		plinth.Color = Color3.fromRGB(60, 70, 90)
+		plinth.Material = Enum.Material.Metal
+		plinth.Parent = effectFolder
+		local holo = Instance.new("Part")
+		holo.Name = "Hologram"
+		holo.Anchored = true
+		holo.CanCollide = false
+		holo.Shape = Enum.PartType.Ball
+		holo.Size = Vector3.new(2.2, 2.2, 2.2)
+		holo.CFrame = base * CFrame.new(0, 4.6, 0)
+		holo.Material = Enum.Material.ForceField
+		holo.Color = Color3.fromRGB(90, 200, 255)
+		holo.Parent = plinth
+		local bb = Instance.new("BillboardGui")
+		bb.Name = "Icon"
+		bb.Size = UDim2.fromOffset(70, 90)
+		bb.StudsOffset = Vector3.new(0, 1.2, 0)
+		bb.MaxDistance = 90
+		bb.Parent = holo
+		local icon = Instance.new("TextLabel")
+		icon.Size = UDim2.fromScale(1, 0.7)
+		icon.BackgroundTransparency = 1
+		icon.TextScaled = true
+		icon.Text = p.icon
+		icon.Parent = bb
+		local state = Instance.new("TextLabel")
+		state.Name = "State"
+		state.Position = UDim2.fromScale(0, 0.7)
+		state.Size = UDim2.fromScale(1, 0.3)
+		state.BackgroundTransparency = 1
+		state.TextScaled = true
+		state.Font = Enum.Font.FredokaOne
+		state.TextColor3 = Color3.new(1, 1, 1)
+		state.TextStrokeTransparency = 0.3
+		state.Text = ""
+		state.Parent = bb
+		plinth:SetAttribute("Key", p.key)
+		plinth:SetAttribute("Order", i)
+		plinth:SetAttribute("Icon", p.icon)
+		plinth:SetAttribute("Title", p.name)
+		plinth:SetAttribute("Unlock", p.unlock)
+		local cd = Instance.new("ClickDetector")
+		cd.MaxActivationDistance = 60
+		cd.Parent = plinth
+		local pp = Instance.new("ProximityPrompt")
+		pp.Name = "ExhibitPrompt"
+		pp.ActionText = TI.Look
+		pp.ObjectText = p.name
+		pp.HoldDuration = 0
+		pp.RequiresLineOfSight = false
+		pp.MaxActivationDistance = 8
+		pp.Parent = plinth
+		game:GetService("CollectionService"):AddTag(plinth, "InventionExhibit")
+		exhibits[p.key] = { plinth = plinth, holo = holo, state = state }
+	end
+	-- the tour sign at the start of the hall
+	local first = lab.cf * CFrame.new(-span / 2 - 5, 0.5, lab.half.Z - CI.HallFromBack)
+	local sign = signPart(first * CFrame.new(0, 5, 0), TI.HallSign, Vector3.new(7, 3, 0.4))
+	if sign then
+		sign.Name = "InventionHallSign"
+		promptOn(sign, TI.TourAction, TI.HallSign, function(player)
+			Net.send(player, "inventionTour", { reason = "replay" })
+		end)
+	end
+end
+
+local function refreshHall()
+	for key, e in pairs(exhibits) do
+		local on = isActive(key)
+		local ever = everInvented[key] == true
+		e.plinth:SetAttribute("Status", on and "active" or (ever and "invented" or "locked"))
+		e.holo.Color = on and Color3.fromRGB(255, 210, 80) or (ever and Color3.fromRGB(90, 200, 255) or Color3.fromRGB(110, 110, 120))
+		e.holo.Transparency = (on or ever) and 0 or 0.5
+		e.state.Text = on and TI.StateActive or (ever and TI.StateInvented or TI.StateLocked)
+	end
+end
+ProjectService.buildHall = buildHall
+
+---------------------------------------------------------------------
+-- 1.9.1 (user: "make the invention rewards actually do something, like clean water or clean energy"):
+-- stronger effects on top of the old ones. Every active invention also sets workspace "Inv_<key>",
+-- which other services read (free rides with clean energy, clear skies with climate, the real phone for
+-- animals with the translator, less stress with the cure).
+---------------------------------------------------------------------
+local oldWater = EFFECTS.water
+EFFECTS.water = function(on)
+	pcall(oldWater, on)
+	if not on then
+		return
+	end
+	-- the river turns crystal clear
+	local river = workspace:FindFirstChild("River", true)
+	if river then
+		for _, d in ipairs(river:GetDescendants()) do
+			if d:IsA("BasePart") and (d.Material == Enum.Material.Glass or d.Material == Enum.Material.Water or string.find(d.Name, "Water") ~= nil) then
+				d.Color = Color3.fromRGB(80, 200, 255)
+				d.Reflectance = 0.25
+			end
+		end
+	end
+	-- drinking fountains around town
+	for _, spot in ipairs(CI.WaterFountains) do
+		local f = Instance.new("Part")
+		f.Name = "CleanWaterFountain"
+		f.Anchored = true
+		f.Size = Vector3.new(2, 3.4, 2)
+		f.CFrame = CFrame.new(sp(spot) + Vector3.new(0, 1.7, 0))
+		f.Color = Color3.fromRGB(200, 230, 255)
+		f.Material = Enum.Material.Marble
+		f.Parent = effectFolder
+		local drop = Instance.new("ParticleEmitter")
+		drop.Rate = 12
+		drop.Speed = NumberRange.new(3, 5)
+		drop.Lifetime = NumberRange.new(0.6, 0.9)
+		drop.Color = ColorSequence.new(Color3.fromRGB(150, 220, 255))
+		drop.Size = NumberSequence.new(0.25)
+		drop.Parent = f
+		promptOn(f, TI.Drink, TI.FountainName, function(player)
+			local d = DataService.get(player)
+			if d and d.path == "Gain" then
+				BrainService.stress(player, -CI.WaterCalm)
+				BrainService.gain(player, CI.WaterGain, "cleanwater")
+				BrainService.toast(player, TI.DrankGain)
+			else
+				BrainService.toast(player, TI.DrankLose)
+			end
+		end)
+	end
+end
+
+local oldFusion = EFFECTS.fusion
+EFFECTS.fusion = function(on)
+	pcall(oldFusion, on)
+	if not on then
+		return
+	end
+	-- a solar farm at the edge of town; while clean energy is active, rides are free (LifeService, GainService)
+	for i, spot in ipairs(CI.SolarSpots) do
+		local panel = Instance.new("Part")
+		panel.Name = "SolarPanel"
+		panel.Anchored = true
+		panel.Size = Vector3.new(10, 0.4, 6)
+		panel.CFrame = CFrame.new(sp(spot) + Vector3.new(0, 2.4, 0)) * CFrame.Angles(math.rad(25), 0, 0)
+		panel.Color = Color3.fromRGB(40, 70, 140)
+		panel.Material = Enum.Material.Glass
+		panel.Parent = effectFolder
+		if i == 1 then
+			signPart(CFrame.new(sp(spot)) * CFrame.new(0, 7, -4), TI.EnergySign, Vector3.new(14, 3, 0.4))
+		end
+	end
+	for _, p in ipairs(Players:GetPlayers()) do
+		BrainService.toast(p, TI.EnergyToast)
+	end
+end
+
+local oldCure = EFFECTS.cure
+EFFECTS.cure = function(on)
+	pcall(oldCure, on)
+	if not on then
+		return
+	end
+	-- a free check-up at the hospital: stress back to zero (stress gains are also lower: BrainService)
+	local spot = WorldService.Spots.hospital
+	if spot then
+		local desk = Instance.new("Part")
+		desk.Name = "FreeCheckup"
+		desk.Anchored = true
+		desk.Size = Vector3.new(5, 3, 2)
+		desk.CFrame = CFrame.new(spot + Vector3.new(6, -1.5, 0))
+		desk.Color = Color3.fromRGB(240, 245, 255)
+		desk.Parent = effectFolder
+		promptOn(desk, TI.Checkup, TI.CheckupName, function(player)
+			BrainService.stress(player, -100)
+			BrainService.toast(player, TI.CheckupDone)
+		end)
+	end
+end
+
+local oldClimate = EFFECTS.climate
+EFFECTS.climate = function(on)
+	pcall(oldClimate, on)
+	if not on then
+		return
+	end
+	-- the park blooms (WeatherService keeps the sky clear while this is active)
+	local P = Config.Map.Park
+	local colors = { Color3.fromRGB(255, 120, 160), Color3.fromRGB(255, 220, 80), Color3.fromRGB(180, 120, 255), Color3.fromRGB(255, 255, 255) }
+	for _ = 1, CI.ParkFlowers do
+		local f = Instance.new("Part")
+		f.Name = "Bloom"
+		f.Anchored = true
+		f.CanCollide = false
+		f.Shape = Enum.PartType.Ball
+		f.Size = Vector3.new(1.2, 1.2, 1.2)
+		f.Color = colors[math.random(1, #colors)]
+		f.Position = sp(Vector3.new(math.random(P.X1 + 5, P.X2 - 5), 1.2, math.random(P.Z1 + 5, P.Z2 - 5)))
+		f.Parent = effectFolder
+	end
+	pcall(function()
+		require(script.Parent.WeatherService).set("clear")
+	end)
+end
+
+local oldRobots = EFFECTS.robots
+EFFECTS.robots = function(on)
+	pcall(oldRobots, on)
+	if not on then
+		return
+	end
+	-- the helper robots give rides: tap one to be carried to your workplace (or the plaza)
+	task.wait(1)
+	for _, bot in ipairs(robots) do
+		local root = bot:FindFirstChild("HumanoidRootPart") or bot.PrimaryPart
+		if root and not root:FindFirstChild("RobotRide") then
+			local pp = Instance.new("ProximityPrompt")
+			pp.Name = "RobotRide"
+			pp.ActionText = TI.RobotRide
+			pp.ObjectText = "🤖"
+			pp.HoldDuration = 0
+			pp.RequiresLineOfSight = false
+			pp.MaxActivationDistance = 10
+			pp.Parent = root
+			pp.Triggered:Connect(function(player)
+				local d = DataService.get(player)
+				local job = nil
+				for _, j in ipairs(Content.Jobs) do
+					if d and j.id == d.job then
+						job = j
+					end
+				end
+				local pos = job and WorldService.workPos(player, job.place)
+				local char = player.Character
+				if pos and char then
+					char:PivotTo(CFrame.new(pos + Vector3.new(0, 3, 4)))
+				else
+					WorldService.teleport(player, "lobby")
+				end
+				BrainService.toast(player, TI.RobotDone, "CartoonBoing")
+			end)
+		end
+	end
+end
+
 
 function ProjectService.start()
 	BrainService.extraSpeed = ProjectService.speedBonus
+	-- 1.9.1 Invention Hall in the Science Lab (after the town is built), refreshed every half minute
+	task.delay(6, function()
+		pcall(buildHall)
+		while true do
+			pcall(refreshHall)
+			task.wait(30)
+		end
+	end)
 	Players.PlayerRemoving:Connect(function(p)
 		steps[p] = nil
 	end)

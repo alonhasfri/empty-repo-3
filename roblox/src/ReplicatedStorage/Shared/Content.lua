@@ -2199,7 +2199,7 @@ Content.TownBoard = {
 	Footer = "📱 Open the Town app to visit their homes!",
 	Nobody = "nobody yet",
 	IQ = "IQ %d",
-	Rows = { smartest = "🧠 Smartest:", dumbest = "🥴 Dumbest:", inventor = "💡 Top inventor:", team = "🤝 Best teamworker:", genius = "🌟 Geniuses:" },
+	Rows = { smartest = "🧠 Smartest:", dumbest = "🥴 Dumbest:", inventor = "💡 Top inventor:", team = "🤝 Best teamworker:", genius = "🌟 Geniuses:", inventions = "🌍 Inventions on:" },
 	AppTitle = "🏙 Town",
 	Visit = "👀 Visit",
 }
@@ -2413,6 +2413,36 @@ Content.LabExperiments = {
 	NoThanks = "They said no thanks.",
 	TooFar = "Walk closer first.",
 	Wait = "⏳ Wait a moment before asking again.",
+}
+
+-- 1.9.1 inventions: the road to the lab, the Invention Hall and what inventions really do
+Content.Inventions = {
+	NotScientist = "🔬 Inventions are made by Scientists. Take the Scientist job at the 💼 Job Center, then work your way up: Lab Assistant → Researcher → Scientist.",
+	KeepWorking = "🔬 Keep working in the lab! You're a %s. Inventions unlock when you become a %s.",
+	Road = "🔬 The road to inventing:",
+	TourButton = "🎬 Tour the Invention Hall",
+	ResearchStory = "%s %s: research day! Get it right to move the project forward.",
+	Kaboom = "💥 KABOOM. The experiment fizzled (nobody got hurt, your hair is just a bit fluffy). Try again!",
+	Look = "🔍 Look",
+	HallSign = "🏛 INVENTION HALL",
+	TourAction = "🎬 Tour",
+	StateActive = "🌍 ON RIGHT NOW",
+	StateInvented = "✅ Invented before",
+	StateLocked = "🔒 Not invented yet",
+	TourUnlock = "🔓 You're a Scientist now! These are the inventions that can change the whole world…",
+	TourIntro = "🏛 The Invention Hall: every invention that can change the world.",
+	TourEnd = "Pick one at 🔬 Major Projects and change the world!",
+	Drink = "Drink",
+	FountainName = "💧 Clean water",
+	DrankGain = "💧 Clean, fresh water! Stress down, brain up.",
+	DrankLose = "💧 Fresh! Your brain feels… wet.",
+	EnergySign = "☀️ CLEAN ENERGY FARM: free rides and faster buses for everyone!",
+	EnergyToast = "☀️ Clean energy is ON: Hoppr rides are free and buses come twice as fast!",
+	Checkup = "Free check-up",
+	CheckupName = "🧬 Hospital (cure invented)",
+	CheckupDone = "🧬 All clear! Your stress is gone.",
+	RobotRide = "Ride to work",
+	RobotDone = "🤖 Beep boop. Delivered!",
 }
 
 return Content

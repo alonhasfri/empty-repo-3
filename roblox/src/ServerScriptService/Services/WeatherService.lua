@@ -42,6 +42,9 @@ function WeatherService.season(): string
 end
 
 local function pickWeather(season: string): string
+	if workspace:GetAttribute("Inv_climate") then
+		return "clear" -- 1.9.1: the climate invention keeps the sky clear
+	end
 	local weights = CW.Weights[season] or CW.Weights.spring
 	local total = 0
 	for _, w in pairs(weights) do

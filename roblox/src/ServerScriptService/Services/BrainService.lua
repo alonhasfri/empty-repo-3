@@ -677,6 +677,9 @@ function BrainService.stress(player, amount: number)
 	if not data or data.path ~= "Gain" then
 		return
 	end
+	if amount > 0 and workspace:GetAttribute("Inv_cure") then
+		amount *= Config.Inventions.CureStressScale -- 1.9.1: the cure makes stress build up slower
+	end
 	data.stress = math.clamp(data.stress + amount, 0, Config.Stress.Max)
 	local r = rt(player)
 	if data.stress >= Config.Stress.FreezeAt and not r.frozen then

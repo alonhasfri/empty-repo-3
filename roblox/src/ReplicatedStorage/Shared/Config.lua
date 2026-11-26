@@ -1313,4 +1313,21 @@ Config.LabExperiments = {
 	Coins = 10, -- for both, on top of the scene's brain changes
 }
 
+-- 1.9.1 inventions: the road to the lab, research minigames, the Invention Hall, stronger world effects
+Config.Inventions = {
+	NeedLevel = 3, -- scientist career level that unlocks Major Projects (3 = "Scientist")
+	TourDelay = 4, -- seconds after the promotion before the Invention Hall tour
+	ResearchGames = { [3] = "colors", [4] = "pipes" }, -- project phases that are minigames
+	ResearchLevel = 2, -- minigame difficulty for research
+	HallSpacing = 6, -- studs between exhibits
+	HallFromBack = 5, -- exhibits stand this far from the lab's back wall
+	-- what active inventions do (on top of the old effects)
+	WaterFountains = { Vector3.new(-20, 0.6, 40), Vector3.new(60, 0.6, 140), Vector3.new(120, 0.6, -140) }, -- design studs
+	WaterCalm = 8,
+	WaterGain = 0.5,
+	SolarSpots = { Vector3.new(400, 0.6, 400), Vector3.new(414, 0.6, 400), Vector3.new(428, 0.6, 400), Vector3.new(400, 0.6, 412), Vector3.new(414, 0.6, 412), Vector3.new(428, 0.6, 412) },
+	CureStressScale = 0.75, -- stress builds up 25% slower while the cure is active
+	ParkFlowers = 40,
+}
+
 return Config

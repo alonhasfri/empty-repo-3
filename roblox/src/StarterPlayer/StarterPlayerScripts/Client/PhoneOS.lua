@@ -277,7 +277,7 @@ end
 
 function PhoneOS.open()
 	local st = UI.state or {}
-	if isAnimal(st) and PhoneOS.animalUI then
+	if isAnimal(st) and PhoneOS.animalUI and not workspace:GetAttribute("Inv_translator") then -- 1.9.1: the Universal Translator lets animals use the real phone
 		PhoneOS.animalUI()
 		return
 	end

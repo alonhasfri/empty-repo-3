@@ -67,6 +67,14 @@ function TownBoardService.rows()
 		end
 	end
 	table.insert(rows, { key = "genius", label = TT.Rows.genius, name = #g > 0 and table.concat(g, "  ") or TT.Nobody, value = "" })
+	-- 1.9.1: inventions changing the world right now
+	local inv = {}
+	for _, p in ipairs(Content.Projects) do
+		if workspace:GetAttribute("Inv_" .. p.key) then
+			table.insert(inv, p.icon)
+		end
+	end
+	table.insert(rows, { key = "inventions", label = TT.Rows.inventions, name = #inv > 0 and table.concat(inv, " ") or TT.Nobody, value = "" })
 	return rows
 end
 

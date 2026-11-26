@@ -503,7 +503,7 @@ Net.on("taxi", function(player, d)
 	if sess.taxi and now < sess.taxi then
 		return { ok = false, msg = string.format(Content.Bus.Cooldown, math.ceil(sess.taxi - now)) }
 	end
-	local wait = Config.Bus.WaitSeconds
+	local wait = Config.Bus.WaitSeconds * (workspace:GetAttribute("Inv_fusion") and 0.5 or 1) -- 1.9.1: clean energy = faster buses
 	sess.busAt = now + wait
 	task.delay(wait, function()
 		sess.busAt = nil
@@ -711,6 +711,14 @@ end
 
 local function promote(player, data, job, c)
 	c.level += 1
+	-- 1.9.1: reaching the Scientist rank unlocks inventions with a camera tour of the Invention Hall
+	if job.id == "scientist" and c.level == Config.Inventions.NeedLevel then
+		task.delay(Config.Inventions.TourDelay, function()
+			if player.Parent then
+				Net.send(player, "inventionTour", { reason = "unlock" })
+			end
+		end)
+	end
 	c.waitTold = false
 	local title = titleOf(job, c)
 	applyUniform(player)
