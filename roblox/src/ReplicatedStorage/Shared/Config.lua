@@ -1297,4 +1297,12 @@ Config.NpcReact = {
 	VeryDumbCells = 45e9,
 }
 
+-- 1.9.1 big ideas #17: pets for everyone (coins or events; the Life Pack still gives them all)
+Config.PetsFriends.Prices = { dog = 60, cat = 50, fish = 25 }
+Config.PetsFriends.ShopOrder = { "dog", "cat", "fish" }
+Config.PetsFriends.EventPets = { kitten = "cat", pet = "dog", festival = "fish" } -- finishing these events gives this pet
+Config.PetsFriends.SmartPetIQ = 140 -- your pet gets a 🎓 at this IQ
+Config.PetsFriends.NicePetIQ = 110 -- …and a 📚 here
+Config.PetsFriends.SillyPetCells = 45e9 -- on the Lose path, below this your pet goes 🥴
+
 return Config

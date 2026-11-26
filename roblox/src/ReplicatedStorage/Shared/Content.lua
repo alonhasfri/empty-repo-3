@@ -2367,4 +2367,17 @@ Content.NpcReact = {
 	},
 }
 
+-- 1.9.1 big ideas #17: pets for everyone
+Content.PetsFriends.ShopTitle = "🐾 Pets (they follow you around)"
+Content.PetsFriends.ShopNames = { dog = "Dog", cat = "Cat", fish = "Goldfish" }
+Content.PetsFriends.BuyFor = "Buy · %d 🪙"
+Content.PetsFriends.TakeOut = "🦮 Take out"
+Content.PetsFriends.WithYou = "✅ With you"
+Content.PetsFriends.AlreadyOwn = "You already have that pet."
+Content.PetsFriends.Poor = "🪙 That pet costs %d coins. Earn a few more first!"
+Content.PetsFriends.Bought = "%s is your new buddy! (-%d coins)"
+Content.PetsFriends.Won = "🎁 You won a pet: %s! It follows you now. (📱 Home ➜ Pets)"
+Content.PetsFriends.NeedPass = "Get this pet first (📱 Home ➜ Pets), or with the Life Pack."
+Content.PetsFriends.Moods = { genius = " 🎓", smart = " 📚", silly = " 😜", verysilly = " 🥴" }
+
 return Content

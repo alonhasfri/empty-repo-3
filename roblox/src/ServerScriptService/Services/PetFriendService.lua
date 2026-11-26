@@ -47,6 +47,7 @@ local function petModel(kind: string)
 	t.Size = UDim2.fromScale(1, 1)
 	t.BackgroundTransparency = 1
 	t.TextScaled = true
+	t.Name = "PetTagText"
 	t.Text = TP.PetNames[kind]
 	t.Parent = tag
 	m.PrimaryPart = body
@@ -66,7 +67,7 @@ local function attachPet(player: Player)
 		old:Destroy()
 	end
 	local kind = data.pet
-	if not kind or not CP.Pets[kind] or not (data.perks and data.perks.LifePack) then
+	if not kind or not CP.Pets[kind] or not PetFriendService.owns(data, kind) then
 		return
 	end
 	local m = petModel(kind)
@@ -77,17 +78,74 @@ local function attachPet(player: Player)
 	m.Parent = char
 end
 
+-- 1.9.1 big ideas #17: pets for everyone. The Life Pack still gives them all; anyone can also buy one
+-- with coins (price shown first) or win one at a life event. Owned pets: data.petsOwned (nil-safe).
+function PetFriendService.owns(data, kind: string): boolean
+	if data.perks and data.perks.LifePack then
+		return true
+	end
+	return typeof(data.petsOwned) == "table" and data.petsOwned[kind] == true
+end
+
+function PetFriendService.give(player: Player, kind: string): boolean
+	local data = DataService.get(player)
+	if not data or not CP.Pets[kind] then
+		return false
+	end
+	data.petsOwned = typeof(data.petsOwned) == "table" and data.petsOwned or {}
+	local new = not data.petsOwned[kind]
+	data.petsOwned[kind] = true
+	if not data.pet then
+		data.pet = kind
+		attachPet(player)
+	end
+	return new
+end
+
+Net.on("pet_list", function(player)
+	local data = DataService.get(player)
+	if not data then
+		return { ok = false }
+	end
+	local list = {}
+	for _, kind in ipairs(CP.ShopOrder) do
+		table.insert(list, { kind = kind, icon = TP.PetNames[kind], name = TP.ShopNames[kind], price = CP.Prices[kind], owned = PetFriendService.owns(data, kind), out = data.pet == kind })
+	end
+	return { ok = true, list = list, coins = data.coins or 0 }
+end)
+
+Net.on("pet_buy", function(player, d)
+	local data = DataService.get(player)
+	local kind = typeof(d) == "table" and tostring(d.kind) or ""
+	local price = CP.Prices[kind]
+	if not data or not price then
+		return { ok = false }
+	end
+	if PetFriendService.owns(data, kind) then
+		return { ok = false, msg = TP.AlreadyOwn }
+	end
+	if (data.coins or 0) < price then
+		return { ok = false, msg = string.format(TP.Poor, price) }
+	end
+	data.coins -= price
+	PetFriendService.give(player, kind)
+	data.pet = kind
+	attachPet(player)
+	BrainService.push(player)
+	return { ok = true, msg = string.format(TP.Bought, TP.PetNames[kind], price) }
+end)
+
 Net.on("pet_adopt", function(player, d)
 	local data = DataService.get(player)
 	if not data then
 		return { ok = false }
 	end
-	if not (data.perks and data.perks.LifePack) then
-		return { ok = false, msg = TP.NeedPass }
-	end
 	local kind = tostring(d.kind)
 	if kind ~= "none" and not CP.Pets[kind] then
 		return { ok = false }
+	end
+	if kind ~= "none" and not PetFriendService.owns(data, kind) then
+		return { ok = false, msg = TP.NeedPass }
 	end
 	data.pet = kind ~= "none" and kind or nil
 	attachPet(player)
@@ -130,6 +188,32 @@ Net.on("high_five", function(player, d)
 	end
 	BrainService.toast(other, string.format(TP.GotFive, player.DisplayName, level(od.friends[b])), "CartoonBoing")
 	return { ok = true, msg = string.format(TP.GaveFive, other.DisplayName, level(data.friends[a])) }
+end)
+
+-- 1.9.1 big ideas #17: your pet gets smarter or sillier with you (a little badge on its tag)
+local function petMood(data): string
+	local cells = data.cells or 0
+	if data.path == "Gain" then
+		local iq = require(ReplicatedStorage.Shared.Brain).iq(cells)
+		return (iq >= CP.SmartPetIQ and TP.Moods.genius) or (iq >= CP.NicePetIQ and TP.Moods.smart) or ""
+	elseif data.path == "Lose" then
+		return cells < CP.SillyPetCells and TP.Moods.verysilly or TP.Moods.silly
+	end
+	return ""
+end
+
+task.spawn(function()
+	while true do
+		task.wait(10)
+		for _, p in ipairs(Players:GetPlayers()) do
+			local data = DataService.get(p)
+			local pet = p.Character and p.Character:FindFirstChild("Pet")
+			local label = pet and pet:FindFirstChild("PetTagText", true)
+			if data and data.pet and label then
+				label.Text = (TP.PetNames[data.pet] or "🐾") .. petMood(data)
+			end
+		end
+	end
 end)
 
 function PetFriendService.start()

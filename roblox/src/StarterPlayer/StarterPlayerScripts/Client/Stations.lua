@@ -2838,6 +2838,26 @@ function Stations.home()
 			m.close()
 		end, { LayoutOrder = 7 })
 	end
+	-- 1.9.1 big ideas #17: pets that follow you (buy with coins, win at events, or the Life Pack)
+	local pets = Remote.call("pet_list")
+	if pets and pets.ok then
+		local TP = Content.PetsFriends
+		UI.label(m.content, TP.ShopTitle, { LayoutOrder = 200, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
+		for i, pt in ipairs(pets.list) do
+			local text = pt.icon .. "  " .. pt.name .. "   " .. (pt.out and TP.WithYou or (pt.owned and TP.TakeOut or string.format(TP.BuyFor, pt.price)))
+			UI.button(m.content, text, function()
+				local res = pt.owned and Remote.call("pet_adopt", { kind = pt.kind }) or Remote.call("pet_buy", { kind = pt.kind })
+				resultToast(res)
+				if res and res.ok then
+					m.close()
+					Stations.home()
+				end
+			end, { LayoutOrder = 200 + i })
+		end
+		UI.button(m.content, TP.PetButtons.none, function()
+			resultToast(Remote.call("pet_adopt", { kind = "none" }))
+		end, { LayoutOrder = 220 })
+	end
 	-- furniture
 	UI.label(m.content, TH.Shop .. "   🪙 " .. tostring(r.coins), { LayoutOrder = 10, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
 	for i, f in ipairs(r.catalog) do

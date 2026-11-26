@@ -106,6 +106,14 @@ local function advance(player, data, a)
 	end
 	table.insert(data.eventsDone, a.id)
 	data.coins = (data.coins or 0) + CE.DoneCoins
+	-- 1.9.1 big ideas #17: some events give you a pet that follows you
+	local petKind = Config.PetsFriends.EventPets[a.id]
+	if petKind then
+		local okP, Pets = pcall(require, script.Parent.PetFriendService)
+		if okP and Pets and Pets.give(player, petKind) then
+			BrainService.toast(player, string.format(Content.PetsFriends.Won, Content.PetsFriends.PetNames[petKind]), "LevelUp")
+		end
+	end
 	BrainService.push(player)
 	return { ok = true, done = true, outro = ev.outro[data.path] or ev.outro.Gain, msg = string.format(TE.Done, ev.icon .. " " .. ev.name, CE.DoneCoins) }
 end
