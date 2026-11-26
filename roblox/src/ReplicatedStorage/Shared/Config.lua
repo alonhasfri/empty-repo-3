@@ -1359,31 +1359,48 @@ Config.InventionPerks = {
 }
 Config.Inventions.CureStressScale = 0.6 -- the cure: stress builds 40% slower and never freezes you
 
--- 1.9.1 real icon art (user: "make the icons of everything better"): free glossy cartoon icon packs from the
--- Creator Store ("Berry Basic UI" by AlgerDev, "Game UI Icon Pack" by Asprekt; free for any game). Keys are HUD
--- buttons and phone app keys; anything not listed keeps its emoji. The 📱 Phone icon is drawn in UI.lua.
+-- 1.9.1 one matching 3D icon set (user: "some look good, some are just artworks, some are 3D; can you generate
+-- artworks yourself?"): every icon rendered in Blender with the same glossy material, light and camera, then uploaded.
+-- Average and silly players see these; smart players (glass / clean) and really dumb players (neon) get IconsMono.
+-- Keys are HUD buttons and phone app keys; anything not listed keeps its emoji.
 Config.Icons = {
-	quickplay = 109772672051925, -- energy
-	items = 95338657327605, -- inventory backpack
-	gadgets = 95338657327605,
-	settings = 109558273647021,
-	home = 100186608972356,
-	badges = 97945893037460, -- medal
-	shop = 132000942692847,
-	map = 128940707580259, -- teleport portal
-	hoppr = 128940707580259,
-	town = 122400187905753, -- leaderboard trophy
-	events = 71078899575319, -- mail
-	shifts = 77359789350483, -- quests clipboard
-	jobs = 77359789350483,
-	jokejobs = 77359789350483,
-	bank = 132123388448433, -- coins
-	help = 117498758517766,
-	genius = 71458718634620, -- star
-	gate = 81013156102384, -- lock
-	daily = 97419429998550, -- daily reward
-	friends = 138393293744051,
-	unstuck = 103517816165351, -- warning
+	phone = 86701276241359,
+	scroller = 86701276241359, -- BrainTok
+	quickplay = 89675568660711,
+	items = 74607551274853,
+	gadgets = 74607551274853,
+	settings = 99277646105741,
+	home = 140587898597875,
+	badges = 81020355119632,
+	shop = 115126884130090,
+	map = 104592225709836,
+	hoppr = 99937661214975,
+	town = 118231304257998,
+	events = 97803904246261,
+	shifts = 124501404579766,
+	jobs = 116215381632779,
+	work = 137206136949519,
+	jokejobs = 72076155116419,
+	bank = 137195903207185,
+	help = 83516799515857,
+	genius = 139519223751906,
+	gate = 79408839863526,
+	daily = 112251717857666,
+	friends = 73311772594359,
+	unstuck = 83555772248556,
+	braintalks = 70791346457300,
+	clickbait = 129452730245519,
+	comments = 115616370320827,
+	lab = 82214780287183,
+	library = 89228579946435,
+	space = 82207982871115,
+	steal = 71938484362759,
+	theater = 95472778542650,
+	together = 131311977571754,
+	coffee = 123600368976311,
+	nap = 119293221514167,
+	pigeons = 114975019717782,
+	camera = 118373259806813,
 }
 -- 1.9.1 (user: "make the icons change according to how smart/dumb you are"): smart players (glass / clean pop-up
 -- styles) get clean white minimal icons ("Monochrome White UI Icon Pack", SodaBreadle); really dumb players (neon)
