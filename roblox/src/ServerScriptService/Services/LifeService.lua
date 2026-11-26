@@ -132,10 +132,13 @@ Net.on("ride_quote", function(player, d)
 		fare *= CL.Ride.BusyMultiplier
 	end
 	fare = math.max(1, math.ceil(fare))
-	if workspace:GetAttribute("Inv_fusion") then
-		fare = 0 -- 1.9.1: clean energy (Fusion) makes rides free while it is active
+	if workspace:GetAttribute("Inv_fusion") or workspace:GetAttribute("Inv_teleport") then
+		fare = 0 -- 1.9.1: clean energy or teleportation makes rides free while it is active
 	end
 	local eta = math.random(CL.Ride.EtaMin, CL.Ride.EtaMax)
+	if workspace:GetAttribute("Inv_teleport") or workspace:GetAttribute("Inv_superconductor") then
+		eta = 1 -- 1.9.1: teleportation / maglev streets: your ride is there right away
+	end
 	sess(player).quote = { key = key, fare = fare, eta = eta, at = os.clock(), name = name }
 	return { ok = true, fare = fare, eta = eta, busy = busy, name = name, coins = data.coins, distance = math.floor(dist) }
 end)
@@ -335,7 +338,7 @@ local function clockOut(player, quiet: boolean?)
 	local wages = math.max(0, data.coins - sh.coinsAt)
 	local tasks = math.max(0, (data.jobTasksDone or 0) - sh.tasksAt)
 	-- the on-time bonus needs real work: tasks done, still at work, and only once per shift window
-	local pos = WorldService.Workplaces[sh.place]
+	local pos = WorldService.workPos(player, sh.place) -- 1.9.1: the restaurant job works at any restaurant
 	local atWork = pos ~= nil and WorldService.near(player, pos, Config.WorkRadius)
 	local earned = sh.onTime
 		and seconds >= CL.Shift.MinShiftSeconds

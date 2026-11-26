@@ -1995,9 +1995,16 @@ Content.PathStrip = {
 	Steps = { "Job", "Shift", "Promotion", "Next job" },
 	PickJob = "💼 Pick a job",
 	Work = "🛠 Work a shift",
-	Promo = "⭐ %d/%d XP to promotion",
-	PromoIQ = "🧠 Reach IQ %d to get promoted",
-	Top = "🏆 Top of the ladder!",
+	Promo = "⭐ Work shifts: %d/%d ➜ %s %s",
+	PromoIQ = "🧠 Read to reach IQ %d ➜ become %s",
+	Top = "🏆 Top of the ladder! Try a new job for more pay",
+	-- 1.9.1: clearer next steps
+	FirstJobIQ = 75,
+	ReadFirst = "📚 Read at the Library: IQ %d unlocks your first job",
+	UnlocksPay = "(+50% pay)",
+	UnlocksInventions = "(🔓 inventions!)",
+	Invent = "🔬 You can invent! Science Lab ➜ Major Projects",
+	Project = "🔬 %s %s: phase %d/6 ➜ Science Lab",
 	Break = "☕ Take a break first",
 	Genius = "🌟 Choose your genius",
 	Go = "GO",
@@ -2444,5 +2451,27 @@ Content.Inventions = {
 	RobotRide = "Ride to work",
 	RobotDone = "🤖 Beep boop. Delivered!",
 }
+
+-- 1.9.1: what each invention really does (shown in Major Projects, the Invention Hall and the announcement)
+Content.Inventions.HungerToast = "🌾 World hunger is solved: +%d free coins for everyone!"
+local PERKS = {
+	teleport = "🌀 Rides are FREE and arrive at once, buses come instantly, teleport pads around town.",
+	space = "🚀 +10% brain gains for everyone, a rocket in the plaza, and the Astronaut job unlocks.",
+	fusion = "☀️ Clean energy: +50% job pay, FREE rides, buses twice as fast, a solar farm, brighter streets.",
+	hunger = "🌾 Free coins for everyone every 5 minutes, plus free food stands (stress down).",
+	water = "💧 +20% brain gains for everyone, drinking fountains (stress down, brain up), a crystal-clear river.",
+	cure = "🧬 No more stress freezes, stress builds 40% slower, free check-ups at the hospital.",
+	translator = "🗣 Quick Play gives double points, and animals can use the real phone.",
+	superconductor = "🧲 Maglev streets: everyone walks much faster and rides arrive at once.",
+	battery = "🔋 Gadgets recharge twice as fast.",
+	climate = "🌍 Clear skies, a blooming park, and every break calms you 50% more.",
+	robots = "🤖 Robots double your wages while you work, and give free rides to your job.",
+	labfood = "🍔 Every good shift counts DOUBLE toward your next promotion, plus free snacks.",
+}
+for _, p in ipairs(Content.Projects) do
+	if PERKS[p.key] then
+		p.unlock = PERKS[p.key]
+	end
+end
 
 return Content

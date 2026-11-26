@@ -18,7 +18,7 @@ local function flip(text: string): string
 	local out = text
 	local marks = {}
 	for from, to in pairs(SWAP) do
-		local key = "\0" .. #marks .. "\0"
+		local key = "{{" .. #marks .. "}}" -- plain-text marker (no pattern characters)
 		table.insert(marks, { key = key, to = to })
 		out = string.gsub(out, from, key)
 	end

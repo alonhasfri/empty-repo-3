@@ -102,7 +102,7 @@ Net.on("qp_answer", function(player, d)
 	res.score = r.score
 	res.total = #r.items
 	if r.score > 0 then
-		local pts = r.score * QP.PointsPerWin
+		local pts = r.score * QP.PointsPerWin * (workspace:GetAttribute("Inv_translator") and Config.InventionPerks.TranslatorQuiz or 1) -- 1.9.1
 		if lose then
 			BrainService.lose(player, pts, "quickplay")
 		else

@@ -1330,4 +1330,18 @@ Config.Inventions = {
 	ParkFlowers = 40,
 }
 
+-- 1.9.1 (user: "make the inventions more useful"): what every active invention gives everyone
+Config.InventionPerks = {
+	WaterBrain = 1.2, -- clean water: +20% brain gains
+	SpaceBrain = 1.1, -- space travel: +10% brain gains (inspired!)
+	EnergyPay = 1.5, -- clean energy: +50% job pay (and free rides, faster buses)
+	RobotWages = 2, -- robot helpers: wages while on shift x2
+	ClimateCalm = 1.5, -- fixed climate: every calm-down is 50% stronger
+	TranslatorQuiz = 2, -- universal translator: Quick Play points x2
+	MaglevSpeed = 8, -- superconductor: +8 walk speed, rides arrive at once
+	HungerEvery = 300, -- world hunger solved: free coins every 5 minutes
+	HungerCoins = 15,
+}
+Config.Inventions.CureStressScale = 0.6 -- the cure: stress builds 40% slower and never freezes you
+
 return Config

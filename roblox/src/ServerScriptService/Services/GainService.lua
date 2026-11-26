@@ -503,7 +503,7 @@ Net.on("taxi", function(player, d)
 	if sess.taxi and now < sess.taxi then
 		return { ok = false, msg = string.format(Content.Bus.Cooldown, math.ceil(sess.taxi - now)) }
 	end
-	local wait = Config.Bus.WaitSeconds * (workspace:GetAttribute("Inv_fusion") and 0.5 or 1) -- 1.9.1: clean energy = faster buses
+	local wait = Config.Bus.WaitSeconds * (workspace:GetAttribute("Inv_teleport") and 0 or (workspace:GetAttribute("Inv_fusion") and 0.5 or 1)) -- 1.9.1: teleport = instant, clean energy = faster
 	sess.busAt = now + wait
 	task.delay(wait, function()
 		sess.busAt = nil
@@ -734,6 +734,9 @@ local function careerShift(player, data, job, correct: boolean)
 	if correct then
 		c.ok += 1
 		c.xp += 1
+		if workspace:GetAttribute("Inv_labfood") then
+			c.xp += 1 -- 1.9.1: lab-grown food = every good shift counts double toward promotion
+		end
 	end
 	local nextLevel = c.level + 1
 	if correct and nextLevel <= 4 and c.xp >= CC.XPNeed[nextLevel] then
@@ -765,7 +768,7 @@ end
 local function finishTask(player, data, job, correct)
 	careerShift(player, data, job, correct)
 	if correct then
-		local pay = math.floor(job.coinsPerMinute * CC.TaskPay * payMult(data.career) + 0.5)
+		local pay = math.floor(job.coinsPerMinute * CC.TaskPay * payMult(data.career) * (workspace:GetAttribute("Inv_fusion") and Config.InventionPerks.EnergyPay or 1) + 0.5) -- 1.9.1: clean energy = +50% pay
 		data.coins += pay
 		BoardService.addPay(player, pay)
 		data.jobTasksDone += 1
@@ -836,10 +839,24 @@ BrainService.hooks.careerInfo = function(data)
 		return nil
 	end
 	local c = careerOf(data)
-	local info = { title = titleOf(job, c), level = c.level, xp = c.xp }
+	local info = { title = titleOf(job, c), level = c.level, xp = c.xp, jobId = job.id }
 	if c.level < 4 then
 		info.nextXP = CC.XPNeed[c.level + 1]
 		info.nextIQ = levelIQ(job, c.level + 1)
+		info.nextTitle = ladderOf(job)[c.level + 1] -- 1.9.1: the strip says what the next promotion is
+	end
+	-- 1.9.1: an invention in progress shows on the strip
+	if typeof(data.project) == "table" then
+		for _, p in ipairs(Content.Projects) do
+			if p.key == data.project.key then
+				info.project = { icon = p.icon, name = p.name, phase = data.project.phase }
+			end
+		end
+		for _, p in ipairs(Content.SpaceProjects or {}) do
+			if p.key == data.project.key then
+				info.project = { icon = p.icon, name = p.name, phase = data.project.phase }
+			end
+		end
 	end
 	return info
 end
@@ -1141,7 +1158,8 @@ function GainService.start()
 							and WorldService.near(player, pos, Config.WorkRadius)
 					end
 					if job and working then
-						local pay = math.floor(job.coinsPerMinute * payMult(careerOf(data)) + 0.5)
+						local IP = Config.InventionPerks -- 1.9.1: robots double wages, clean energy +50%
+						local pay = math.floor(job.coinsPerMinute * payMult(careerOf(data)) * (workspace:GetAttribute("Inv_robots") and IP.RobotWages or 1) * (workspace:GetAttribute("Inv_fusion") and IP.EnergyPay or 1) + 0.5)
 						data.coins += pay
 						BoardService.addPay(player, pay)
 						BrainService.push(player)

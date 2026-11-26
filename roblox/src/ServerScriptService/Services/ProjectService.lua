@@ -306,7 +306,7 @@ local function applyEffect(key: string)
 end
 
 ProjectService.speedBonus = function(): number
-	return isActive("superconductor") and 6 or 0
+	return isActive("superconductor") and Config.InventionPerks.MaglevSpeed or 0
 end
 
 ---------------------------------------------------------------------
@@ -436,7 +436,7 @@ local function onGlobal(key: string, expiry: number, by: string?)
 	applyEffect(key)
 	if by then
 		local p = projectByKey(key)
-		Net.broadcast("announce", { text = "🎉 " .. by .. " just invented " .. (p and (p.icon .. " " .. p.name) or key) .. "! Active in every server for a while.", by = "Dr. Wrinkles", global = true })
+		Net.broadcast("announce", { text = "🎉 " .. by .. " just invented " .. (p and (p.icon .. " " .. p.name) or key) .. "! " .. (p and p.unlock or "") .. " (every server, for a while)", by = "Dr. Wrinkles", global = true })
 	end
 end
 
@@ -940,6 +940,22 @@ end
 
 function ProjectService.start()
 	BrainService.extraSpeed = ProjectService.speedBonus
+	-- 1.9.1: solved world hunger = free coins for everyone every few minutes
+	task.spawn(function()
+		while true do
+			task.wait(Config.InventionPerks.HungerEvery)
+			if isActive("hunger") then
+				for _, p in ipairs(Players:GetPlayers()) do
+					local d = DataService.get(p)
+					if d then
+						d.coins = (d.coins or 0) + Config.InventionPerks.HungerCoins
+						BrainService.toast(p, string.format(Content.Inventions.HungerToast, Config.InventionPerks.HungerCoins))
+						BrainService.push(p)
+					end
+				end
+			end
+		end
+	end)
 	-- 1.9.1 Invention Hall in the Science Lab (after the town is built), refreshed every half minute
 	task.delay(6, function()
 		pcall(buildHall)

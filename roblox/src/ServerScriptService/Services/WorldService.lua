@@ -1004,7 +1004,7 @@ function WorldService.workPos(player: Player?, place: string): Vector3?
 	local best, bestD = nil, math.huge
 	for _, key in ipairs(WorldService.Restaurants) do
 		local pos = WorldService.Workplaces[key]
-		local d = root and (root.Position - pos).Magnitude or 0
+		local d = (root and pos) and (root.Position - pos).Magnitude or 0
 		if pos and d < bestD then
 			best, bestD = pos, d
 		end

@@ -139,7 +139,7 @@ local stepLabels = {}
 for i, name in ipairs(PS.Steps) do
 	stepLabels[i] = UI.new("TextLabel", { BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromOffset(0, 16), Font = Enum.Font.GothamBold, TextSize = 11, Text = (i > 1 and "› " or "") .. name, LayoutOrder = i, Parent = stepsRow })
 end
-local stripText = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 19), Size = UDim2.new(1, -64, 0, 14), Font = Enum.Font.GothamMedium, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = strip })
+local stripText = UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 19), Size = UDim2.new(1, -64, 0, 14), Font = Enum.Font.GothamMedium, TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.new(1, 1, 1), Text = "", Parent = strip }, { UI.new("UITextSizeConstraint", { MaxTextSize = 12, MinTextSize = 8 }) }) -- 1.9.1: longer "next step" lines shrink to fit
 local stripBar = UI.new("Frame", { Position = UDim2.fromOffset(8, 36), Size = UDim2.new(1, -64, 0, 6), BackgroundColor3 = Color3.fromRGB(60, 66, 90), Parent = strip })
 UI.corner(stripBar, 3)
 local stripFill = UI.new("Frame", { Size = UDim2.fromScale(0, 1), Parent = stripBar })
@@ -167,17 +167,28 @@ local function updateStrip(st)
 	stripGo.BackgroundColor3 = T.accent
 	local c = st.career
 	local step, msg, share, go = 1, PS.PickJob, 0, "jobs"
+	-- 1.9.1 (user: "make the progression easier to know what you're gonna do next"): every line says the
+	-- next action AND what it gets you (the next title, what unlocks), and GO takes you there.
+	local needLevel = Config.Inventions and Config.Inventions.NeedLevel or 3
+	local sci = c and c.jobId == "scientist"
 	if (st.stress or 0) >= Config.PathStrip.StressBreakAt then
 		step, msg, share, go = c and 2 or 1, PS.Break, (st.stress or 0) / 100, "coffee"
+	elseif not c and (st.iq or 0) < PS.FirstJobIQ then
+		step, msg, share, go = 1, string.format(PS.ReadFirst, PS.FirstJobIQ), (st.iq or 0) / PS.FirstJobIQ, "library"
 	elseif not c then
 		step, msg, share, go = 1, PS.PickJob, 0, "jobs"
+	elseif c.project then
+		step, msg, share, go = 4, string.format(PS.Project, c.project.icon, c.project.name, c.project.phase or 1), ((c.project.phase or 1) - 1) / 6, "lab"
+	elseif sci and c.level >= needLevel and not (c.nextXP and c.xp >= c.nextXP) then
+		step, msg, share, go = 4, PS.Invent, 1, "lab"
 	elseif c.level >= 4 then
 		step, msg, share = 4, st.geniusOpen and PS.Genius or PS.Top, 1
 		go = st.geniusOpen and "genius" or "jobs"
 	elseif c.nextXP and c.xp >= c.nextXP then
-		step, msg, share, go = 3, string.format(PS.PromoIQ, c.nextIQ or 0), 1, "library"
+		step, msg, share, go = 3, string.format(PS.PromoIQ, c.nextIQ or 0, c.nextTitle or "?"), 1, "library"
 	else
-		step, msg, share, go = 2, string.format(PS.Promo, c.xp or 0, c.nextXP or 1), (c.xp or 0) / math.max(1, c.nextXP or 1), "work"
+		local unlock = (sci and c.level + 1 == needLevel) and PS.UnlocksInventions or PS.UnlocksPay
+		step, msg, share, go = 2, string.format(PS.Promo, c.xp or 0, c.nextXP or 1, c.nextTitle or "?", unlock), (c.xp or 0) / math.max(1, c.nextXP or 1), "work"
 	end
 	for i, l in ipairs(stepLabels) do
 		l.TextColor3 = i == step and T.accent or (i < step and Color3.fromRGB(200, 205, 215) or Color3.fromRGB(120, 126, 145))

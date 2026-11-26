@@ -533,6 +533,9 @@ function BrainService.gain(player, points: number, reason: string?)
 			boost *= 1.1
 		end
 		amount = math.max(1, data.cells * Config.Rates.GainRate) * mult * points * boost * BrainService.boost.Gain * castleMult(data)
+		-- 1.9.1 inventions: clean water and space travel make every brain gain bigger
+		local IP = Config.InventionPerks
+		amount *= (workspace:GetAttribute("Inv_water") and IP.WaterBrain or 1) * (workspace:GetAttribute("Inv_space") and IP.SpaceBrain or 1)
 		local cap = BrainService.gateCap(player)
 		if cap and data.cells + amount > cap then
 			amount = math.max(0, cap - data.cells)
@@ -679,10 +682,12 @@ function BrainService.stress(player, amount: number)
 	end
 	if amount > 0 and workspace:GetAttribute("Inv_cure") then
 		amount *= Config.Inventions.CureStressScale -- 1.9.1: the cure makes stress build up slower
+	elseif amount < 0 and workspace:GetAttribute("Inv_climate") then
+		amount *= Config.InventionPerks.ClimateCalm -- 1.9.1: a fixed climate makes every break calmer
 	end
 	data.stress = math.clamp(data.stress + amount, 0, Config.Stress.Max)
 	local r = rt(player)
-	if data.stress >= Config.Stress.FreezeAt and not r.frozen then
+	if data.stress >= Config.Stress.FreezeAt and not r.frozen and not workspace:GetAttribute("Inv_cure") then -- 1.9.1: no stress freezes with the cure
 		r.frozen = true
 		BrainService.narrate(player, "stressed")
 		BrainService.toast(player, string.format(Content.StressFreeze.Frozen, Config.Stress.FreezeSeconds), "SadTrombone")
