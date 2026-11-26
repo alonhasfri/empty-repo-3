@@ -91,8 +91,8 @@ local function build()
 	ch.Text = ""
 	ch.Parent = sg
 	local show = Instance.new("TextLabel")
-	show.Position = UDim2.fromScale(0.05, 0.2)
-	show.Size = UDim2.fromScale(0.9, 0.75)
+	show.Position = UDim2.fromScale(0.08, 0.22) -- test fix: long words clipped at the screen edge
+	show.Size = UDim2.fromScale(0.84, 0.7)
 	show.BackgroundTransparency = 1
 	show.Font = Enum.Font.FredokaOne
 	show.TextScaled = true

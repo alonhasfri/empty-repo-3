@@ -728,7 +728,24 @@ local function restaurant(key: string, at, accent: Color3)
 					local m = holder.model
 					local head = m and (m:FindFirstChild("Head") or m.PrimaryPart)
 					if head then
-						tag(head, string.format(RT.Wants, dish), 5.2, 120, 30, Color3.fromRGB(255, 255, 255))
+						-- test fix: a small fixed-size speech bubble (stud-sized signs filled the screen in small rooms)
+						local bb = Instance.new("BillboardGui")
+						bb.Size = UDim2.fromOffset(90, 34)
+						bb.StudsOffset = Vector3.new(0, 2.6, 0)
+						bb.MaxDistance = 45
+						bb.LightInfluence = 0
+						bb.Parent = head
+						local l = Instance.new("TextLabel")
+						l.Size = UDim2.fromScale(1, 1)
+						l.BackgroundColor3 = Color3.new(1, 1, 1)
+						l.TextColor3 = Color3.fromRGB(30, 30, 40)
+						l.Font = Enum.Font.FredokaOne
+						l.TextScaled = true
+						l.Text = "💭 " .. dish
+						l.Parent = bb
+						local c = Instance.new("UICorner")
+						c.CornerRadius = UDim.new(0.4, 0)
+						c.Parent = l
 					end
 				end)
 			end
