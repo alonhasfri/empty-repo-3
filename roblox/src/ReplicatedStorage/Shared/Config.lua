@@ -773,6 +773,7 @@ Config.UI = {
 	-- 1.9.1 pop-up style by brain level (UI.popupStyle): neon below this many cells on the Lose path,
 	-- glass from GlassIQ, the clean dark card from CleanCardIQ (Gain); storybook otherwise
 	NeonBelowCells = 45e9,
+	PhoneButtonY = 0.42, -- 1.9.1: the 📱 Phone button on the right edge, this far down the screen (above the jump button)
 	GlassIQ = 100,
 	CleanCardIQ = 135,
 	BigDeltaShare = 0.02, -- 1.7.3: a brain change this big (share of your cells) gets the big centre counter

@@ -232,6 +232,16 @@ local grid = UI.new("ScrollingFrame", {
 	UI.new("UISizeConstraint", { MinSize = Vector2.new(132, 140) }),
 })
 
+-- 1.9.1: the right-edge slot for the 📱 Phone button (Config.UI.PhoneButtonY = height on screen)
+local phoneSlot = UI.new("Frame", {
+	Name = "PhoneSlot",
+	BackgroundTransparency = 1,
+	AnchorPoint = Vector2.new(1, 0.5),
+	Position = UDim2.new(1, -12, Config.UI.PhoneButtonY, 0),
+	Size = UDim2.fromOffset(math.max(66, MT + 6), math.max(66, MT + 6)),
+	Parent = UI.gui,
+})
+
 local function iconButton(parent, item, order: number, onClick)
 	local T = UI.T
 	local b = UI.new("TextButton", {
@@ -299,7 +309,26 @@ local function buildGrid(path: string?)
 	end
 	Hud.targets = {}
 	-- 1.8.1 UI review: one tidy column with at most Config.UI.HudMaxButtons; the rest go in "☰ More"
-	local all = ACTIVITIES[key] or {}
+	-- 1.9.1 (user: "the phone button should be on the right"): the 📱 Phone sits alone on the right edge
+	for _, c in ipairs(phoneSlot:GetChildren()) do
+		if c:IsA("GuiButton") then
+			c:Destroy()
+		end
+	end
+	local all = {}
+	for _, item in ipairs(ACTIVITIES[key] or {}) do
+		if item.key == "phone" then
+			local b = iconButton(phoneSlot, item, 1, function()
+				if Hud.onStation then
+					Hud.onStation(item.key)
+				end
+			end)
+			b.Size = UDim2.fromScale(1, 1)
+			Hud.targets[item.key] = b
+		else
+			table.insert(all, item)
+		end
+	end
 	local maxB = Config.UI.HudMaxButtons
 	local shown = #all > maxB and maxB - 1 or #all
 	for i = 1, shown do
