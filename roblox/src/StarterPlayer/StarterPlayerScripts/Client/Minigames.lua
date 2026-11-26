@@ -939,7 +939,7 @@ function Minigames.play(info, opts)
 	if not run then
 		return
 	end
-	local m = UI.modal(info.title or "", {
+	local m = UI.modal(opts.title or info.title or "", {
 		color = UI.T.accent,
 		big = true,
 		onClose = function()
@@ -961,7 +961,7 @@ function Minigames.play(info, opts)
 	if opts.story then
 		UI.label(m.content, opts.story, { LayoutOrder = 0, TextColor3 = UI.Colors.gold })
 	end
-	UI.label(m.content, info.how or "", { LayoutOrder = 1 })
+	UI.label(m.content, opts.how or info.how or "", { LayoutOrder = 1 })
 	UI.label(m.content, string.format(MG.Goal, info.pass or 0) .. "   " .. string.format(MG.Time, info.seconds or 30), { LayoutOrder = 2, TextColor3 = UI.T.muted })
 	local finished = false
 	local score = 0

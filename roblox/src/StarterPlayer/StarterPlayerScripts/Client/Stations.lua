@@ -2652,6 +2652,8 @@ local function eventStep(v)
 		Minigames.play(v.minigame, {
 			-- morning test fix: the story line goes in the minigame intro (a toast covered the instructions)
 			story = v.intro and (v.icon .. " " .. v.intro) or nil,
+			how = v.how,
+			title = v.title,
 			onResult = function(r)
 				if r and r.event then
 					-- the next part waits until the player has seen the result and closed it
@@ -2685,7 +2687,7 @@ function Stations.events()
 	end
 	local m = UI.modal(TE.AppTitle, Stations.phoneOpts(Color3.fromRGB(255, 120, 160)))
 	if r.invite or r.inEvent then
-		local name = r.invite and (r.invite.icon .. " " .. r.invite.name) or "💌"
+		local name = r.invite and (r.invite.icon .. " " .. (r.invite.name:gsub("^%l", string.upper))) or "💌"
 		UI.label(m.content, name, { LayoutOrder = 1, Font = UI.T.title, TextColor3 = Color3.new(1, 1, 1) })
 		UI.button(m.content, r.inEvent and TE.Continue or TE.Accept, function()
 			m.close()

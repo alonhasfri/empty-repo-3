@@ -1073,6 +1073,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.9", name = "Real Life Update", lines = { "📱 Your phone is now the main menu, with an 🎒 Items app for all your gadgets.", "🎮 Every job has its own minigame: scan groceries, sort files, read X-rays, mix colours and more. No maths!", "💌 Big life moments: a friend's wedding, Grandma's 80th, a runaway pet… Check your Invites.", "🌟 Reach the top of a job ladder (or IQ 140) to choose your genius: math, physics, coding, business or chess.", "⚙️ Settings has tabs and volume sliders, and a 💬 Send feedback button." } },
 	{ v = "1.8.9", name = "Calm New Look", lines = { "🎨 A calmer, cleaner look: dark panels, matching buttons, no more rainbow gradients.", "🚧 Skill Gates are now fun-fact gates: read a fun fact, answer an easy question about it.", "⚠️ New: Settings → Reset my progress (hold to confirm, once a day).", "💥 When your brain runs out it now swells, wobbles… and goes POOF!" } },
 	{ v = "1.8.8", name = "Bigger Town + Unstuck", lines = { "🦶 Fixed: sometimes you got stuck and couldn't move. Stress now only slows you for a few seconds.", "🚧 Skill Gates no longer stress you out, and you can retry right away.", "🏙 The whole town is bigger: wider roads, bigger buildings, and parked cars no longer crash into each other." } },
 	{ v = "1.8.7", name = "Phone Fixes", lines = { "🛠 Fixed: Skill Gates marked right answers wrong.", "📱 The in-game phone fits sideways phones: wider, more apps per row, BrainTalks buttons always visible.", "🔔 Little notes now pop up at the top, not in the middle." } },
@@ -1782,7 +1783,7 @@ Content.LifeEvents = {
 			name = "a runaway pet", icon = "🐶",
 			intro = { Gain = "Oh no! Your pet ran away! Posters are up all over town. 🐾", Lose = "Your pet ran away. Honestly? Fair. Let's find it anyway. 🐾" },
 			steps = {
-				{ text = "Follow the clues around town!", game = "dash" },
+				{ text = "Follow the clues around town!", game = "dash", title = "🐾 Find your pet", how = "Follow the paw prints to the clue, grab it, then run to the spot where your pet was seen." },
 				{ text = "You hear barking behind the bakery:", options = { { "🦴 Shake the treat bag", true }, { "📢 Yell \"COME BACK, POTATO!\"", false } } },
 				{ text = "Found them!", options = { { "🤗 Big hug", true }, { "🤳 Selfie first, hug later", false } } },
 			},

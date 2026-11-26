@@ -18,6 +18,7 @@ Watchdog.isLocked = nil -- function(): boolean, set by ClientMain (conversation,
 
 local heldFor = 0
 local lastPos = nil
+local triedToMove = false -- only say "we freed you" if the player was actually trying to walk
 
 local function held(): (boolean, Humanoid?, BasePart?)
 	local char = player.Character
@@ -67,6 +68,7 @@ function Watchdog.freeNow(say: boolean?)
 		UI.gui.Enabled = true
 	end
 	heldFor = 0
+	triedToMove = false
 	if say then
 		UI.toast(Content.Watchdog.Freed)
 	end
@@ -76,18 +78,22 @@ task.spawn(function()
 	while true do
 		task.wait(1)
 		local locked = Watchdog.isLocked and Watchdog.isLocked() or false
-		local stuck, _, root = held()
+		local stuck, hum, root = held()
 		if root and lastPos and (root.Position - lastPos).Magnitude > 1 then
 			heldFor = 0
 		end
 		lastPos = root and root.Position or nil
 		if stuck and not locked then
 			heldFor += 1
+			if hum and hum.MoveDirection.Magnitude > 0.1 then
+				triedToMove = true
+			end
 			if heldFor >= Config.Watchdog.Seconds then
-				Watchdog.freeNow(true)
+				Watchdog.freeNow(triedToMove)
 			end
 		else
 			heldFor = 0
+			triedToMove = false
 		end
 	end
 end)

@@ -73,6 +73,8 @@ local function stepView(player, data, a)
 	end
 	if step.game then
 		view.minigame = MinigameService.begin(player, step.game, "event", 1, { id = a.id, step = a.step })
+		view.how = step.how
+		view.title = step.title
 	else
 		view.options = {}
 		for i, o in ipairs(step.options) do
@@ -121,7 +123,12 @@ Net.on("event_get", function(player)
 		end
 	end
 	local inv = data.eventInvite and TE.Events[data.eventInvite]
-	return { ok = true, invite = inv and { id = data.eventInvite, icon = inv.icon, name = inv.name } or nil, inEvent = active[player] ~= nil, album = album }
+	-- while an event is half done, show which one (the invite is used up by then)
+	local cur = active[player] and TE.Events[active[player].id]
+	if not inv and cur then
+		inv = cur
+	end
+	return { ok = true, invite = inv and { id = data.eventInvite or active[player].id, icon = inv.icon, name = inv.name } or nil, inEvent = active[player] ~= nil, album = album }
 end)
 
 Net.on("event_accept", function(player)
