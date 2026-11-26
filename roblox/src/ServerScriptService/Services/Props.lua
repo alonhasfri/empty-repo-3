@@ -451,6 +451,13 @@ local CAR_COLORS = { Color3.fromRGB(190, 30, 35), Color3.fromRGB(30, 70, 170), C
 function Props.car(cf: CFrame)
 	local m = custom("Car", cf, 13)
 	if m then
+		-- 1.9.1 real models: every parked car gets its own paint (the model's red body parts are repainted)
+		local paint = CAR_COLORS[math.random(1, #CAR_COLORS)]
+		for _, d in ipairs(m:GetDescendants()) do
+			if d:IsA("BasePart") and d.Color.R > 0.55 and d.Color.G < 0.35 and d.Color.B < 0.35 then
+				d.Color = paint
+			end
+		end
 		return m
 	end
 	m = newModel("Car")
@@ -473,6 +480,38 @@ function Props.car(cf: CFrame)
 			box(m, cf * CFrame.new(x, 1.15, z), Vector3.new(1, 2.3, 2.3), Color3.fromRGB(20, 20, 22), Enum.Material.Rubber, { Shape = Enum.PartType.Cylinder })
 			box(m, cf * CFrame.new(x + (x > 0 and 0.45 or -0.45), 1.15, z), Vector3.new(0.15, 1.2, 1.2), STEEL, Enum.Material.Metal, { Shape = Enum.PartType.Cylinder })
 		end
+	end
+	return m
+end
+
+-- 1.9.1 real models: trees (two kinds, mixed) and street lamps. nil = no model, the caller builds blocks.
+-- Only the trunk collides; the canopy is walk-through so trees on sidewalks never block anyone.
+function Props.tree(pos: Vector3, s: number): Model?
+	local name = (math.random() < 0.55) and "Tree1" or "Tree2"
+	local m = custom(name, CFrame.new(pos) * CFrame.Angles(0, math.random() * math.pi * 2, 0), 13 * s)
+	if not m then
+		m = custom(name == "Tree1" and "Tree2" or "Tree1", CFrame.new(pos), 13 * s)
+	end
+	if m then
+		for _, d in ipairs(m:GetDescendants()) do
+			if d:IsA("BasePart") then
+				d.CastShadow = true
+				local bottom = d.Position.Y - d.Size.Y / 2
+				if bottom > pos.Y + 3 then
+					d.CanCollide = false
+				end
+				d.CanQuery = d.CanCollide
+			end
+		end
+		CollectionService:AddTag(m, "RealModel")
+	end
+	return m
+end
+
+function Props.streetLamp(pos: Vector3): Model?
+	local m = custom("StreetLamp", CFrame.new(pos), 1.8)
+	if m then
+		CollectionService:AddTag(m, "RealModel")
 	end
 	return m
 end

@@ -368,6 +368,9 @@ end
 local function tree(pos: Vector3, scale: number?)
 	local s = scale or 1
 	pos = sp(pos)
+	if Props.tree(pos, s) then -- 1.9.1: a real tree model when ServerStorage > Props has one
+		return
+	end
 	part({ Name = "Trunk", Shape = Enum.PartType.Cylinder, CFrame = CFrame.new(pos + Vector3.new(0, 5 * s, 0)) * CFrame.Angles(0, 0, math.rad(90)), Size = Vector3.new(10, 1.8, 1.8) * s, Color = Color3.fromRGB(105, 75, 50), Material = Enum.Material.Wood, NoScale = true }, "nature")
 	local greens = { Color3.fromRGB(60, 130, 60), Color3.fromRGB(75, 145, 65), Color3.fromRGB(55, 120, 55) }
 	for i, off in ipairs({ Vector3.new(0, 11, 0), Vector3.new(2.5, 9.5, 1.5), Vector3.new(-2.2, 9.8, -1.6), Vector3.new(0.5, 13, -0.5) }) do
@@ -377,6 +380,9 @@ local function tree(pos: Vector3, scale: number?)
 end
 
 local function streetLight(pos: Vector3)
+	if Props.streetLamp(sp(pos)) then -- 1.9.1: a real lamp model when ServerStorage > Props has one
+		return
+	end
 	part({ Name = "LampPole", Size = Vector3.new(0.6, 14, 0.6), Position = pos + Vector3.new(0, 7, 0), Color = Color3.fromRGB(50, 50, 55), Material = Enum.Material.Metal, NoScaleSize = true }, "trim")
 	part({ Name = "LampArm", Size = Vector3.new(0.3, 0.3, 2.4), Position = pos + Vector3.new(0, 13.8, -0.9), Color = Color3.fromRGB(50, 50, 55), Material = Enum.Material.Metal, NoScaleSize = true }, "trim")
 	local head = part({ Name = "LampHead", Size = Vector3.new(1.4, 0.5, 1.4), Position = pos + Vector3.new(0, 13.6, -1.8), Color = Color3.fromRGB(255, 240, 200), Material = Enum.Material.Neon, NoScaleSize = true })
@@ -1485,7 +1491,9 @@ local function dressStreets(): number
 					n += 1
 					local kind = (k + si + (sgn > 0 and 2 or 0)) % 4
 					local faceRoad = alongX and (sgn > 0 and 0 or math.pi) or (sgn > 0 and math.pi / 2 or -math.pi / 2)
-					if kind == 0 then -- globe lamp (like the picture), only the globe glows
+					if kind == 0 and Props.streetLamp(sp(pos)) then -- luacheck: ignore
+						-- 1.9.1: a real lamp model replaces the code-built globe lamp
+					elseif kind == 0 then -- globe lamp (like the picture), only the globe glows
 						part({ Name = "LampPost", Shape = Enum.PartType.Cylinder, CFrame = CFrame.new(pos + Vector3.new(0, 6, 0)) * CFrame.Angles(0, 0, math.rad(90)), Size = Vector3.new(12, 0.7, 0.7), Color = ST.Lamp, Material = Enum.Material.Metal, NoScaleSize = true }, "trim")
 						part({ Name = "LampGlobe", Shape = Enum.PartType.Ball, Size = Vector3.new(1.8, 1.8, 1.8), Position = pos + Vector3.new(0, 12.6, 0), Color = ST.Globe, Material = Enum.Material.Neon, CanCollide = false, NoScaleSize = true })
 					elseif kind == 1 then -- planter with a round shrub
