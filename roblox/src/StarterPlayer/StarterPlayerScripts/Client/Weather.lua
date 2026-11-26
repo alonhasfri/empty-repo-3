@@ -109,8 +109,8 @@ local function apply(kind: string?)
 		e.Speed = NumberRange.new(60, 75)
 		e.EmissionDirection = Enum.NormalId.Bottom
 		e.SpreadAngle = Vector2.new(3, 3)
-		e.Size = NumberSequence.new(0.12)
-		e.Squash = NumberSequence.new(-2.5) -- long thin drops
+		e.Size = NumberSequence.new(0.3) -- test fix: drops were too thin to see
+		e.Squash = NumberSequence.new(-1.5) -- long thin drops
 		e.Color = ColorSequence.new(Color3.fromRGB(190, 210, 240))
 		e.Transparency = NumberSequence.new(0.35)
 		e.LightEmission = 0.2

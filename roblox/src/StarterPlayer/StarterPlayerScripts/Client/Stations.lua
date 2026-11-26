@@ -2895,7 +2895,7 @@ function Stations.home()
 		end, { LayoutOrder = 220 })
 	end
 	-- furniture
-	UI.label(m.content, TH.Shop .. "   🪙 " .. tostring(r.coins), { LayoutOrder = 10, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
+	UI.label(m.content, TH.Shop .. "   💰 " .. tostring(r.coins), { LayoutOrder = 10, Font = UI.T.font, TextColor3 = Color3.new(1, 1, 1) })
 	for i, f in ipairs(r.catalog) do
 		local text = f.icon .. "  " .. f.name .. "   " .. (f.owned and TH.OwnedTag or string.format(TH.Buy, f.price))
 		UI.button(m.content, text, function()

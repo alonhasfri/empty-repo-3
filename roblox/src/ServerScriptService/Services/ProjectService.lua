@@ -754,6 +754,7 @@ local function buildHall()
 	local sign = signPart(first * CFrame.new(0, 5, 0), TI.HallSign, Vector3.new(7, 3, 0.4))
 	if sign then
 		sign.Name = "InventionHallSign"
+		sign:SetAttribute("GuideMain", true) -- the room guide points here first
 		promptOn(sign, TI.TourAction, TI.HallSign, function(player)
 			Net.send(player, "inventionTour", { reason = "replay" })
 		end)

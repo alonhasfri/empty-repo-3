@@ -656,7 +656,8 @@ local function spawnFriend(i: number, near: CFrame)
 	local head = model:FindFirstChild("Head") or root
 	local g = Instance.new("BillboardGui")
 	g.Name = "Bubble"
-	g.Size = UDim2.new(6, 0, 1.6, 0)
+	g.Size = UDim2.fromOffset(170, 40) -- test fix (Nov 26): stud-sized tags filled the whole screen up close
+	g.MaxDistance = 90
 	g.StudsOffset = Vector3.new(0, 2.2, 0)
 	g.Adornee = head
 	local l = Instance.new("TextLabel")

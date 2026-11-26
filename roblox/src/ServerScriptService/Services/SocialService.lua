@@ -251,9 +251,14 @@ ACT.debate = {
 		sess:line("📺 Tonight's topic: " .. sess.topic)
 	end,
 	round = function(sess)
+		-- test fix (Nov 26): two of the three choices could be the same sentence. Now always one strong,
+		-- one middle and one weak argument, all different.
 		local function opts()
-			local o = shuffle({ ARGUMENTS[1], ARGUMENTS[3], ARGUMENTS[math.random(1, #ARGUMENTS)] })
-			return o
+			local strong, mid, weak = {}, {}, {}
+			for _, a in ipairs(ARGUMENTS) do
+				table.insert(a.strength >= 3 and strong or (a.strength <= 1 and weak or mid), a)
+			end
+			return shuffle({ pick(strong), pick(mid), pick(weak) })
 		end
 		return {
 			{

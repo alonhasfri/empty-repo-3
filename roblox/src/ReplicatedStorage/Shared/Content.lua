@@ -1995,16 +1995,16 @@ Content.PathStrip = {
 	Steps = { "Job", "Shift", "Promotion", "Next job" },
 	PickJob = "💼 Pick a job",
 	Work = "🛠 Work a shift",
-	Promo = "⭐ Work shifts: %d/%d ➜ %s %s",
-	PromoIQ = "🧠 Read to reach IQ %d ➜ become %s",
+	Promo = "⭐ Work shifts: %d/%d → %s %s",
+	PromoIQ = "🧠 Read to reach IQ %d → become %s",
 	Top = "🏆 Top of the ladder! Try a new job for more pay",
 	-- 1.9.1: clearer next steps
 	FirstJobIQ = 75,
-	ReadFirst = "📚 Read at the Library: IQ %d unlocks your first job",
+	ReadFirst = "📚 Library: IQ %d = your first job",
 	UnlocksPay = "(+50% pay)",
 	UnlocksInventions = "(🔓 inventions!)",
-	Invent = "🔬 You can invent! Science Lab ➜ Major Projects",
-	Project = "🔬 %s %s: phase %d/6 ➜ Science Lab",
+	Invent = "🔬 You can invent! Science Lab → Major Projects",
+	Project = "🔬 %s %s: phase %d/6 → Science Lab",
 	Break = "☕ Take a break first",
 	Genius = "🌟 Choose your genius",
 	Go = "GO",
@@ -2133,7 +2133,7 @@ Content.Restaurants = {
 		taco = { name = "🌮 Taco Town", sign = "🌮 TACO TOWN", work = "Taco Counter", menu = { "🌮", "🌯", "🥙", "🧃", "🍮" }, board = "🌮 MENU\nTaco · Burrito · Wrap\nJuice · Flan" },
 		rotcafe = { name = "🌈 Brainrot Café", sign = "🌈 BRAINROT CAFÉ", work = "", menu = { "🧃", "🍭", "🌈", "🫧" }, board = "🌈 MYSTERY DRINKS\nColour: yes\nFlavour: ???" },
 	},
-	Eat = { action = "Eat here", object = "🍽 Meal (%d coins)", done = "🍽 Yum! Stress -%d (-%d coins)", coma = "🍽 Food coma! Your brain takes a little nap. (-%d coins)", poor = "🪙 A meal costs %d coins. Work a shift first!", animal = "🐾 Animals can't order. Try begging for scraps!" },
+	Eat = { action = "Eat here", object = "🍽 Meal (%d coins)", done = "🍽 Yum! Stress -%d (-%d coins)", coma = "🍽 Food coma! Your brain takes a little nap. (-%d coins)", poor = "💰 A meal costs %d coins. Work a shift first!", animal = "🐾 Animals can't order. Try begging for scraps!" },
 	Scraps = { action = "Beg", object = "🐾 Scraps (free)", done = "🐾 Someone drops you a snack. Good pet! Stress -%d", human = "🐾 Only animals beg for scraps." },
 	Mystery = {
 		action = "Drink",
@@ -2161,7 +2161,7 @@ Content.Homes = {
 	YourHome = "Your home: %s",
 	Grow = "Your home changes as your brain changes!",
 	Shop = "🛋 Furniture",
-	Buy = "Buy · %d 🪙",
+	Buy = "Buy · %d 💰",
 	OwnedTag = "✅ In your home",
 	Visit = "👀 Visit",
 	VisitTitle = "Visit a home",
@@ -2176,7 +2176,7 @@ Content.Homes = {
 	PickPath = "Pick a door first!",
 	WrongPath = "That one isn't for your path.",
 	Owned = "You already have that.",
-	Poor = "🪙 That costs %d coins. Work a shift or play to earn more!",
+	Poor = "💰 That costs %d coins. Work a shift or play to earn more!",
 	Bought = "%s %s is in your home now! (-%d coins)",
 	Gone = "That player isn't here any more.",
 	Closed = "🔒 %s's door is closed to visitors right now.",
@@ -2215,7 +2215,7 @@ Content.TownBoard = {
 Content.AnimalLife = {
 	NoJob = "🐾❓",
 	HumansNo = "🐾 Only animals can do animal jobs.",
-	JobDone = "%s ✅  +%d 🪙",
+	JobDone = "%s ✅  +%d 💰",
 	ClimbedUp = "⬆️🧠 You climbed back up a form!",
 	Jobs = {
 		dog = { pick = "📰", drop = "🚪", done = "🐶📰" },
@@ -2231,7 +2231,7 @@ Content.AnimalLife = {
 		duck = { icon = "🦆", wants = "🍞" },
 	},
 	FriendHuman = "%s It looks at you. It only talks to animals.",
-	FriendThanks = "%s 💛  +%d 🪙",
+	FriendThanks = "%s 💛  +%d 💰",
 }
 
 -- 1.9.1 big ideas #10: adopt an animal player
@@ -2325,7 +2325,7 @@ Content.DumbWorld = {
 Content.LoseJobs = {
 	AppTitle = "🤡 Joke Jobs",
 	Intro = "Real jobs are for smart people. These are for you. 🤡",
-	Start = "Start · +%d 🪙",
+	Start = "Start · +%d 💰",
 	LoseOnly = "🤡 Joke jobs are for the Lose path.",
 	Animal = "🐾 Animals have their own jobs (🐾 menu ➜ 🐾💼).",
 	Paid = "%s Shift done! +%d coins (and a little less brain 🧠📉)",
@@ -2379,11 +2379,11 @@ Content.NpcReact = {
 -- 1.9.1 big ideas #17: pets for everyone
 Content.PetsFriends.ShopTitle = "🐾 Pets (they follow you around)"
 Content.PetsFriends.ShopNames = { dog = "Dog", cat = "Cat", fish = "Goldfish" }
-Content.PetsFriends.BuyFor = "Buy · %d 🪙"
+Content.PetsFriends.BuyFor = "Buy · %d 💰"
 Content.PetsFriends.TakeOut = "🦮 Take out"
 Content.PetsFriends.WithYou = "✅ With you"
 Content.PetsFriends.AlreadyOwn = "You already have that pet."
-Content.PetsFriends.Poor = "🪙 That pet costs %d coins. Earn a few more first!"
+Content.PetsFriends.Poor = "💰 That pet costs %d coins. Earn a few more first!"
 Content.PetsFriends.Bought = "%s is your new buddy! (-%d coins)"
 Content.PetsFriends.Won = "🎁 You won a pet: %s! It follows you now. (📱 Home ➜ Pets)"
 Content.PetsFriends.NeedPass = "Get this pet first (📱 Home ➜ Pets), or with the Life Pack."
@@ -2455,18 +2455,18 @@ Content.Inventions = {
 -- 1.9.1: what each invention really does (shown in Major Projects, the Invention Hall and the announcement)
 Content.Inventions.HungerToast = "🌾 World hunger is solved: +%d free coins for everyone!"
 local PERKS = {
-	teleport = "🌀 Rides are FREE and arrive at once, buses come instantly, teleport pads around town.",
-	space = "🚀 +10% brain gains for everyone, a rocket in the plaza, and the Astronaut job unlocks.",
-	fusion = "☀️ Clean energy: +50% job pay, FREE rides, buses twice as fast, a solar farm, brighter streets.",
-	hunger = "🌾 Free coins for everyone every 5 minutes, plus free food stands (stress down).",
-	water = "💧 +20% brain gains for everyone, drinking fountains (stress down, brain up), a crystal-clear river.",
-	cure = "🧬 No more stress freezes, stress builds 40% slower, free check-ups at the hospital.",
-	translator = "🗣 Quick Play gives double points, and animals can use the real phone.",
-	superconductor = "🧲 Maglev streets: everyone walks much faster and rides arrive at once.",
-	battery = "🔋 Gadgets recharge twice as fast.",
-	climate = "🌍 Clear skies, a blooming park, and every break calms you 50% more.",
-	robots = "🤖 Robots double your wages while you work, and give free rides to your job.",
-	labfood = "🍔 Every good shift counts DOUBLE toward your next promotion, plus free snacks.",
+	teleport = "Rides are FREE and arrive at once, buses come instantly, teleport pads around town.",
+	space = "+10% brain gains for everyone, a rocket in the plaza, and the Astronaut job unlocks.",
+	fusion = "Clean energy: +50% job pay, FREE rides, buses twice as fast, a solar farm, brighter streets.",
+	hunger = "Free coins for everyone every 5 minutes, plus free food stands (stress down).",
+	water = "+20% brain gains for everyone, drinking fountains (stress down, brain up), a crystal-clear river.",
+	cure = "No more stress freezes, stress builds 40% slower, free check-ups at the hospital.",
+	translator = "Quick Play gives double points, and animals can use the real phone.",
+	superconductor = "Maglev streets: everyone walks much faster and rides arrive at once.",
+	battery = "Gadgets recharge twice as fast.",
+	climate = "Clear skies, a blooming park, and every break calms you 50% more.",
+	robots = "Robots double your wages while you work, and give free rides to your job.",
+	labfood = "Every good shift counts DOUBLE toward your next promotion, plus free snacks.",
 }
 for _, p in ipairs(Content.Projects) do
 	if PERKS[p.key] then

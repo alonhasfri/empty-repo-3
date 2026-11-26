@@ -852,7 +852,7 @@ end
 -- Seats and exit doors are left out.
 local Players = game:GetService("Players")
 local function markPrompt(pp: Instance)
-	if not pp:IsA("ProximityPrompt") or pp.ActionText == R.Sit then
+	if not pp:IsA("ProximityPrompt") or pp.ActionText == R.Sit or pp.Name == "ExhibitPrompt" then -- test fix: the 15 exhibits flooded the room card
 		return
 	end
 	local parent = pp.Parent

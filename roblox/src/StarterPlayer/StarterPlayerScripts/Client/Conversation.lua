@@ -564,12 +564,14 @@ function Conversation.vsStart(d)
 	local other = d.partnerId and Players:GetPlayerByUserId(d.partnerId)
 	local oroot = other and other.Character and other.Character:FindFirstChild("HumanoidRootPart")
 	local npc = me * CFrame.new(0, 0, -7) * CFrame.Angles(0, math.pi, 0)
+	local alone = true
 	if oroot and (oroot.Position - me.Position).Magnitude < 40 then
 		npc = oroot.CFrame
+		alone = false
 	end
 	local mid = (me.Position + npc.Position) / 2
 	local wide = mid + me.RightVector * 12 + Vector3.new(0, 6, 0)
-	cur = { r = r, vs = true, sessionId = d.sessionId, who = tostring(d.partner), meterName = tostring(d.title), stand = me, npc = npc, wide = wide, queue = {} }
+	cur = { alone = alone, r = r, vs = true, sessionId = d.sessionId, who = tostring(d.partner), meterName = tostring(d.title), stand = me, npc = npc, wide = wide, queue = {} }
 	local c = cur
 	r.meterName.Text = tostring(d.title)
 	r.fill.Size = UDim2.new(0, 0, 1, 0)
@@ -624,7 +626,7 @@ function Conversation.vsStep(d)
 		end
 		c.r.meterName.Text = string.format("%s  %d/%d", tostring(d.title), d.round or 1, d.rounds or 1)
 		c.r.fill.Size = UDim2.new(math.clamp((d.round or 1) / (d.rounds or 1), 0, 1), 0, 1, 0)
-		shot("npc")
+		shot(c.alone and "wide" or "npc") -- test fix: an NPC partner has no body to film
 		typeLine("🎬 " .. tostring(d.role), tostring(d.prompt))
 		if c ~= cur then
 			return
@@ -662,7 +664,7 @@ function Conversation.vsWait(d)
 	vsRun(function()
 		vsLatest(d)
 		if cur then
-			shot("npc")
+			shot(cur.alone and "wide" or "npc")
 			typeLine(tostring(d.partner), "⏳ " .. tostring(d.text))
 		end
 	end)
