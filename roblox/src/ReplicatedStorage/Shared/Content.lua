@@ -2355,4 +2355,16 @@ Content.Weather = {
 }
 Content.Homes.Furniture.umbrella = { icon = "☂️", name = "Umbrella (opens when it rains)" }
 
+-- 1.9.1 big ideas #16: what townspeople say when you walk past (by your brain level)
+Content.NpcReact = {
+	Lines = {
+		genius = { "Wow, Professor! 🎓", "Is that THE genius? Can I get a photo?", "My kid wants to be you when they grow up!", "You solved the town's traffic, right?", "Big brain coming through! 🧠✨", "I read about you in the Brainville Times!" },
+		smart = { "Good morning, smarty! 📚", "You look like you know things.", "Off to work? Good luck today!", "Nice! You read a lot, don't you?", "Hey, you helped my cousin with homework!" },
+		average = { "Hi there! 👋", "Lovely day, isn't it?", "Have you tried the new pizza place?", "The library has new books, you know.", "Watch out for pigeons. They're bold today." },
+		dumb = { "Uh… your shoes are on the wrong feet.", "Did you just walk into that lamp post?", "Hi! …why are you holding the map upside down?", "Bro is buffering. 🔄", "You okay? You've been staring at that wall." },
+		verydumb = { "…are you okay? 😟", "Should I call someone? Like, a smart someone?", "Sir, that's a trash can, not a phone.", "I think your brain left without you. 🧠🏃", "Blink twice if you need help." },
+		animal = { "Aww, who's a good little thing? 🐾", "Is that… a talking dog? No? Okay.", "Shoo, shoo! …okay you can stay.", "Someone's pet got out again!", "Look! It's so cute! 😍" },
+	},
+}
+
 return Content

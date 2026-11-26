@@ -1284,4 +1284,17 @@ Config.Weather = {
 Config.Homes.Furniture.umbrella = { price = 12, spot = { 0, 0 } } -- not placed in the home: it opens over your head when it rains
 table.insert(Config.Homes.Order, "umbrella")
 
+-- 1.9.1 big ideas #16 (Client/NpcReact.lua): townspeople react to your brain level
+Config.NpcReact = {
+	Radius = 14, -- studs: how close you walk past
+	Chance = 0.5, -- chance a nearby townsperson says something
+	PerNpcGap = 45, -- seconds before the same person speaks to you again
+	GlobalGap = 6, -- seconds between any two lines
+	BubbleSeconds = 4,
+	RescanSeconds = 20,
+	GeniusIQ = 160,
+	SmartIQ = 115,
+	VeryDumbCells = 45e9,
+}
+
 return Config
