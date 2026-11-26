@@ -1230,6 +1230,7 @@ Content.Life = {
 	Animal = {
 		Title = "🐾",
 		Sniff = "👃",
+		Job = "🐾💼", -- 1.9.1 animal job
 		Home = "🏠",
 		Power = "⚡",
 		Stands = "🛍", -- the four Lose stands in the Brainrot Mall (sniff trail, no reading needed)
@@ -2197,6 +2198,29 @@ Content.TownBoard = {
 	Rows = { smartest = "🧠 Smartest:", dumbest = "🥴 Dumbest:", inventor = "💡 Top inventor:", team = "🤝 Best teamworker:", genius = "🌟 Geniuses:" },
 	AppTitle = "🏙 Town",
 	Visit = "👀 Visit",
+}
+
+-- 1.9.1 big ideas #9: animal life (icons first: animals can't read)
+Content.AnimalLife = {
+	NoJob = "🐾❓",
+	HumansNo = "🐾 Only animals can do animal jobs.",
+	JobDone = "%s ✅  +%d 🪙",
+	ClimbedUp = "⬆️🧠 You climbed back up a form!",
+	Jobs = {
+		dog = { pick = "📰", drop = "🚪", done = "🐶📰" },
+		fly = { drop = "🧺", done = "🦟🧺" },
+		bee = { drop = "🌸", done = "🐝🌸" },
+		mouse = { pick = "🧀", drop = "🕳", done = "🐭🧀" },
+		worm = { drop = "🌱", done = "🐛🌱" },
+		octopus = { pick = "🫧", drop = "🪣", done = "🐙🫧" },
+	},
+	Friends = {
+		cat = { icon = "🐱", wants = "🐟" },
+		squirrel = { icon = "🐿", wants = "🌰" },
+		duck = { icon = "🦆", wants = "🍞" },
+	},
+	FriendHuman = "%s It looks at you. It only talks to animals.",
+	FriendThanks = "%s 💛  +%d 🪙",
 }
 
 return Content

@@ -1165,4 +1165,25 @@ Config.TownBoard = {
 -- 1.9.1 big ideas #8: Vs Mode sessions play as a cutscene (bars, camera cuts, choices bottom-left)
 Config.VsCutscene = true
 
+-- 1.9.1 big ideas #9 (AnimalLifeService): animal jobs, park friends, climbing back up
+Config.AnimalLife = {
+	JobClimb = 0.12, -- an animal job moves you 12% of the way to the next form
+	FriendClimb = 0.25, -- a friend quest moves you 25%
+	FriendCoins = 15,
+	Jobs = { -- by animal stage; twoStep = pick something up, then drop it off
+		dog = { coins = 8, twoStep = true },
+		fly = { coins = 4 },
+		bee = { coins = 5 },
+		mouse = { coins = 5, twoStep = true },
+		worm = { coins = 3 },
+		octopus = { coins = 6, twoStep = true },
+	},
+	-- at = where in the park (0-1 across, 0-1 down)
+	Friends = {
+		cat = { at = { 0.25, 0.3 }, size = Vector3.new(1.6, 1.6, 2.6), color = Color3.fromRGB(240, 150, 60) },
+		squirrel = { at = { 0.7, 0.45 }, size = Vector3.new(1.2, 1.4, 1.8), color = Color3.fromRGB(150, 90, 50) },
+		duck = { at = { 0.5, 0.75 }, size = Vector3.new(1.4, 1.3, 2), color = Color3.fromRGB(250, 250, 240) },
+	},
+}
+
 return Config

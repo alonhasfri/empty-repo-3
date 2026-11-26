@@ -149,6 +149,21 @@ end
 
 function AnimalUI.open()
 	local m = UI.modal(TA.Title, { color = Color3.fromRGB(200, 140, 80) })
+	-- 1.9.1 big ideas #9: climb bar (now → next form) and an animal job, all icons
+	local c = Remote.call("animal_climb")
+	if c and c.ok then
+		local bar = UI.new("Frame", { Size = UDim2.new(1, 0, 0, 44), BackgroundColor3 = Color3.fromRGB(60, 50, 40), LayoutOrder = 0, Parent = m.content })
+		UI.corner(bar, 14)
+		UI.new("Frame", { Size = UDim2.fromScale(math.clamp(c.share or 0, 0.03, 1), 1), BackgroundColor3 = Color3.fromRGB(120, 220, 110), Parent = bar }, { UI.new("UICorner", { CornerRadius = UDim.new(0, 14) }) })
+		UI.new("TextLabel", { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, TextScaled = true, Text = tostring(c.now) .. "  ➜  " .. tostring(c.nextIcon), Parent = bar }, { UI.new("UIPadding", { PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 6) }) })
+	end
+	bigIcon(m.content, TA.Job, 0, Color3.fromRGB(255, 220, 120), function()
+		m.close()
+		local r = Remote.call("animal_job")
+		if r and not r.ok and r.msg then
+			UI.toast(r.msg)
+		end
+	end)
 	bigIcon(m.content, TA.Sniff, 1, Color3.fromRGB(150, 220, 110), function()
 		sniffPicker()
 	end)
@@ -178,6 +193,13 @@ function AnimalUI.open()
 		AnimalUI.trail(0, 30) -- the plaza
 	end)
 	m.focus()
+end
+
+-- 1.9.1: the server shows where an animal job / friend quest wants you to go
+function AnimalUI.onTarget(d)
+	if d and d.x and d.z then
+		AnimalUI.trail(d.x, d.z)
+	end
 end
 
 -- Becoming human again: no more scent trail
