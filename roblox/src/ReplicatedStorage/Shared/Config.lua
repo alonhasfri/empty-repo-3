@@ -1428,6 +1428,16 @@ Config.Icons = {
 	nap = 119293221514167,
 	pigeons = 114975019717782,
 	camera = 118373259806813,
+	-- 1.9.3 (user: "everything should have full 3D icons"): gadgets (hotbar tools), the bus app and More
+	duck = 102476692277720,
+	rain = 81257653102441,
+	boots = 109924881365629,
+	remote = 93259408610844,
+	goggles = 122305025456111,
+	rewind = 106035783775663,
+	robot = 124237062732526,
+	bus = 75425646249201,
+	more = 138445135043157,
 }
 -- 1.9.1 (user: "make the icons change according to how smart/dumb you are"): smart players (glass / clean pop-up
 -- styles) get clean white minimal icons ("Monochrome White UI Icon Pack", SodaBreadle); really dumb players (neon)

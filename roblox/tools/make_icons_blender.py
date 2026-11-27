@@ -314,6 +314,69 @@ def I_unstuck():
         r = math.radians(a)
         box((0.22, 0.44, 0.44), (math.cos(r) * 0.55, -0.02, math.sin(r) * 0.55), W, rot=(0, -r, 0), bevel=0.0)
 
+# ---- 1.9.3: gadgets (Roblox hotbar tools), the bus app and the More tile
+def I_duck():
+    y = mat("duck", C("ffd23d"))
+    ball(0.62, (0, 0.05, -0.3), y, scale=(1.15, 1, 0.8))
+    ball(0.38, (-0.25, -0.05, 0.38), y)
+    cone(0.16, 0.0, 0.34, (-0.6, -0.08, 0.32), mat("beak", C("ff8a1f")), rot=(0, math.radians(-90), 0))
+    ball(0.07, (-0.38, -0.34, 0.5), DARK)
+    cone(0.22, 0.0, 0.3, (0.75, 0.05, -0.05), y, rot=(0, math.radians(60), 0))
+def I_rain():
+    cl = mat("cloud", C("e9eef8"))
+    for (x, z, r) in [(-0.45, 0.35, 0.38), (0.0, 0.5, 0.48), (0.45, 0.35, 0.38), (0.0, 0.25, 0.4)]:
+        ball(r, (x, 0, z), cl)
+    pink = mat("brainpink", C("ff8fb1"))
+    for (x, z) in [(-0.5, -0.45), (0.05, -0.65), (0.55, -0.4)]:
+        ball(0.2, (x, -0.1, z), pink, scale=(1.2, 1, 1))
+        torus(0.12, 0.035, (x, -0.2, z), mat("fold", C("e5607f")), rot=(math.radians(90), 0, 0))
+def I_boots():
+    b = mat("boot", C("8a5530"))
+    box((0.55, 0.6, 0.9), (-0.15, 0, 0.0), b, bevel=0.12)
+    box((1.05, 0.62, 0.35), (0.1, 0, -0.5), b, bevel=0.14)
+    box((1.1, 0.66, 0.1), (0.1, 0, -0.72), DARK, bevel=0.03)
+    for z in (-0.75, -0.9):
+        torus(0.22, 0.05, (0.1, 0, z - 0.1), mat("jet", C("49c6ff"), emit=1.2))
+def I_remote():
+    box((0.62, 0.32, 1.5), (0, 0, -0.1), DARK, bevel=0.12)
+    cyl(0.03, 0.6, (0.18, 0, 0.9), mat("ant", C("c8d2e6"), metal=0.7))
+    ball(0.09, (0.18, 0, 1.2), mat("antball", C("ff4d6d"), emit=0.6))
+    for i, c in enumerate(["39c27a", "ffcf3d", "3f8cff", "ff4d6d"]):
+        cyl(0.11, 0.1, (-0.14 + (i % 2) * 0.28, -0.17, 0.3 - math.floor(i / 2) * 0.32), mat("btn" + c, C(c), emit=0.3), rot=(math.radians(90), 0, 0))
+def I_goggles():
+    strap = mat("strap", C("3f8cff"))
+    torus(0.85, 0.07, (0, 0.15, 0), strap, rot=(math.radians(90), 0, 0))
+    for x in (-0.42, 0.42):
+        cyl(0.36, 0.3, (x, -0.1, 0), mat("frame", C("ff8a1f")), rot=(math.radians(90), 0, 0))
+        cyl(0.27, 0.32, (x, -0.11, 0), mat("lensg", C("6fe0ff"), emit=0.5), rot=(math.radians(90), 0, 0))
+    box((0.25, 0.2, 0.12), (0, -0.1, 0.0), mat("frame", C("ff8a1f")), bevel=0.04)
+def I_rewind():
+    cyl(0.75, 0.25, (0, 0, 0), mat("tm", C("8a5cf5")), rot=(math.radians(90), 0, 0))
+    cyl(0.62, 0.27, (0, 0, 0), W, rot=(math.radians(90), 0, 0))
+    arrow = mat("arrow", C("ff4d6d"))
+    poly([(0.15, 0.35), (-0.3, 0.0), (0.15, -0.35)], 0.1, (-0.05, -0.16, 0), arrow)
+    poly([(0.5, 0.35), (0.05, 0.0), (0.5, -0.35)], 0.1, (-0.05, -0.16, 0), arrow)
+def I_robot():
+    m = mat("robot", C("a9b8d6"), metal=0.6, rough=0.3)
+    box((1.1, 0.8, 0.8), (0, 0, 0.2), m, bevel=0.15)
+    box((0.8, 0.7, 0.55), (0, 0, -0.55), m, bevel=0.12)
+    for x in (-0.25, 0.25):
+        ball(0.12, (x, -0.42, 0.25), mat("eye", C("49c6ff"), emit=1.5))
+    cyl(0.03, 0.3, (0, 0, 0.75), m)
+    ball(0.08, (0, 0, 0.92), mat("tip", C("ff4d6d"), emit=0.8))
+def I_bus():
+    y = mat("bus", C("ffc23d"))
+    box((1.9, 0.85, 0.95), (0, 0, 0.0), y, bevel=0.14)
+    for x in (-0.55, 0.0, 0.55):
+        box((0.42, 0.88, 0.32), (x, 0, 0.18), mat("busglass", C("49c6ff")), bevel=0.05)
+    box((1.92, 0.88, 0.1), (0, 0, -0.18), mat("stripe", C("e8534a")), bevel=0.02)
+    for x in (-0.6, 0.6):
+        cyl(0.22, 0.9, (x, 0, -0.5), DARK, rot=(math.radians(90), 0, 0))
+def I_more():
+    for i in range(4):
+        x, z = (-0.38 if i % 2 == 0 else 0.38), (0.38 if i < 2 else -0.38)
+        box((0.6, 0.4, 0.6), (x, 0, z), mat("more" + str(i), C(["8a5cf5", "3f8cff", "39c27a", "ffcf3d"][i])), bevel=0.12)
+
 ICONS = {k[2:]: v for k, v in globals().items() if k.startswith("I_")}
 
 def setup_scene():

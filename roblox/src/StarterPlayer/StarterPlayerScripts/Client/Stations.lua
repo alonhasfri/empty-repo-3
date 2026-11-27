@@ -1203,7 +1203,7 @@ function Stations.gadgets()
 		local card = UI.new("Frame", { BackgroundColor3 = inv.owned and UI.T.panel or UI.T.bg, BackgroundTransparency = inv.owned and 0 or 0.4, Size = UDim2.new(1, 0, 0, 74), LayoutOrder = 10 + i, Parent = m.content })
 		UI.corner(card)
 		UI.stroke(card)
-		UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 8), Size = UDim2.fromOffset(58, 58), TextScaled = true, Text = inv.icon, Parent = card })
+		UI.icon(card, inv.owned and inv.key or nil, inv.icon, { Position = UDim2.fromOffset(8, 8), Size = UDim2.fromOffset(58, 58) }) -- 1.9.3 3D icon
 		UI.new("TextLabel", {
 			BackgroundTransparency = 1,
 			Position = UDim2.fromOffset(74, 6),

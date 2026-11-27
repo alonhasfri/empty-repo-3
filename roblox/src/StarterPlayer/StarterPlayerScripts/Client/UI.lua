@@ -1288,6 +1288,31 @@ function UI.iconImage(key: string?): (string?, Color3?, number?)
 	return id and ok("rbxassetid://" .. tostring(id)) or nil, nil, 0
 end
 
+-- 1.9.3 (user: "everything should have full 3D icons"): the 3D icon for `key` if we have one (emoji if the
+-- picture is missing or fails to load). props = Position / Size / ZIndex etc.
+function UI.icon(parent, key: string?, emoji: string, props)
+	local art, tint, rot = UI.iconImage(key)
+	local function emojiLabel()
+		local l = UI.new("TextLabel", { BackgroundTransparency = 1, TextScaled = true, Text = emoji, Parent = parent })
+		for k, v in pairs(props or {}) do
+			l[k] = v
+		 end
+		return l
+	end
+	if not art then
+		return emojiLabel()
+	end
+	local img = UI.new("ImageLabel", { BackgroundTransparency = 1, Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Parent = parent })
+	for k, v in pairs(props or {}) do
+		img[k] = v
+	end
+	UI.watchIcon(img, function()
+		img:Destroy()
+		emojiLabel()
+	end)
+	return img
+end
+
 -- 1.9.1: a glossy little phone drawn with frames (the icon packs have no phone)
 function UI.drawPhoneIcon(parent: Instance, props)
 	local holder = UI.new("Frame", { BackgroundTransparency = 1, Parent = parent })

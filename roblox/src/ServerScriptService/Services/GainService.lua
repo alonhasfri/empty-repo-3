@@ -1017,6 +1017,10 @@ local function gadgetTool(player, inv)
 	tool.ToolTip = inv.desc
 	tool.RequiresHandle = false
 	tool.CanBeDropped = false
+	local iconId = Config.Icons and Config.Icons[inv.key] -- 1.9.3: the 3D icon shows in the hotbar
+	if iconId then
+		tool.TextureId = "rbxassetid://" .. tostring(iconId)
+	end
 	tool:SetAttribute("Gadget", inv.key)
 	tool.Activated:Connect(function()
 		local d = {}

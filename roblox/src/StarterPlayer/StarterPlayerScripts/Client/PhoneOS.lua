@@ -217,7 +217,7 @@ local function appIcon(parent, app, order: number, size: number, labelH: number)
 	UI.corner(icon, math.floor(size * 0.27))
 	UI.gradient(icon, app.c1, app.c2, 45)
 	local pad = math.floor(size * 0.17)
-	local art, tint, rot = UI.iconImage(app.key) -- 1.9.1 real icon art (by brain level) where we have it, the emoji otherwise
+	local art, tint, rot = UI.iconImage(app.iconKey or app.key) -- 1.9.1 real icon art (by brain level) where we have it, the emoji otherwise
 	if art then
 		local p2 = math.floor(size * (tint and 0.2 or 0.08))
 		local img = UI.new("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Parent = icon }, {
@@ -283,7 +283,7 @@ local function splitApps(st, tier: string)
 			local a = byKey[key]
 			if key == "map" then
 				a = table.clone(a)
-				a.icon, a.name = P19.BusApp.icon, P19.BusApp.name
+				a.icon, a.name, a.iconKey = P19.BusApp.icon, P19.BusApp.name, "bus"
 			end
 			table.insert(first, a)
 			used[key] = true
@@ -362,16 +362,16 @@ end
 ---------------------------------------------------------------------
 -- 1.9 Items: every gadget and secret invention in one place
 ---------------------------------------------------------------------
-local function itemRow(parent, order: number, icon: string, name: string, desc: string, dim: boolean)
+local function itemRow(parent, order: number, icon: string, name: string, desc: string, dim: boolean, iconKey: string?)
 	-- morning test fix: the description used TextScaled in a 28 px box, so long ones shrank to
 	-- unreadable; now it wraps at a fixed readable size and the card grows to fit
 	local card = UI.new("Frame", { BackgroundColor3 = UI.T.panel, BackgroundTransparency = dim and 0.5 or 0, Size = UDim2.new(1, 0, 0, 64), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = order, Parent = parent }, {
 		UI.new("UIPadding", { PaddingBottom = UDim.new(0, 8) }),
 	})
 	UI.corner(card, 12)
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(8, 8), Size = UDim2.fromOffset(48, 48), TextScaled = true, Text = icon, Parent = card })
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 6), Size = UDim2.new(1, -150, 0, 22), TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, Font = UI.T.font, TextColor3 = UI.T.text, Text = name, Parent = card })
-	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 30), Size = UDim2.new(1, -150, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, TextSize = UI.textSize(14), TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Font = UI.T.body, TextColor3 = UI.T.muted, Text = desc, Parent = card })
+	UI.icon(card, iconKey, icon, { Position = UDim2.fromOffset(8, 8), Size = UDim2.fromOffset(48, 48) }) -- 1.9.3: 3D icon when we have one
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 6), Size = UDim2.new(1, -70, 0, 22), TextScaled = true, TextXAlignment = Enum.TextXAlignment.Left, Font = UI.T.font, TextColor3 = UI.T.text, Text = name, Parent = card })
+	UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(62, 30), Size = UDim2.new(1, -70, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, TextSize = UI.textSize(14), TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Font = UI.T.body, TextColor3 = UI.T.muted, Text = desc, Parent = card })
 	return card
 end
 
@@ -389,10 +389,10 @@ function PhoneOS.items()
 	end
 	header(P19.ItemsStuff)
 	order += 1
-	itemRow(m.content, order, "💰", string.format(P19.ItemsCoins, math.floor(st.coins or 0)), "", false)
+	itemRow(m.content, order, "💰", string.format(P19.ItemsCoins, math.floor(st.coins or 0)), "", false, "bank")
 	if st.phoneModel then
 		order += 1
-		itemRow(m.content, order, "📱", string.format(P19.ItemsPhone, tostring(st.phoneModel)), "", false)
+		itemRow(m.content, order, "📱", string.format(P19.ItemsPhone, tostring(st.phoneModel)), "", false, "phone")
 	end
 	for perk, on in pairs(st.perks or {}) do
 		if on then
@@ -424,7 +424,12 @@ function PhoneOS.items()
 	end
 	for _, inv in ipairs(owned) do
 		order += 1
-		local card = itemRow(m.content, order, inv.icon, inv.name, inv.desc, false)
+		local card = itemRow(m.content, order, inv.icon, inv.name, inv.desc, false, inv.key)
+		-- 1.9.3: the text gets the full width (it wrapped one word per line on phones); USE sits under it
+		local pad = card:FindFirstChildOfClass("UIPadding")
+		if pad then
+			pad.PaddingBottom = UDim.new(0, 58)
+		end
 		UI.button(card, (inv.cooldown or 0) > 0 and ("⏳ " .. inv.cooldown .. "s") or "USE", function()
 			if inv.key == "remote" then
 				-- the TV remote needs a place: the old Gadgets screen asks for it
@@ -436,7 +441,7 @@ function PhoneOS.items()
 				UI.toast(res.msg, res.ok and UI.Colors.good or UI.Colors.bad)
 			end
 			m.close()
-		end, { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Size = UDim2.fromOffset(76, 44), BackgroundColor3 = UI.Colors.good })
+		end, { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -8, 1, 52), Size = UDim2.fromOffset(96, 44), BackgroundColor3 = UI.Colors.good })
 	end
 	if #locked > 0 then
 		header(P19.ItemsLocked)
