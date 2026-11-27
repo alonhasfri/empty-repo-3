@@ -87,6 +87,7 @@ function DataService.load(player: Player)
 	while attempts < 6 and player.Parent do
 		attempts += 1
 		local locked = false
+		local candidate = nil -- 1.9.3 audit: only THIS try's copy counts (a copy from a failed try could be stale)
 		local ok, err = pcall(function()
 			store:UpdateAsync(key(player.UserId), function(old)
 				old = old or defaultData()
@@ -94,14 +95,17 @@ function DataService.load(player: Player)
 				local force = attempts >= 6
 				if lock and lock.job ~= game.JobId and os.time() - (lock.time or 0) < 120 and not force then
 					locked = true
+					candidate = nil
 					return nil -- cancel, another server still has it
 				end
+				locked = false
 				old.lock = { job = game.JobId, time = os.time() }
-				loaded = old
+				candidate = old
 				return old
 			end)
 		end)
-		if ok and loaded then
+		if ok and candidate and not locked then
+			loaded = candidate
 			break
 		end
 		if not ok then
@@ -118,6 +122,10 @@ function DataService.load(player: Player)
 	end
 
 	if not loaded then
+		-- 1.9.3 audit: don't let someone play an hour on a fresh save that will never be saved
+		if not RunService:IsStudio() and player.Parent then
+			player:Kick("We couldn't load your save right now. Your progress is safe: please rejoin in a minute.")
+		end
 		noSave[player] = true
 		loaded = defaultData()
 		profiles[player] = loaded
@@ -167,18 +175,26 @@ function DataService.save(player: Player, release: boolean?)
 		return
 	end
 	snapshotPosition(player, data)
-	local ok, err = pcall(function()
-		store:UpdateAsync(key(player.UserId), function(old)
-			if old and old.lock and old.lock.job ~= game.JobId then
-				-- another server took over; don't overwrite their newer data
-				return nil
-			end
-			data.lock = (not release) and { job = game.JobId, time = os.time() } or nil
-			return data
+	-- 1.9.3 audit: the leave / shutdown save retries (a single throttle lost up to a minute of progress)
+	local tries = release and 3 or 1
+	for attempt = 1, tries do
+		local ok, err = pcall(function()
+			store:UpdateAsync(key(player.UserId), function(old)
+				if old and old.lock and old.lock.job ~= game.JobId then
+					-- another server took over; don't overwrite their newer data
+					return nil
+				end
+				data.lock = (not release) and { job = game.JobId, time = os.time() } or nil
+				return data
+			end)
 		end)
-	end)
-	if not ok then
-		warn("[DataService] Save failed: " .. tostring(err))
+		if ok then
+			return
+		end
+		warn("[DataService] Save failed (try " .. attempt .. "): " .. tostring(err))
+		if attempt < tries then
+			task.wait(attempt * 2)
+		end
 	end
 end
 
