@@ -180,6 +180,7 @@ function BrainService.state(player)
 		serverNow = os.time(),
 		cells = cells,
 		cellsText = Brain.shortNumber(cells),
+		bitsTaken = data.bitsTaken or 0,
 		path = data.path,
 		iq = Brain.iq(cells),
 		iqText = Brain.iqText(cells, data.path),

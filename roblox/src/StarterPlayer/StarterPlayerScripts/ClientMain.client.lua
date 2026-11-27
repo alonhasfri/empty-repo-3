@@ -14,6 +14,7 @@ local AdminPanel = require(Client.AdminPanel)
 local Tutorial = require(Client.Tutorial)
 local Conversation = require(Client.Conversation)
 local PhoneOS = require(Client.PhoneOS) -- 1.7: the phone changes with your brain
+local _Bits = require(Client.Bits) -- 1.9.3: brain bits on the streets
 local Machines = require(Client.Machines) -- 1.9.3: inventable hotbar machines (Trace Teleporter, Jetpack, Bounce Pad)
 local Cutscene = require(Client.Cutscene) -- 1.9: cutscene player (intro flyover)
 

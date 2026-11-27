@@ -45,6 +45,7 @@ local function defaultData()
 		ideaMeter = 0, -- fills by doing job tasks; full = Eureka cutscene
 		eurekaChoices = nil,
 		focusCharges = 0,
+		bitsTaken = 0, -- 1.9.3: brain bits grabbed (the first goal)
 		machines = {}, -- 1.9.3: machines you invented (Config.Machines); old saves get it from reconcile
 		bonusHints = 0,
 		jobTasksDone = 0,

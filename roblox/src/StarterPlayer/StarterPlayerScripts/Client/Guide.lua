@@ -8,6 +8,7 @@ local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Content = require(ReplicatedStorage.Shared.Content)
+local Config = require(ReplicatedStorage.Shared.Config)
 local UI = require(script.Parent.UI)
 
 local G = Content.Guide
@@ -93,6 +94,10 @@ local function pick(st)
 	end
 	if not st.path then
 		return G.PickDoor, nil
+	end
+	-- 1.9.3 (judges): a new player's first goal is to MOVE: grab brain bits on the street
+	if (st.bitsTaken or 0) < Config.Bits.FirstGoal and not isAnimal(st) then
+		return string.format(G.Bits, st.bitsTaken or 0, Config.Bits.FirstGoal), "BrainBit"
 	end
 	if isAnimal(st) then
 		return G.Animal, "Station_clickbait"

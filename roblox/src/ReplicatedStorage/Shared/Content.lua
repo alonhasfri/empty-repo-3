@@ -2041,7 +2041,12 @@ Content.Boards = {
 }
 
 -- 1.7.2: "What do I do now?" (a goal line + an arrow to the next useful place). Short, picture-first lines.
+Content.Bits = {
+	Streak = "🔥 x%d STREAK!",
+}
+
 Content.Guide = {
+	Bits = "🧠 Grab glowing brain bits on the street! (%d/%d)", -- 1.9.3: the first goal is moving, not reading
 	PickDoor = "🚪 Pick a door: get dumber or get smarter!",
 	LifeGrow = "%s Age %d: play and grow up! Your path opens at age 8 (🌟 fountain).",
 	LifeCrossroads = "🌟 Go to the Crossroads Ceremony at the fountain and pick your path!",

@@ -1394,6 +1394,22 @@ Config.Machines = {
 	jetpack = { cooldown = 30, seconds = 8, lift = 0.9, thrust = 55 },
 	bouncepad = { cooldown = 45, seconds = 60, power = 130 },
 }
+-- 1.9.3 (judges): brain bits on the streets near you (BitService + Client/Bits.lua)
+Config.Bits = {
+	PerPlayer = 8, -- bits around you at once
+	Refill = 12, -- seconds between top-ups near where you are
+	DistMin = 14,
+	DistMax = 50,
+	TouchRange = 4, -- client: how close to walk
+	GrabRange = 10, -- server: how close you must really be (lag allowance)
+	Points = 0.35, -- brain points per bit (a library answer is 2)
+	Coins = 1,
+	StreakSeconds = 6, -- grab the next one within this to keep the 🔥 streak
+	StreakBonus = 0.15, -- +15% per streak step
+	MaxStreakBonus = 1.5, -- at most +150%
+	PerMinuteCap = 40,
+	FirstGoal = 10, -- new players start with "grab 10 brain bits"
+}
 Config.GadgetPigeonTips = 15 -- 1.9.3: coins the Pigeon Launcher show earns
 Config.GadgetBrainRain = 25 -- 1.9.3: brains the Brain Rain Machine drops (was 10)
 
