@@ -1162,6 +1162,7 @@ function Minigames.play(info, opts)
 	local finished = false
 	local score = 0
 	local running = false
+	local startedAt, roundSeconds = nil, info.seconds or 30 -- 1.9.3: for the speed stars
 	local function finish()
 		if finished then
 			return
@@ -1178,6 +1179,14 @@ function Minigames.play(info, opts)
 		m.clear()
 		local good = r.passed == true
 		UI.label(m.content, good and string.format(MG.ResultGood, r.score) or string.format(MG.ResultMeh, r.score or 0, r.pass or 0), { LayoutOrder = 1, Font = UI.T.title, TextSize = UI.textSize(22), TextColor3 = good and UI.Colors.good or UI.T.text })
+		if good and startedAt then
+			-- 1.9.3 (judges): 1-3 stars for how fast you hit the goal
+			local used = (os.clock() - startedAt) / math.max(1, roundSeconds)
+			local stars = used <= Config.Minigames.ThreeStars and 3 or (used <= Config.Minigames.TwoStars and 2 or 1)
+			local st = UI.label(m.content, string.rep("⭐", stars) .. string.rep("☆", 3 - stars) .. "  " .. MG.StarWords[stars], { LayoutOrder = 1, TextXAlignment = Enum.TextXAlignment.Center, Font = UI.T.title, TextSize = UI.textSize(26), TextColor3 = UI.Colors.gold })
+			st.Name = "Stars"
+			UI.sound(stars == 3 and "BadgeSparkle" or "LevelUp", 0.4)
+		end
 		if not good and not r.flagged then
 			UI.label(m.content, MG.FailTip, { LayoutOrder = 2, TextColor3 = UI.T.muted }) -- 1.9.3: not a dead end
 		end
@@ -1238,7 +1247,13 @@ function Minigames.play(info, opts)
 				task.delay(Config.Minigames.AutoFinishDelay, finish)
 			end
 		end
+		local combo = 0
 		function ctx.feedback(ok: boolean)
+			-- 1.9.3 (judges): a combo counter for hits in a row
+			combo = ok and combo + 1 or 0
+			if combo >= 2 then
+				scoreL.Text = string.format(MG.Score, score, info.pass or 0) .. "  🔥x" .. combo
+			end
 			UI.sound(ok and "BrainCellGained" or "CartoonBoing", 0.3)
 			if UI.effects() > 0 and not UI.reducedMotion() then
 				flash.BackgroundColor3 = ok and UI.Colors.good or UI.Colors.bad
@@ -1250,6 +1265,7 @@ function Minigames.play(info, opts)
 		run(area, ctx)
 		local seconds = info.seconds or 30
 		local t0 = os.clock()
+		startedAt, roundSeconds = t0, seconds
 		task.spawn(function()
 			while running and m.alive() do
 				local left = math.max(0, seconds - (os.clock() - t0))

@@ -1251,7 +1251,7 @@ function Hud.update(st)
 
 	cellsLabel.Text = st.cellsText
 	iqChip.Text = st.iqText
-	coinChip.Visible = st.path == "Gain" or (st.path == "Lose" and (st.coins or 0) > 0) -- 1.9.1: the Lose path earns coins now (Golden Brains, new forms)
+	coinChip.Visible = st.path ~= nil and (st.coins or 0) > 0 -- 1.9.3 (judges): no coin chip until you have coins -- 1.9.1: the Lose path earns coins now (Golden Brains, new forms)
 	coinChip.Text = "💰 " .. tostring(math.floor(st.coins or 0))
 	local b = BANNERS[path or "none"]
 	bannerTitle.Text = b[1]

@@ -179,6 +179,8 @@ Config.Minigames = {
 	-- if it took at least this share of the fastest humanly possible time (pass / maxPerSecond); no more
 	-- "half the round must pass" waiting.
 	MinPassFactor = 0.6,
+	ThreeStars = 0.45, -- 1.9.3: goal reached within this share of the round = 3 stars
+	TwoStars = 0.75, -- ... this share = 2 stars, otherwise 1
 	AutoFinishDelay = 0.8, -- seconds the "Goal reached!" flash shows before the result
 	BonusCoinsPerPoint = 1, -- extra coins for every point over the pass mark
 	JobBrainPoints = 2.5, -- 1.9.1 fun fixes: brain points for a good job shift (was 0.5: the most fun thing paid the least)
