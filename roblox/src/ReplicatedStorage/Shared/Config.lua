@@ -1451,6 +1451,9 @@ Config.Icons = {
 	more = 138445135043157,
 	run = 86137570798458, -- sprint button
 	admin = 96560764991083, -- staff tools button
+	teleporter = 125998347865705, -- machines (1.9.3)
+	jetpack = 91114687755411,
+	bouncepad = 94387653487159,
 }
 -- 1.9.1 (user: "make the icons change according to how smart/dumb you are"): smart players (glass / clean pop-up
 -- styles) get clean white minimal icons ("Monochrome White UI Icon Pack", SodaBreadle); really dumb players (neon)
