@@ -7,6 +7,7 @@ Narration.Name = "Dr. Wrinkles"
 
 Narration.Lines = {
 	host = {
+		welcomeBack = { "Welcome BACK, contestant! The show must go on!" }, -- 1.9.3: returning players already picked a door
 		welcome = { "WELCOME, contestant! Behind door number one: glory! Behind door number two: drool!", "It's SHOWTIME! Pick a door, any door!" },
 		choseLose = { "Ooh, the BIG door! Let's see how fast you can lose it ALL!", "A bold choice! Your brain is now officially on a countdown!" },
 		choseGain = { "The quiet door! A scholar! Let's see if you've got what it takes!", "Brains on the line, folks! Let's climb!" },
@@ -17,6 +18,7 @@ Narration.Lines = {
 		stage = { "A brand new you! Give it up for the contestant!" },
 	},
 	librarian = {
+		welcomeBack = { "Ah, you have returned. Your bookmark is where you left it." },
 		welcome = { "Ah, welcome. Do keep your voice down; the books are thinking." },
 		choseGain = { "A fine choice. Do mind the footnotes." },
 		choseLose = { "…I see. I shall shelve your brain under 'Fiction'." },
@@ -28,6 +30,7 @@ Narration.Lines = {
 		stressed = { "You appear frazzled. A routine might help. Beethoven counted his coffee beans." },
 	},
 	brainrot = {
+		welcomeBack = { "yo ur back 👋 W" },
 		welcome = { "yo wsg 👋 pick a door bro" },
 		choseLose = { "W choice no cap 🔥" },
 		choseGain = { "bro wants to be smart 💀 aight" },
@@ -40,6 +43,7 @@ Narration.Lines = {
 		meterBroken = { "bro is too dumb to be embarrassed now 🗿" },
 	},
 	caveman = {
+		welcomeBack = { "OOGA! *waves*" },
 		welcome = { "OOGA." },
 		lost = { "OOGA.", "Hrrng.", "*bonk*", "UGH." },
 		gained = { "…hm?", "OOG??" },

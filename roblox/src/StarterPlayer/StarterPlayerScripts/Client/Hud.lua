@@ -193,16 +193,23 @@ local function updateLoseStrip(st)
 	stripTarget = "scroller"
 end
 
+-- 1.9.3 harsh review #2: a calm start. For the first Config.UI.CalmStartSeconds only the brain card,
+-- the goal line and the phone show; the progress strip and the Quick Play column fade in after.
+local calmUntil = os.clock() + (Config.UI.CalmStartSeconds or 0)
+local function calm(): boolean
+	return os.clock() < calmUntil
+end
+
 local function updateStrip(st)
 	local human = st.stage == "human" or st.stage == "barelyhuman" or st.stage == nil
 	if st.path == "Lose" and not st.dead then
-		strip.Visible = true
+		strip.Visible = not calm()
 		stackH = 150
 		pcall(updateLoseStrip, st)
 		return
 	end
 	local show = st.path == "Gain" and not st.dead and human
-	strip.Visible = show
+	strip.Visible = show and not calm()
 	stackH = show and 150 or 96
 	if not show then
 		return
@@ -272,7 +279,7 @@ local grid = UI.new("ScrollingFrame", {
 	Size = UDim2.new(0, 132, 1, -250),
 	CanvasSize = UDim2.new(),
 	AutomaticCanvasSize = Enum.AutomaticSize.Y,
-	ScrollBarThickness = 3,
+	ScrollBarThickness = 0, -- 1.9.3: its 3 px bar showed as a stray white line on phones
 	BorderSizePixel = 0,
 	Selectable = false,
 	Parent = UI.gui,
@@ -1182,7 +1189,7 @@ function Hud.update(st)
 	adminBtn.Visible = (st.rank or 0) >= 1
 	pickRow.Visible = (path == nil and not st.dead) or doorsForced
 	doorDim.Visible = pickRow.Visible
-	grid.Visible = path ~= nil
+	grid.Visible = path ~= nil and not calm() -- 1.9.3 calm start
 	corner.Visible = not st.dead
 	-- 1.9: Shop, Map and Settings are phone apps now; ⚙️ only stays in the lobby (no phone apps yet)
 	shopBtn.Visible = false
@@ -1258,5 +1265,14 @@ function Hud.bigCounter(amount: number, up: boolean, title: string?)
 		big:Destroy()
 	end)
 end
+
+
+-- 1.9.3 calm start (see calm() above): the Quick Play column waits too, then everything fades in
+task.spawn(function()
+	task.wait((Config.UI.CalmStartSeconds or 0) + 0.1)
+	local st = UI.state or {}
+	grid.Visible = st.path ~= nil
+	pcall(updateStrip, st)
+end)
 
 return Hud

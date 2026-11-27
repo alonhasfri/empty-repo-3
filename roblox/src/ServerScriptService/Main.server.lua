@@ -334,12 +334,19 @@ local function onPlayerAdded(player: Player)
 			-- come back exactly where you left off
 			if data.position and data.path and not data.dead then
 				local p = data.position
-				char:PivotTo(CFrame.new(p.x, p.y + 3, p.z))
+				-- 1.9.3 harsh review #2: only outdoors. A spot inside a building (a roof above you) made you
+				-- start facing a wall in a cramped room; then you start at the normal spawn in the plaza.
+				local params = RaycastParams.new()
+				params.FilterDescendantsInstances = { char }
+				local roof = workspace:Raycast(Vector3.new(p.x, p.y + 4, p.z), Vector3.new(0, 60, 0), params)
+				if not roof then
+					char:PivotTo(CFrame.new(p.x, p.y + 3, p.z))
+				end
 			end
 			if data.dead then
 				Net.send(player, "deathScreen", {})
 			else
-				BrainService.narrate(player, "welcome")
+				BrainService.narrate(player, data.path and "welcomeBack" or "welcome") -- 1.9.3: no "pick a door" once you have a path
 			end
 		end
 		if humanoid then
