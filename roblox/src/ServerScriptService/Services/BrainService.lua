@@ -353,9 +353,13 @@ function BrainService.applyCharacter(player)
 		end
 		for _, side in ipairs({ -1, 1 }) do
 			local x = side * hs.X * 0.22
-			-- rim (a short cylinder facing forward) and a see-through lens
-			piece(Vector3.new(0.05, r * 2, r * 2), CFrame.new(x, eyeY, front) * CFrame.Angles(0, math.rad(90), 0), glasses.color, 0, Enum.PartType.Cylinder)
-			piece(Vector3.new(0.06, r * 1.6, r * 1.6), CFrame.new(x, eyeY, front - 0.005) * CFrame.Angles(0, math.rad(90), 0), Color3.fromRGB(200, 230, 255), 0.55, Enum.PartType.Cylinder)
+			-- 1.9.3 audit: the rim is a RING of 12 small pieces (a solid disc covered the eyes), the lens is clear
+			for k = 0, 11 do
+				local ang = k / 12 * math.pi * 2
+				local seg = 2 * math.pi * r / 12 + 0.02
+				piece(Vector3.new(seg, 0.07, 0.06), CFrame.new(x + math.cos(ang) * r, eyeY + math.sin(ang) * r, front) * CFrame.Angles(0, 0, ang + math.pi / 2), glasses.color, 0)
+			end
+			piece(Vector3.new(0.03, r * 1.9, r * 1.9), CFrame.new(x, eyeY, front + 0.01) * CFrame.Angles(0, math.rad(90), 0), Color3.fromRGB(200, 230, 255), 0.8, Enum.PartType.Cylinder)
 		end
 		piece(Vector3.new(hs.X * 0.1, 0.05, 0.05), CFrame.new(0, eyeY + r * 0.3, front), glasses.color, 0)
 		model.Parent = char

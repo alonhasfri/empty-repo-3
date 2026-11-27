@@ -395,7 +395,7 @@ Net.on("astro_train_done", function(player, d)
 	end
 	if all and firstTime then
 		Net.send(player, "confetti", {})
-		return { ok = true, msg = "🧑‍🚀 FULLY TRAINED ASTRONAUT! NASA would hire you. (We are not NASA.)" }
+		return { ok = true, msg = "🧑‍🚀 FULLY TRAINED ASTRONAUT! The Space Agency would hire you on the spot!" }
 	end
 	return { ok = true, msg = "✅ Training complete!" }
 end)

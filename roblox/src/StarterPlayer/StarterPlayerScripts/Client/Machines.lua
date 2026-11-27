@@ -122,14 +122,15 @@ local function traceTeleport()
 	if not root or not hum or hum.Health <= 0 then
 		return
 	end
+	busy = true -- 1.9.3 audit: set BEFORE the server call, so a double tap can't open two ghosts
 	local check = Remote.call("machine_check", { key = "teleporter" })
-	if not check.ok then
+	if not check.ok or not char.Parent or hum.Health <= 0 then
+		busy = false
 		if check.msg then
 			UI.toast(check.msg, UI.Colors.bad)
 		end
 		return
 	end
-	busy = true
 	root.Anchored = true -- your real body waits here
 	-- the glowing ghost (client only)
 	char.Archivable = true
@@ -362,7 +363,12 @@ local function hook(tool: Instance)
 	end
 	hooked[tool] = true
 	tool.Activated:Connect(function()
-		if busy then
+		-- 1.9.3 audit: never during a cutscene / conversation (they hide the HUD and hold you still), while
+		-- dead, or while something else already holds your character
+		local char = player.Character
+		local hum = char and char:FindFirstChildOfClass("Humanoid")
+		local root = char and char:FindFirstChild("HumanoidRootPart") :: BasePart?
+		if busy or not hum or hum.Health <= 0 or not root or root.Anchored or (UI.gui and not UI.gui.Enabled) then
 			return
 		end
 		local key = tool:GetAttribute("Machine")

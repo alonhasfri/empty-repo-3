@@ -2,7 +2,7 @@
 --   * Phones: original parody names, paid with in-game coins only, price shown before buying.
 --   * Case maker: colours + preset stickers. The Brainrot meter = how loud the case is.
 --     "Show it off": Lose players lose cells (louder case = more); Gain players with a calm case get a stress drop.
---   * Scam stall "Totally Real Phones 👍": the "iBrainz 99 MEGA" is a calculator with a sticker.
+--   * Scam stall "Totally Real Phones 👍": the "Brainzo 99 MEGA" is a calculator with a sticker.
 --     Lose players can buy it (price shown, effect honestly "unknown"); using it loses cells.
 --     Gain players see the red flags and can report the scammer for brain cells (teaches spotting scams).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
