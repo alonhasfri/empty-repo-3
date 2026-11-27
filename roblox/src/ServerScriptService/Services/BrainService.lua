@@ -253,11 +253,11 @@ local function makeOverhead(player, char)
 	if not gui then
 		gui = Instance.new("BillboardGui")
 		gui.Name = "Overhead"
-		gui.Size = UDim2.new(8, 0, 1.4, 0) -- studs, so it shrinks with distance
+		gui.Size = UDim2.new(6, 0, 1.1, 0) -- studs, so it shrinks with distance (1.9.3: smaller, was 8 x 1.4)
 		gui.PlayerToHideFrom = player -- 1.9.3: others see your tag, you don't (it covered the phone screen)
 		gui.StudsOffset = Vector3.new(0, 2.4, 0)
 		gui.AlwaysOnTop = false
-		gui.MaxDistance = 80
+		gui.MaxDistance = 35 -- 1.9.3 harsh review #7: a crowd of tags filled phone screens (was 80)
 		gui.Parent = head
 		local label = Instance.new("TextLabel")
 		label.Name = "Text"
