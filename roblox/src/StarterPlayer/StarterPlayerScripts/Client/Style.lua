@@ -479,6 +479,13 @@ function Style.apply(state)
 		if styleChanged then
 			applyLighting(styleName)
 			task.defer(applyDecor, styleName)
+			-- 1.9.3 (user: "the map doesn't really change with your brain"): big town pieces per style
+			task.defer(function()
+				local ok, TownMood = pcall(require, script.Parent.TownMood)
+				if ok then
+					TownMood.apply(styleName, lowDetail)
+				end
+			end)
 		end
 		applyCashGrabParts(tier)
 		outlineOn = (STYLES[styleName] or {}).outline == true and not lowDetail

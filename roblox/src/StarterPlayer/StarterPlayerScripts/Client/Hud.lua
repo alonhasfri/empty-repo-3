@@ -1170,7 +1170,68 @@ local function updatePower(st)
 	end
 end
 
+-- 1.9.3 core loop (user: "gameplay is boring"; 3 judges: "rewards are just numbers"): every brain-cell or
+-- coin change is FELT: a big "+1.2B 🧠" floats up from the counter, the counter bounces, coins fly in.
+local lastCells, lastCoins = nil, nil
+local counterScale = UI.new("UIScale", { Parent = top })
+local function floatDelta(text: string, color: Color3)
+	local l = UI.new("TextLabel", {
+		BackgroundTransparency = 1,
+		AnchorPoint = Vector2.new(0, 0),
+		Position = UDim2.new(0, top.AbsolutePosition.X + 64, 0, top.AbsolutePosition.Y + top.AbsoluteSize.Y + 4),
+		Size = UDim2.fromOffset(200, 34),
+		Text = text,
+		Font = Enum.Font.FredokaOne,
+		TextSize = UI.textSize(26),
+		TextColor3 = color,
+		TextStrokeTransparency = 0.2,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 60,
+		Parent = UI.gui,
+	})
+	local still = UI.reducedMotion()
+	TweenService:Create(l, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = still and l.Position or (l.Position - UDim2.fromOffset(0, 46)), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	task.delay(1.5, function()
+		l:Destroy()
+	end)
+end
+local function bounceCounter()
+	if UI.reducedMotion() then
+		return
+	end
+	counterScale.Scale = 1.12
+	TweenService:Create(counterScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+end
+local function coinsFly(n: number)
+	if UI.effects() <= 0 or UI.reducedMotion() then
+		return
+	end
+	local goal = UDim2.fromOffset(top.AbsolutePosition.X + 150, top.AbsolutePosition.Y + 44)
+	local vp = workspace.CurrentCamera.ViewportSize
+	for i = 1, math.clamp(math.ceil(n / 5), 2, 6) do
+		local c = UI.new("TextLabel", { BackgroundTransparency = 1, Text = "💰", TextScaled = true, Size = UDim2.fromOffset(26, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(vp.X / 2 + math.random(-60, 60), vp.Y / 2 + math.random(-30, 30)), ZIndex = 60, Parent = UI.gui })
+		TweenService:Create(c, TweenInfo.new(0.55 + i * 0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = goal }):Play()
+		task.delay(0.65 + i * 0.07, function()
+			c:Destroy()
+		end)
+	end
+end
+local function rewardFeedback(st)
+	local cells, coins = tonumber(st.cells), tonumber(st.coins)
+	if lastCells and cells and cells ~= lastCells and not st.dead then
+		local d = cells - lastCells
+		local good = (d > 0) == (st.path ~= "Lose") -- losing cells IS the goal on the Lose path
+		floatDelta((d > 0 and "+" or "-") .. Brain.formatNumber(math.abs(d)) .. " 🧠", good and Color3.fromRGB(110, 240, 140) or Color3.fromRGB(255, 120, 170))
+		bounceCounter()
+	end
+	if lastCoins and coins and coins > lastCoins then
+		coinsFly(coins - lastCoins)
+	end
+	lastCells, lastCoins = cells, coins
+end
+
 function Hud.update(st)
+	pcall(rewardFeedback, st)
 	updatePower(st)
 	UI.setTier(st.tier)
 	if st.settings then
