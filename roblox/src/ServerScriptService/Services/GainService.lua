@@ -954,7 +954,7 @@ local function useGadget(player, d)
 	if inv.key == "duck" then
 		-- 1.9.3: Skill Gates are gone, so the duck calms you down instead of giving gate hints
 		BrainService.stress(player, -Config.DuckCalm)
-		data.ideaMeter = (data.ideaMeter or 0) + 1 -- 1.9.3: talking it through sparks an idea
+		data.ideaMeter = math.min(Config.EurekaTasks, (data.ideaMeter or 0) + 1) -- 1.9.3: talking it through sparks an idea
 		msg = "🦆 *quack* You explained your problem out loud. Calmer, and +1 💡 idea!"
 	elseif inv.key == "coffee" then
 		if data.path ~= "Gain" then
@@ -968,6 +968,7 @@ local function useGadget(player, d)
 		end
 		data.coins += Config.GadgetPigeonTips
 		msg = "🐦 PIGEONS LAUNCHED. The crowd tips you " .. Config.GadgetPigeonTips .. " coins."
+		BrainService.push(player)
 	elseif inv.key == "rain" then
 		if root then
 			WorldService.brainRain(Config.GadgetBrainRain, root.Position)

@@ -143,17 +143,17 @@ local SEQ = {
 		{ note = "loseIntro" },
 		{ note = "losePasses" },
 		{ practice = true, title = "SKIP A TEXT BOX!", desc = "A boring text box appears. DON'T read it. Find the tiny SKIP button." },
-		{ event = "clickbait", target = "phone", title = "CLICK THE CLICKBAIT!", desc = "Open 📱 Phone → ClickNews. Tap the DUMBEST headline." },
-		{ event = "steal", target = "phone", title = "PLAY A COPYCAT GAME!", desc = "Open 📱 Phone → Steal A. Pick the dumbest game." },
-		{ event = "comments", target = "phone", title = "POST A DUMB COMMENT!", desc = "Open 📱 Phone → Comments. Dumber combo = more cells lost." },
+		{ event = "clickbait", target = "phone", title = "CLICK THE CLICKBAIT!", desc = "Go to the 📰 Clickbait Newsstand (📱 Phone → 🚌 Bus & Map). Tap the DUMBEST headline." },
+		{ event = "steal", target = "phone", title = "PLAY A COPYCAT GAME!", desc = "Go to the 🎮 Steal A Arcade (📱 Phone → 🚌 Bus & Map). Pick the dumbest game." },
+		{ event = "comments", target = "phone", title = "POST A DUMB COMMENT!", desc = "Go to the 💬 Internet Café (📱 Phone → 🚌 Bus & Map). Dumber combo = more cells lost." },
 		{ event = "scroller", target = "phone", title = "DOOMSCROLL!", desc = "Open 📱 Phone → BrainTok. Swipe through videos." },
 		{ note = "loseFinal" },
 	},
 	Gain = {
 		{ note = "gainIntro" },
-		{ event = "library", target = "library", title = "READ A BOOK!", desc = "Tap 📚 Library. Read for real, then answer the question." },
-		{ event = "job", target = "phone", title = "GET A JOB!", desc = "Open 📱 Phone → Jobs. Pick one your IQ allows." },
-		{ event = "work", target = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (or take the 🚌 bus) and play your job's minigame.", last = true },
+		{ event = "library", target = "phone", title = "READ A BOOK!", desc = "Go to the 📚 School Library (follow the arrow, or 📱 Phone → 🚌 Bus & Map). Read for real, then answer." },
+		{ event = "job", target = "phone", title = "GET A JOB!", desc = "Go to the 💼 Job Board (📱 Phone → 🚌 Bus & Map). Pick one your IQ allows." },
+		{ event = "work", target = "phone", title = "GO TO WORK!", desc = "Open 📱 Phone → 🛠 Work (or take the 🚌 bus) and play your job's minigame.", last = true },
 	},
 }
 

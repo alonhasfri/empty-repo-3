@@ -204,6 +204,9 @@ Players.PlayerAdded:Connect(function(player)
 				return
 			end
 			local data = DataService.get(player)
+			if data and data.eventInvite and not TE.Events[data.eventInvite] then
+				data.eventInvite = nil -- 1.9.3: an old "wedding" invite (event removed) must not block new invites
+			end
 			if data and data.path and not data.dead and not data.eventInvite and not active[player] and isHuman(data) and not player:GetAttribute("AFK") then
 				EventService.invite(player)
 				waitFor = math.random(CE.GapMin, CE.GapMax)
