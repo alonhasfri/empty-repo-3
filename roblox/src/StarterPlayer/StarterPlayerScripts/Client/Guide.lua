@@ -1,5 +1,5 @@
 -- Guide.lua (1.7.2): "What do I do now?"
--- A short goal line at the top and a big friendly 3D arrow over your head that points
+-- A short goal line at the top and glowing chevrons on the ground in front of you that point
 -- at the next useful place for your path, brain level and animal stage.
 -- Hidden by Settings → 🧭 guide OFF, while an objective banner (school bell) is showing,
 -- and once you're standing at the target.
@@ -20,6 +20,7 @@ local targetName = nil -- the workspace part name we point at (found lazily: the
 local line = nil
 local arrow = nil
 local label = nil
+local currentText = nil -- the goal text (the distance is added after it every frame)
 
 -- the goal line (top centre, under the objective banner's spot)
 line = UI.new("TextLabel", {
@@ -45,42 +46,31 @@ UI.onScale(function(d)
 		line.Position = UDim2.new(0.5, 0, 0, 10 + 26 * d) -- 1.8.3: just under the slim objective line at the top
 end)
 
+-- 1.9.3 (user: "the arrow should be BELOW you and clearly point where to go"): three glowing chevrons
+-- lie flat on the ground in front of your feet, like a GPS, pulsing one after another toward the goal.
+-- The distance is shown in the goal line at the top (no floating label).
+local CHEVRONS = 3
 local function makeArrow()
 	local m = Instance.new("Model")
 	m.Name = "GuideArrow"
-	local function piece(size: Vector3, offset: CFrame)
-		local p = Instance.new("Part")
-		p.Size = size
-		p.Anchored = true
-		p.CanCollide = false
-		p.CanQuery = false
-		p.CanTouch = false
-		p.CastShadow = false
-		p.Material = Enum.Material.SmoothPlastic -- 1.9.3: no neon glare beside your head
-		p.Transparency = 0.25
-		p.Color = Color3.fromRGB(255, 220, 60)
-		p:SetAttribute("Offset", offset)
-		p.Parent = m
-		return p
+	for i = 1, CHEVRONS do
+		for side = -1, 1, 2 do
+			local p = Instance.new("Part")
+			p.Name = "Chevron" .. i
+			p.Size = Vector3.new(0.7, 0.15, 2.6)
+			p.Anchored = true
+			p.CanCollide = false
+			p.CanQuery = false
+			p.CanTouch = false
+			p.CastShadow = false
+			p.Material = Enum.Material.Neon
+			p.Color = Color3.fromRGB(255, 215, 60)
+			p:SetAttribute("Index", i)
+			p:SetAttribute("Side", side)
+			p.Parent = m
+		end
 	end
-	-- shaft along -Z (the arrow's forward), wedge tip in front
-	piece(Vector3.new(0.6, 0.35, 2.2), CFrame.new(0, 0, 0.6))
-	piece(Vector3.new(1.2, 0.35, 1.2), CFrame.new(0, 0, -0.75) * CFrame.Angles(0, math.rad(45), 0)) -- diamond tip
-	local bb = Instance.new("BillboardGui")
-	bb.Size = UDim2.fromOffset(70, 22)
-	bb.StudsOffsetWorldSpace = Vector3.new(0, 1.2, 0)
-	bb.AlwaysOnTop = false
-	bb.MaxDistance = 200
-	bb.Parent = m:GetChildren()[1]
-	label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.TextScaled = true
-	label.Font = Enum.Font.FredokaOne
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.TextStrokeTransparency = 0
-	label.Text = ""
-	label.Parent = bb
+	label = Instance.new("TextLabel") -- kept for the old code path; the distance goes in the goal line
 	m.Parent = workspace.CurrentCamera -- client only
 	return m
 end
@@ -140,6 +130,7 @@ local function refresh()
 	local text, target = pick(state)
 	targetName = target
 	local show = enabled() and text ~= nil and not bannerBusy()
+	currentText = text
 	line.Text = text or ""
 	line.Visible = show
 	if arrow then
@@ -200,21 +191,30 @@ RunService.RenderStepped:Connect(function(dt)
 	local flat = Vector3.new(target.Position.X - root.Position.X, 0, target.Position.Z - root.Position.Z)
 	local dist = flat.Magnitude
 	t += dt
-	local bob = UI.reducedMotion() and 0 or math.sin(t * 3) * 0.25
-	local base = root.Position + Vector3.new(0, 3.4 + bob, 0) -- 1.9.3: just over your head (your own name tags are hidden from you now); at waist height the body hid it
-	local cf
-	if dist < NEAR then
-		-- you're here: point down at your feet
-		cf = CFrame.new(base) * CFrame.Angles(math.rad(-90), 0, 0)
-		label.Text = G.Near
-	else
-		local dir = flat.Unit
-		cf = CFrame.lookAt(base + dir * 2.2, base + dir * 3.2)
-		label.Text = string.format(G.Meters, math.floor(dist * 0.28 + 0.5)) -- 1 stud ≈ 0.28 m
-	end
+	-- ground under your feet
+	local params = RaycastParams.new()
+	params.FilterDescendantsInstances = { char, arrow }
+	local hit = workspace:Raycast(root.Position, Vector3.new(0, -8, 0), params)
+	local groundY = hit and hit.Position.Y or (root.Position.Y - 3)
+	local near = dist < NEAR
+	local metres = math.floor(dist * 0.28 + 0.5) -- 1 stud ≈ 0.28 m
+	line.Text = (currentText or "") .. (near and ("  •  " .. G.Near) or ("  •  " .. string.format(G.Meters, metres)))
+	local dir = near and Vector3.new(0, 0, -1) or flat.Unit
 	for _, p in ipairs(arrow:GetChildren()) do
 		if p:IsA("BasePart") then
-			p.CFrame = cf * p:GetAttribute("Offset")
+			local i = p:GetAttribute("Index")
+			local side = p:GetAttribute("Side")
+			p.Transparency = near and 1 or 0
+			if not near then
+				-- each chevron sits further ahead; a wave of brightness runs toward the goal
+				local ahead = 4.5 + (i - 1) * 3
+				local pulse = UI.reducedMotion() and 0.15 or (0.5 + 0.5 * math.sin(t * 6 - i * 1.3))
+				p.Transparency = 0.05 + 0.55 * (1 - pulse)
+				local centre = Vector3.new(root.Position.X, groundY + 0.12, root.Position.Z) + dir * ahead
+				local base = CFrame.lookAt(centre, centre + dir)
+				-- two bars make a ">" pointing forward
+				p.CFrame = base * CFrame.new(side * 0.85, 0, 0.55) * CFrame.Angles(0, math.rad(side * 40), 0)
+			end
 		end
 	end
 end)
