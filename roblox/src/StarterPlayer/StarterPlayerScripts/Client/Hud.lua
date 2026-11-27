@@ -907,7 +907,7 @@ task.spawn(function()
 			end)
 			debugLabel.Text = string.format(
 				" FPS: %d\n Ping: %d ms\n Tier: %s  Stage: %s\n Path: %s  Rank: %s\n Saving: %s",
-				frames / (os.clock() - last),
+				math.floor(frames / (os.clock() - last)), -- 1.9.3 audit: %d needs a whole number
 				math.floor(ping),
 				st and st.tier or "?",
 				st and st.stage or "?",

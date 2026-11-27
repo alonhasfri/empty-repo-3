@@ -1260,7 +1260,9 @@ function Minigames.play(info, opts)
 				end
 				task.wait(0.1)
 			end
-			finish()
+			if m.alive() then -- 1.9.3 audit: closing the pop-up quits; it no longer sends a half-played score
+				finish()
+			end
 		end)
 	end, { LayoutOrder = 5, BackgroundColor3 = UI.Colors.good, Size = UDim2.new(1, 0, 0, 56) })
 	m.focus()

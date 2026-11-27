@@ -576,6 +576,10 @@ function BrainService.gain(player, points: number, reason: string?)
 	end
 	local before = data.cells
 	data.cells += amount
+	-- 1.9.3 audit: with no gates, cells could grow to infinity and break saving
+	if data.cells ~= data.cells or data.cells > Config.MaxCells then
+		data.cells = Config.MaxCells
+	end
 	if amount >= 1 then
 		Net.send(player, "delta", { amount = amount, up = true, iq = data.path == "Gain" and (Brain.iq(data.cells) - Brain.iq(before)) or nil })
 	end
@@ -615,7 +619,7 @@ function BrainService.setCells(player, value: number)
 	if not data then
 		return
 	end
-	data.cells = math.max(0, value)
+	data.cells = math.clamp(value == value and value or 0, 0, Config.MaxCells) -- 1.9.3: never NaN / infinite
 	if data.cells > 0 then
 		data.dead = false
 	end

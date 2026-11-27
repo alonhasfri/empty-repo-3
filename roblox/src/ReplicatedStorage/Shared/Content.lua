@@ -1546,7 +1546,7 @@ Content.PhoneShop = {
 		{ key = "grey", name = "⬜ Plain grey", rot = 0 },
 		{ key = "blue", name = "🟦 Calm blue", rot = 0 },
 		{ key = "green", name = "🟩 Leafy green", rot = 0 },
-		{ key = "pink", name = "🩷 Hot pink", rot = 1 },
+		{ key = "pink", name = "💗 Hot pink", rot = 1 },
 		{ key = "neon", name = "🌈 Flashing neon", rot = 3 },
 	},
 	Stickers = {

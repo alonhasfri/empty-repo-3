@@ -53,7 +53,9 @@ Net.on("shop_list", function(player)
 	local astroOffered = data.perks.AstronautEarly == true
 		or (not BrainService.spaceInvented() and Brain.iq(data.cells) >= Config.Space.AstronautIQ)
 	for key, pass in pairs(Config.GamePasses) do
-		if (pass.path == data.path or pass.path == "Any") and (key ~= "AstronautEarly" or astroOffered) then
+		-- 1.9.3: Extra Hints only helped Skill Gates, which are gone: never sell it (honest money)
+		local retired = key == "ExtraHints" and Config.Features.Gates == false
+		if not retired and (pass.path == data.path or pass.path == "Any") and (key ~= "AstronautEarly" or astroOffered) then
 			table.insert(list, {
 				key = key,
 				id = pass.id,

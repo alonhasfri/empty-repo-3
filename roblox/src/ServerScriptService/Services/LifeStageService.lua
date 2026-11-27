@@ -187,11 +187,16 @@ function LifeStageService.start()
 				if info and not info.paused and not data.dead then
 					local l = data.life
 					local before = LifeStageService.stage(data).key
-					l.seconds += 5
+					-- 1.9.3 audit: age stops at the retire age (saves showed 137 and a birthday toast every 2 minutes)
+					if LifeStageService.age(data) < CL.LegacyAge then
+						l.seconds += 5
+					end
 					local age = LifeStageService.age(data)
 					if age > (l.lastYear or 0) then
 						l.lastYear = age
-						BrainService.toast(p, string.format(TL.Birthday, age), "BadgeSparkle")
+						if age <= CL.CrossroadsTo or age % 10 == 0 then -- grown-ups: only round birthdays
+							BrainService.toast(p, string.format(TL.Birthday, age), "BadgeSparkle")
+						end
 						local after = LifeStageService.stage(data)
 						if after.key ~= before then
 							BrainService.toast(p, string.format(TL.NewStage, after.emoji, TL.StageNames[after.key]), "LevelUp")
