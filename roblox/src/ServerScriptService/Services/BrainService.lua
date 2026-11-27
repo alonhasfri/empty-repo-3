@@ -328,12 +328,37 @@ function BrainService.applyCharacter(player)
 	end
 	local glasses = BrainService.currentGlasses(player)
 	if glasses then
-		local g = Instance.new("Part")
-		g.Name = "BrainGlasses"
-		g.Size = Vector3.new(1.1, 0.25, 0.1) * (char:GetAttribute("AppliedScale") or 1)
-		g.Color = glasses.color
-		g.Material = Enum.Material.SmoothPlastic
-		weldTo(g, head, CFrame.new(0, 0.15, -0.6 * (char:GetAttribute("AppliedScale") or 1)))
+		-- 1.9.3 (user: "a bar above my eyes"): real glasses: two round lenses with rims and a bridge, sized and
+		-- placed from the actual head (it grows with your brain), on the eye line, just in front of the face
+		local hs = head.Size
+		local model = Instance.new("Model")
+		model.Name = "BrainGlasses"
+		local eyeY = hs.Y * 0.05
+		local front = -hs.Z / 2 - 0.04
+		local r = math.min(hs.X * 0.2, hs.Y * 0.22)
+		local function piece(size: Vector3, offset: CFrame, color: Color3, transparency: number, shape: Enum.PartType?)
+			local p = Instance.new("Part")
+			p.Size = size
+			if shape then
+				p.Shape = shape
+			end
+			p.Color = color
+			p.Transparency = transparency
+			p.Material = Enum.Material.SmoothPlastic
+			p.CanQuery = false
+			p.CanTouch = false
+			p.CastShadow = false
+			weldTo(p, head, offset)
+			p.Parent = model
+		end
+		for _, side in ipairs({ -1, 1 }) do
+			local x = side * hs.X * 0.22
+			-- rim (a short cylinder facing forward) and a see-through lens
+			piece(Vector3.new(0.05, r * 2, r * 2), CFrame.new(x, eyeY, front) * CFrame.Angles(0, math.rad(90), 0), glasses.color, 0, Enum.PartType.Cylinder)
+			piece(Vector3.new(0.06, r * 1.6, r * 1.6), CFrame.new(x, eyeY, front - 0.005) * CFrame.Angles(0, math.rad(90), 0), Color3.fromRGB(200, 230, 255), 0.55, Enum.PartType.Cylinder)
+		end
+		piece(Vector3.new(hs.X * 0.1, 0.05, 0.05), CFrame.new(0, eyeY + r * 0.3, front), glasses.color, 0)
+		model.Parent = char
 	end
 
 	-- dunce cap (BUY BRAIN pass or the joke shop)
