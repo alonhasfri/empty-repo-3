@@ -439,12 +439,29 @@ Config.Sounds = {
 	NotificationPing = 136655923047274,
 	DeathBoom = 99562772809114,
 	BadgeSparkle = 94977733024164,
-	RecordScratch = 75314486373846,
+	RecordScratch = 112792997660073, -- 1.9.3: a real record scratch (it was the kazoo tune)
 	-- 1.4
 	Whoosh = 123796710194563, -- rocket launch, falling into the void
 	TypeTick = 88442833509532, -- tutorial typewriter (very short, quiet click)
-	ImportantSlam = 132937320140224, -- tutorial "IMPORTANT" title slam
+	ImportantSlam = 9120960025, -- tutorial "IMPORTANT" title slam (1.9.3: its own slam, it was the caveman bonk)
+	-- 1.9.3 (user: "sounds keep getting reused")
+	Click = 9083627113, -- every button tap (was the cartoon boing)
+	Pop = 140323850218372,
+	Wrong = 72577143736585,
 }
+-- 1.9.3: several versions of the sounds you hear most; UI.sound picks a different one each time and
+-- nudges the pitch a little, so nothing sounds exactly the same twice in a row. Free Creator Store audio,
+-- original sounds only (no sounds ripped from other games).
+Config.SoundVariants = {
+	Click = { 9083627113, 102702078778790, 117649901456711 },
+	CartoonBoing = { 2772396665, 132948338000932, 109359226723492, 6586979979 },
+	BrainCellGained = { 135483737426662, 80977935658780, 1169806635, 116120982042508 },
+	LevelUp = { 112485797063762, 99465753537158, 103516326607012, 4612374393 },
+	NotificationPing = { 136655923047274, 106879573498735, 72264591133889 },
+	BadgeSparkle = { 94977733024164, 4612374495 },
+	Pop = { 140323850218372, 132948338000932, 6586979979 },
+}
+Config.SoundPitchJitter = 0.07 -- +/- this much playback speed on every sound (except typing ticks)
 
 -- One music track per art style (from the Creator Store audio library).
 Config.Music = {

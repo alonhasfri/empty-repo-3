@@ -456,7 +456,7 @@ function UI.button(parent, text: string, onClick, props)
 				return
 			end
 			busy = true
-			UI.sound("CartoonBoing", 0.25)
+			UI.sound("Click", 0.35) -- 1.9.3: a soft click (every button used the cartoon boing)
 			task.spawn(function()
 				local ok, err = pcall(onClick, b)
 				if not ok then
@@ -521,17 +521,32 @@ end
 ---------------------------------------------------------------------
 -- Sounds
 ---------------------------------------------------------------------
+local lastVariant = {}
 function UI.sound(name: string?, volumeScale: number?)
 	if not name then
 		return
 	end
 	local id = Config.Sounds[name]
+	-- 1.9.3: pick one of several versions (never the same one twice in a row) and vary the pitch a little
+	local variants = Config.SoundVariants and Config.SoundVariants[name]
+	if variants and #variants > 1 then
+		local pick = variants[math.random(1, #variants)]
+		if pick == lastVariant[name] then
+			pick = variants[(table.find(variants, pick) % #variants) + 1]
+		end
+		lastVariant[name] = pick
+		id = pick
+	end
 	if not id or id == 0 then
 		return
 	end
 	local s = Instance.new("Sound")
 	s.SoundId = "rbxassetid://" .. tostring(id)
 	s.Volume = (UI.settings.sfx or 0.8) * (volumeScale or 1)
+	if name ~= "TypeTick" then
+		local j = Config.SoundPitchJitter or 0
+		s.PlaybackSpeed = 1 + (math.random() * 2 - 1) * j
+	end
 	s.Parent = SoundService
 	s:Play()
 	s.Ended:Connect(function()
