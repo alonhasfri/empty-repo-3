@@ -135,7 +135,12 @@ Net.on("pet_buy", function(player, d)
 	return { ok = true, msg = string.format(TP.Bought, TP.PetNames[kind], price) }
 end)
 
+local adoptNext = {} -- 1.9.3 audit: the pet model can't be rebuilt 25 times a second
 Net.on("pet_adopt", function(player, d)
+	if (adoptNext[player] or 0) > os.clock() then
+		return { ok = false }
+	end
+	adoptNext[player] = os.clock() + 1
 	local data = DataService.get(player)
 	if not data then
 		return { ok = false }

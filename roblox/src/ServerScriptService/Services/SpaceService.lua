@@ -347,7 +347,18 @@ end)
 local trainCooldown = {}
 local trainStart = {} -- [userId .. key] = when the round was opened (server time)
 Net.on("astro_train_start", function(player, d)
-	trainStart[player.UserId .. tostring(d and d.key)] = os.clock()
+	-- 1.9.3 audit: only real training keys, and only astronauts (any string used to grow this table forever)
+	local key = typeof(d) == "table" and tostring(d.key) or ""
+	local known = false
+	for _, t in ipairs(Content.AstroTraining or {}) do
+		if tostring(t.key) == key then
+			known = true
+		end
+	end
+	if not known or not isAstronaut(player) then
+		return { ok = false }
+	end
+	trainStart[player.UserId .. key] = os.clock()
 	return { ok = true }
 end)
 
@@ -401,7 +412,11 @@ Net.on("astro_train_done", function(player, d)
 end)
 
 local gateQ = {}
+local gateNext = {} -- 1.9.3 audit: one Space Gate question every SpaceGateCooldown seconds (it was farmable)
 Net.on("space_gate", function(player)
+	if (gateNext[player] or 0) > os.clock() then
+		return { ok = false, msg = "🚀 The next Space Gate opens in " .. math.ceil(gateNext[player] - os.clock()) .. " s." }
+	end
 	if not isAstronaut(player) or not inSpace(player) then
 		return { ok = false, msg = "Space Gates are in the Space Lab on the Moon (Astronauts only)." }
 	end
@@ -411,13 +426,14 @@ Net.on("space_gate", function(player)
 	end
 	local q = Content.SpaceGates[math.random(1, #Content.SpaceGates)]
 	gateQ[player] = q
+	gateNext[player] = os.clock() + Config.Space.SpaceGateCooldown
 	return { ok = true, q = q.q, options = q.options }
 end)
 
 Net.on("space_gate_answer", function(player, d)
 	local q = gateQ[player]
 	gateQ[player] = nil
-	if not q then
+	if not q or not inSpace(player) or BrainService.blocked(player) then
 		return { ok = false }
 	end
 	if tonumber(d.choice) == q.answer then

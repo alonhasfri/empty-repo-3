@@ -522,6 +522,7 @@ Config.GamePasses = {
 
 -- Update 1.4: Space and secrets
 Config.Space = {
+	SpaceGateCooldown = 12, -- 1.9.3 audit: seconds between Space Gate questions (it was farmable)
 	AstronautIQ = 160,
 	SmartestIQ = 200,
 	MoonGravity = 35, -- normal Roblox gravity is 196.2
@@ -1124,6 +1125,7 @@ Config.BrainTalks = {
 	RotPenaltyPoints = 0.5, -- brain-cell points lost for watching brainrot (after the first warning)
 	RotStress = 6, -- stress added for watching brainrot (after the first warning)
 	MinGap = 0.35, -- seconds between choices
+	NextGap = 3, -- 1.9.3 audit: a new clip at most this often (no re-rolling for smart clips)
 }
 
 -- 1.9.1 room guide (Client/RoomGuide.lua)

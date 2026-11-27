@@ -98,7 +98,7 @@ Net.on("phone_buy", function(player, d)
 	end
 	local p = phoneData(data)
 	if not p.owned[ph.key] then
-		if data.coins < ph.price then
+		if (data.coins or 0) < ph.price then
 			return { ok = false, msg = string.format(TP.TooPoor, ph.price) }
 		end
 		data.coins -= ph.price
@@ -168,7 +168,7 @@ Net.on("scam_buy", function(player)
 	if p.scam then
 		return { ok = false, msg = TP.ScamAlready }
 	end
-	if data.coins < CP.ScamPrice then
+	if (data.coins or 0) < CP.ScamPrice then
 		return { ok = false, msg = string.format(TP.TooPoor, CP.ScamPrice) }
 	end
 	data.coins -= CP.ScamPrice

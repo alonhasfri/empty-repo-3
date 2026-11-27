@@ -65,7 +65,7 @@ local function newClip(player)
 	local smart = math.random() < CB.SmartChance
 	local list = smart and T.Smart or T.Rot
 	local c = list[math.random(1, #list)]
-	x.clip = { id = x.nextId, smart = smart, shownAt = os.clock() }
+	x.clip = { id = x.nextId, smart = smart, shownAt = os.clock(), title = c.title, creator = c.creator, icon = c.icon }
 	-- the client only gets what the player sees, never whether it is smart
 	return { id = x.nextId, title = c.title, creator = c.creator, icon = c.icon }
 end
@@ -80,6 +80,10 @@ Net.on("talks_next", function(player)
 		return { ok = false, msg = bad }
 	end
 	local x = sess(player)
+	-- 1.9.3 audit: no free re-rolls hunting for a smart clip: a new clip at most every NextGap seconds
+	if x.clip and os.clock() - (x.clip.shownAt or 0) < CB.NextGap then
+		return { ok = true, clip = { id = x.clip.id, title = x.clip.title, creator = x.clip.creator, icon = x.clip.icon }, streak = streakInfo(x), watchSeconds = CB.WatchSeconds }
+	end
 	return { ok = true, clip = newClip(player), streak = streakInfo(x), watchSeconds = CB.WatchSeconds }
 end)
 

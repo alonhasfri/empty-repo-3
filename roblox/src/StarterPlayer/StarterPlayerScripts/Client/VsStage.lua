@@ -66,9 +66,10 @@ local function actorFrom(model: Model?, tint: Color3?): Model?
 		return nil
 	end
 	for _, d in ipairs(clone:GetDescendants()) do
-		if tint and (d:IsA("BodyColors") or d:IsA("Shirt") or d:IsA("Pants") or d:IsA("ShirtGraphic") or d:IsA("Accessory")) then
-			d:Destroy() -- a stand-in: plain coloured body so it reads as someone else
-		elseif d:IsA("Script") or d:IsA("LocalScript") or d:IsA("Tool") or d:IsA("BillboardGui") or d:IsA("Sound") or d:IsA("ForceField") then
+		-- scripts, tools, name tags and sounds go; a stand-in also loses its clothes, colours and hats (plain
+		-- coloured body, so it reads as someone else)
+		local standInExtra = tint and (d:IsA("BodyColors") or d:IsA("Shirt") or d:IsA("Pants") or d:IsA("ShirtGraphic") or d:IsA("Accessory"))
+		if standInExtra or d:IsA("Script") or d:IsA("LocalScript") or d:IsA("Tool") or d:IsA("BillboardGui") or d:IsA("Sound") or d:IsA("ForceField") then
 			d:Destroy()
 		elseif d:IsA("BasePart") then
 			d.CanCollide = false

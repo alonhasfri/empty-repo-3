@@ -350,7 +350,12 @@ Net.on("home_buy", function(player, d)
 	return { ok = true, msg = string.format(TH.Bought, TH.Furniture[key].icon, TH.Furniture[key].name, f.price) }
 end)
 
+local lastVisit = {} -- 1.9.3 audit: no flooding someone with "X is visiting" toasts
 Net.on("home_visit", function(player, d)
+	if (lastVisit[player] or 0) > os.clock() then
+		return { ok = false, msg = "⏳ One moment…" }
+	end
+	lastVisit[player] = os.clock() + 10
 	local id = typeof(d) == "table" and tonumber(d.id) or nil
 	local owner = id and Players:GetPlayerByUserId(id)
 	local od = owner and DataService.get(owner)
