@@ -145,6 +145,15 @@ local function appsFor(st, tier: string)
 			table.remove(list, i)
 		end
 	end
+	-- 1.9.3: only the daily apps (Config.UI.PhoneApps); everything else is a place or a rail button
+	local keep = Config.UI.PhoneApps and Config.UI.PhoneApps[st.path or ""]
+	if keep then
+		for i = #list, 1, -1 do
+			if not table.find(keep, list[i].key) then
+				table.remove(list, i)
+			end
+		end
+	end
 	return list
 end
 
@@ -269,7 +278,7 @@ local function splitApps(st, tier: string)
 	local first, used = {}, {}
 	for _, key in ipairs(Config.UI.PhoneFirst[st.path or ""] or {}) do
 		-- with a job, Work matters and Jobs can wait; without one it's the other way round
-		local skip = (key == "jobs" and st.job) or (key == "work" and not st.job)
+		local skip = key == "jobs" and st.job -- 1.9.3: Work stays (it tells you where the Job Board is)
 		if byKey[key] and not skip and #first < Config.UI.PhoneHomeSlots then
 			local a = byKey[key]
 			if key == "map" then

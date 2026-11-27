@@ -816,10 +816,17 @@ Config.UI = {
 	PhoneDock = { "items", "map", "settings" }, -- apps in the dock at the bottom (in this order)
 	-- 1.9.3 (user: too many apps, important ones must not need scrolling): the home screen shows these first
 	-- (the first PhoneHomeSlots that you have), then a More tile with everything else. Settings is always on it.
-	PhoneHomeSlots = 7,
+	PhoneHomeSlots = 8,
+	-- 1.9.3 (user: "the phone only for important apps you use regularly; places you walk to"): the ONLY apps
+	-- the phone shows (when unlocked). Library, Jack B, Jobs, Projects, Space, Coffee, Nap, Pigeons, Town, the
+	-- newsstand, café and arcade are places in town; Store, Items and Vs Mode are on the left rail.
+	PhoneApps = {
+		Gain = { "map", "work", "braintalks", "hoppr", "bank", "shifts", "events", "genius", "home", "camera", "badges", "settings" },
+		Lose = { "map", "scroller", "jokejobs", "events", "home", "camera", "badges", "settings" },
+	},
 	PhoneFirst = {
-		Gain = { "map", "work", "jobs", "hoppr", "shifts", "bank", "library", "braintalks", "home", "items" },
-		Lose = { "map", "scroller", "steal", "jokejobs", "clickbait", "home", "shop", "items" },
+		Gain = { "map", "work", "braintalks", "hoppr", "shifts", "bank", "events", "genius", "home", "camera", "badges" },
+		Lose = { "map", "scroller", "jokejobs", "events", "home", "camera", "badges" },
 	},
 	PhoneDim = 0.75, -- the phone dims the world only lightly (pop-ups use ModalDim)
 	ModalDim = 0.45, -- full-screen dim behind every pop-up (covers the top bar too)

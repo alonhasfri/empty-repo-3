@@ -67,6 +67,10 @@ end
 Hud.onMenu = Stations.settings
 Hud.onAdmin = AdminPanel.open
 Hud.onStation = function(key)
+	if key == "items" then -- 1.9.3: the rail's Items button
+		PhoneOS.items()
+		return
+	end
 	if key == "map" or key == "gadgets" or key == "together" or key == "phone" or key == "space" or key == "quickplay" or key == "events" or key == "genius" then
 		Stations.open(key)
 		return

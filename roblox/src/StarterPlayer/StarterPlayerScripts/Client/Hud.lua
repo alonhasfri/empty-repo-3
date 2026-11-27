@@ -265,10 +265,18 @@ local ACTIVITIES = {
 	Lose = {
 		{ key = "phone", icon = "📱", name = "Phone", color = Color3.fromRGB(150, 80, 250) },
 		{ key = "quickplay", icon = "⚡", name = "Quick Play", color = Color3.fromRGB(240, 170, 20) }, -- 1.8.5 tester feedback
+		-- 1.9.3 (user): the left rail: one tap for the things you use a lot (the phone keeps only daily apps)
+		{ key = "shop", icon = "🛒", name = "Store", color = Color3.fromRGB(255, 90, 200) },
+		{ key = "items", icon = "🎒", name = "Items", color = Color3.fromRGB(70, 200, 190) },
+		{ key = "together", icon = "🎭", name = "Vs Mode", color = Color3.fromRGB(255, 140, 70) },
 	},
 	Gain = {
 		{ key = "phone", icon = "📱", name = "Phone", color = Color3.fromRGB(150, 80, 250) },
 		{ key = "quickplay", icon = "⚡", name = "Quick Play", color = Color3.fromRGB(240, 170, 20) }, -- 1.8.5 tester feedback
+		-- 1.9.3 (user): the left rail: one tap for the things you use a lot (the phone keeps only daily apps)
+		{ key = "shop", icon = "🛒", name = "Store", color = Color3.fromRGB(255, 90, 200) },
+		{ key = "items", icon = "🎒", name = "Items", color = Color3.fromRGB(70, 200, 190) },
+		{ key = "together", icon = "🎭", name = "Vs Mode", color = Color3.fromRGB(255, 140, 70) },
 	},
 }
 
