@@ -1225,45 +1225,42 @@ function UI.tabs(parent, tabs, active: string, onPick, props)
 end
 
 -- 1.9.1 real icon art: the image for a HUD button / phone app key (nil = keep the emoji)
--- 1.9.3: icon pictures Roblox refused to load (still in moderation / rejected). Those keys show their emoji
--- instead of an empty square. Filled by the preload below and by UI.watchIcon.
+-- 1.9.3: icon pictures that never drew (still in moderation / rejected). Those keys show their emoji
+-- instead of an empty square. Filled by UI.watchIcon.
 UI.badIcons = {}
 function UI.watchIcon(img: ImageLabel, onFail: () -> ())
+	-- 1.9.3 fix: ContentProvider:PreloadAsync reported EVERY icon as failed (even ones that draw fine), so
+	-- every button fell back to emoji. Now: an icon only counts as broken if it is on screen for
+	-- Config.UI.IconLoadSeconds and still hasn't drawn (ImageLabel.IsLoaded).
 	local id = img.Image
 	if UI.badIcons[id] then
 		onFail()
 		return
 	end
 	task.spawn(function()
-		local failed = false
-		pcall(function()
-			game:GetService("ContentProvider"):PreloadAsync({ id }, function(_, status)
-				failed = status == Enum.AssetFetchStatus.Failure or status == Enum.AssetFetchStatus.TimedOut
-			end)
-		end)
-		if failed then
-			UI.badIcons[id] = true
-			if img.Parent then
-				onFail()
+		local shown = 0
+		while img.Parent and not img.IsLoaded do
+			task.wait(0.5)
+			if img.AbsoluteSize.X > 0 and img:IsDescendantOf(game) then
+				local onScreen = true
+				local a = img:FindFirstAncestorWhichIsA("LayerCollector")
+				if a and a:IsA("ScreenGui") and not a.Enabled then
+					onScreen = false
+				end
+				if onScreen then
+					shown += 0.5
+				end
+			end
+			if shown >= (Config.UI.IconLoadSeconds or 10) then
+				UI.badIcons[id] = true
+				if img.Parent then
+					onFail()
+				end
+				return
 			end
 		end
 	end)
 end
-task.spawn(function()
-	local ids = {}
-	for _, set in ipairs({ Config.Icons or {}, Config.IconsMono or {} }) do
-		for _, id in pairs(set) do
-			table.insert(ids, "rbxassetid://" .. tostring(id))
-		end
-	end
-	pcall(function()
-		game:GetService("ContentProvider"):PreloadAsync(ids, function(id, status)
-			if status == Enum.AssetFetchStatus.Failure or status == Enum.AssetFetchStatus.TimedOut then
-				UI.badIcons[id] = true
-			end
-		end)
-	end)
-end)
 
 function UI.iconImage(key: string?): (string?, Color3?, number?)
 	if not key then

@@ -377,6 +377,41 @@ def I_more():
         x, z = (-0.38 if i % 2 == 0 else 0.38), (0.38 if i < 2 else -0.38)
         box((0.6, 0.4, 0.6), (x, 0, z), mat("more" + str(i), C(["8a5cf5", "3f8cff", "39c27a", "ffcf3d"][i])), bevel=0.12)
 
+def I_run():
+    shoe = mat("shoe", C("3f8cff"))
+    box((1.3, 0.62, 0.42), (0.1, 0, -0.35), shoe, bevel=0.18)
+    box((0.6, 0.6, 0.55), (-0.25, 0, 0.05), shoe, bevel=0.16)
+    box((1.36, 0.66, 0.14), (0.1, 0, -0.6), W, bevel=0.05)
+    for z in (-0.2, 0.05, 0.3):
+        box((0.42, 0.1, 0.08), (-0.95, 0, z), mat("speed", C("ffcf3d"), emit=0.6), bevel=0.03)
+def I_admin():
+    steel = mat("steel", C("c8d2e6"), metal=0.7, rough=0.25)
+    box((0.22, 0.22, 1.5), (0, 0, 0), steel, rot=(0, math.radians(40), 0), bevel=0.06)
+    torus(0.26, 0.09, (0.5, 0, 0.6), steel, rot=(math.radians(90), 0, 0))
+    box((0.2, 0.2, 1.3), (0, 0.05, 0), mat("handle", C("e8534a")), rot=(0, math.radians(-40), 0), bevel=0.06)
+    box((0.62, 0.32, 0.3), (-0.42, 0.05, 0.5), mat("hammer", C("5b6788"), metal=0.5), rot=(0, math.radians(-40), 0), bevel=0.06)
+
+# ---- 1.9.3 machines (inventable hotbar items)
+def I_teleporter():
+    ring = mat("portal", C("8a5cf5"), emit=0.4)
+    torus(0.7, 0.14, (0, 0, 0.1), ring, rot=(math.radians(90), 0, 0))
+    cyl(0.6, 0.06, (0, 0.02, 0.1), mat("swirl", C("49c6ff"), emit=1.2), rot=(math.radians(90), 0, 0))
+    box((1.6, 0.9, 0.18), (0, 0, -0.75), DARK, bevel=0.06)
+    for x in (-0.55, 0.0, 0.55):
+        box((0.3, 0.1, 0.06), (x, -0.4, -0.65), mat("trace", C("78ff8c"), emit=1.0), bevel=0.02)
+def I_jetpack():
+    m = mat("jet", C("c8d2e6"), metal=0.6, rough=0.25)
+    for x in (-0.3, 0.3):
+        cyl(0.26, 1.1, (x, 0, 0.1), m)
+        cone(0.26, 0.0, 0.3, (x, 0, 0.8), mat("nose", C("ff4d6d")))
+        cone(0.18, 0.32, 0.5, (x, 0, -0.7), mat("flame", C("ffb13d"), emit=2.0), rot=(math.radians(180), 0, 0))
+    box((0.4, 0.3, 0.6), (0, 0.1, 0.1), mat("strapj", C("3f8cff")), bevel=0.06)
+def I_bouncepad():
+    cyl(0.85, 0.22, (0, 0, -0.35), DARK, bevel=0.05)
+    cyl(0.7, 0.16, (0, 0, -0.18), mat("pad", C("39e07a"), emit=0.5), bevel=0.05)
+    for i in range(3):
+        poly([(-0.2, 0.0), (0.2, 0.0), (0, 0.25)], 0.08, (0, -0.1, 0.15 + i * 0.28), mat("up", C("ffcf3d"), emit=0.6))
+
 ICONS = {k[2:]: v for k, v in globals().items() if k.startswith("I_")}
 
 def setup_scene():

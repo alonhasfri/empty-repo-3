@@ -73,6 +73,12 @@ task.defer(function()
 		Parent = UI.gui,
 	})
 	UI.corner(b, 28)
+	-- 1.9.3 (user: every clickable thing gets a 3D icon)
+	if UI.iconImage("run") then
+		b.Text = ""
+		local icon = UI.icon(b, "run", Content.QoL.Sprint, { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.8, 0.8) })
+		local _ = icon
+	end
 	UI.autoScale(b) -- 1.9.3: follows the HUD scale, stays thumb-sized
 	b.Activated:Connect(function()
 		setSprint(not sprinting)

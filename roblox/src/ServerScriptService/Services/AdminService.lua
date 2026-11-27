@@ -693,6 +693,16 @@ H.embarrass = function(actor, target, arg)
 	BrainService.push(target)
 	return target.Name .. " embarrassment = " .. n .. "."
 end
+H.givemachine = function(_actor, target, arg) -- 1.9.3: test a machine (invents it for the whole server)
+	local key = string.lower(arg or "")
+	local MS = require(script.Parent.MachineService)
+	if not MS.def(key) then
+		return "Type teleporter / jetpack / bouncepad."
+	end
+	DataService.get(target).adminTouched = true
+	MS.invent(target, key)
+	return "Invented " .. key .. " for " .. target.Name .. " (and this server)."
+end
 H.givegadget = function(actor, target, arg)
 	local key = string.lower(arg or "")
 	local Content = require(ReplicatedStorage.Shared.Content)

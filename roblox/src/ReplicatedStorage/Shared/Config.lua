@@ -707,6 +707,7 @@ Config.Commands = {
 	feature = { min = 3, cat = "Game", label = "Toggle Feature", arg = "feature name" },
 	liveconfig = { min = 3, cat = "Game", label = "Set Rate", arg = "GainRate 0.002" },
 	election = { min = 3, cat = "Game", label = "🗳 Start Election Now" },
+	givemachine = { min = 3, cat = "Game", label = "🛠 Invent a Machine", target = true, arg = "teleporter / jetpack / bouncepad" },
 	invent = { min = 3, cat = "Game", label = "🔬 Global Invention Hour", arg = "teleport / space / fusion / robots / …" },
 	quiz = { min = 3, cat = "Fun", label = "❓ Server Quiz" },
 
@@ -800,6 +801,7 @@ Config.UI = {
 	HudMaxButtons = 4, -- 1.8.1 UI review: activity buttons on screen (the rest go in "☰ More")
 	HudPassButtons = false, -- 1.8.1 UI review: pass buttons only in the 🛒 Shop, not on the HUD
 	ToastSeconds = 3, -- 1.8.1: how long a notification stays
+	IconLoadSeconds = 10, -- 1.9.3: an icon that is on screen this long without drawing shows its emoji instead
 	HotbarLift = 80, -- 1.9.3: with gadgets, the stress bar sits this many px above the bottom edge when the Roblox hotbar (gadgets) is showing
 	CalmStartSeconds = 10, -- 1.9.3 harsh review #2: after joining, only the brain card, the goal and the phone show this long
 	ToastHoldMax = 30, -- 1.9.3: server news waits at most this long for a pop-up or scene to close
@@ -1383,6 +1385,15 @@ Config.InventionPerks = {
 	HungerCoins = 40, -- (was 15)
 }
 Config.Inventions.CureStressScale = 0.4 -- the cure: stress builds 60% slower (was 40%) and never freezes you
+-- 1.9.3 (user): MACHINES: useful items you can invent. The inventor keeps it; everyone in that server
+-- gets one too, and every other server borrows it for GlobalMinutes. They live in the Roblox hotbar.
+Config.Machines = {
+	GlobalMinutes = 15,
+	EurekaChance = 0.5, -- chance a Eureka offers a machine card (while one is still uninvented)
+	teleporter = { cooldown = 20, maxStuds = 400, speed = 170, step = 3, ghostSpeed = 45, maxPoints = 200 },
+	jetpack = { cooldown = 30, seconds = 8, lift = 0.9, thrust = 55 },
+	bouncepad = { cooldown = 45, seconds = 60, power = 130 },
+}
 Config.GadgetPigeonTips = 15 -- 1.9.3: coins the Pigeon Launcher show earns
 Config.GadgetBrainRain = 25 -- 1.9.3: brains the Brain Rain Machine drops (was 10)
 
@@ -1438,6 +1449,8 @@ Config.Icons = {
 	robot = 124237062732526,
 	bus = 75425646249201,
 	more = 138445135043157,
+	run = 86137570798458, -- sprint button
+	admin = 96560764991083, -- staff tools button
 }
 -- 1.9.1 (user: "make the icons change according to how smart/dumb you are"): smart players (glass / clean pop-up
 -- styles) get clean white minimal icons ("Monochrome White UI Icon Pack", SodaBreadle); really dumb players (neon)

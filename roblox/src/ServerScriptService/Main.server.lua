@@ -41,6 +41,7 @@ local _DumbWorldService = require(Services.DumbWorldService) -- 1.9.1: fake shor
 local _LoseJobService = require(Services.LoseJobService) -- 1.9.1: joke jobs for the Lose path
 local _WeatherService = require(Services.WeatherService) -- 1.9.1: seasons and weather
 local _QoLService = require(Services.QoLService) -- 1.9.1: daily reward streak, AFK-safe
+local _MachineService = require(Services.MachineService) -- 1.9.3: machines (inventable hotbar items, server-wide)
 local _GoldenBrainService = require(Services.GoldenBrainService) -- 1.9.1 fun fixes 2: golden brains in town
 BrainService.hooks.lifeInfo = LifeStageService.info
 AdminService.adminInvent = ProjectService.adminInvent

@@ -2504,4 +2504,30 @@ Content.FunFixes2 = {
 	ShoutBy = "Brainville News",
 }
 
+
+-- 1.9.3 (user): MACHINES: useful items you can invent (Config.Machines). Inventing one gives it to the whole
+-- server; every other server borrows it for 15 minutes. They are tools in the Roblox hotbar.
+Content.Machines = {
+	List = {
+		{ key = "teleporter", icon = "🌀", name = "Trace Teleporter", desc = "Steer your glowing ghost along a path, tap GO and zoom there." },
+		{ key = "jetpack", icon = "🚀", name = "Jetpack", desc = "Blast off and glide through the air for 8 seconds." },
+		{ key = "bouncepad", icon = "🟢", name = "Bounce Pad", desc = "Drop a pad that launches everyone sky-high for a minute." },
+	},
+	Invented = "🛠 %s invented the %s! Everyone in this server gets one. 🎉",
+	Global = "🌍 %s invented the %s in another server! You can borrow it for %d minutes.",
+	Expired = "⌛ The borrowed %s went back to its inventor.",
+	Recharging = "⏳ Recharging… %ds",
+	TapGo = "Steer your ghost, then TAP GO",
+	Go = "GO",
+	Undo = "UNDO",
+	Cancel = "CANCEL",
+	Blocked = "BLOCKED!",
+	TooFar = "TOO FAR!",
+	Studs = "%d STUDS",
+	NoPath = "Steer your ghost somewhere first!",
+	PadPlaced = "🟢 Bounce Pad placed! Jump on it.",
+	Jetpack = "🚀 Jetpack ON!",
+	Card = "🛠 MACHINE",
+}
+
 return Content

@@ -554,10 +554,14 @@ end
 local corner = UI.new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 6), Size = UDim2.fromOffset(3 * MT + 16, MT + 2), BackgroundTransparency = 1, Parent = UI.gui }, {
 	UI.new("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = UDim.new(0, 8) }),
 })
-local function roundButton(parent, icon: string, color: Color3, order: number, onClick)
+local function roundButton(parent, icon: string, color: Color3, order: number, onClick, iconKey: string?)
 	local b = UI.new("TextButton", { Text = icon, TextScaled = true, BackgroundColor3 = color, Size = UDim2.fromOffset(MT, MT), LayoutOrder = order, AutoButtonColor = true, Parent = parent }, {
 		UI.new("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }),
 	})
+	if iconKey and UI.iconImage(iconKey) then -- 1.9.3: 3D icon instead of the emoji
+		b.Text = ""
+		UI.icon(b, iconKey, icon, { Size = UDim2.fromScale(1, 1) })
+	end
 	UI.corner(b, MT / 2)
 	UI.stroke(b, Color3.new(0, 0, 0), 2, 0.3)
 	b.Activated:Connect(onClick)
@@ -567,19 +571,19 @@ local settingsBtn = roundButton(corner, "⚙️", Color3.fromRGB(30, 30, 40), 2,
 	if Hud.onMenu then
 		Hud.onMenu()
 	end
-end)
+end, "settings")
 local adminBtn = roundButton(corner, "🛠", Color3.fromRGB(170, 50, 90), 1, function()
 	if Hud.onAdmin then
 		Hud.onAdmin()
 	end
-end)
+end, "admin")
 adminBtn.Visible = false
 -- 1.5: a way out if you get stuck (furniture, odd corners, falling behind things)
 local unstuckBtn = roundButton(corner, Content.Unstuck.Button, Color3.fromRGB(200, 120, 30), 0, function()
 	if Hud.onUnstuck then
 		Hud.onUnstuck()
 	end
-end)
+end, "unstuck")
 unstuckBtn.Name = "Unstuck"
 
 -- 1.8.5 (user: "SHOP and MAP are huge"): they are small round icons in the same top-right row now

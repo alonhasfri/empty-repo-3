@@ -678,6 +678,21 @@ crewOf = function(player: Player, job): ({ Player }, any)
 	return crew, role
 end
 
+-- 1.9.3: a Eureka card can be a gadget (personal) or a MACHINE (MachineService: the whole server gets it)
+local function cardFor(key: string)
+	if string.sub(key, 1, 2) == "m:" then
+		local ok, MS = pcall(require, script.Parent.MachineService)
+		local m = ok and MS.def(string.sub(key, 3))
+		return m and { key = key, icon = m.icon, name = m.name, desc = m.desc, machine = true } or nil
+	end
+	for _, inv in ipairs(Content.Gadgets) do
+		if inv.key == key then
+			return { key = inv.key, icon = inv.icon, name = inv.name, desc = inv.desc }
+		end
+	end
+	return nil
+end
+
 local function eureka(player, data)
 	local locked = {}
 	for _, inv in ipairs(Content.Gadgets) do
@@ -698,14 +713,19 @@ local function eureka(player, data)
 	for i = 1, math.min(3, #locked) do
 		choices[i] = locked[i].key
 	end
+	-- 1.9.3: sometimes one card is a machine nobody here has invented yet
+	local okM, MS = pcall(require, script.Parent.MachineService)
+	if okM and math.random() < Config.Machines.EurekaChance then
+		local left = MS.uninvented(data)
+		if #left > 0 then
+			local pick = "m:" .. left[math.random(1, #left)].key
+			choices[math.min(#choices + 1, 3)] = pick
+		end
+	end
 	data.eurekaChoices = choices
 	local cards = {}
 	for i, key in ipairs(choices) do
-		for _, inv in ipairs(Content.Gadgets) do
-			if inv.key == key then
-				cards[i] = { key = inv.key, icon = inv.icon, name = inv.name, desc = inv.desc }
-			end
-		end
+		cards[i] = cardFor(key)
 	end
 	Net.send(player, "eureka", { choices = cards })
 end
@@ -868,11 +888,7 @@ Net.on("eureka_pending", function(player)
 	if data and data.eurekaChoices then
 		local cards = {}
 		for i, key in ipairs(data.eurekaChoices) do
-			for _, inv in ipairs(Content.Gadgets) do
-				if inv.key == key then
-					cards[i] = { key = inv.key, icon = inv.icon, name = inv.name, desc = inv.desc }
-				end
-			end
+			cards[i] = cardFor(key)
 		end
 		return { ok = true, choices = cards }
 	end
@@ -895,6 +911,15 @@ Net.on("invention_choose", function(player, d)
 	local data = DataService.get(player)
 	if not data or not data.eurekaChoices or not table.find(data.eurekaChoices, d.key) then
 		return { ok = false }
+	end
+	if string.sub(tostring(d.key), 1, 2) == "m:" then -- 1.9.3: a machine: the whole server gets it
+		data.eurekaChoices = nil
+		local MS = require(script.Parent.MachineService)
+		local card = cardFor(d.key)
+		MS.invent(player, string.sub(d.key, 3))
+		BrainService.awardBadge(player, "Eureka")
+		BrainService.push(player)
+		return { ok = true, icon = card and card.icon, name = card and card.name, desc = card and card.desc }
 	end
 	local inv = inventionByKey(d.key)
 	data.eurekaChoices = nil

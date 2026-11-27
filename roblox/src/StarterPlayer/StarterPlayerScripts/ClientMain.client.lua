@@ -14,6 +14,7 @@ local AdminPanel = require(Client.AdminPanel)
 local Tutorial = require(Client.Tutorial)
 local Conversation = require(Client.Conversation)
 local PhoneOS = require(Client.PhoneOS) -- 1.7: the phone changes with your brain
+local Machines = require(Client.Machines) -- 1.9.3: inventable hotbar machines (Trace Teleporter, Jetpack, Bounce Pad)
 local Cutscene = require(Client.Cutscene) -- 1.9: cutscene player (intro flyover)
 
 -- 1.7: the brain-tiered phone replaces the old one (kept as the "Simple phone" setting)
@@ -41,7 +42,7 @@ local Watchdog = require(Client.Watchdog) -- 1.8.8: frees you if something left 
 -- locks that are on purpose: the watchdog leaves these alone
 Watchdog.isLocked = function(): boolean
 	local lp = game:GetService("Players").LocalPlayer
-	return Conversation.isOpen() or Cutscene.isPlaying() or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
+	return Conversation.isOpen() or Cutscene.isPlaying() or Machines.isBusy() or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
 end
 local SpeedrunTimer = require(Client.SpeedrunTimer)
 local DayNight = require(Client.DayNight)
