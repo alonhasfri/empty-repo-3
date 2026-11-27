@@ -2054,6 +2054,31 @@ Content.BrainEnding = {
 	Skip = "Skip ⏭",
 }
 
+Content.Quests = {
+	Title = "📋 Daily Quests",
+	Sub = "New quests every day. Each one pays %d coins, all 3 pay +%d more!",
+	Done = "✅ Quest done: %s  (+%d coins)",
+	AllDone = "🏆 All 3 daily quests done! +%d bonus coins!",
+	BonusGot = "🏆 All done for today! Come back tomorrow for new quests.",
+	App = { icon = "📋", name = "Quests" },
+	Text = {
+		bits = "🧠 Grab %d brain bits",
+		library = "📚 Answer %d library books",
+		job = "💼 Finish %d work shifts",
+		quickplay = "⚡ Score in %d Quick Play rounds",
+		braintalks = "🎓 Watch %d BrainTalks",
+		theater = "🎬 Watch %d Jack B movies",
+		golden = "🌟 Grab %d Golden Brain",
+		conversation = "💬 Pick %d answers in conversations",
+		clickbait = "📰 Click %d clickbait headlines",
+		scroll = "📱 Swipe %d BrainTok videos",
+		comment = "💬 Post %d dumb comments",
+		steal = "🎮 Play Steal A %d times",
+		losejob = "🤡 Finish %d joke job",
+		animal = "🐾 Do %d animal things",
+	},
+}
+
 Content.Bits = {
 	Streak = "🔥 x%d STREAK!",
 }

@@ -844,12 +844,12 @@ Config.UI = {
 	-- the phone shows (when unlocked). Library, Jack B, Jobs, Projects, Space, Coffee, Nap, Pigeons, Town, the
 	-- newsstand, café and arcade are places in town; Store, Items and Vs Mode are on the left rail.
 	PhoneApps = {
-		Gain = { "map", "work", "braintalks", "hoppr", "bank", "shifts", "events", "genius", "home", "camera", "badges", "settings" },
-		Lose = { "map", "scroller", "jokejobs", "events", "home", "camera", "badges", "settings" },
+		Gain = { "map", "quests", "work", "braintalks", "hoppr", "bank", "shifts", "events", "genius", "home", "camera", "badges", "settings" },
+		Lose = { "map", "quests", "scroller", "jokejobs", "events", "home", "camera", "badges", "settings" },
 	},
 	PhoneFirst = {
-		Gain = { "map", "work", "braintalks", "hoppr", "shifts", "bank", "events", "genius", "home", "camera", "badges" },
-		Lose = { "map", "scroller", "jokejobs", "events", "home", "camera", "badges" },
+		Gain = { "map", "quests", "work", "braintalks", "hoppr", "shifts", "bank", "events", "genius", "home", "camera" },
+		Lose = { "map", "quests", "scroller", "jokejobs", "events", "home", "camera" },
 	},
 	PhoneDim = 0.75, -- the phone dims the world only lightly (pop-ups use ModalDim)
 	ModalDim = 0.45, -- full-screen dim behind every pop-up (covers the top bar too)
@@ -1416,6 +1416,17 @@ Config.Machines = {
 	bouncepad = { cooldown = 45, seconds = 60, power = 130 },
 }
 -- 1.9.3 (judges): brain bits on the streets near you (BitService + Client/Bits.lua)
+-- 1.9.3 (judges): daily quests (QuestService); keys are BrainService reward reasons
+Config.Quests = {
+	PerDay = 3,
+	Coins = 30, -- per finished quest
+	AllBonus = 100, -- for finishing all 3
+	Pools = {
+		Gain = { { key = "bits", goal = 15 }, { key = "library", goal = 3 }, { key = "job", goal = 2 }, { key = "quickplay", goal = 2 }, { key = "braintalks", goal = 3 }, { key = "theater", goal = 2 }, { key = "golden", goal = 1 }, { key = "conversation", goal = 6 } },
+		Lose = { { key = "bits", goal = 15 }, { key = "clickbait", goal = 5 }, { key = "scroll", goal = 10 }, { key = "comment", goal = 3 }, { key = "steal", goal = 2 }, { key = "losejob", goal = 1 }, { key = "quickplay", goal = 2 }, { key = "golden", goal = 1 } },
+		Animal = { { key = "bits", goal = 10 }, { key = "golden", goal = 1 }, { key = "animal", goal = 3 } },
+	},
+}
 Config.Bits = {
 	PerPlayer = 8, -- bits around you at once
 	Refill = 12, -- seconds between top-ups near where you are
@@ -1487,6 +1498,7 @@ Config.Icons = {
 	robot = 124237062732526,
 	bus = 75425646249201,
 	more = 138445135043157,
+	quests = 112251717857666, -- 1.9.3 daily quests (the gift icon)
 	run = 86137570798458, -- sprint button
 	admin = 96560764991083, -- staff tools button
 	teleporter = 125998347865705, -- machines (1.9.3)

@@ -581,6 +581,9 @@ function BrainService.gain(player, points: number, reason: string?)
 	if not data or data.dead then
 		return 0
 	end
+	if BrainService.onReward then -- 1.9.3: daily quests count rewards by reason
+		task.spawn(BrainService.onReward, player, reason)
+	end
 	local amount
 	if data.path == "Gain" then
 		local mult = Brain.gainMultiplier(data.cells)
@@ -622,6 +625,9 @@ function BrainService.lose(player, points: number, reason: string?)
 	local data = DataService.get(player)
 	if not data or data.dead then
 		return 0
+	end
+	if BrainService.onReward then
+		task.spawn(BrainService.onReward, player, reason)
 	end
 	local amount
 	if data.path == "Lose" then

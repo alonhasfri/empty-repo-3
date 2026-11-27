@@ -863,16 +863,21 @@ function Hud.say(msg: string, mood: string?)
 	speech.Text = ""
 	TweenService:Create(bubbleScale, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Scale = UI.D }):Play()
 	task.spawn(function()
-		for i = 1, #msg do
+		-- 1.9.3: reveal whole characters (MaxVisibleGraphemes); cutting the text by bytes split emoji
+		-- into a broken "�" mid-typing
+		speech.MaxVisibleGraphemes = 0
+		speech.Text = msg
+		local total = utf8.len(msg) or #msg
+		for i = 1, total do
 			if my ~= sayToken then
 				return
 			end
-			speech.Text = string.sub(msg, 1, i)
+			speech.MaxVisibleGraphemes = i
 			if i % 2 == 0 then
 				task.wait(0.012)
 			end
 		end
-		speech.Text = msg
+		speech.MaxVisibleGraphemes = -1
 		task.wait(Config.UI.BubbleSeconds) -- 1.9: auto-hides
 		if my == sayToken then
 			TweenService:Create(bubbleScale, TweenInfo.new(0.2), { Scale = 0 }):Play()

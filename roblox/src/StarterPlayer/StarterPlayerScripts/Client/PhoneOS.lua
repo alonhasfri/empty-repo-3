@@ -64,6 +64,8 @@ for key, a in pairs(MORE) do
 	a.name = P19.Apps[key].name
 	EXTRA[key] = a
 end
+-- 1.9.3: daily quests
+EXTRA.quests = { key = "quests", icon = Content.Quests.App.icon, name = Content.Quests.App.name, c1 = Color3.fromRGB(255, 190, 70), c2 = Color3.fromRGB(230, 110, 40) }
 PhoneOS.EXTRA = EXTRA
 
 local function isAnimal(st): boolean
@@ -133,6 +135,7 @@ local function appsFor(st, tier: string)
 	if st.eventInvite or st.eventsDone or st.inEvent then
 		addBefore(EXTRA.events) -- 1.9 big life events
 	end
+	addBefore(EXTRA.quests) -- 1.9.3 daily quests
 	addBefore(EXTRA.home) -- 1.9.1 your own home (every path, animals too)
 	addBefore(EXTRA.town) -- 1.9.1 town board
 	addBefore(EXTRA.camera) -- 1.9.1 photo mode with stickers
@@ -176,6 +179,8 @@ local function openApp(app)
 			PhoneOS.shifts()
 		elseif app.key == "items" then
 			PhoneOS.items()
+		elseif app.key == "quests" then
+			PhoneOS.quests()
 		elseif app.key == "more" then
 			PhoneOS.more()
 		elseif app.key == "help" then
@@ -377,6 +382,51 @@ end
 
 local function plainLabel(parent, text: string, order: number)
 	return UI.label(parent, text, { TextColor3 = WHITE, LayoutOrder = order })
+end
+
+-- 1.9.3: Daily Quests (QuestService): 3 small goals, progress bars, coins; a red dot on the Phone button
+-- when something is new or finished
+local questDot = nil
+local function setDot(on: boolean)
+	local slot = UI.gui and UI.gui:FindFirstChild("PhoneSlot")
+	if not slot then
+		return
+	end
+	if not questDot or not questDot.Parent then
+		questDot = UI.new("Frame", { Name = "QuestDot", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.88, 0.12), Size = UDim2.fromOffset(16, 16), BackgroundColor3 = Color3.fromRGB(255, 60, 70), ZIndex = 20, Parent = slot })
+		UI.corner(questDot, 8)
+		UI.stroke(questDot, Color3.new(1, 1, 1), 2, 0)
+	end
+	questDot.Visible = on
+end
+Remote.on("quests", function(d)
+	setDot(d.seen ~= true)
+end)
+
+function PhoneOS.quests()
+	local r = Remote.call("quests_get")
+	if not r.ok then
+		return
+	end
+	setDot(false)
+	local TQ = Content.Quests
+	local m = UI.modal("", phoneOpts(Color3.fromRGB(255, 160, 60)))
+	UI.label(m.content, TQ.Title, { TextColor3 = WHITE, Font = UI.T.title, TextSize = UI.textSize(20), LayoutOrder = 1 })
+	UI.label(m.content, string.format(TQ.Sub, r.coins or 0, r.allBonus or 0), { TextColor3 = SOFT, LayoutOrder = 2 })
+	for i, q in ipairs(r.list or {}) do
+		local card = UI.new("Frame", { BackgroundColor3 = UI.T.panel, Size = UDim2.new(1, 0, 0, 62), LayoutOrder = 2 + i, Parent = m.content })
+		UI.corner(card, 12)
+		UI.new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.fromOffset(10, 6), Size = UDim2.new(1, -20, 0, 24), TextXAlignment = Enum.TextXAlignment.Left, TextScaled = true, Font = UI.T.font, TextColor3 = q.done and UI.Colors.good or WHITE, Text = (q.done and "✅ " or "") .. q.text, Parent = card })
+		local back = UI.new("Frame", { BackgroundColor3 = UI.T.panel2, Position = UDim2.new(0, 10, 0, 36), Size = UDim2.new(1, -80, 0, 14), Parent = card })
+		UI.corner(back, 7)
+		local fill = UI.new("Frame", { BackgroundColor3 = q.done and UI.Colors.good or Color3.fromRGB(255, 170, 60), Size = UDim2.fromScale(math.clamp(q.count / math.max(1, q.goal), 0, 1), 1), Parent = back })
+		UI.corner(fill, 7)
+		UI.new("TextLabel", { BackgroundTransparency = 1, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 32), Size = UDim2.fromOffset(60, 22), TextScaled = true, Font = UI.T.font, TextColor3 = SOFT, Text = q.count .. "/" .. q.goal, Parent = card })
+	end
+	if r.bonus then
+		UI.label(m.content, TQ.BonusGot, { TextColor3 = UI.Colors.gold, LayoutOrder = 10 })
+	end
+	m.focus()
 end
 
 function PhoneOS.items()
