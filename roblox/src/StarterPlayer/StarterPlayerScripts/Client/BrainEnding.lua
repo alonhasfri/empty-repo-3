@@ -10,6 +10,7 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Content = require(ReplicatedStorage.Shared.Content)
@@ -189,7 +190,9 @@ function BrainEnding.play(d, onDone)
 	local sg = Instance.new("ScreenGui")
 	sg.Name = "BrainEndingGui"
 	sg.IgnoreGuiInset = true
+	sg.ScreenInsets = Enum.ScreenInsets.None -- phone: the bars reach the real screen edges (past the notch area)
 	sg.DisplayOrder = 50
+	GuiService.TouchControlsEnabled = false -- no joystick / jump button over the cutscene
 	sg.ResetOnSpawn = false
 	sg.Parent = player:WaitForChild("PlayerGui")
 	for _, top in ipairs({ true, false }) do
@@ -214,8 +217,8 @@ function BrainEnding.play(d, onDone)
 	local skipped = false
 	local skip = Instance.new("TextButton")
 	skip.AnchorPoint = Vector2.new(1, 0)
-	skip.Position = UDim2.new(1, -12, 0.015, 0)
-	skip.Size = UDim2.fromOffset(110, 44)
+	skip.Position = UDim2.new(0.95, 0, 0.015, 0)
+	skip.Size = UDim2.fromOffset(120, 48)
 	skip.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 	skip.TextColor3 = Color3.new(1, 1, 1)
 	skip.Font = Enum.Font.GothamBold
@@ -402,6 +405,7 @@ function BrainEnding.play(d, onDone)
 	if UI.gui then
 		UI.gui.Enabled = true
 	end
+	GuiService.TouchControlsEnabled = true
 	if root and root.Parent then
 		root.Anchored = false -- (a real 0-cell ending respawns you anyway; a test replay must not leave you frozen)
 	end
