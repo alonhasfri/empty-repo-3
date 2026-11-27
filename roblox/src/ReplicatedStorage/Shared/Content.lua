@@ -348,18 +348,20 @@ Content.LabExperiments = {
 }
 
 ---------------------------------------------------------------------
--- SECRET INVENTIONS (unlocked in the Eureka cutscene by working jobs)
+-- SECRET GADGETS (unlocked in the Eureka cutscene by working jobs). 1.9.3: renamed from Content.Inventions,
+-- which the 1.9.1 world-invention texts further down overwrote (no gadget could unlock or be used since).
+-- They live in your Roblox inventory (hotbar) as tools.
 ---------------------------------------------------------------------
-Content.Inventions = {
-	{ key = "duck", icon = "🦆", name = "Rubber Duck 3000", desc = "Explain your problem to it. Talking it through calms you down (less stress).", cooldown = 120 },
-	{ key = "coffee", icon = "☕", name = "Infinite Coffee Machine", desc = "Erdős mode: instantly lowers stress a lot.", cooldown = 120 },
-	{ key = "pigeons", icon = "🐦", name = "Pigeon Launcher", desc = "Launches a flock of Tesla's pigeons. Pointless. Beautiful.", cooldown = 30 },
-	{ key = "rain", icon = "🧠", name = "Brain Rain Machine", desc = "Makes it rain brains around you.", cooldown = 180 },
-	{ key = "boots", icon = "🥾", name = "Anti-Gravity Boots", desc = "Low gravity for you for 30 seconds.", cooldown = 60 },
+Content.Gadgets = {
+	{ key = "duck", icon = "🦆", name = "Rubber Duck 3000", desc = "Explain your problem to it: big stress drop and +1 💡 idea toward your next invention.", cooldown = 120 },
+	{ key = "coffee", icon = "☕", name = "Infinite Coffee Machine", desc = "Erdős mode: stress gone, instantly.", cooldown = 120 },
+	{ key = "pigeons", icon = "🐦", name = "Pigeon Launcher", desc = "Launches a flock of Tesla's pigeons. People tip you 15 coins for the show.", cooldown = 30 },
+	{ key = "rain", icon = "🧠", name = "Brain Rain Machine", desc = "Makes it rain 25 brains around you (for everyone nearby).", cooldown = 180 },
+	{ key = "boots", icon = "🥾", name = "Anti-Gravity Boots", desc = "Low gravity for you for 60 seconds.", cooldown = 60 },
 	{ key = "remote", icon = "📡", name = "Teleport Remote", desc = "Teleport to any place in town, instantly.", cooldown = 20 },
-	{ key = "goggles", icon = "🥽", name = "Focus Goggles", desc = "Your next 3 library or cinema answers give 1.5× brain cells.", cooldown = 300 },
+	{ key = "goggles", icon = "🥽", name = "Focus Goggles", desc = "Your next 5 library or cinema answers give 2× brain cells.", cooldown = 300 },
 	{ key = "rewind", icon = "⏪", name = "Pocket Time Machine", desc = "Rewinds you to where you were 5 seconds ago.", cooldown = 45 },
-	{ key = "robot", icon = "🤖", name = "Robot Helper", desc = "Does a job task for you (+coins).", cooldown = 180 },
+	{ key = "robot", icon = "🤖", name = "Robot Helper", desc = "Does 2 job tasks for you (+coins and work XP).", cooldown = 180 },
 }
 
 ---------------------------------------------------------------------

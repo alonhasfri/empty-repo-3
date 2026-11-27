@@ -90,7 +90,7 @@ Config.GateFailStress = 0 -- stress added when a gate is failed (was 15)
 Config.GateHints = 1 -- hints per attempt (Extra Hints pass adds 2)
 Config.HintCostFraction = 0.01 -- a hint costs 1% of your cells
 Config.MaxCells = 1e15 -- 1.9.3 audit: hard ceiling so brain cells can never overflow a save
-Config.DuckCalm = 15 -- 1.9.3: stress the Rubber Duck 3000 takes away (it gave Skill Gate hints before gates were removed)
+Config.DuckCalm = 30 -- 1.9.3: stress the Rubber Duck 3000 takes away (it gave Skill Gate hints before gates were removed)
 
 ---------------------------------------------------------------------
 -- LOSE PATH
@@ -800,6 +800,7 @@ Config.UI = {
 	HudMaxButtons = 4, -- 1.8.1 UI review: activity buttons on screen (the rest go in "☰ More")
 	HudPassButtons = false, -- 1.8.1 UI review: pass buttons only in the 🛒 Shop, not on the HUD
 	ToastSeconds = 3, -- 1.8.1: how long a notification stays
+	HotbarLift = 80, -- 1.9.3: with gadgets, the stress bar sits this many px above the bottom edge when the Roblox hotbar (gadgets) is showing
 	CalmStartSeconds = 10, -- 1.9.3 harsh review #2: after joining, only the brain card, the goal and the phone show this long
 	ToastHoldMax = 30, -- 1.9.3: server news waits at most this long for a pop-up or scene to close
 	MaxToasts = 3, -- at most this many at once (the oldest goes)
@@ -1370,17 +1371,20 @@ Config.Inventions = {
 
 -- 1.9.1 (user: "make the inventions more useful"): what every active invention gives everyone
 Config.InventionPerks = {
-	WaterBrain = 1.2, -- clean water: +20% brain gains
-	SpaceBrain = 1.1, -- space travel: +10% brain gains (inspired!)
-	EnergyPay = 1.5, -- clean energy: +50% job pay (and free rides, faster buses)
-	RobotWages = 2, -- robot helpers: wages while on shift x2
-	ClimateCalm = 1.5, -- fixed climate: every calm-down is 50% stronger
-	TranslatorQuiz = 2, -- universal translator: Quick Play points x2
-	MaglevSpeed = 8, -- superconductor: +8 walk speed, rides arrive at once
-	HungerEvery = 300, -- world hunger solved: free coins every 5 minutes
-	HungerCoins = 15,
+	-- 1.9.3 (user: "inventions should do something even more significant"): every perk roughly doubled
+	WaterBrain = 1.5, -- clean water: +50% brain gains (was +20%)
+	SpaceBrain = 1.25, -- space travel: +25% brain gains (was +10%)
+	EnergyPay = 2, -- clean energy: double job pay (was +50%), free rides, faster buses
+	RobotWages = 3, -- robot helpers: wages while on shift x3 (was x2)
+	ClimateCalm = 2, -- fixed climate: every calm-down twice as strong (was +50%)
+	TranslatorQuiz = 3, -- universal translator: Quick Play points x3 (was x2)
+	MaglevSpeed = 10, -- superconductor: +10 walk speed (was +8), rides arrive at once
+	HungerEvery = 180, -- world hunger solved: free coins every 3 minutes (was 5)
+	HungerCoins = 40, -- (was 15)
 }
-Config.Inventions.CureStressScale = 0.6 -- the cure: stress builds 40% slower and never freezes you
+Config.Inventions.CureStressScale = 0.4 -- the cure: stress builds 60% slower (was 40%) and never freezes you
+Config.GadgetPigeonTips = 15 -- 1.9.3: coins the Pigeon Launcher show earns
+Config.GadgetBrainRain = 25 -- 1.9.3: brains the Brain Rain Machine drops (was 10)
 
 -- 1.9.1 one matching 3D icon set (user: "some look good, some are just artworks, some are 3D; can you generate
 -- artworks yourself?"): every icon rendered in Blender with the same glossy material, light and camera, then uploaded.

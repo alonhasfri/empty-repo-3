@@ -696,13 +696,17 @@ end
 H.givegadget = function(actor, target, arg)
 	local key = string.lower(arg or "")
 	local Content = require(ReplicatedStorage.Shared.Content)
-	for _, inv in ipairs(Content.Inventions) do
+	for _, inv in ipairs(Content.Gadgets) do
 		if inv.key == key then
 			DataService.get(target).inventions[key] = true
 			if key == "duck" then
 				target:SetAttribute("DuckPet", true)
 			end
 			Net.send(target, "inventionGift", { icon = inv.icon, name = inv.name, desc = inv.desc })
+			local okG, GS = pcall(require, script.Parent.GainService) -- 1.9.3: into the hotbar right away
+			if okG and GS.giveGadgetTools then
+				GS.giveGadgetTools(target)
+			end
 			return "Gave " .. inv.name .. " to " .. target.Name .. "."
 		end
 	end
@@ -784,7 +788,7 @@ H.promote = function(actor, target)
 end
 H.unlockinventions = function(actor, target)
 	local data = DataService.get(target)
-	for _, inv in ipairs(require(ReplicatedStorage.Shared.Content).Inventions) do
+	for _, inv in ipairs(require(ReplicatedStorage.Shared.Content).Gadgets) do
 		data.inventions[inv.key] = true
 	end
 	data.adminTouched = true

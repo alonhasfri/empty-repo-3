@@ -480,7 +480,7 @@ function Effects.inventionUnlocked(inv)
 	local name = bigText(o, inv.name, 98)
 	name.Size = UDim2.fromScale(1, 0.08)
 	name.Position = UDim2.fromScale(0, 0.68)
-	local desc = bigText(o, inv.desc .. "\n(Use it from 🎒 Gadgets)", 98)
+	local desc = bigText(o, inv.desc .. "\n(It's in your hotbar: tap it to use it)", 98)
 	desc.Size = UDim2.fromScale(0.9, 0.08)
 	desc.Position = UDim2.fromScale(0.05, 0.78)
 	desc.Font = Enum.Font.GothamMedium

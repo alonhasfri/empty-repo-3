@@ -1030,7 +1030,19 @@ UI.onScale(function()
 	end
 end)
 -- ...and keep the bottom bar fully on screen (a UIScale grows it past the bottom edge on big screens)
+-- 1.9.3: gadgets live in the Roblox hotbar now (bottom centre): lift the bar above it when you have any
+local function hotbarLift(): number
+	local Players = game:GetService("Players")
+	local bp = Players.LocalPlayer:FindFirstChildOfClass("Backpack")
+	if bp and bp:FindFirstChildOfClass("Tool") then
+		return Config.UI.HotbarLift
+	end
+	local ch = Players.LocalPlayer.Character
+	return (ch and ch:FindFirstChildOfClass("Tool")) and Config.UI.HotbarLift or 0
+end
 local function fitBottom()
+	local lift = hotbarLift()
+	-- measure the overflow with the bar at its normal spot, then add the hotbar lift once
 	bottom.Position = UDim2.new(0.5, 0, 1, -6)
 	task.defer(function()
 		local limit = UI.gui.AbsoluteSize.Y - 6
@@ -1040,12 +1052,28 @@ local function fitBottom()
 				lowest = math.max(lowest, d.AbsolutePosition.Y + d.AbsoluteSize.Y)
 			end
 		end
-		if lowest > limit then
-			bottom.Position = UDim2.new(0.5, 0, 1, -6 - (lowest - limit))
+		local y = -6 - math.max(0, lowest - limit)
+		if lift > 0 then
+			-- with gadgets: put the stress bar itself `lift` px above the bottom edge (over the hotbar)
+			local meterBottom = meterBack.AbsolutePosition.Y + meterBack.AbsoluteSize.Y
+			local want = UI.gui.AbsoluteSize.Y - lift
+			y = -6 - math.max(0, meterBottom - want)
 		end
+		bottom.Position = UDim2.new(0.5, 0, 1, y)
 	end)
 end
 UI.onScale(fitBottom)
+task.spawn(function()
+	local last = -1
+	while true do
+		task.wait(1)
+		local lift = hotbarLift()
+		if lift ~= last then
+			last = lift
+			fitBottom()
+		end
+	end
+end)
 UI.gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitBottom)
 UI.onScale(function(d)
 	topScale.Scale = ((UI.settings and UI.settings.counterBig) and 1.3 or 1) * d

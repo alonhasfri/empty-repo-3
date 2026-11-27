@@ -83,7 +83,7 @@ Net.on("library_answer", function(player, d)
 		local points = 2
 		if data.focusCharges and data.focusCharges > 0 then
 			data.focusCharges -= 1
-			points = 3
+			points = 4 -- 1.9.3: Focus Goggles = 2x (was 1.5x)
 		end
 		BrainService.gain(player, points, "library")
 		BrainService.stress(player, Config.LibraryStress)
@@ -119,7 +119,7 @@ Net.on("theater_answer", function(player, d)
 		local points = 2
 		if data.focusCharges and data.focusCharges > 0 then
 			data.focusCharges -= 1
-			points = 3
+			points = 4 -- 1.9.3: Focus Goggles = 2x (was 1.5x)
 		end
 		BrainService.gain(player, points, "theater")
 		BrainService.stress(player, 2)
@@ -680,7 +680,7 @@ end
 
 local function eureka(player, data)
 	local locked = {}
-	for _, inv in ipairs(Content.Inventions) do
+	for _, inv in ipairs(Content.Gadgets) do
 		if not data.inventions[inv.key] then
 			table.insert(locked, inv)
 		end
@@ -701,7 +701,7 @@ local function eureka(player, data)
 	data.eurekaChoices = choices
 	local cards = {}
 	for i, key in ipairs(choices) do
-		for _, inv in ipairs(Content.Inventions) do
+		for _, inv in ipairs(Content.Gadgets) do
 			if inv.key == key then
 				cards[i] = { key = inv.key, icon = inv.icon, name = inv.name, desc = inv.desc }
 			end
@@ -868,7 +868,7 @@ Net.on("eureka_pending", function(player)
 	if data and data.eurekaChoices then
 		local cards = {}
 		for i, key in ipairs(data.eurekaChoices) do
-			for _, inv in ipairs(Content.Inventions) do
+			for _, inv in ipairs(Content.Gadgets) do
 				if inv.key == key then
 					cards[i] = { key = inv.key, icon = inv.icon, name = inv.name, desc = inv.desc }
 				end
@@ -883,7 +883,7 @@ end)
 -- Secret inventions
 ---------------------------------------------------------------------
 local function inventionByKey(key)
-	for _, inv in ipairs(Content.Inventions) do
+	for _, inv in ipairs(Content.Gadgets) do
 		if inv.key == key then
 			return inv
 		end
@@ -904,12 +904,13 @@ Net.on("invention_choose", function(player, d)
 	for _ in pairs(data.inventions) do
 		count += 1
 	end
-	if count >= #Content.Inventions then
+	if count >= #Content.Gadgets then
 		BrainService.awardBadge(player, "AllInventions")
 	end
 	if inv.key == "duck" then
 		player:SetAttribute("DuckPet", true)
 	end
+	GainService.giveGadgetTools(player) -- 1.9.3: straight into your hotbar
 	BrainService.push(player)
 	return { ok = true, icon = inv.icon, name = inv.name, desc = inv.desc }
 end)
@@ -922,7 +923,7 @@ Net.on("inventions_list", function(player)
 	local sess = s(player)
 	sess.cooldowns = sess.cooldowns or {}
 	local list = {}
-	for _, inv in ipairs(Content.Inventions) do
+	for _, inv in ipairs(Content.Gadgets) do
 		local owned = data.inventions[inv.key] == true
 		table.insert(list, {
 			key = inv.key,
@@ -936,7 +937,7 @@ Net.on("inventions_list", function(player)
 	return { ok = true, inventions = list, idea = data.ideaMeter, ideaMax = Config.EurekaTasks, places = WorldService.Places }
 end)
 
-Net.on("invention_use", function(player, d)
+local function useGadget(player, d)
 	local data = DataService.get(player)
 	local inv = inventionByKey(d.key)
 	if not data or not inv or not data.inventions[inv.key] then
@@ -953,26 +954,28 @@ Net.on("invention_use", function(player, d)
 	if inv.key == "duck" then
 		-- 1.9.3: Skill Gates are gone, so the duck calms you down instead of giving gate hints
 		BrainService.stress(player, -Config.DuckCalm)
-		msg = "🦆 *quack* You explained your problem out loud. You feel calmer."
+		data.ideaMeter = (data.ideaMeter or 0) + 1 -- 1.9.3: talking it through sparks an idea
+		msg = "🦆 *quack* You explained your problem out loud. Calmer, and +1 💡 idea!"
 	elseif inv.key == "coffee" then
 		if data.path ~= "Gain" then
 			return { ok = false, msg = "Coffee only helps on the Gain path." }
 		end
-		BrainService.stress(player, -40)
-		msg = "☕ Infinite coffee! Stress way down."
+		BrainService.stress(player, -Config.Stress.Max)
+		msg = "☕ Infinite coffee! Stress: gone."
 	elseif inv.key == "pigeons" then
 		if root then
 			WorldService.pigeonBurst(root.Position)
 		end
-		msg = "🐦 PIGEONS LAUNCHED."
+		data.coins += Config.GadgetPigeonTips
+		msg = "🐦 PIGEONS LAUNCHED. The crowd tips you " .. Config.GadgetPigeonTips .. " coins."
 	elseif inv.key == "rain" then
 		if root then
-			WorldService.brainRain(10, root.Position)
+			WorldService.brainRain(Config.GadgetBrainRain, root.Position)
 		end
 		msg = "🧠 It's raining brains!"
 	elseif inv.key == "boots" then
-		Net.send(player, "lowGravity", { seconds = 30 })
-		msg = "🥾 Anti-gravity ON for 30 seconds."
+		Net.send(player, "lowGravity", { seconds = 60 })
+		msg = "🥾 Anti-gravity ON for 60 seconds."
 	elseif inv.key == "remote" then
 		local key = tostring(d.place)
 		if not WorldService.Spots[key] then
@@ -981,8 +984,8 @@ Net.on("invention_use", function(player, d)
 		WorldService.teleport(player, key)
 		msg = "📡 Bzzzt! Teleported."
 	elseif inv.key == "goggles" then
-		data.focusCharges = 3
-		msg = "🥽 Focus! Your next 3 library/cinema answers give 1.5× brain cells."
+		data.focusCharges = 5
+		msg = "🥽 Focus! Your next 5 library/cinema answers give 2× brain cells."
 	elseif inv.key == "rewind" then
 		local hist = sess.history
 		if char and hist and #hist >= 5 then
@@ -995,11 +998,86 @@ Net.on("invention_use", function(player, d)
 			return { ok = false, msg = "The robot needs you to have a job first." }
 		end
 		finishTask(player, data, job, true)
-		msg = "🤖 Beep boop. Job task done. +" .. math.floor(job.coinsPerMinute * CC.TaskPay * payMult(data.career) + 0.5) .. " coins."
+		finishTask(player, data, job, true) -- 1.9.3: two tasks
+		msg = "🤖 Beep boop. 2 job tasks done. +" .. math.floor(2 * job.coinsPerMinute * CC.TaskPay * payMult(data.career) + 0.5) .. " coins."
 	end
 	sess.cooldowns[inv.key] = os.clock() + inv.cooldown * (ProjectService.isActive("battery") and 0.5 or 1)
-	return { ok = true, msg = msg }
+	return { ok = true, msg = msg, cooldown = sess.cooldowns[inv.key] - os.clock() }
+end
+Net.on("invention_use", useGadget)
+
+---------------------------------------------------------------------
+-- 1.9.3 (user: "items should be in the inventory, like the Roblox inventory"): every gadget you own is a
+-- Tool in your Backpack (the hotbar at the bottom). Equip it and tap to use; the name shows the recharge.
+---------------------------------------------------------------------
+local function gadgetTool(player, inv)
+	local tool = Instance.new("Tool")
+	tool.Name = inv.icon .. " " .. inv.name
+	tool.ToolTip = inv.desc
+	tool.RequiresHandle = false
+	tool.CanBeDropped = false
+	tool:SetAttribute("Gadget", inv.key)
+	tool.Activated:Connect(function()
+		local d = {}
+		if inv.key == "remote" then
+			-- the Teleport Remote needs a place: open the gadget screen with its place list
+			Net.send(player, "openStation", { station = "gadgets" })
+			return
+		end
+		local r = useGadget(player, { key = inv.key })
+		if r and r.msg then
+			BrainService.toast(player, r.msg, r.ok and "BadgeSparkle" or nil)
+		end
+		if r and r.ok and r.cooldown and r.cooldown > 0 then
+			tool.Enabled = false
+			local base = inv.icon .. " " .. inv.name
+			task.spawn(function()
+				local untilT = os.clock() + r.cooldown
+				while tool.Parent and os.clock() < untilT do
+					tool.Name = base .. " (" .. math.ceil(untilT - os.clock()) .. "s)"
+					task.wait(1)
+				end
+				tool.Name = base
+				tool.Enabled = true
+			end)
+		end
+		local _ = d
+	end)
+	return tool
+end
+
+function GainService.giveGadgetTools(player)
+	local data = DataService.get(player)
+	local backpack = player:FindFirstChildOfClass("Backpack")
+	if not data or not backpack or typeof(data.inventions) ~= "table" then
+		return
+	end
+	local have = {}
+	for _, holder in ipairs({ backpack, player.Character }) do
+		if holder then
+			for _, t in ipairs(holder:GetChildren()) do
+				if t:IsA("Tool") and t:GetAttribute("Gadget") then
+					have[t:GetAttribute("Gadget")] = true
+				end
+			end
+		end
+	end
+	for _, inv in ipairs(Content.Gadgets) do
+		if data.inventions[inv.key] and not have[inv.key] then
+			gadgetTool(player, inv).Parent = backpack
+		end
+	end
+end
+
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(function()
+		task.wait(1)
+		GainService.giveGadgetTools(player)
+	end)
 end)
+for _, p in ipairs(Players:GetPlayers()) do
+	task.spawn(GainService.giveGadgetTools, p)
+end
 
 ---------------------------------------------------------------------
 -- Genius habits (lower stress)
