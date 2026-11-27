@@ -29,6 +29,13 @@ function MinigameService.begin(player, game: string, context: string, level: num
 	end
 	level = math.clamp(math.floor(level or 1), 1, 4)
 	local seconds = math.max(MG.MinRound, def.seconds - (level - 1) * MG.LevelFaster)
+	-- 1.9.3: the "Extra time on timed games" setting (it was for the removed Skill Gates)
+	local okData, data = pcall(function()
+		return require(script.Parent.DataService).get(player)
+	end)
+	if okData and data and data.settings and data.settings.extraTime then
+		seconds = math.floor(seconds * Config.GateExtraTimeMultiplier)
+	end
 	local round = {
 		game = game,
 		context = context,

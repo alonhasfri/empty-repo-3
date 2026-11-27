@@ -648,13 +648,7 @@ function UI.toast(text: string, color: Color3?, seconds: number?)
 	pcall(function()
 		local key = UI.popupStyle()
 		local P = UI.PopStyles[key]
-		if key == "glass" or key == "clean" then
-			card.BackgroundColor3 = Color3.fromRGB(245, 245, 248)
-			card.BackgroundTransparency = 0.04
-			UI.corner(card, 18)
-			l.TextColor3 = Color3.fromRGB(25, 25, 32)
-			bar.Visible = false
-		elseif P then
+		if P then -- 1.9.3 Brain Kit: every toast is the same dark card with the tier's accent bar
 			card.BackgroundColor3 = P.bg
 			card.BackgroundTransparency = 0.05
 			UI.corner(card, math.min(P.radius, 16))
@@ -731,13 +725,40 @@ end
 -- Toasts use the same style, and smart players (IQ 100+) get phone-notification toasts.
 -- Only ordinary pop-ups are skinned: the phone, minigames and other big screens keep their own look.
 ---------------------------------------------------------------------
-local MERRI = "rbxasset://fonts/families/Merriweather.json"
+-- 1.9.3 BRAIN KIT (docs/UI review.md): every pop-up shares ONE base: dark card, light text, the same
+-- buttons and the same red close button. Brain level only changes the accent line, roundness, outline
+-- and title font, never the colours of the body (the cream / yellow / white / neon skins made the game
+-- look "all over the place").
+local BASE = {
+	bg = Color3.fromRGB(27, 32, 48), -- #1B2030
+	header = Color3.fromRGB(27, 32, 48),
+	title = Color3.fromRGB(245, 246, 250),
+	text = Color3.fromRGB(245, 246, 250), -- #F5F6FA
+	muted = Color3.fromRGB(168, 176, 200), -- #A8B0C8
+	card = Color3.fromRGB(42, 49, 71), -- #2A3147
+	btn = Color3.fromRGB(62, 74, 107), -- #3E4A6B secondary
+	btnText = Color3.new(1, 1, 1),
+	stroke = Color3.new(1, 1, 1),
+	strokeT = 0.88,
+	strokeW = 1.5,
+	radius = 16,
+	closeBg = Color3.fromRGB(240, 72, 90), -- #F0485A, the same close button on every pop-up
+	closeFg = Color3.new(1, 1, 1),
+	light = false,
+}
+local function kit(over)
+	local t = table.clone(BASE)
+	for k, v in pairs(over) do
+		t[k] = v
+	end
+	return t
+end
 UI.PopStyles = {
-	clean = { bg = Color3.fromRGB(24, 28, 40), header = Color3.fromRGB(24, 28, 40), title = Color3.new(1, 1, 1), text = Color3.fromRGB(225, 230, 240), muted = Color3.fromRGB(160, 168, 190), card = Color3.fromRGB(34, 40, 58), btn = Color3.fromRGB(40, 46, 64), btnText = Color3.new(1, 1, 1), stroke = Color3.new(1, 1, 1), strokeT = 0.9, strokeW = 1, radius = 18, line = Color3.fromRGB(90, 140, 255), closeBg = Color3.fromRGB(40, 46, 64), closeFg = Color3.fromRGB(200, 205, 220), light = false },
-	glass = { bg = Color3.fromRGB(250, 251, 255), bgT = 0.06, header = Color3.fromRGB(250, 251, 255), title = Color3.fromRGB(25, 30, 45), text = Color3.fromRGB(45, 50, 65), muted = Color3.fromRGB(110, 116, 135), card = Color3.fromRGB(236, 240, 248), btn = Color3.fromRGB(228, 233, 244), btnText = Color3.fromRGB(30, 35, 50), stroke = Color3.new(1, 1, 1), strokeT = 0.2, strokeW = 2, radius = 22, line = Color3.fromRGB(220, 225, 236), closeBg = Color3.fromRGB(228, 233, 244), closeFg = Color3.fromRGB(60, 66, 85), light = true },
-	storybook = { bg = Color3.fromRGB(250, 238, 205), header = Color3.fromRGB(190, 50, 50), title = Color3.fromRGB(255, 245, 220), text = Color3.fromRGB(80, 50, 25), muted = Color3.fromRGB(130, 95, 60), card = Color3.fromRGB(242, 226, 186), btn = Color3.fromRGB(120, 78, 40), btnText = Color3.fromRGB(255, 240, 210), stroke = Color3.fromRGB(120, 78, 40), strokeT = 0, strokeW = 4, radius = 10, line = Color3.fromRGB(110, 25, 25), closeBg = Color3.fromRGB(120, 78, 40), closeFg = Color3.fromRGB(255, 240, 210), light = true, face = MERRI },
-	bubbly = { bg = Color3.fromRGB(255, 214, 90), bg2 = Color3.fromRGB(255, 150, 60), header = Color3.fromRGB(80, 190, 255), title = Color3.new(1, 1, 1), text = Color3.fromRGB(60, 30, 10), muted = Color3.fromRGB(120, 70, 30), card = Color3.fromRGB(255, 236, 170), btn = Color3.fromRGB(255, 255, 255), btnText = Color3.fromRGB(40, 25, 10), stroke = Color3.fromRGB(20, 20, 30), strokeT = 0, strokeW = 5, radius = 28, line = Color3.fromRGB(20, 20, 30), closeBg = Color3.fromRGB(240, 70, 70), closeFg = Color3.new(1, 1, 1), light = true, font = Enum.Font.FredokaOne, outlineTitle = true, outlineButtons = true },
-	neon = { bg = Color3.fromRGB(10, 8, 24), header = Color3.fromRGB(10, 8, 24), title = Color3.fromRGB(0, 240, 255), text = Color3.fromRGB(215, 215, 240), muted = Color3.fromRGB(160, 160, 200), card = Color3.fromRGB(22, 18, 48), btn = Color3.fromRGB(255, 40, 200), btnText = Color3.new(1, 1, 1), stroke = Color3.fromRGB(0, 240, 255), strokeT = 0, strokeW = 3, radius = 14, line = Color3.fromRGB(255, 40, 200), closeBg = Color3.fromRGB(255, 40, 200), closeFg = Color3.new(1, 1, 1), light = false, titleFont = Enum.Font.Arcade },
+	clean = kit({ line = Color3.fromRGB(255, 200, 61), radius = 12 }), -- really smart: gold, calm
+	glass = kit({ line = Color3.fromRGB(77, 168, 255), radius = 12 }), -- smart: blue
+	storybook = kit({ line = Color3.fromRGB(154, 107, 255), radius = 16 }), -- average / new: purple
+	bubbly = kit({ line = Color3.fromRGB(255, 138, 61), radius = 20, strokeW = 2.5, strokeT = 0.7, titleFont = Enum.Font.FredokaOne }), -- Lose / animals: orange, chunky
+	neon = kit({ line = Color3.fromRGB(255, 79, 163), radius = 20, strokeW = 3, strokeT = 0.6, titleFont = Enum.Font.FredokaOne }), -- really dumb: pink, loudest
 }
 
 function UI.popupStyle(): string

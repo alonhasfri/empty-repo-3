@@ -74,7 +74,7 @@ Net.on("shop_list", function(player)
 		ok = true,
 		passes = list,
 		enabled = BrainService.feature("Purchases"),
-		reminder = data.path == "Lose" and "Reminder: passes are optional. You can finish the whole game for free." or "Passes never help with Skill Gates.",
+		reminder = data.path == "Lose" and "Reminder: passes are optional. You can finish the whole game for free." or "Passes never buy brain cells. You can finish the whole game for free.",
 	}
 end)
 

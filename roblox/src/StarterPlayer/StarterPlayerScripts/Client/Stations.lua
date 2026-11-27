@@ -1690,7 +1690,7 @@ function Stations.settings()
 		toggle(Content.Settings17.Guide, "guide", 2)
 	end
 	function BUILD.gameplay()
-		toggle("⏱ Extra time on Skill Gates", "extraTime", 1)
+		toggle("⏱ Extra time on timed games (+50%)", "extraTime", 1)
 		toggle(Content.Settings17.SpeedrunTimer, "speedrunTimer", 2)
 		-- horror setting (Off / Spooky / Full), saved on the server
 		local TH = Content.Horror

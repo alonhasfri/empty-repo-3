@@ -106,7 +106,7 @@ local SYMPTOMS = {
 }
 
 local FEELINGS = {
-	{ text = "😰 Stressed about the Skill Gate", answer = "🌬 Slow breathing: in 4, out 6" },
+	{ text = "😰 Stressed about a big test", answer = "🌬 Slow breathing: in 4, out 6" },
 	{ text = "🥱 Exhausted from work", answer = "😴 A short nap, like Edison" },
 	{ text = "🤯 Overwhelmed by too many facts", answer = "📝 Write things down, one at a time" },
 }

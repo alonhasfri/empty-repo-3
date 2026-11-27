@@ -487,7 +487,7 @@ Config.GamePasses = {
 		path = "Gain",
 		cellsLost = 0,
 		name = "VIP Library Card",
-		desc = "VIP tag and +10% from the library. Never helps with Skill Gates.",
+		desc = "VIP tag and +10% brain cells from the library.",
 	},
 	ExtraHints = {
 		id = 0,
@@ -794,7 +794,7 @@ Config.UI = {
 	AutoLowFps = 32, -- 1.8.2: if a phone averages under this many FPS at the start, Low detail switches on by itself
 	AutoLowProbeSeconds = 12, -- how long it measures (after the town has loaded)
 	AutoLowDelay = 8, -- seconds to wait before measuring
-	MinPhoneText = 12, -- smallest text size on phones (1.8.1: 14 made the UI too big)
+	MinPhoneText = 14, -- smallest text size on phones (1.9.3 Brain Kit: 3 UI judges found 8-12 px text unreadable; was 12)
 	MinTouch = 42, -- smallest tappable button on screen (1.8.1: 48 made the UI too big; ~44 is comfortable)
 	MaxDeviceScale = 1, -- 1.8.1: the UI stops growing on big screens (1.35 looked huge on PC)
 	HudMaxButtons = 4, -- 1.8.1 UI review: activity buttons on screen (the rest go in "☰ More")
