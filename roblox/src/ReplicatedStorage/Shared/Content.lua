@@ -44,7 +44,7 @@ Content.Headlines = {
 	{ tier = 1, bait = false, text = "Local Library Extends Weekend Opening Hours", article = "The library will now stay open until 8 PM on Saturdays." },
 	-- tier 2: tempting
 	{ tier = 2, bait = true, text = "You Won't BELIEVE What This Kid Found in His Backyard 😱", article = "A rock. He found a rock." },
-	{ tier = 2, bait = true, text = "Free Robux Glitch (NOT CLICKBAIT) 2026", article = "There is no glitch. Never trust a free Robux headline." },
+	{ tier = 2, bait = true, text = "Secret Infinite Coins Glitch (NOT CLICKBAIT) 2026", article = "There is no glitch. Never trust a free-stuff headline." },
 	{ tier = 2, bait = false, text = "New Study Shows Dogs Can Understand Some Words", article = "Dogs in the study reacted to familiar words even when strangers said them." },
 	{ tier = 2, bait = true, text = "He Pressed This Button… What Happened Next Will SHOCK You", article = "Nothing happened. It was a doorbell." },
 	{ tier = 2, bait = false, text = "Weather Service Expects Rain This Weekend", article = "Bring an umbrella on Saturday afternoon." },
@@ -1244,7 +1244,7 @@ Content.Life = {
 		Warn = { "uh oh…", "wait… 🥴", "brain buffering…", "hmm?" },
 		Ads = {
 			{ title = "🎉 YOU WON!!!", text = "a FREE nothing! tap X to claim (nothing)" },
-			{ title = "🔥 HOT SINGLES", text = "hot single SOCKS near you 🧦🧦" },
+			{ title = "🔥 HOT SOCKS", text = "lonely odd SOCKS near you 🧦🧦" },
 			{ title = "💎 1 WEIRD TRICK", text = "doctors HATE this banana 🍌" },
 			{ title = "📢 BRAIN SALE", text = "buy 0 brain cells, get 0 FREE" },
 			{ title = "🎰 SPIN!!!", text = "(just kidding, there's no wheel) 🙃" },
