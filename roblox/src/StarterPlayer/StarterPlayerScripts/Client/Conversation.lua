@@ -13,6 +13,7 @@ local TweenService = game:GetService("TweenService")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Content = require(ReplicatedStorage.Shared.Content)
 local UI = require(script.Parent.UI)
+local VsStage = require(script.Parent.VsStage) -- 1.9.3: Vs Mode on a real 3D stage with both avatars
 local Remote = require(script.Parent.Remote)
 
 local Conversation = {}
@@ -162,6 +163,10 @@ end
 
 local function shot(kind: string)
 	if not cur then
+		return
+	end
+	if kind == "judge" and cur.stage then
+		tweenCam(cur.stage.judgeAt, cur.stage.judgeEye, cur.stage.judgeAt)
 		return
 	end
 	local me, npc = cur.stand.Position, cur.npc.Position
@@ -336,6 +341,9 @@ local function close()
 		return
 	end
 	cur = nil
+	if c.stage then
+		pcall(c.stage.destroy)
+	end
 	ContextActionService:UnbindAction("ConvLeave")
 	hideChoices()
 	task.spawn(function()
@@ -532,11 +540,21 @@ local function vsLatest(d)
 	local last = list[#list]
 	if c and last and last ~= c.lastLine then
 		c.lastLine = last
-		shot("wide")
+		shot(c.stage and "npc" or "wide")
+		if c.stage then
+			c.stage.gesture("other", "point")
+		end
 		if isSlam(last) then
 			objection()
+			if c.stage then
+				c.stage.crowdReact("laugh")
+			end
 		end
 		typeLine("🎬", last)
+		if c.stage and c == cur then
+			shot("me") -- your reaction
+			c.stage.gesture("me", "laugh")
+		end
 	end
 end
 
@@ -559,19 +577,17 @@ function Conversation.vsStart(d)
 		return false
 	end
 	local r = build()
-	local me = root.CFrame
-	-- the other side: the partner's character if they're close, else a spot in front of you
+	-- 1.9.3: a real stage (Client/VsStage.lua): clones of both avatars at podiums, a judge and a crowd
 	local other = d.partnerId and Players:GetPlayerByUserId(d.partnerId)
-	local oroot = other and other.Character and other.Character:FindFirstChild("HumanoidRootPart")
-	local npc = me * CFrame.new(0, 0, -7) * CFrame.Angles(0, math.pi, 0)
-	local alone = true
-	if oroot and (oroot.Position - me.Position).Magnitude < 40 then
-		npc = oroot.CFrame
-		alone = false
+	local okStage, stage = pcall(VsStage.build, tostring(d.title), char, other and other.Character, tostring(d.partner))
+	if not okStage then
+		warn("[VsStage] " .. tostring(stage))
+		stage = nil
 	end
-	local mid = (me.Position + npc.Position) / 2
-	local wide = mid + me.RightVector * 12 + Vector3.new(0, 6, 0)
-	cur = { alone = alone, r = r, vs = true, sessionId = d.sessionId, who = tostring(d.partner), meterName = tostring(d.title), stand = me, npc = npc, wide = wide, queue = {} }
+	local me = stage and stage.meCF or root.CFrame
+	local npc = stage and stage.otherCF or (me * CFrame.new(0, 0, -7) * CFrame.Angles(0, math.pi, 0))
+	local wide = stage and stage.wideEye or ((me.Position + npc.Position) / 2 + me.RightVector * 12 + Vector3.new(0, 6, 0))
+	cur = { alone = stage == nil, stage = stage, r = r, vs = true, sessionId = d.sessionId, who = tostring(d.partner), meterName = tostring(d.title), stand = me, npc = npc, wide = wide, queue = {} }
 	local c = cur
 	r.meterName.Text = tostring(d.title)
 	r.fill.Size = UDim2.new(0, 0, 1, 0)
@@ -612,6 +628,17 @@ function Conversation.vsStart(d)
 	shot("wide")
 	vsRun(function()
 		task.wait(CC.OpenDelay)
+		-- establishing wide, then the judge bangs the gavel, then both step up
+		if c.stage and c == cur then
+			shot("judge")
+			task.wait(0.6)
+			c.stage.bang()
+			UI.sound("ImportantSlam", 0.4)
+			task.wait(0.8)
+			c.stage.gesture("me", "wave")
+			c.stage.gesture("other", "wave")
+			shot("wide")
+		end
 		typeLine("🎭 " .. tostring(d.role) .. " vs " .. tostring(d.partner), tostring(d.text))
 	end)
 	return true
@@ -643,10 +670,20 @@ function Conversation.vsStep(d)
 				Remote.call("social_answer", { sessionId = d.sessionId, choice = i })
 			end)
 			shot("me")
+			if c.stage then
+				c.stage.gesture("me", "point")
+			end
 			if isSlam(d.options[i]) then
 				objection()
+				if c.stage then
+					c.stage.crowdReact("laugh")
+				end
 			end
 			typeLine(T.You, d.options[i])
+			if c.stage and c == cur then
+				shot("npc") -- their reaction
+				c.stage.gesture("other", "laugh")
+			end
 		end)
 		while c == cur and not answered and os.clock() < deadline do
 			task.wait(0.1)
@@ -686,6 +723,18 @@ function Conversation.vsEnd(d)
 				end
 				typeLine("🎬", lines[i])
 			end
+		end
+		if c == cur and c.stage then
+			-- verdict: the judge bangs the gavel, then everyone cheers
+			shot("judge")
+			task.wait(0.5)
+			c.stage.bang()
+			UI.sound("ImportantSlam", 0.4)
+			task.wait(0.8)
+			shot("wide")
+			c.stage.gesture("me", "cheer")
+			c.stage.gesture("other", "cheer")
+			c.stage.crowdReact("cheer")
 		end
 		if c == cur then
 			UI.sound("LevelUp", 0.5)
