@@ -789,7 +789,9 @@ local function buildGainSide()
 		sign = "🎓 BRAINVILLE UNIVERSITY",
 	})
 	addPlace("university", "🎓 University", ucf, usize, "Gain")
-	station("gate", "Gain", "🚧 Exam Hall: The Skill Gate", "Prove YOU are smart", ucf * CFrame.new(0, 0.5, 25), Color3.fromRGB(240, 200, 60))
+	if Config.Features.Gates ~= false then -- 1.9.3: Skill Gates removed
+		station("gate", "Gain", "🚧 Exam Hall: The Skill Gate", "Prove YOU are smart", ucf * CFrame.new(0, 0.5, 25), Color3.fromRGB(240, 200, 60))
+	end
 	workplace("university", "Professor's Office", ucf * CFrame.new(-40, 0.5, -10))
 	for i = -2, 2 do
 		part({ Name = "Column", CFrame = ucf * CFrame.new(i * 12, 12, -usize.Z / 2 - 6), Size = Vector3.new(3, 24, 3), Color = Color3.fromRGB(240, 238, 230), Material = Enum.Material.Marble }, "trim")

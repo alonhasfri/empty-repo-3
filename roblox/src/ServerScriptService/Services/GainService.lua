@@ -951,8 +951,9 @@ Net.on("invention_use", function(player, d)
 	local root = char and char:FindFirstChild("HumanoidRootPart")
 	local msg
 	if inv.key == "duck" then
-		data.bonusHints = math.min(3, (data.bonusHints or 0) + 1)
-		msg = "🦆 *quack* You explained your problem out loud. +1 Skill Gate hint (" .. data.bonusHints .. "/3)."
+		-- 1.9.3: Skill Gates are gone, so the duck calms you down instead of giving gate hints
+		BrainService.stress(player, -Config.DuckCalm)
+		msg = "🦆 *quack* You explained your problem out loud. You feel calmer."
 	elseif inv.key == "coffee" then
 		if data.path ~= "Gain" then
 			return { ok = false, msg = "Coffee only helps on the Gain path." }

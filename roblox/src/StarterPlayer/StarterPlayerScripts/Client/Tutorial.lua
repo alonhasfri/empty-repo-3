@@ -68,16 +68,16 @@ local NOTES = {
 		bit = 4,
 		title = "⚠️ IMPORTANT",
 		top = "Read every word. On this path, reading IS the game.",
-		text = "Your goal: grow your brain from **86 billion** cells, raise your **IQ** and pass the **Skill Gates**. Books, facts, jobs and inventions make you smarter. Later: **Noble Prizes**, **space**, maybe even **World's Smartest**.",
+		text = "Your goal: grow your brain from **86 billion** cells, raise your **IQ** and climb the job ladder. Books, facts, jobs and inventions make you smarter. Later: **Noble Prizes**, **space**, maybe even **World's Smartest**.",
 		art = { "🧠", "📚", "💼", "🔬", "🚀", "👑" },
 		color = Color3.fromRGB(70, 140, 255),
 	},
 	smartToo = {
 		bit = 5,
 		title = "⚠️ IMPORTANT",
-		text = "**YOU have to be smart too.** Skill Gates ask **real questions**: maths, code, science. No pass, no boost and no friend can answer them for you. Your character gets smarter only if **you** do.",
-		art = { "🧑", "➕", "🧠", "=", "🚧✅" },
-		quiz = { q = "Who answers the Skill Gate questions?", options = { "A game pass", "YOU", "Dr. Wrinkles" }, answer = 2 },
+		text = "**Learn for real.** Books, Jack B and BrainTalks teach **real fun facts**, and quick questions check you were paying attention. Your character gets smarter when **you** do.",
+		art = { "🧑", "➕", "🧠", "=", "📚✅" },
+		quiz = { q = "Who makes your character smarter?", options = { "A game pass", "YOU", "Dr. Wrinkles" }, answer = 2 },
 		color = Color3.fromRGB(240, 190, 40),
 	},
 	flashy = {
@@ -119,7 +119,7 @@ local NOTES = {
 	stress = {
 		bit = 11,
 		title = "⚠️ IMPORTANT",
-		text = "**Geniuses get stressed.** Gates, jobs and projects raise your 😰 **stress**. Too much and you **freeze**. Fix it like real geniuses did: ☕ count **60 coffee beans** (Beethoven), 😴 a **power nap** (Edison), 🐦 feed **pigeons** (Tesla).",
+		text = "**Geniuses get stressed.** Jobs and projects raise your 😰 **stress**. Too much and you **freeze**. Fix it like real geniuses did: ☕ count **60 coffee beans** (Beethoven), 😴 a **power nap** (Edison), 🐦 feed **pigeons** (Tesla).",
 		art = { "😰", "➡️", "☕😴🐦", "➡️", "😌" },
 		quiz = { q = "You're frozen from stress. What fixes it?", options = { "Buy a pass", "Do a genius habit", "Wait forever" }, answer = 2 },
 		color = Color3.fromRGB(255, 140, 60),
@@ -127,9 +127,9 @@ local NOTES = {
 	money = {
 		bit = 12,
 		title = "⚠️ IMPORTANT",
-		text = "**Money can't buy brains.** On this path the Store has comfort and cosmetics only. **No pass** ever helps with a **Skill Gate**. Your brain is the only thing that gets you through.",
+		text = "**Money can't buy brains.** On this path the Store has comfort and cosmetics only. **No pass** ever buys brain cells. Your brain is the only thing that grows them.",
 		art = { "💰", "≠", "🧠" },
-		quiz = { q = "Can a pass get you through a Skill Gate?", options = { "Yes", "No" }, answer = 2 },
+		quiz = { q = "Can a pass buy you brain cells?", options = { "Yes", "No" }, answer = 2 },
 		color = Color3.fromRGB(255, 90, 200),
 	},
 }

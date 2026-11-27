@@ -8,12 +8,12 @@
 | Replace the friend's wedding event (Roblox bans romance) | yes: Sam's surprise party | ✅ | done |
 | Next ⏭ button in work rounds | replaced: rounds end by themselves at the goal | ✅ | done |
 | Job minigames short (20–35 s), end at goal, "3 / 6" goal | yes | ✅ (dishes) | done; emoji Roblox can't draw (🫧 🫠 🩻 🥹 🫣 🫘) replaced |
-| Harsh review by tester agents | ❌ | – | after minigames |
+| Harsh review by tester agent | yes (docs/Harsh review.md) | ✅ | fixed #1 #2 #3 #5 #7 #8 #9; left: #6 two UI kits, #10 plaza |
 | Icons + pop-ups polish | ❌ | – | after the harsh review |
 | More real 3D models | ❌ | – | after the harsh review |
 | UI.fitPanel on every screen + phone admin panel | ❌ | – | later |
 | Admin test commands (pass gates, set IQ) | yes (32f9a18) | ❌ | test |
-| Easy fun-fact Skill Gates | yes (1.8.9) | ❌ | test |
+| Skill Gates | **removed (user, Nov 27)** | ✅ | done: no IQ cap, no gate app / stand / chip; Rubber Duck calms stress instead |
 | Stuck fix: timeouts, watchdog, Unstuck | yes (1.8.8) | ✅ | done |
 | Brain Shredder + 0-cell POOF animations | yes | ❌ | test |
 | Intro cutscene + Cutscene player | yes | partly | test |

@@ -351,7 +351,7 @@ Content.LabExperiments = {
 -- SECRET INVENTIONS (unlocked in the Eureka cutscene by working jobs)
 ---------------------------------------------------------------------
 Content.Inventions = {
-	{ key = "duck", icon = "🦆", name = "Rubber Duck 3000", desc = "Explain your problem to it. Gives +1 Skill Gate hint (max 3).", cooldown = 120 },
+	{ key = "duck", icon = "🦆", name = "Rubber Duck 3000", desc = "Explain your problem to it. Talking it through calms you down (less stress).", cooldown = 120 },
 	{ key = "coffee", icon = "☕", name = "Infinite Coffee Machine", desc = "Erdős mode: instantly lowers stress a lot.", cooldown = 120 },
 	{ key = "pigeons", icon = "🐦", name = "Pigeon Launcher", desc = "Launches a flock of Tesla's pigeons. Pointless. Beautiful.", cooldown = 30 },
 	{ key = "rain", icon = "🧠", name = "Brain Rain Machine", desc = "Makes it rain brains around you.", cooldown = 180 },
@@ -2117,7 +2117,7 @@ Content.RoomGuide = {
 		diner = "Microwave food and a very old fridge. Grab a snack!",
 		supermarket = "Aisles of food. Work the till or shake the cereal.",
 		gain = "A real classroom. Find your desk and talk to the teacher.",
-		university = "The lecture hall and the Skill Gate. Pass it to go further!",
+		university = "The lecture hall: big ideas, big words, comfy seats.",
 		cinema = "Movies, snacks, and the Debate Show on the stage.",
 		cafe = "Coffee, a cozy couch and a quiet place to think.",
 		hospital = "Check-ups, patients, and Dr. Calm's corner for stress.",

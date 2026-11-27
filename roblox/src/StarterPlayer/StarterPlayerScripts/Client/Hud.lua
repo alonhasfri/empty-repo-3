@@ -489,7 +489,6 @@ local TUTORIAL = {
 		{ event = "theater", title = "WATCH JACK B!", desc = "Open 📱 Phone → Jack B and learn a fun fact." },
 		{ event = "job", title = "GET A JOB!", desc = "Open 📱 Phone → Jobs and pick one your IQ allows." },
 		{ event = "work", title = "GO TO WORK!", desc = "Tap 🛠 Work (take the 🚌 bus or Hoppr) and finish a task." },
-		{ event = "gate", title = "FACE THE SKILL GATE!", desc = "Reach the gate's IQ, then tap 🚧 Gate. YOU must be smart." },
 	},
 }
 -- (1.4) The old small card is retired: the cinematic Tutorial module replaces it.
@@ -1082,7 +1081,9 @@ local function progress(st): (number, string)
 			local p = math.clamp((st.cells - from) / math.max(1, target - from), 0, 1)
 			return p, st.atGate and "🚧 GATE!" or ("IQ " .. nextIq .. " gate")
 		end
-		return 1, "All gates passed"
+		-- 1.9.3: no Skill Gates any more: show IQ progress towards genius level instead
+		local iq = tonumber(st.iq) or 0
+		return math.clamp((iq - 70) / (200 - 70), 0, 1), "🧠 IQ " .. math.floor(iq)
 	elseif st.path == "Lose" then
 		local p = 1 - math.clamp(math.log10(math.max(1, st.cells)) / math.log10(Config.LoseStartCells), 0, 1)
 		return p, math.floor(p * 100) .. "% gone"

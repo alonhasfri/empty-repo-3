@@ -117,7 +117,9 @@ local function appsFor(st, tier: string)
 	end
 	-- 1.9: the old HUD activity buttons live in the phone now
 	if st.path == "Gain" then
-		addBefore(EXTRA.gate)
+		if Config.Features.Gates ~= false then -- 1.9.3: Skill Gates removed
+			addBefore(EXTRA.gate)
+		end
 		addBefore(EXTRA.coffee)
 		addBefore(EXTRA.nap)
 		addBefore(EXTRA.pigeons)

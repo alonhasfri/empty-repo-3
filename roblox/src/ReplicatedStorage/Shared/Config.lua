@@ -89,6 +89,7 @@ Config.GateStartStress = 0 -- stress added when a gate starts (was 10)
 Config.GateFailStress = 0 -- stress added when a gate is failed (was 15)
 Config.GateHints = 1 -- hints per attempt (Extra Hints pass adds 2)
 Config.HintCostFraction = 0.01 -- a hint costs 1% of your cells
+Config.DuckCalm = 15 -- 1.9.3: stress the Rubber Duck 3000 takes away (it gave Skill Gate hints before gates were removed)
 
 ---------------------------------------------------------------------
 -- LOSE PATH
@@ -652,7 +653,7 @@ Config.Features = {
 	Zones = true,
 	Library = true,
 	Theater = true,
-	Gates = true,
+	Gates = false, -- 1.9.3 (user): Skill Gates removed. Nothing caps your IQ now; the gate app, chip and Exam Hall stand are gone
 	Jobs = true,
 	Habits = true,
 	Pets = true,
