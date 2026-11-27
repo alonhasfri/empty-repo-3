@@ -3,7 +3,7 @@
 
 local Config = {}
 
-Config.GameName = "Lose a Brain Cell / Gain a Brain Cell"
+Config.GameName = "Lose/Gain a Brain Cell" -- 1.9.3: matches the published name
 Config.Version = "1.9.2"
 -- 1.8.3: the brain counter shortens numbers from here on (1.2T, 9.9Qa ...)
 Config.ShortNumberFrom = 1e9 -- 1.9.1 fun fixes: "86.2B" moves visibly, 11 digits did not

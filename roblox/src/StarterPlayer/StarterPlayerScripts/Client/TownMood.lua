@@ -173,7 +173,7 @@ end
 
 function BUILD.future()
 	for i, pos in ipairs(ring(6, 40, 14)) do
-		local r = part({ Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, 9, 9), CFrame = CFrame.new(pos) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(90, 230, 255), Material = Enum.Material.Neon, Transparency = 0.55 })
+		local r = part({ Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.4, 16, 16), CFrame = CFrame.new(pos) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(90, 230, 255), Material = Enum.Material.Neon, Transparency = 0.35 })
 		table.insert(movers, { part = r, base = r.CFrame, kind = "spin", phase = i })
 	end
 	for i = 1, 4 do
