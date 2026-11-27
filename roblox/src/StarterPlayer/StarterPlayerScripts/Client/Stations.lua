@@ -1111,14 +1111,19 @@ function Stations.map(free: boolean?)
 	if not r.ok then
 		return
 	end
-	local m = UI.modal("🗺 Brainville Map", phoneOpts(Color3.fromRGB(40, 170, 100)))
+	-- 1.9.3 harsh review #9: a normal wide pop-up (inside the narrow phone the map was tiny)
+	local m = UI.modal("🗺 Brainville Map", { color = Color3.fromRGB(40, 170, 100) })
 	-- the drawn town
-	local map = UI.new("Frame", { BackgroundColor3 = Color3.fromRGB(110, 185, 95), Size = UDim2.new(1, 0, 0, 10), LayoutOrder = 1, ClipsDescendants = true, Parent = m.content }, {
-		UI.new("UIAspectRatioConstraint", { AspectRatio = 1 }),
+	-- 1.9.3: a centred square that fits the screen, and every pin fits inside it
+	local holder = UI.new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, UI.isPhone() and 230 or 300), LayoutOrder = 1, Parent = m.content })
+	local map = UI.new("Frame", { AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0), BackgroundColor3 = Color3.fromRGB(110, 185, 95), Size = UDim2.fromScale(1, 1), ClipsDescendants = true, Parent = holder }, {
+		UI.new("UIAspectRatioConstraint", { AspectRatio = 1, DominantAxis = Enum.DominantAxis.Height }),
 	})
-	map.Size = UDim2.new(1, 0, 0, 300)
 	UI.corner(map, 14)
 	local ext = r.extent or 160
+	for _, p in ipairs(r.places) do
+		ext = math.max(ext, math.abs(p.x) + 20, math.abs(p.z) + 20)
+	end
 	local function at(x: number, z: number): UDim2
 		return UDim2.fromScale(0.5 + x / (2 * ext), 0.5 + z / (2 * ext))
 	end
@@ -1132,7 +1137,7 @@ function Stations.map(free: boolean?)
 			f.Size = UDim2.new(0, 6, math.abs(z2 - z1) / (2 * ext), 0)
 		end
 	end
-	local S = 0.55
+	local S = Config.Map.Scale or 0.85 -- 1.9.3: matches the 1.8.8 bigger town (was 0.55)
 	road(-410 * S, 0, 410 * S, 0)
 	road(0, -410 * S, 0, 410 * S)
 	for _, v in ipairs({ -200 * S, 200 * S }) do
@@ -1173,7 +1178,7 @@ function Stations.map(free: boolean?)
 		UI.corner(me, 9)
 		UI.stroke(me, Color3.fromRGB(255, 60, 60), 4, 0)
 	end
-	UI.label(m.content, string.format(Content.Bus.MapHint, Config.Bus.WaitSeconds), { TextColor3 = Color3.fromRGB(210, 210, 220), TextSize = UI.textSize(12), LayoutOrder = 2 })
+	UI.label(m.content, string.format(Content.Bus.MapHint, Config.Bus.WaitSeconds), { TextColor3 = UI.T.text, TextSize = UI.textSize(14), LayoutOrder = 2 })
 	for i, p in ipairs(r.places) do
 		local tag = (p.path and myPath and p.path ~= myPath) and " (other path)" or ""
 		UI.button(m.content, p.name .. tag, function()
