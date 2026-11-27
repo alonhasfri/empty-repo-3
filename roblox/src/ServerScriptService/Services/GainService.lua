@@ -342,6 +342,9 @@ local function applyUniform(player)
 	weld.Part0 = torso
 	weld.Part1 = vest
 	weld.Parent = vest
+	-- 1.9.3 (user: "why are there pieces of material inside my avatar and everyone who joins?"): the boxy
+	-- fabric vest poked through every avatar shape. It's no longer shown; the job title tag stays.
+	vest.Transparency = 1
 	vest.Parent = folder
 	local head = char:FindFirstChild("Head")
 	if head then
