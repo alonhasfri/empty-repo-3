@@ -800,12 +800,12 @@ Config.UI = {
 	MaxDeviceScale = 1, -- 1.8.1: the UI stops growing on big screens (1.35 looked huge on PC)
 	HudMaxButtons = 4, -- 1.8.1 UI review: activity buttons on screen (the rest go in "☰ More")
 	HudPassButtons = false, -- 1.8.1 UI review: pass buttons only in the 🛒 Shop, not on the HUD
-	ToastSeconds = 3, -- 1.8.1: how long a notification stays
+	ToastSeconds = 2.5, -- how long a notification stays (1.9.3: was 3)
 	IconLoadSeconds = 10, -- 1.9.3: an icon that is on screen this long without drawing shows its emoji instead
 	HotbarLift = 80, -- 1.9.3: with gadgets, the stress bar sits this many px above the bottom edge when the Roblox hotbar (gadgets) is showing
 	CalmStartSeconds = 10, -- 1.9.3 harsh review #2: after joining, only the brain card, the goal and the phone show this long
 	ToastHoldMax = 30, -- 1.9.3: server news waits at most this long for a pop-up or scene to close
-	MaxToasts = 3, -- at most this many at once (the oldest goes)
+	MaxToasts = 1, -- at most this many at once (the oldest goes) (1.9.3: one small card in the gap above the Phone button; was 3)
 	-- routine news hidden by Settings → Fewer notifications (on by default); matched in lower case
 	ToastLowValue = { "interest", "bills paid", "bills skipped", "you already talked", "the next bus comes in", "give it " },
 	LandscapePhoneAspect = 1.6, -- 1.8.7 phone pass: the in-game phone is wide on a sideways phone screen, so apps and buttons fit without scrolling

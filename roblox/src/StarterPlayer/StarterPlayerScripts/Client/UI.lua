@@ -550,20 +550,20 @@ end
 local toastHolder = UI.new("Frame", {
 	Name = "Toasts",
 	BackgroundTransparency = 1,
-	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 170),
-	Size = UDim2.new(0.4, 0, 0, 10),
+	AnchorPoint = Vector2.new(1, 0), -- 1.9.3 (user: notifications took way too much space): top-RIGHT, out of your view
+	Position = UDim2.new(1, -12, 0, 120),
+	Size = UDim2.new(0.3, 0, 0, 10),
 	AutomaticSize = Enum.AutomaticSize.Y,
 	ZIndex = 50,
 	Parent = UI.gui,
 }, {
-	UI.new("UIListLayout", { Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }),
-	UI.new("UISizeConstraint", { MaxSize = Vector2.new(300, 600), MinSize = Vector2.new(200, 0) }),
+	UI.new("UIListLayout", { Padding = UDim.new(0, 4), HorizontalAlignment = Enum.HorizontalAlignment.Right, SortOrder = Enum.SortOrder.LayoutOrder }),
+	UI.new("UISizeConstraint", { MaxSize = Vector2.new(240, 200), MinSize = Vector2.new(160, 0) }),
 })
 -- 1.8.1: toasts sit just under the goal line, whatever the screen size
 local toastTop = UDim2.new(0.5, 0, 0, 74)
 UI.onScale(function(d)
-	toastTop = UDim2.new(0.5, 0, 0, 14 + 60 * d) -- 1.8.7: high up, under the slim goal lines (never mid-screen)
+	toastTop = UDim2.new(1, -12, 0, 16 + 66 * d) -- 1.9.3: top-right, just under the round buttons
 	toastHolder.Position = toastTop
 end)
 UI.autoScale(toastHolder)
@@ -599,13 +599,9 @@ function UI.toast(text: string, color: Color3?, seconds: number?)
 		end
 	end
 	-- 1.9.1 test fix: while a pop-up is open, toasts sit at the bottom so they never cover its title
-	if UI.popupOpen then
-		toastHolder.AnchorPoint = Vector2.new(0.5, 1)
-		toastHolder.Position = UDim2.new(0.5, 0, 1, -70)
-	elseif #liveToasts == 0 then
-		toastHolder.AnchorPoint = Vector2.new(0.5, 0)
-		toastHolder.Position = toastTop
-	end
+	-- 1.9.3: always the same small corner (top-right), pop-up or not
+	toastHolder.AnchorPoint = Vector2.new(1, 0)
+	toastHolder.Position = toastTop
 	while #liveToasts >= Config.UI.MaxToasts do
 		local old = table.remove(liveToasts, 1)
 		if old.holder.Parent then
@@ -624,7 +620,7 @@ function UI.toast(text: string, color: Color3?, seconds: number?)
 		ZIndex = 50,
 		Parent = holder,
 	}, {
-		UI.new("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 6), PaddingBottom = UDim.new(0, 6) }),
+		UI.new("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 8), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4) }),
 	})
 	UI.corner(card, 10)
 	local bar = UI.new("Frame", { BackgroundColor3 = color or T.accent, Position = UDim2.new(0, -12, 0, -6), Size = UDim2.new(0, 4, 1, 12), ZIndex = 51, Parent = card })
@@ -642,6 +638,8 @@ function UI.toast(text: string, color: Color3?, seconds: number?)
 		ZIndex = 51,
 		Parent = card,
 	})
+	UI.new("UISizeConstraint", { MaxSize = Vector2.new(math.huge, UI.textSize(13) * 2 + 6), Parent = l }) -- 1.9.3: at most 2 lines
+	l.TextTruncate = Enum.TextTruncate.AtEnd
 	l:SetAttribute("Body", true)
 	UI.styleText(l)
 	-- 1.9.1 toasts follow the pop-up style; smart players (glass / clean) get phone-notification cards
