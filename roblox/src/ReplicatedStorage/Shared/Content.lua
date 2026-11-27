@@ -2042,6 +2042,18 @@ Content.Boards = {
 }
 
 -- 1.7.2: "What do I do now?" (a goal line + an arrow to the next useful place). Short, picture-first lines.
+-- 1.9.3: the 0-cell ending as a real 3D cutscene (Client/BrainEnding.lua)
+Content.BrainEnding = {
+	Zero = "Brain cells: 0.",
+	UhOh = "Uh oh.",
+	Boom = "💥 POOF!",
+	StillHere = "…your brain is still here.",
+	GetsUp = "It gets up.",
+	WalksOff = "…and walks off to find someone who'll use it. 🧠👋",
+	Gate = "BRAINVILLE",
+	Skip = "Skip ⏭",
+}
+
 Content.Bits = {
 	Streak = "🔥 x%d STREAK!",
 }

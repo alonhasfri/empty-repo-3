@@ -1431,6 +1431,7 @@ Config.Bits = {
 	PerMinuteCap = 40,
 	FirstGoal = 10, -- new players start with "grab 10 brain bits"
 }
+Config.Death = { KillDelay = 24 } -- 1.9.3: seconds before the 0-cell respawn (the 3D ending cutscene is ~20 s)
 Config.GadgetPigeonTips = 15 -- 1.9.3: coins the Pigeon Launcher show earns
 Config.GadgetBrainRain = 25 -- 1.9.3: brains the Brain Rain Machine drops (was 10)
 

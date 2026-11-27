@@ -43,7 +43,8 @@ local Watchdog = require(Client.Watchdog) -- 1.8.8: frees you if something left 
 -- locks that are on purpose: the watchdog leaves these alone
 Watchdog.isLocked = function(): boolean
 	local lp = game:GetService("Players").LocalPlayer
-	return Conversation.isOpen() or Cutscene.isPlaying() or Machines.isBusy() or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
+	local BE = Client:FindFirstChild("BrainEnding") and require(Client.BrainEnding)
+	return Conversation.isOpen() or Cutscene.isPlaying() or Machines.isBusy() or (BE ~= nil and BE.isPlaying()) or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
 end
 local SpeedrunTimer = require(Client.SpeedrunTimer)
 local DayNight = require(Client.DayNight)
@@ -270,9 +271,17 @@ Remote.on("hide", Stations.hide)
 Remote.on("death", function(d)
 	UI.closeModal()
 	AdminPanel.close() -- morning test fix: the 🧪 replay is started from the staff panel, which hid the POOF and shredder
-	Effects.death(d, function()
-		Stations.deathScreen(d)
+	-- 1.9.3 (user: real cutscenes, not emojis): the 3D brain-explodes ending; the old 2D one is the fallback
+	local ok = pcall(function()
+		require(script.Parent:WaitForChild("Client"):WaitForChild("BrainEnding")).play(d, function()
+			Stations.deathScreen(d)
+		end)
 	end)
+	if not ok then
+		Effects.death(d, function()
+			Stations.deathScreen(d)
+		end)
+	end
 end)
 
 Remote.on("deathScreen", function()

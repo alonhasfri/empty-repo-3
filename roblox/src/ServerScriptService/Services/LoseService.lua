@@ -413,7 +413,7 @@ function LoseService.death(player)
 		moments = data.embarrassingMoments,
 		loud = data.perks.ExtraLoudDeath == true,
 	})
-	task.delay(5, function()
+	task.delay(Config.Death and Config.Death.KillDelay or 5, function() -- 1.9.3: waits for the 3D ending cutscene
 		local char = player.Character
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
 		if hum then

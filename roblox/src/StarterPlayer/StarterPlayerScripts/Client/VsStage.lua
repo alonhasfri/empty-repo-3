@@ -243,5 +243,9 @@ function VsStage.build(title: string, meChar: Model?, otherChar: Model?, otherLa
 	return stage
 end
 
+-- 1.9.3: shared with BrainEnding (the 0-cell cutscene)
+VsStage.actorFrom = actorFrom
+VsStage.place = place
+VsStage.play = play
 local _ = Players
 return VsStage
