@@ -293,6 +293,33 @@ end)
 
 Remote.on("badge", Effects.badge)
 
+-- 1.9.4: staff bug sweep (admin "sweep"): opens every screen and checks it (Client/SelfTest.lua)
+Remote.on("selftest", function()
+	local SelfTest = require(Client.SelfTest)
+	local st = UI.state or {}
+	local cfg = require(game:GetService("ReplicatedStorage").Shared.Config)
+	local screens = {
+		{ name = "Phone home", open = PhoneOS.open },
+		{ name = "Phone More", open = PhoneOS.more },
+	}
+	for _, key in ipairs((cfg.UI.PhoneApps or {})[st.path or ""] or {}) do
+		table.insert(screens, { name = "App: " .. key, open = function()
+			PhoneOS.openApp({ key = key })
+		end })
+	end
+	for _, key in ipairs({ "quickplay", "shop", "items", "together" }) do
+		table.insert(screens, { name = "Rail: " .. key, open = function()
+			Hud.onStation(key)
+		end })
+	end
+	table.insert(screens, { name = "Settings", open = Stations.settings })
+	table.insert(screens, { name = "Admin menu", open = AdminPanel.open })
+	SelfTest.run(screens, function()
+		UI.closeModal()
+		AdminPanel.close()
+	end)
+end)
+
 Remote.on("crossroads", function(d)
 	Stations.crossroads(d)
 end)

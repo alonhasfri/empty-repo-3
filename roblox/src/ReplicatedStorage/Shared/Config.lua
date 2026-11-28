@@ -760,7 +760,8 @@ Config.Commands = {
 	fps = { min = 1, cat = "Players", label = "🧪 FPS overlay", target = true, selfBelow = 3 },
 	becomeanimal = { min = 1, cat = "Players", label = "🧪 Become an animal", target = true, selfBelow = 3, arg = "dog / octopus / mouse / bee / fly / worm / human" },
 	eventinvite = { min = 1, cat = "Players", label = "🧪 Life event invite", target = true, selfBelow = 3, arg = "surprise / grandma / graduation / moving / pet / blackout (empty = random)" },
-	crossroads = { min = 1, cat = "Players", label = "🧪 Open Genius Crossroads", target = true, selfBelow = 3 },
+	crossroads = { min = 1, cat = "Players", label = "🧪 Replay Genius pop-up", target = true, selfBelow = 3 },
+	sweep = { min = 1, cat = "Players", label = "🧪 Bug sweep (opens every screen)", target = true, selfBelow = 3 }, -- 1.9.4
 	resettutorial = { min = 3, cat = "Players", label = "Reset Tutorial", target = true },
 	bringall = { min = 3, cat = "Server", label = "Bring Everyone" },
 	muteall = { min = 3, cat = "Server", label = "Mute Everyone (not staff)" },

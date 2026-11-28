@@ -16,6 +16,7 @@ local UI = require(script.Parent.UI)
 local Remote = require(script.Parent.Remote)
 
 local PhoneOS = {}
+PhoneOS.badges = {} -- [appKey] = true: that app has news (red dot on its tile)
 -- 1.8.7 phone pass: true on a sideways phone screen (wide and short), where the in-game phone is wide too
 -- 1.9: the phone is always tall now (main menu on the right), so it is never "wide"
 function PhoneOS.wide(): boolean
@@ -200,6 +201,8 @@ local function openApp(app)
 	end
 end
 
+PhoneOS.openApp = openApp -- 1.9.4: the bug sweep opens every app the normal way
+
 local function appLabel(text: string): string
 	if PhoneOS.label then
 		return PhoneOS.label(text)
@@ -242,6 +245,12 @@ local function appIcon(parent, app, order: number, size: number, labelH: number)
 	end
 	if labelH > 0 then
 		UI.new("TextLabel", { BackgroundTransparency = 1, LayoutOrder = 2, Size = UDim2.new(1, 0, 0, labelH), Text = appLabel(app.name), Font = Enum.Font.GothamMedium, TextScaled = true, TextColor3 = WHITE, Parent = cell })
+	end
+	-- 1.9.4 (user: "the notification doesn't show which app has it"): a red dot on the app that has news
+	if PhoneOS.badges[app.key] then
+		local dot = UI.new("Frame", { Name = "AppDot", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.92, 0.08), Size = UDim2.fromOffset(16, 16), BackgroundColor3 = Color3.fromRGB(255, 60, 70), ZIndex = icon.ZIndex + 3, Parent = icon })
+		UI.corner(dot, 8)
+		UI.stroke(dot, Color3.new(1, 1, 1), 2, 0)
 	end
 	cell.Activated:Connect(function()
 		openApp(app)
@@ -328,6 +337,12 @@ local function home(m, st, tier: string)
 		UI.label(m.content, "Pick a path first to unlock your apps.", { TextColor3 = WHITE, LayoutOrder = 3 })
 		return
 	end
+	PhoneOS.badges.more = nil
+	for _, a in ipairs(rest) do
+		if PhoneOS.badges[a.key] then
+			PhoneOS.badges.more = true -- an app with news is on the More page
+		end
+	end
 	if #rest > 0 then
 		table.insert(first, { key = "more", icon = P19.MoreApp.icon, name = P19.MoreApp.name, c1 = Color3.fromRGB(90, 95, 110), c2 = Color3.fromRGB(50, 54, 66) })
 	end
@@ -389,6 +404,7 @@ end
 -- when something is new or finished
 local questDot = nil
 local function setDot(on: boolean)
+	PhoneOS.badges.quests = on or nil -- 1.9.4: the same dot shows on the app tile itself
 	local slot = UI.gui and UI.gui:FindFirstChild("PhoneSlot")
 	if not slot then
 		return

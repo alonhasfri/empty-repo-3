@@ -1029,7 +1029,7 @@ function UI.modal(title: string, opts)
 		Name = "Content",
 		BackgroundTransparency = 1,
 		Position = phone and UDim2.fromOffset(8, 28 + UI.minTouch() + 4 + 6) or UDim2.fromOffset(14, math.max(56, UI.minTouch() + 8) + 10),
-		Size = phone and UDim2.new(1, -16, 1, -(28 + UI.minTouch() + 4 + 6 + 50)) or UDim2.new(1, -28, 1, -(math.max(56, UI.minTouch() + 8) + 22)),
+		Size = phone and UDim2.new(1, -16, 1, -(28 + UI.minTouch() + 4 + 6 + 68)) or UDim2.new(1, -28, 1, -(math.max(56, UI.minTouch() + 8) + 22)),
 		CanvasSize = UDim2.new(),
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		ScrollBarThickness = 5,
@@ -1048,7 +1048,7 @@ function UI.modal(title: string, opts)
 		local home = UI.new("TextButton", {
 			AnchorPoint = Vector2.new(0.5, 1),
 			Position = UDim2.new(0.5, 0, 1, -8),
-			Size = UDim2.fromOffset(150, 40),
+			Size = UDim2.fromOffset(170, 56),
 			Text = opts.onHome and "⌂  Home" or "",
 			Font = Enum.Font.GothamBold,
 			TextSize = 14,
@@ -1081,30 +1081,11 @@ function UI.modal(title: string, opts)
 
 	current = { frame = frame, backdrop = backdrop, content = content, onClose = opts.onClose }
 	UI.popupOpen = not phone
-	if not opts.noClose and phone then
-		-- 1.9.3: the phone lets touches through (thumbstick, camera): close with X / home / ButtonB only
+	if not opts.noClose then
+		-- 1.9.4 (user: "I press to the side to move and it removes the pop-up, so annoying"): no more
+		-- tap-outside-to-close (it was 1.8.5) on any pop-up. Touches outside pass through (you can walk, like the
+		-- 1.9.3 phone); pop-ups close only with X, Home, Escape or the gamepad B button.
 		backdrop.Active = false
-		ContextActionService:BindAction("BrainCloseModal", function(_, inputState)
-			if inputState == Enum.UserInputState.Begin then
-				UI.closeModal()
-			end
-			return Enum.ContextActionResult.Sink
-		end, false, Enum.KeyCode.ButtonB)
-	elseif not opts.noClose then
-		-- 1.8.5: tap outside the pop-up to close it
-		backdrop.Active = true
-		backdrop.InputBegan:Connect(function(input)
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then
-				return
-			end
-			local p, s = frame.AbsolutePosition, frame.AbsoluteSize
-			local x, y = input.Position.X, input.Position.Y
-			if x < p.X or x > p.X + s.X or y < p.Y or y > p.Y + s.Y then
-				if current and current.frame == frame then
-					UI.closeModal()
-				end
-			end
-		end)
 		ContextActionService:BindAction("BrainCloseModal", function(_, inputState)
 			if inputState == Enum.UserInputState.Begin then
 				UI.closeModal()

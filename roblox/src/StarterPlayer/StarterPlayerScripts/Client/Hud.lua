@@ -144,7 +144,7 @@ local stripBar = UI.new("Frame", { Position = UDim2.fromOffset(8, 36), Size = UD
 UI.corner(stripBar, 3)
 local stripFill = UI.new("Frame", { Size = UDim2.fromScale(0, 1), Parent = stripBar })
 UI.corner(stripFill, 3)
-local stripGo = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -6, 0.5, 0), Size = UDim2.fromOffset(48, 36), Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = Color3.new(1, 1, 1), Text = PS.Go, Parent = strip })
+local stripGo = UI.new("TextButton", { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -6, 0.5, 0), Size = UDim2.fromOffset(64, 54), Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = Color3.new(1, 1, 1), Text = PS.Go, Parent = strip })
 UI.corner(stripGo, 10)
 local stripTarget = nil
 stripGo.Activated:Connect(function()

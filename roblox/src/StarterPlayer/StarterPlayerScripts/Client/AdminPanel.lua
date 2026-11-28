@@ -180,8 +180,8 @@ function AdminPanel.open()
 	-- 1.9.4 (user: "can't scroll on mobile"): no buttons ABOVE the scrolling lists any more (a button parent can
 	-- swallow the touch drag): the dim and the panel are plain frames, and tap-outside-to-close is its own layer
 	root = new("Frame", { Name = "AdminPanel", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 40, Parent = layer })
-	local outside = new("TextButton", { Name = "Outside", Text = "", AutoButtonColor = false, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, ZIndex = 40, Parent = root })
-	outside.Activated:Connect(AdminPanel.close) -- tap outside to close
+	new("TextButton", { Name = "Outside", Text = "", AutoButtonColor = false, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, ZIndex = 40, Parent = root })
+	-- 1.9.4 (user): no tap-outside-to-close (it closed by accident); the dim only blocks taps to the world
 	local panel = new("Frame", {
 		Active = true, -- taps on the panel never reach the world or the close layer
 		AnchorPoint = Vector2.new(0.5, 0.5),

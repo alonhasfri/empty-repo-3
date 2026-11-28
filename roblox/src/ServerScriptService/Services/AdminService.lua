@@ -846,6 +846,10 @@ H.eventinvite = function(actor, target, arg)
 	local id = arg and string.lower(arg) or nil
 	return EventService.invite(target, id ~= "" and id or nil) and ("Sent a life event invite to " .. target.Name .. ".") or "Can't invite right now (no path?)."
 end
+H.sweep = function(actor, target) -- 1.9.4: the automatic bug sweep (Client/SelfTest.lua) on that player's screen
+	Net.send(target, "selftest", {})
+	return "Bug sweep started for " .. target.Name .. " (results in their Output, [SWEEP] lines)."
+end
 H.crossroads = function(actor, target)
 	local GeniusService = require(script.Parent.GeniusService)
 	local d = DataService.get(target)
