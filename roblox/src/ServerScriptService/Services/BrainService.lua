@@ -175,12 +175,12 @@ function BrainService.state(player)
 		-- morning test fix: accepting clears eventInvite, so the 💌 app vanished mid-event
 		inEvent = (BrainService.hooks.inEvent and BrainService.hooks.inEvent(player)) or nil,
 		geniusOpen = (BrainService.hooks.geniusOpen and BrainService.hooks.geniusOpen(data)) or nil, -- 1.9 Genius Crossroads
+		geniusIntro = (BrainService.hooks.geniusOpen and BrainService.hooks.geniusOpen(data) and not data.genius and not data.geniusIntroSeen) or nil, -- 1.9.4 the Genius cutscene, once
 		genius = data.genius,
 		eventsDone = (typeof(data.eventsDone) == "table" and #data.eventsDone > 0) and #data.eventsDone or nil,
 		serverNow = os.time(),
 		cells = cells,
 		cellsText = Brain.shortNumber(cells),
-		bitsTaken = data.bitsTaken or 0,
 		path = data.path,
 		iq = Brain.iq(cells),
 		iqText = Brain.iqText(cells, data.path),

@@ -848,6 +848,11 @@ H.eventinvite = function(actor, target, arg)
 end
 H.crossroads = function(actor, target)
 	local GeniusService = require(script.Parent.GeniusService)
+	local d = DataService.get(target)
+	if d then -- 1.9.4: replays the Genius cutscene pop-up (the branch pick is cleared; story progress is kept)
+		d.geniusIntroSeen = nil
+		d.genius = nil
+	end
 	GeniusService.forceOpen(target)
 	return "Opened the Genius Crossroads for " .. target.Name .. "."
 end

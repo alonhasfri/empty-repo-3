@@ -308,7 +308,7 @@ Content.Careers = {
 		engineer = { "Apprentice", "Engineer", "Senior Engineer", "Chief Engineer" },
 		server = { "Dishwasher", "Server", "Head Waiter", "Restaurant Owner" }, -- 1.9.1
 	},
-	Taken = "💼 You're now a %s! Go to %s and clock in (📱 Shifts) to get paid. 🚕",
+	Taken = "💼 You're now a %s! Go to %s and clock in (📱 Work) to get paid. 🚌",
 	EarnedWait = "📈 You've earned a promotion! Reach IQ %d to get it.",
 	Promoted = "📈 PROMOTED!",
 	PromotedSub = "New uniform unlocked. Pay +%d%%.",
@@ -1078,6 +1078,7 @@ Content.Conversations = {
 -- Add a new entry at the TOP each update (and bump Config.Version).
 ---------------------------------------------------------------------
 Content.Updates = {
+	{ v = "1.9.4", name = "Genius Moment", lines = { "🧠✨ Becoming a genius is a real cutscene now: five glowing genius roads, then you pick yours.", "📱 Fewer, clearer apps: Work and Shifts are one Work app, and the Bus takes you everywhere.", "🖼 App icons show right away (no more empty squares while they load).", "🛠 The staff menu fits phones.", "🧹 Brain bits are gone from the streets." } },
 	{ v = "1.9.3", name = "Brain Bits Update", lines = { "🧠 Glowing brain bits on the streets: walk into them for brain cells and coins, grab them fast for a 🔥 streak!", "📋 Daily Quests: 3 small goals a day in your phone, with coins for each one.", "🛠 Invent machines like the Trace Teleporter, Jetpack and Bounce Pad. When one is invented, the whole server gets it!", "🎭 Vs Mode and the brain ending are real 3D cutscenes now.", "🏙 The town changes much more with your brain, smaller notes, a guide arrow on the ground and lots of new sounds and icons." } },
 	{ v = "1.9.2", name = "Fun Update", lines = { "🔊 Sounds and music everywhere!", "✨ Golden Brains pop up near you: grab them for a big brain change and coins (on both paths).", "🐶 Becoming a new animal is a big moment now, with a NEW FORM banner, an animal book and coins.", "🎨 Brand-new 3D icons, faster jobs and reading, a shorter tutorial and bigger rewards." } },
 	{ v = "1.9.1", name = "Big Town Update", lines = { "🍕 Four restaurants (and the Brainrot Café): eat there, or work as a Restaurant Worker with your friends.", "🏠 Your own home that grows with your brain. Buy furniture, visit friends, see the town board.", "🐾 Animals get jobs, park friends and a way back up. Humans can adopt an animal player (if they say yes!).", "⚖️ Smart vs Dumb now plays like a movie, with a big OBJECTION!", "🌧 Weather and seasons, pets that follow you, a 📸 Camera with stickers, and a TV that gets dumber with the server." } },
@@ -1197,16 +1198,17 @@ Content.Life = {
 		CarModels = { "Brainmobile Mini", "Hoppr Comfort", "Thinkr Hatchback", "Noodle Sedan" },
 	},
 	Shift = {
-		Title = "⏰ Shifts",
+		Title = "💼 Work",
 		NextIn = "Next shift starts in %d:%02d",
 		StartedAgo = "This shift started %d s ago. Clock in within %d s to be on time.",
 		Late = "⏰ Clocked in, but you're late. No on-time bonus this shift.",
 		OnTime = "✅ Clocked in on time! Do at least one task for a +💰 %d bonus.",
 		ClockIn = "🟢 Clock in",
+		DoTask = "💼 Do a work task", -- 1.9.4: Work and Shifts are one app
 		ClockOut = "🔴 Clock out (get payslip)",
 		GainOnly = "Shifts are for the Gain path.",
-		NoJob = "Get a job first (📱 Jobs).",
-		NotThere = "Go to %s to clock in. Hoppr or the 🚌 bus can take you.",
+		NoJob = "Get a job first: walk to the 📋 Job Board in town.",
+		NotThere = "Go to %s to clock in. The 🚌 bus can take you.",
 		Already = "You're already clocked in.",
 		NotOn = "You're not clocked in.",
 		TooShort = "Work a little longer first (%d s).",
@@ -2055,15 +2057,23 @@ Content.BrainEnding = {
 	Skip = "Skip ⏭",
 }
 
+Content.GeniusIntro = { -- 1.9.4: the Genius cutscene (Client/GeniusIntro.lua)
+	Grow = "Your brain keeps growing…",
+	Genius = "🧠✨ You are a GENIUS now!",
+	Roads = "Five genius roads open up for you…",
+	Pick = "Which genius will you be? Pick your road!",
+	Sign = "GENIUS CROSSROADS",
+	Skip = "Skip ⏭",
+}
+
 Content.Quests = {
 	Title = "📋 Daily Quests",
-	Sub = "New quests every day. Each one pays %d coins, all 3 pay +%d more!",
+	Sub = "New quests every day. Each one pays %d coins, all of them pay +%d more!",
 	Done = "✅ Quest done: %s  (+%d coins)",
-	AllDone = "🏆 All 3 daily quests done! +%d bonus coins!",
+	AllDone = "🏆 All daily quests done! +%d bonus coins!",
 	BonusGot = "🏆 All done for today! Come back tomorrow for new quests.",
 	App = { icon = "📋", name = "Quests" },
 	Text = {
-		bits = "🧠 Grab %d brain bits",
 		library = "📚 Answer %d library books",
 		job = "💼 Finish %d work shifts",
 		quickplay = "⚡ Score in %d Quick Play rounds",
@@ -2080,12 +2090,7 @@ Content.Quests = {
 	},
 }
 
-Content.Bits = {
-	Streak = "🔥 x%d STREAK!",
-}
-
 Content.Guide = {
-	Bits = "🧠 Grab glowing brain bits on the street! (%d/%d)", -- 1.9.3: the first goal is moving, not reading
 	PickDoor = "🚪 Pick a door: get dumber or get smarter!",
 	LifeGrow = "%s Age %d: play and grow up! Your path opens at age 8 (🌟 fountain).",
 	LifeCrossroads = "🌟 Go to the Crossroads Ceremony at the fountain and pick your path!",
@@ -2094,7 +2099,7 @@ Content.Guide = {
 	LoseSchool = "🏫 The bell! Get to school!",
 	GainLibrary = "📚 Read at the School Library to get smarter!",
 	GainJob = "💼 Get a job at the Job Center!",
-	GainWork = "⏰ Go to work and clock in (📱 Shifts)!",
+	GainWork = "⏰ Go to work and clock in (📱 Work)!",
 	GainTask = "🛠 You're on shift: do a task!",
 	GainGate = "🚧 A Skill Gate! Go to the Exam Hall at the University.",
 	Near = "You're here! 👇",

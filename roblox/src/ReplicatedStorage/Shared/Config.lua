@@ -4,7 +4,7 @@
 local Config = {}
 
 Config.GameName = "Lose/Gain a Brain Cell" -- 1.9.3: matches the published name
-Config.Version = "1.9.3"
+Config.Version = "1.9.4"
 -- 1.8.3: the brain counter shortens numbers from here on (1.2T, 9.9Qa ...)
 Config.ShortNumberFrom = 1e9 -- 1.9.1 fun fixes: "86.2B" moves visibly, 11 digits did not
 Config.NumberSuffixes = { "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" }
@@ -844,11 +844,11 @@ Config.UI = {
 	-- the phone shows (when unlocked). Library, Jack B, Jobs, Projects, Space, Coffee, Nap, Pigeons, Town, the
 	-- newsstand, café and arcade are places in town; Store, Items and Vs Mode are on the left rail.
 	PhoneApps = {
-		Gain = { "map", "quests", "work", "braintalks", "hoppr", "bank", "shifts", "events", "genius", "home", "camera", "badges", "settings" },
+		Gain = { "map", "quests", "work", "braintalks", "bank", "events", "genius", "home", "camera", "badges", "settings" }, -- 1.9.4 (user): Hoppr merged into Bus, Shifts into Work
 		Lose = { "map", "quests", "scroller", "jokejobs", "events", "home", "camera", "badges", "settings" },
 	},
 	PhoneFirst = {
-		Gain = { "map", "quests", "work", "braintalks", "hoppr", "shifts", "bank", "events", "genius", "home", "camera" },
+		Gain = { "map", "quests", "work", "braintalks", "bank", "events", "genius", "home", "camera" },
 		Lose = { "map", "quests", "scroller", "jokejobs", "events", "home", "camera" },
 	},
 	PhoneDim = 0.75, -- the phone dims the world only lightly (pop-ups use ModalDim)
@@ -1415,32 +1415,16 @@ Config.Machines = {
 	jetpack = { cooldown = 30, seconds = 8, lift = 0.9, thrust = 55 },
 	bouncepad = { cooldown = 45, seconds = 60, power = 130 },
 }
--- 1.9.3 (judges): brain bits on the streets near you (BitService + Client/Bits.lua)
 -- 1.9.3 (judges): daily quests (QuestService); keys are BrainService reward reasons
 Config.Quests = {
 	PerDay = 3,
 	Coins = 30, -- per finished quest
 	AllBonus = 100, -- for finishing all 3
 	Pools = {
-		Gain = { { key = "bits", goal = 15 }, { key = "library", goal = 3 }, { key = "job", goal = 2 }, { key = "quickplay", goal = 2 }, { key = "braintalks", goal = 3 }, { key = "theater", goal = 2 }, { key = "golden", goal = 1 }, { key = "conversation", goal = 6 } },
-		Lose = { { key = "bits", goal = 15 }, { key = "clickbait", goal = 5 }, { key = "scroll", goal = 10 }, { key = "comment", goal = 3 }, { key = "steal", goal = 2 }, { key = "losejob", goal = 1 }, { key = "quickplay", goal = 2 }, { key = "golden", goal = 1 } },
-		Animal = { { key = "bits", goal = 10 }, { key = "golden", goal = 1 }, { key = "animal", goal = 3 } },
+		Gain = { { key = "library", goal = 3 }, { key = "job", goal = 2 }, { key = "quickplay", goal = 2 }, { key = "braintalks", goal = 3 }, { key = "theater", goal = 2 }, { key = "golden", goal = 1 }, { key = "conversation", goal = 6 } },
+		Lose = { { key = "clickbait", goal = 5 }, { key = "scroll", goal = 10 }, { key = "comment", goal = 3 }, { key = "steal", goal = 2 }, { key = "losejob", goal = 1 }, { key = "quickplay", goal = 2 }, { key = "golden", goal = 1 } },
+		Animal = { { key = "golden", goal = 1 }, { key = "animal", goal = 3 } },
 	},
-}
-Config.Bits = {
-	PerPlayer = 8, -- bits around you at once
-	Refill = 12, -- seconds between top-ups near where you are
-	DistMin = 14,
-	DistMax = 50,
-	TouchRange = 4, -- client: how close to walk
-	GrabRange = 10, -- server: how close you must really be (lag allowance)
-	Points = 0.35, -- brain points per bit (a library answer is 2)
-	Coins = 1,
-	StreakSeconds = 6, -- grab the next one within this to keep the 🔥 streak
-	StreakBonus = 0.15, -- +15% per streak step
-	MaxStreakBonus = 1.5, -- at most +150%
-	PerMinuteCap = 40,
-	FirstGoal = 10, -- new players start with "grab 10 brain bits"
 }
 Config.Death = { KillDelay = 24 } -- 1.9.3: seconds before the 0-cell respawn (the 3D ending cutscene is ~20 s)
 Config.GadgetPigeonTips = 15 -- 1.9.3: coins the Pigeon Launcher show earns

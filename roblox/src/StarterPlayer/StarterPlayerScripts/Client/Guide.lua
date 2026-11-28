@@ -95,10 +95,6 @@ local function pick(st)
 	if not st.path then
 		return G.PickDoor, nil
 	end
-	-- 1.9.3 (judges): a new player's first goal is to MOVE: grab brain bits on the street
-	if (st.bitsTaken or 0) < Config.Bits.FirstGoal and not isAnimal(st) then
-		return string.format(G.Bits, st.bitsTaken or 0, Config.Bits.FirstGoal), "BrainBit"
-	end
 	if isAnimal(st) then
 		return G.Animal, "Station_clickbait"
 	end

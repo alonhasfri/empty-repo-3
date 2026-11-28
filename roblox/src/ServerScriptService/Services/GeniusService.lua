@@ -38,6 +38,17 @@ local function story(data)
 	return data.geniusStory
 end
 
+-- 1.9.4 (user: "Genius has to pop up on you, as a cutscene"): the client plays the Genius cutscene once,
+-- the first time the Crossroads opens and no branch is picked yet, then tells us it was seen
+Net.on("genius_intro_seen", function(player)
+	local data = DataService.get(player)
+	if data then
+		data.geniusIntroSeen = true
+		BrainService.push(player)
+	end
+	return { ok = true }
+end)
+
 -- the phone's 🌟 Genius app reads this
 Net.on("genius_get", function(player)
 	local data = DataService.get(player)
@@ -141,8 +152,7 @@ function GeniusService.forceOpen(player)
 	if typeof(data.career) == "table" then
 		data.career.level = 4
 	end
-	BrainService.push(player)
-	Net.send(player, "openStation", { station = "genius" })
+	BrainService.push(player) -- 1.9.4: the client sees geniusIntro and plays the cutscene, which opens the chooser
 end
 
 return GeniusService

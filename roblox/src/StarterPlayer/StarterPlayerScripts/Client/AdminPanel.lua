@@ -170,14 +170,23 @@ function AdminPanel.open()
 	UI.closeModal()
 	local phone = UI.isPhone()
 
-	root = new("TextButton", { Name = "AdminPanel", Text = "", AutoButtonColor = false, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, ZIndex = 40, Parent = UI.gui })
-	root.Activated:Connect(AdminPanel.close) -- tap outside to close
-	local panel = new("TextButton", {
-		Text = "",
-		AutoButtonColor = false,
+	-- 1.9.4 (user: "the admin menu doesn't fit mobile"): its own full-screen layer that only keeps clear of the
+	-- notch (the HUD layer keeps a big top margin and a phone UIScale, which squeezed the panel)
+	local pg = Players.LocalPlayer:WaitForChild("PlayerGui")
+	local layer = pg:FindFirstChild("BrainAdminGui")
+	if not layer then
+		layer = new("ScreenGui", { Name = "BrainAdminGui", IgnoreGuiInset = true, ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets, DisplayOrder = 40, ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = pg })
+	end
+	-- 1.9.4 (user: "can't scroll on mobile"): no buttons ABOVE the scrolling lists any more (a button parent can
+	-- swallow the touch drag): the dim and the panel are plain frames, and tap-outside-to-close is its own layer
+	root = new("Frame", { Name = "AdminPanel", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 40, Parent = layer })
+	local outside = new("TextButton", { Name = "Outside", Text = "", AutoButtonColor = false, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, ZIndex = 40, Parent = root })
+	outside.Activated:Connect(AdminPanel.close) -- tap outside to close
+	local panel = new("Frame", {
+		Active = true, -- taps on the panel never reach the world or the close layer
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = phone and UDim2.fromScale(0.96, 0.92) or UDim2.fromScale(0.8, 0.8),
+		Size = phone and UDim2.fromScale(0.98, 0.96) or UDim2.fromScale(0.8, 0.8),
 		BackgroundColor3 = K.bg,
 		ZIndex = 41,
 		Parent = root,
@@ -188,7 +197,7 @@ function AdminPanel.open()
 	UI.stroke(panel, K.line, 1, 0)
 
 	-- sidebar
-	local sideW = phone and 0.11 or 0.2 -- 1.8.9: an icon rail on phones, so the content gets the room
+	local sideW = phone and 0.12 or 0.2 -- 1.8.9: an icon rail on phones, so the content gets the room
 	local side = new("Frame", { Size = UDim2.new(sideW, 0, 1, 0), BackgroundColor3 = K.side, ZIndex = 42, Parent = panel })
 	corner(side, 14)
 	new("UIPadding", { PaddingTop = UDim.new(0, 12), PaddingBottom = UDim.new(0, 12), PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), Parent = side })
@@ -221,7 +230,7 @@ function AdminPanel.open()
 		TextColor3 = K.text, PlaceholderColor3 = K.muted, BackgroundColor3 = K.card, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 43, Parent = main,
 	}, { new("UIPadding", { PaddingLeft = UDim.new(0, 10) }) })
 	corner(search, 8)
-	local closeB = new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 8), Size = UDim2.fromOffset(40, 40), Text = "X", Font = Enum.Font.GothamBlack, TextSize = 18, TextColor3 = K.dangerHi, BackgroundColor3 = K.danger, ZIndex = 43, Parent = main })
+	local closeB = new("TextButton", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 8), Size = UDim2.fromOffset(phone and 48 or 40, phone and 48 or 40), Text = "X", Font = Enum.Font.GothamBlack, TextSize = 18, TextColor3 = K.dangerHi, BackgroundColor3 = K.danger, ZIndex = 43, Parent = main })
 	corner(closeB, 8)
 	closeB.Activated:Connect(AdminPanel.close)
 	local body = new("Frame", { Position = UDim2.fromOffset(0, 58), Size = UDim2.new(1, 0, 1, -70), BackgroundTransparency = 1, ZIndex = 42, Parent = main })
@@ -386,6 +395,15 @@ function AdminPanel.open()
 		tabButtons[tab] = button(tabList, tabText, K.side, function()
 			showTab(tab)
 		end, { LayoutOrder = i, TextSize = phone and K.small or K.body, Size = UDim2.new(1, 0, 0, phone and math.max(36, UI.minTouch()) or 36), ZIndex = 44 })
+		if phone then -- 1.9.4: the icon fills its button, centred (it was padded into a sliver and got cut off)
+			local b = tabButtons[tab]
+			b.TextXAlignment = Enum.TextXAlignment.Center
+			b.TextScaled = true
+			local pad = b:FindFirstChildOfClass("UIPadding")
+			if pad then
+				pad.PaddingLeft, pad.PaddingRight, pad.PaddingTop, pad.PaddingBottom = UDim.new(0, 4), UDim.new(0, 4), UDim.new(0, 6), UDim.new(0, 6)
+			end
+		end
 	end
 	search:GetPropertyChangedSignal("Text"):Connect(function()
 		showTab(currentTab)

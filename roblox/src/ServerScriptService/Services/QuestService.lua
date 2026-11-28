@@ -39,6 +39,12 @@ local function ensure(data)
 		end
 		data.quests = { day = today(), path = data.path, list = list, bonus = false, seen = false }
 	end
+	-- a quest that was removed from the game (1.9.4: brain bits) can never finish: drop it
+	for i = #data.quests.list, 1, -1 do
+		if not TQ.Text[data.quests.list[i].key] then
+			table.remove(data.quests.list, i)
+		end
+	end
 	return data.quests
 end
 

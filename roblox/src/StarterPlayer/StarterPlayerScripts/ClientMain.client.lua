@@ -14,7 +14,6 @@ local AdminPanel = require(Client.AdminPanel)
 local Tutorial = require(Client.Tutorial)
 local Conversation = require(Client.Conversation)
 local PhoneOS = require(Client.PhoneOS) -- 1.7: the phone changes with your brain
-local _Bits = require(Client.Bits) -- 1.9.3: brain bits on the streets
 local Machines = require(Client.Machines) -- 1.9.3: inventable hotbar machines (Trace Teleporter, Jetpack, Bounce Pad)
 local Cutscene = require(Client.Cutscene) -- 1.9: cutscene player (intro flyover)
 
@@ -39,12 +38,14 @@ local _Weather = require(Client.Weather) -- 1.9.1: rain, snow, fog, puddles (run
 local _NpcReact = require(Client.NpcReact) -- 1.9.1: townspeople react to your brain level (runs on its own)
 local _QoL = require(Client.QoL) -- 1.9.1: sprint, AFK-safe (runs on its own)
 local LowGraphics = require(Client.LowGraphics)
+local CONFIG_ICONS = require(game:GetService("ReplicatedStorage").Shared.Config)
+local GeniusIntro = require(Client.GeniusIntro) -- 1.9.4: the Genius cutscene
 local Watchdog = require(Client.Watchdog) -- 1.8.8: frees you if something left you stuck
 -- locks that are on purpose: the watchdog leaves these alone
 Watchdog.isLocked = function(): boolean
 	local lp = game:GetService("Players").LocalPlayer
 	local BE = Client:FindFirstChild("BrainEnding") and require(Client.BrainEnding)
-	return Conversation.isOpen() or Cutscene.isPlaying() or Machines.isBusy() or (BE ~= nil and BE.isPlaying()) or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
+	return Conversation.isOpen() or Cutscene.isPlaying() or Machines.isBusy() or GeniusIntro.isPlaying() or (BE ~= nil and BE.isPlaying()) or lp:GetAttribute("AdminFrozen") == true or (UI.state ~= nil and UI.state.dead == true)
 end
 local SpeedrunTimer = require(Client.SpeedrunTimer)
 local DayNight = require(Client.DayNight)
@@ -190,6 +191,42 @@ local function applyState(st)
 end
 
 Remote.on("state", applyState)
+
+-- 1.9.4: start downloading every 3D icon right away, so phone apps and buttons aren't empty when you open them
+task.spawn(function()
+	local ids, seen = {}, {}
+	for _, list in ipairs({ CONFIG_ICONS.Icons or {}, CONFIG_ICONS.IconsMono or {} }) do
+		for _, id in pairs(list) do
+			if typeof(id) == "number" and id > 0 and not seen[id] then
+				seen[id] = true
+				table.insert(ids, "rbxassetid://" .. tostring(id))
+			end
+		end
+	end
+	pcall(function()
+		game:GetService("ContentProvider"):PreloadAsync(ids)
+	end)
+end)
+
+-- 1.9.4 (user): when the Genius Crossroads opens, it POPS UP as a cutscene (once), then the chooser opens.
+-- Waits until no conversation, scene, ending or pop-up is in the way.
+local geniusIntroStarted = false
+task.spawn(function()
+	while true do
+		task.wait(2)
+		local st = UI.state
+		if st and not st.geniusIntro and not GeniusIntro.isPlaying() then
+			geniusIntroStarted = false -- seen (the admin "crossroads" command can replay it)
+		end
+		if not geniusIntroStarted and st and st.geniusIntro and not st.dead and not Watchdog.isLocked() and not (UI.gui and UI.gui:FindFirstChild("ModalBackdrop")) then
+			geniusIntroStarted = true
+			GeniusIntro.play(function()
+				Remote.call("genius_intro_seen")
+				Stations.genius()
+			end)
+		end
+	end
+end)
 
 -- 1.8.2: the slow-device check switched Low detail on: simplify the style too and say so once
 LowGraphics.onAuto = function()

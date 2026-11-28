@@ -1241,6 +1241,22 @@ end
 -- 1.9.3: icon pictures that never drew (still in moderation / rejected). Those keys show their emoji
 -- instead of an empty square. Filled by UI.watchIcon.
 UI.badIcons = {}
+-- 1.9.4 (user: "some apps don't have icons"): the 3D pictures can take seconds to download on a phone, and
+-- until then the tile was EMPTY. Now the emoji shows on top until the picture has drawn.
+function UI.emojiUntilLoaded(img: ImageLabel, emoji: string?)
+	if not emoji or emoji == "" or img.IsLoaded then
+		return
+	end
+	local l = UI.new("TextLabel", { Name = "Loading", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), TextScaled = true, Text = emoji, ZIndex = img.ZIndex, Parent = img })
+	local conn
+	conn = img:GetPropertyChangedSignal("IsLoaded"):Connect(function()
+		if img.IsLoaded then
+			conn:Disconnect()
+			l:Destroy()
+		end
+	end)
+end
+
 function UI.watchIcon(img: ImageLabel, onFail: () -> ())
 	-- 1.9.3 fix: ContentProvider:PreloadAsync reported EVERY icon as failed (even ones that draw fine), so
 	-- every button fell back to emoji. Now: an icon only counts as broken if it is on screen for
@@ -1316,6 +1332,7 @@ function UI.icon(parent, key: string?, emoji: string, props)
 	for k, v in pairs(props or {}) do
 		img[k] = v
 	end
+	UI.emojiUntilLoaded(img, emoji)
 	UI.watchIcon(img, function()
 		img:Destroy()
 		emojiLabel()

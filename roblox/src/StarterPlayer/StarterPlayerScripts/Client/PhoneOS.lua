@@ -175,7 +175,7 @@ local function openApp(app)
 			PhoneOS.hoppr()
 		elseif app.key == "bank" then
 			PhoneOS.bank()
-		elseif app.key == "shifts" then
+		elseif app.key == "shifts" or app.key == "work" then -- 1.9.4 (user): ONE Work app: your job, your shift and work tasks
 			PhoneOS.shifts()
 		elseif app.key == "items" then
 			PhoneOS.items()
@@ -228,6 +228,7 @@ local function appIcon(parent, app, order: number, size: number, labelH: number)
 		local img = UI.new("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = art, ImageColor3 = tint or Color3.new(1, 1, 1), Rotation = rot or 0, ScaleType = Enum.ScaleType.Fit, Parent = icon }, {
 			UI.new("UIPadding", { PaddingTop = UDim.new(0, p2), PaddingBottom = UDim.new(0, p2), PaddingLeft = UDim.new(0, p2), PaddingRight = UDim.new(0, p2) }),
 		})
+		UI.emojiUntilLoaded(img, app.icon)
 		UI.watchIcon(img, function() -- 1.9.3: the picture failed to load: show the emoji instead of an empty square
 			img:Destroy()
 			UI.new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Text = app.icon, TextScaled = true, Parent = icon }, {
@@ -762,12 +763,22 @@ function PhoneOS.shifts(payslip)
 				PhoneOS.shifts()
 			else
 				UI.toast("⛔ " .. tostring(res.msg or ""), C.bad)
-				if res.notAtWork then
-					PhoneOS.hoppr()
+				if res.notAtWork then -- 1.9.4: the bus takes you to work (Hoppr was merged into the Bus)
+					m.close()
+					local tx = Remote.call("taxi", { key = "work" })
+					if tx and tx.msg then
+						UI.toast(tostring(tx.msg), tx.ok and C.good or C.bad)
+					end
 				end
 			end
 		end, { LayoutOrder = 10, BackgroundColor3 = Color3.fromRGB(70, 200, 110), TextColor3 = WHITE })
 	end
+	UI.button(m.content, TL.Shift.DoTask, function()
+		m.close()
+		if PhoneOS.stations.route then
+			PhoneOS.stations.route("work")
+		end
+	end, { LayoutOrder = 11, BackgroundColor3 = Color3.fromRGB(255, 160, 60), TextColor3 = WHITE })
 	whiteLabel(m.content, string.format(TL.Shift.BonusInfo, r.bonus, r.grace), 20, { TextColor3 = SOFT, TextSize = UI.textSize(13) })
 	whiteLabel(m.content, TL.Shift.Tip, 21, { TextColor3 = SOFT, TextSize = UI.textSize(13) })
 	m.focus()
