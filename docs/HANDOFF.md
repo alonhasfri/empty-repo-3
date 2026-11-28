@@ -1,5 +1,10 @@
 # Handoff (Nov 26, 10:50 PM): phone bug fixes after the 1.9.2 publish
 
+## Nov 28 status (read first)
+- 1.9.4 is committed and pushed, NOT published (user said not yet): Genius cutscene pop-up, Work+Shifts merged, Hoppr and brain bits removed, icons show at once + preload, admin menu fits phones, no tap-outside-to-close, red dot on the app tile, staff bug sweep (admin `sweep`), AutoTexture pass.
+- To do next: admin menu restyled like Settings; check AutoTexture in the realistic and toon looks; real-player feedback ideas (analytics, phone playtests, annoyance rule list).
+- Usage-saving mode until ~Dec 3; the Keep building routine is paused.
+
 The old chat got too long (expensive), so this work moves to a fresh chat. Read CLAUDE.md and the memory files first.
 
 ## How to work (the user wants this chat to work EXACTLY like the old one)
