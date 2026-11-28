@@ -28,7 +28,7 @@ The old chat got too long (expensive), so this work moves to a fresh chat. Read 
 
 ## State
 - Live game is now named **"Lose/Gain a Brain Cell"** (renamed in Creator Hub, confirmed). Public, universe 10775683039,
-  place 114531583535398, owner group "Cult of the 39". Live version = **1.9.2 "Fun Update"** (published Nov 26, 7:40 PM).
+  place 114531583535398, owner group "Cult of the 39". Live version = **1.9.3 "Brain Bits Update"** (published Nov 28, 3:18 PM, by Claude at the user's request). Usage-saving mode until ~Dec 3: only bugs; the "Keep building" routine is paused.
 - Maturity questionnaire: filled in by the user, waiting for Roblox review.
 - Dev copy open in Studio (placeId 134289559505471), Rojo synced on port 34872. Studio MCP ids change after a
   reconnect: call `list_roblox_studios` first.
