@@ -486,6 +486,10 @@ function Style.apply(state)
 					TownMood.apply(styleName, lowDetail)
 				end
 			end)
+			-- 1.9.4: every plain prop gets a real material in the textured looks (after stylePart above)
+			task.defer(function()
+				require(script.Parent.AutoTexture).apply(styleName, lowDetail)
+			end)
 		end
 		applyCashGrabParts(tier)
 		outlineOn = (STYLES[styleName] or {}).outline == true and not lowDetail

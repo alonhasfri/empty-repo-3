@@ -1427,6 +1427,13 @@ Config.Quests = {
 		Animal = { { key = "golden", goal = 1 }, { key = "animal", goal = 3 } },
 	},
 }
+-- 1.9.4 (user: "plain untextured parts make the town look mixed"): Client/AutoTexture.lua gives every plain
+-- part a real material in these looks (toon and low-poly stay flat on purpose)
+Config.AutoTexture = {
+	Looks = { storybook = true, textured = true, realistic = true, future = true },
+	MinSize = 2, -- smaller parts (tiny details) stay as they are
+	PerFrame = 400, -- parts checked per frame (no stutter on phones)
+}
 Config.Death = { KillDelay = 24 } -- 1.9.3: seconds before the 0-cell respawn (the 3D ending cutscene is ~20 s)
 Config.GadgetPigeonTips = 15 -- 1.9.3: coins the Pigeon Launcher show earns
 Config.GadgetBrainRain = 25 -- 1.9.3: brains the Brain Rain Machine drops (was 10)
